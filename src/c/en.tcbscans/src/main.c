@@ -30,7 +30,7 @@ void cache_manga_page(char *id, size_t id_len) {
 }
 
 WASM_EXPORT
-std_obj_t manga_list_request(std_obj_t filter_list_obj, int page) {
+std_obj_t get_manga_list(std_obj_t filter_list_obj, int page) {
 	req_t request = request_init(REQ_GET);
 	request_set_url(request, "https://onepiecechapters.com/projects", 37);
 	request_send(request);
@@ -87,7 +87,7 @@ std_obj_t manga_list_request(std_obj_t filter_list_obj, int page) {
 }
 
 WASM_EXPORT
-std_obj_t manga_details_request(std_obj_t manga_obj) {
+std_obj_t get_manga_details(std_obj_t manga_obj) {
 	// assume max id length of 50 (current max is 36)
 	char id[50];
 	int id_text = object_get(manga_obj, "id", 2);
@@ -140,7 +140,7 @@ std_obj_t manga_details_request(std_obj_t manga_obj) {
 }
 
 WASM_EXPORT
-std_obj_t chapter_list_request(std_obj_t manga_obj) {
+std_obj_t get_chapter_list(std_obj_t manga_obj) {
 	char id[50];
 	int id_text = object_get(manga_obj, "id", 2);
 	int id_len = string_len(id_text);
@@ -203,7 +203,7 @@ std_obj_t chapter_list_request(std_obj_t manga_obj) {
 }
 
 WASM_EXPORT
-std_obj_t page_list_request(std_obj_t chapter_obj) {
+std_obj_t get_page_list(std_obj_t chapter_obj) {
 	std_obj_t id_text = object_get(chapter_obj, "id", 2);
 	int id_len = string_len(id_text);
 	char *id = malloc(id_len);

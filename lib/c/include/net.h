@@ -18,6 +18,7 @@ WASM_IMPORT("net", "set_url") void request_set_url(req_t req, char *url, size_t 
 WASM_IMPORT("net", "set_header") void request_set_header(req_t req, char *key, size_t key_len, char *value, size_t value_len);
 WASM_IMPORT("net", "set_body") void request_set_body(req_t req, char *body, size_t body_len);
 
+WASM_IMPORT("net", "get_url") std_obj_t request_get_url(req_t req);
 WASM_IMPORT("net", "get_data") void request_get_data(req_t req, unsigned char *buffer, size_t size);
 WASM_IMPORT("net", "get_data_size") size_t request_get_data_size(req_t req);
 
