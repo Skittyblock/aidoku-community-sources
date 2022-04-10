@@ -1,3 +1,6 @@
 .DS_Store
 .build
 package.aix
+
+src/as/*/build
+src/as/*/node_modules

@@ -1,0 +1,16 @@
+{
+  "name": "tumangaonline-aidoku",
+  "version": "1.0.0",
+  "author": "Skitty",
+  "ascMain": "src/index.ts",
+  "dependencies": {
+    "aidoku-as": "github:Aidoku/aidoku-as",
+    "assemblyscript": "^0.19.23"
+  },
+  "scripts": {
+    "build": "rm -rf build/package.aix build/Payload\nnpm run asbuild:optimized\nmkdir -p build/Payload\ncp build/optimized.wasm build/Payload/main.wasm\ncp res/* build/Payload/\ncd build/ ; zip -r package.aix Payload",
+    "asbuild:untouched": "asc src/index.ts --target debug",
+    "asbuild:optimized": "asc src/index.ts --target release",
+    "asbuild": "npm run asbuild:untouched && npm run asbuild:optimized"
+  }
+}
