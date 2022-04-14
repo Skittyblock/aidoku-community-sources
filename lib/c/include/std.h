@@ -16,11 +16,11 @@ typedef enum {
 } std_object_type_t;
 
 WASM_IMPORT("std", "copy") std_obj_t copy(void);
-WASM_IMPORT("std", "destroy") void destroy(void);
+WASM_IMPORT("std", "destroy") void destroy(std_obj_t obj);
 
 WASM_IMPORT("std", "create_null") std_obj_t create_null(void);
-WASM_IMPORT("std", "create_int") std_obj_t create_int(int number);
-WASM_IMPORT("std", "create_float") std_obj_t create_float(float number);
+WASM_IMPORT("std", "create_int") std_obj_t create_int(long int number);
+WASM_IMPORT("std", "create_float") std_obj_t create_float(double number);
 WASM_IMPORT("std", "create_string") std_obj_t create_string(char *string, size_t string_len);
 WASM_IMPORT("std", "create_bool") std_obj_t create_bool(bool boolean);
 WASM_IMPORT("std", "create_array") std_obj_t create_array(void);
@@ -31,10 +31,10 @@ WASM_IMPORT("std", "typeof") std_object_type_t std_typeof(std_obj_t obj);
 WASM_IMPORT("std", "string_len") int string_len(std_obj_t obj);
 WASM_IMPORT("std", "read_string") void read_string(std_obj_t obj, char *buffer, size_t buffer_size);
 WASM_IMPORT("std", "read_int") int read_int(std_obj_t obj);
-WASM_IMPORT("std", "read_float") float read_float(std_obj_t obj);
+WASM_IMPORT("std", "read_float") double read_float(std_obj_t obj);
 WASM_IMPORT("std", "read_bool") bool read_bool(std_obj_t obj);
-WASM_IMPORT("std", "read_date") float read_date(std_obj_t obj);
-WASM_IMPORT("std", "read_date_string") float read_date_string(std_obj_t obj, char *format, size_t format_len, char *local, size_t local_len, char *timezone, size_t timezone_len);
+WASM_IMPORT("std", "read_date") double read_date(std_obj_t obj);
+WASM_IMPORT("std", "read_date_string") double read_date_string(std_obj_t obj, char *format, size_t format_len, char *local, size_t local_len, char *timezone, size_t timezone_len);
 
 WASM_IMPORT("std", "object_len") int object_len(std_obj_t obj);
 WASM_IMPORT("std", "object_get") std_obj_t object_get(std_obj_t obj, char *key, size_t key_len);

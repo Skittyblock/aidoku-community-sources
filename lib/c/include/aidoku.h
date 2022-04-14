@@ -43,7 +43,7 @@ WASM_IMPORT("aidoku", "create_chapter")
 int create_chapter(
 	char *id, int id_len,
 	char *title, size_t title_len,
-	float volume, float chapter, float dateUpdated,
+	float volume, float chapter, double dateUpdated,
 	char *scanlator, size_t scanlator_len,
 	char *url, size_t url_len,
 	char *lang, size_t lang_len

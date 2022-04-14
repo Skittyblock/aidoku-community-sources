@@ -6,7 +6,6 @@ typedef int std_obj_t;
 
 WASM_IMPORT("html", "parse") std_obj_t html_parse(unsigned char *data, size_t size);
 WASM_IMPORT("html", "parse_fragment") std_obj_t html_parse_fragment(unsigned char *data, size_t size);
-WASM_IMPORT("html", "close") void html_close(std_obj_t obj);
 
 WASM_IMPORT("html", "select") std_obj_t html_select(std_obj_t obj, char *selector, size_t selector_len);
 WASM_IMPORT("html", "attr") std_obj_t html_attr(std_obj_t obj, char *selector, size_t selector_len);

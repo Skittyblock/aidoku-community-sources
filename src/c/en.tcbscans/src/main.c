@@ -14,7 +14,7 @@ static char cached_manga_id[50];
 static std_obj_t cached_manga_page = -1;
 
 void cache_manga_page(char *id, size_t id_len) {
-	if (cached_manga_page != -1) html_close(cached_manga_page);
+	if (cached_manga_page != -1) destroy(cached_manga_page);
 
 	char url[80] = "https://onepiecechapters.com";
 	memcpy(&(url[28]), id, id_len);
@@ -74,14 +74,16 @@ std_obj_t get_manga_list(std_obj_t filter_list_obj, int page) {
 				0, 0,
 				0, 0,
 				0, 0, 0,
-				STATUS_UNKNOWN, CONTENT_SAFE, VIEWER_RTL));
+				STATUS_UNKNOWN, CONTENT_SAFE, VIEWER_RTL
+			)
+		);
 
 		free(id);
 		free(title);
 		free(cover_url);
 	}
 
-	html_close(document);
+	destroy(document);
 
 	return create_manga_result(manga_array, false);
 }
@@ -136,6 +138,8 @@ std_obj_t get_manga_details(std_obj_t manga_obj) {
 	free(desc);
 	free(cover_url);
 
+	destroy(element);
+
 	return result;
 }
 
@@ -150,12 +154,13 @@ std_obj_t get_chapter_list(std_obj_t manga_obj) {
 		cache_manga_page(id, id_len);
 	}
 
-	std_obj_t elements = html_array(html_select(cached_manga_page, ".block.border.border-border.bg-card.mb-3.p-3.rounded", 52));
+	std_obj_t elements = html_select(cached_manga_page, ".bg-card.border.border-border.rounded.p-3.mb-3", 46);
+	std_obj_t elements_arr = html_array(elements);
 
 	std_obj_t chapter_array = create_array();
 	
-	for (int i = 0; i < array_len(elements); i++) {
-		std_obj_t element = array_get(elements, i);
+	for (int i = 0; i < array_len(elements_arr); i++) {
+		std_obj_t element = array_get(elements_arr, i);
 		
 		std_obj_t title_text = html_text(html_select(element, ".text-lg.font-bold:not(.flex)", 29));
 		std_obj_t desc_text = html_text(html_select(element, ".text-gray-500", 14));
@@ -199,6 +204,8 @@ std_obj_t get_chapter_list(std_obj_t manga_obj) {
 		free(web_url);
 	}
 
+	destroy(elements);
+
 	return chapter_array;
 }
 
@@ -239,7 +246,7 @@ std_obj_t get_page_list(std_obj_t chapter_obj) {
 		free(image_url);
 	}
 
-	html_close(document);
+	destroy(document);
 
 	return page_array;
 }
