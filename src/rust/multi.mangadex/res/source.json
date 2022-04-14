@@ -1,0 +1,195 @@
+{
+	"info": {
+		"id": "multi.mangadex",
+		"lang": "multi",
+		"name": "MangaDex",
+		"version": 2
+	},
+	"listings": ["Popular", "Latest"],
+	"filters": [
+		{ "type": "title" },
+		{ "type": "author" },
+		{
+			"type": "group",
+			"name": "Original Language",
+			"filters": [
+				{
+					"type": "check",
+					"name": "Japanese (Manga)"
+				},
+				{
+					"type": "check",
+					"name": "Chinease (Manhua)"
+				},
+				{
+					"type": "check",
+					"name": "Korean (Manhwa)"
+				}
+			]
+		},
+		{
+			"type": "group",
+			"name": "Demographic",
+			"filters": [
+				{
+					"type": "check",
+					"name": "None"
+				},
+				{
+					"type": "check",
+					"name": "Shounen"
+				},
+				{
+					"type": "check",
+					"name": "Shoujo"
+				},
+				{
+					"type": "check",
+					"name": "Seinen"
+				},
+				{
+					"type": "check",
+					"name": "Josei"
+				}
+			]
+		},
+		{
+			"type": "group",
+			"name": "Content Rating",
+			"filters": [
+				{
+					"type": "check",
+					"name": "Safe",
+					"default": true
+				},
+				{
+					"type": "check",
+					"name": "Suggestive",
+					"default": true
+				},
+				{
+					"type": "check",
+					"name": "Erotica"
+				},
+				{
+					"type": "check",
+					"name": "Pornographic"
+				}
+			]
+		},
+		{
+			"type": "group",
+			"name": "Status",
+			"filters": [
+				{
+					"type": "check",
+					"name": "Ongoing"
+				},
+				{
+					"type": "check",
+					"name": "Completed"
+				},
+				{
+					"type": "check",
+					"name": "Hiatus"
+				},
+				{
+					"type": "check",
+					"name": "Cancelled"
+				}
+			]
+		},
+		{
+			"type": "group",
+			"name": "Tags",
+			"filters": [
+				{ "type": "genre", "name": "Action", "canExclude": true },
+				{ "type": "genre", "name": "Adaptation", "canExclude": true },
+				{ "type": "genre", "name": "Adventure", "canExclude": true },
+				{ "type": "genre", "name": "Aliens", "canExclude": true },
+				{ "type": "genre", "name": "Animals", "canExclude": true },
+				{ "type": "genre", "name": "Anthology", "canExclude": true },
+				{ "type": "genre", "name": "Award Winning", "canExclude": true },
+				{ "type": "genre", "name": "Boy's Love", "canExclude": true },
+				{ "type": "genre", "name": "Comedy", "canExclude": true },
+				{ "type": "genre", "name": "Cooking", "canExclude": true },
+				{ "type": "genre", "name": "Crime", "canExclude": true },
+				{ "type": "genre", "name": "Crossdressing", "canExclude": true },
+				{ "type": "genre", "name": "Delinquents", "canExclude": true },
+				{ "type": "genre", "name": "Demons", "canExclude": true },
+				{ "type": "genre", "name": "Doujinshi", "canExclude": true },
+				{ "type": "genre", "name": "Drama", "canExclude": true },
+				{ "type": "genre", "name": "Fan Colored", "canExclude": true },
+				{ "type": "genre", "name": "Fantasy", "canExclude": true },
+				{ "type": "genre", "name": "4-Koma", "canExclude": true },
+				{ "type": "genre", "name": "Full Color", "canExclude": true },
+				{ "type": "genre", "name": "Genderswap", "canExclude": true },
+				{ "type": "genre", "name": "Ghosts", "canExclude": true },
+				{ "type": "genre", "name": "Girl's Love", "canExclude": true },
+				{ "type": "genre", "name": "Gore", "canExclude": true },
+				{ "type": "genre", "name": "Gyaru", "canExclude": true },
+				{ "type": "genre", "name": "Harem", "canExclude": true },
+				{ "type": "genre", "name": "Historical", "canExclude": true },
+				{ "type": "genre", "name": "Horror", "canExclude": true },
+				{ "type": "genre", "name": "Incest", "canExclude": true },
+				{ "type": "genre", "name": "Isekai", "canExclude": true },
+				{ "type": "genre", "name": "Loli", "canExclude": true },
+				{ "type": "genre", "name": "Long Strip", "canExclude": true },
+				{ "type": "genre", "name": "Mafia", "canExclude": true },
+				{ "type": "genre", "name": "Magic", "canExclude": true },
+				{ "type": "genre", "name": "Magical Girls", "canExclude": true },
+				{ "type": "genre", "name": "Martial Arts", "canExclude": true },
+				{ "type": "genre", "name": "Mecha", "canExclude": true },
+				{ "type": "genre", "name": "Medical", "canExclude": true },
+				{ "type": "genre", "name": "Military", "canExclude": true },
+				{ "type": "genre", "name": "Monster Girls", "canExclude": true },
+				{ "type": "genre", "name": "Monsters", "canExclude": true },
+				{ "type": "genre", "name": "Music", "canExclude": true },
+				{ "type": "genre", "name": "Mystery", "canExclude": true },
+				{ "type": "genre", "name": "Ninja", "canExclude": true },
+				{ "type": "genre", "name": "Office Workers", "canExclude": true },
+				{ "type": "genre", "name": "Official Colored", "canExclude": true },
+				{ "type": "genre", "name": "Oneshot", "canExclude": true },
+				{ "type": "genre", "name": "Philosophical", "canExclude": true },
+				{ "type": "genre", "name": "Police", "canExclude": true },
+				{ "type": "genre", "name": "Post-Apocalyptic", "canExclude": true },
+				{ "type": "genre", "name": "Psychological", "canExclude": true },
+				{ "type": "genre", "name": "Reincarnation", "canExclude": true },
+				{ "type": "genre", "name": "Reverse Harem", "canExclude": true },
+				{ "type": "genre", "name": "Romance", "canExclude": true },
+				{ "type": "genre", "name": "Samurai", "canExclude": true },
+				{ "type": "genre", "name": "School Life", "canExclude": true },
+				{ "type": "genre", "name": "Sci-Fi", "canExclude": true },
+				{ "type": "genre", "name": "Sexual Violence", "canExclude": true },
+				{ "type": "genre", "name": "Shota", "canExclude": true },
+				{ "type": "genre", "name": "Slice of Life", "canExclude": true },
+				{ "type": "genre", "name": "Sports", "canExclude": true },
+				{ "type": "genre", "name": "Superhero", "canExclude": true },
+				{ "type": "genre", "name": "Supernatural", "canExclude": true },
+				{ "type": "genre", "name": "Survival", "canExclude": true },
+				{ "type": "genre", "name": "Thriller", "canExclude": true },
+				{ "type": "genre", "name": "Time Travel", "canExclude": true },
+				{ "type": "genre", "name": "Tragedy", "canExclude": true },
+				{ "type": "genre", "name": "Traditional Games", "canExclude": true },
+				{ "type": "genre", "name": "User Created", "canExclude": true },
+				{ "type": "genre", "name": "Vampires", "canExclude": true },
+				{ "type": "genre", "name": "Video Games", "canExclude": true },
+				{ "type": "genre", "name": "Villainess", "canExclude": true },
+				{ "type": "genre", "name": "Virtual Reality", "canExclude": true },
+				{ "type": "genre", "name": "Web Comic", "canExclude": true },
+				{ "type": "genre", "name": "Wuxia", "canExclude": true },
+				{ "type": "genre", "name": "Zombies", "canExclude": true }
+			]
+		},
+		{
+			"type": "sort",
+			"name": "Sort",
+			"canAscend": true,
+			"options": ["Latest Chapter", "Relevance", "Follows", "Created Date", "Last Updated", "Title"],
+			"default": {
+				"index": 0,
+				"ascending": false
+			}
+		}
+	]
+}
