@@ -13,7 +13,7 @@ import {
 	HttpMethod,
 	Html,
 	console,
-	HostObject
+	ValueRef
 } from "aidoku-as";
 
 let genreValues = new Map<string, string>();
@@ -119,7 +119,7 @@ export class TuMangaOnlineSource extends Source {
 			if (filters[i].type == FilterType.Title) {
 				url += "&filter_by=title&title=" + filters[i].value.toString();
 			} else if (filters[i].type == FilterType.Sort) {
-				let option = filters[i].value;
+				let option = filters[i].value.asObject();
 				let ascending = option.get("ascending").toBool();
 				let index = option.get("index").toInteger() as i32;
 				if (index == -1) continue;
@@ -217,7 +217,7 @@ export class TuMangaOnlineSource extends Source {
 		let url = element.select("div.row > .text-right > a").attr("href");
 
 		let dateString = element.select("span.badge.badge-primary.p-2").first().text();
-		let dateObject = HostObject.string(dateString)
+		let dateObject = ValueRef.string(dateString);
 		let date = dateObject.toDate("yyyy-MM-dd");
 		dateObject.close();
 
@@ -246,24 +246,23 @@ export class TuMangaOnlineSource extends Source {
 				chapter.title = "One Shot";
 				chapters.push(chapter);
 			}
-			return [];
-		}
+		} else {
+			for (let i = 0; i < chapterElements.length; i++) {
+				let numText = chapterElements[i].select("a.btn-collapse").text();
+				let title = chapterElements[i].select("div.col-10.text-truncate").text();
+				let chapterNum = parseInt(numText.substring(
+					numText.indexOf("Capítulo ") + 9,
+					numText.indexOf(":") < 0 ? numText.length - 1 : numText.indexOf(":")
+				)) as f32;
 
-		for (let i = 0; i < chapterElements.length; i++) {
-			let numText = chapterElements[i].select("a.btn-collapse").text();
-			let title = chapterElements[i].select("div.col-10.text-truncate").text();
-			let chapterNum = parseInt(numText.substring(
-				numText.indexOf("Capítulo ") + 9,
-				numText.indexOf(":") < 0 ? numText.length - 1 : numText.indexOf(":")
-			)) as f32;
+				let scanlations = chapterElements[i].select("ul.chapter-list > li").array();
 
-			let scanlations = chapterElements[i].select("ul.chapter-list > li").array();
-
-			for (let j = 0; j < scanlations.length; j++) {
-				let chapter = this.parseChapter(scanlations[j]);
-				chapter.title = title;
-				chapter.chapter = chapterNum;
-				chapters.push(chapter);
+				for (let j = 0; j < scanlations.length; j++) {
+					let chapter = this.parseChapter(scanlations[j]);
+					chapter.title = title;
+					chapter.chapter = chapterNum;
+					chapters.push(chapter);
+				}
 			}
 		}
 
