@@ -1,5 +1,6 @@
 use aidoku::{
-    error::Result, std::String, std::Vec, std::ObjectRef, Manga, MangaStatus, MangaContentRating, MangaViewer, Chapter
+    error::Result, std::String, std::Vec, std::ObjectRef, Manga, MangaStatus, MangaContentRating, MangaViewer, Chapter,
+    std::defaults::defaults_get,
 };
 
 // Parse manga with title and cover
@@ -11,10 +12,13 @@ pub fn parse_basic_manga(manga_object: ObjectRef) -> Result<Manga> {
     let titles = attributes.get("title").as_object()?;
     let title = match titles.get("en").as_string() { // try for english title
         Ok(title) => title.read(),
-        Err(_) => match titles.values().get(0).as_string() { // get first title instead
+        Err(_) => match titles.get("ja").as_string() { // try for japanese (possibly romaji)
             Ok(title) => title.read(),
-            Err(_) => String::new(),
-        }
+            Err(_) => match titles.values().get(0).as_string() { // get first title instead
+                Ok(title) => title.read(),
+                Err(_) => String::new(),
+            },
+        },
     };
 
     // Cover
@@ -35,7 +39,7 @@ pub fn parse_basic_manga(manga_object: ObjectRef) -> Result<Manga> {
     cover.push_str(&id);
     cover.push_str("/");
     cover.push_str(&cover_file);
-    cover.push_str(".256.jpg");
+    cover.push_str(&defaults_get("coverQuality").as_string()?.read());
 
     Ok(Manga {
         id,
@@ -61,10 +65,13 @@ pub fn parse_full_manga(manga_object: ObjectRef) -> Result<Manga> {
     let titles = attributes.get("title").as_object()?;
     let title = match titles.get("en").as_string() { // try for english title
         Ok(title) => title.read(),
-        Err(_) => match titles.values().get(0).as_string() { // get first title instead
+        Err(_) => match titles.get("ja").as_string() { // try for japanese (possibly romaji)
             Ok(title) => title.read(),
-            Err(_) => String::new(),
-        }
+            Err(_) => match titles.values().get(0).as_string() { // get first title instead
+                Ok(title) => title.read(),
+                Err(_) => String::new(),
+            }
+        },
     };
 
     // Cover, author, artist
@@ -91,7 +98,7 @@ pub fn parse_full_manga(manga_object: ObjectRef) -> Result<Manga> {
     cover.push_str(&id);
     cover.push_str("/");
     cover.push_str(&cover_file);
-    cover.push_str(".256.jpg");
+    cover.push_str(&defaults_get("coverQuality").as_string()?.read());
 
     // Description
     let description = match attributes.get("description").as_object() {

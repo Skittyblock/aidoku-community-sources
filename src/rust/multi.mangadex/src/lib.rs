@@ -2,20 +2,10 @@
 use aidoku::{
     prelude::*, error::Result, std::String, std::Vec, std::ObjectRef, std::net::Request, std::net::HttpMethod,
     Filter, FilterType, Listing, Manga, MangaPageResult, Chapter, Page,
+    std::defaults::defaults_get,
 };
 
 mod helper;
-
-#[link(wasm_import_module = "env")]
-extern "C" {
-    fn print(message: *const u8, len: usize);
-}
-
-fn println(message: &str) {
-    unsafe {
-        print(message.as_ptr(), message.len());
-    }
-}
 
 fn urlencode(string: String) -> String {
     let mut result: Vec<u8> = Vec::with_capacity(string.len() * 3);
@@ -220,7 +210,6 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
     }
 
     let json = Request::new(&url, HttpMethod::Get).json().as_object()?;
-    println(&url);
 
     let data = json.get("data").as_array()?;
 
@@ -233,7 +222,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
         }
     }
 
-    let total = json.get("total").as_int()? as i32;
+    let total = json.get("total").as_int().unwrap_or(0) as i32;
 
     Ok(MangaPageResult {
         manga: manga_arr,
@@ -278,7 +267,7 @@ fn get_manga_details(id: String) -> Result<Manga> {
     let json = Request::new(&url, HttpMethod::Get).json().as_object()?;
 
     let data = json.get("data").as_object()?;
-    
+
     helper::parse_full_manga(data)
 }
 
@@ -286,7 +275,20 @@ fn get_manga_details(id: String) -> Result<Manga> {
 fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
     let mut url = String::from("https://api.mangadex.org/manga/");
     url.push_str(&id);
-    url.push_str("/feed/?order[volume]=desc&order[chapter]=desc&limit=500&contentRating[]=pornographic&contentRating[]=erotica&contentRating[]=suggestive&contentRating[]=safe&includes[]=scanlation_group&translatedLanguage[]=en");
+    url.push_str("/feed/?order[volume]=desc&order[chapter]=desc&limit=500&contentRating[]=pornographic&contentRating[]=erotica&contentRating[]=suggestive&contentRating[]=safe&includes[]=scanlation_group");
+    if let Ok(languages) = defaults_get("languages").as_array() {
+        for lang in languages {
+            url.push_str("&translatedLanguage[]=");
+            url.push_str(&lang.as_string()?.read());
+        }
+    }
+    if let Ok(groups_string) = defaults_get("blockedGroups").as_string() {
+        groups_string.read().split(",").for_each(|group| {
+            url.push_str("&excludedGroups[]=");
+            url.push_str(group);
+        });
+    }
+
     let json = Request::new(&url, HttpMethod::Get).json().as_object()?;
 
     let data = json.get("data").as_array()?;
@@ -322,7 +324,11 @@ fn get_page_list(id: String) -> Result<Vec<Page>> {
         let data_string = page.as_string()?.read();
         let mut url = String::new();
         url.push_str(&base_url);
-        url.push_str("/data/");
+        if defaults_get("dataSaver").as_bool().unwrap_or(false) {
+            url.push_str("/data-saver/");
+        } else {
+            url.push_str("/data/");
+        }
         url.push_str(&hash);
         url.push_str("/");
         url.push_str(&data_string);

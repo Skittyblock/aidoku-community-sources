@@ -1,0 +1,34 @@
+[
+	{
+		"type": "group",
+		"title": "Settings",
+		"items": [
+			{
+				"type": "select",
+				"key": "coverQuality",
+				"title": "Cover Quality",
+				"values": ["", ".512.jpg", ".256.jpg"],
+				"titles": ["Original", "Medium", "Low"],
+				"default": ".512.jpg"
+			},
+			{
+				"type": "switch",
+				"key": "dataSaver",
+				"title": "Data Saver",
+				"subtitle": "Use smaller, more compressed images",
+				"default": false
+			}
+		]
+	},
+	{
+		"type": "group",
+		"footer": "A comma-separated list of scanlation group UUIDs. Chapters from blocked groups will not show up.",
+		"items": [
+			{
+				"type": "text",
+				"key": "blockedGroups",
+				"placeholder": "Blocked Scanlator UUIDs"
+			}
+		]
+	}
+]
