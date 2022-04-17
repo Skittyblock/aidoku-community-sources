@@ -1,0 +1,16 @@
+{
+	"info": {
+		"id": "en.nepnep",
+		"lang": "en",
+		"name": "MangaSee",
+		"version": 2,
+		"urls": [
+			"https://mangasee123.org",
+			"https://manga4life.org"
+		],
+		"nsfw": 1
+	},
+	"filters": [
+		{ "type": "title" }
+	]
+}
