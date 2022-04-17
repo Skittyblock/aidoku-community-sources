@@ -119,7 +119,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 
 	Ok(MangaPageResult {
 		manga,
-		has_more: false,
+		has_more: directory_arr.len() > end,
 	})
 }
 
