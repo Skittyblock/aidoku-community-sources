@@ -5,7 +5,7 @@ use aidoku::{
     std::defaults::defaults_get,
 };
 
-mod helper;
+mod parser;
 
 fn urlencode(string: String) -> String {
     let mut result: Vec<u8> = Vec::with_capacity(string.len() * 3);
@@ -217,7 +217,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 
     for manga in data {
         let manga_obj = manga.as_object()?;
-        if let Ok(manga) = helper::parse_basic_manga(manga_obj) {
+        if let Ok(manga) = parser::parse_basic_manga(manga_obj) {
             manga_arr.push(manga);
         }
     }
@@ -268,7 +268,7 @@ fn get_manga_details(id: String) -> Result<Manga> {
 
     let data = json.get("data").as_object()?;
 
-    helper::parse_full_manga(data)
+    parser::parse_full_manga(data)
 }
 
 #[get_chapter_list]
@@ -297,7 +297,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 
     for chapter in data {
         let chapter_obj = chapter.as_object()?;
-        if let Ok(chapter) = helper::parse_chapter(chapter_obj) {
+        if let Ok(chapter) = parser::parse_chapter(chapter_obj) {
             chapters.push(chapter);
         }
     }
@@ -312,7 +312,7 @@ fn get_page_list(id: String) -> Result<Vec<Page>> {
     let json = Request::new(&url, HttpMethod::Get).json().as_object()?;
 
     let chapter = json.get("chapter").as_object()?;
-    let data = chapter.get("data").as_array()?;
+    let data = chapter.get(if defaults_get("dataSaver").as_bool().unwrap_or(false) { "dataSaver" } else { "data" }).as_array()?;
 
     let base_url = json.get("baseUrl").as_string()?.read();
     let hash = chapter.get("hash").as_string()?.read();

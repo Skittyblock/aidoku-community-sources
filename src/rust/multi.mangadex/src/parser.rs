@@ -134,7 +134,10 @@ pub fn parse_full_manga(manga_object: ObjectRef) -> Result<Manga> {
 	}
 
     // Status
-    let status_string = attributes.get("status").as_string()?.read();
+    let status_string = match attributes.get("status").as_string() {
+        Ok(status) => status.read(),
+        Err(_) => String::new(),
+    };
     let status = match status_string.as_str() {
         "ongoing" => MangaStatus::Ongoing,
         "completed" => MangaStatus::Completed,
@@ -186,12 +189,16 @@ pub fn parse_chapter(chapter_object: ObjectRef) -> Result<Chapter> {
 
 	let pages = attributes.get("pages").as_int()?;
 
+    // ignore external chapters
 	if pages <= 0 { 
 		return Err(aidoku::error::AidokuError { reason: aidoku::error::AidokuErrorKind::Unimplemented });
 	}
 
 	let id = chapter_object.get("id").as_string()?.read();
-	let title = attributes.get("title").as_string()?.read();
+	let title = match attributes.get("title").as_string() {
+        Ok(title) => title.read(),
+        Err(_) => String::new(),
+    };
 
 	let volume = match attributes.get("volume").as_float() {
 		Ok(volume) => volume as f32,
@@ -224,7 +231,10 @@ pub fn parse_chapter(chapter_object: ObjectRef) -> Result<Chapter> {
 	let mut url = String::from("https://mangadex.org/chapter/");
 	url.push_str(&id);
 
-	let lang = attributes.get("translatedLanguage").as_string()?.read();
+	let lang = match attributes.get("translatedLanguage").as_string() {
+        Ok(lang) => lang.read(),
+        Err(_) => String::from("en"),
+    };
 
 	Ok(Chapter {
 		id,
