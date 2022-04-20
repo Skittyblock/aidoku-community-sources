@@ -1,7 +1,7 @@
 #![no_std]
 use aidoku::{
 	prelude::*, error::Result, std::String, std::Vec, std::net::Request, std::net::HttpMethod, std::html::Node,
-	Filter, FilterType, Listing, Manga, MangaPageResult, Chapter, Page,
+	Filter, FilterType, Listing, Manga, MangaPageResult, Chapter, Page, DeepLink,
 	std::defaults::defaults_get, std::json::parse,
 };
 
@@ -225,4 +225,49 @@ fn get_page_list(id: String) -> Result<Vec<Page>> {
 	}
 
 	Ok(pages)
+}
+
+#[handle_url]
+fn hande_url(url: String) -> Result<DeepLink> {
+	let mut url = &url[8..]; // remove "https://"
+	let end = match url.find("/") {
+		Some(i) => i + 1,
+		None => url.len(),
+	};
+	url = &url[end..]; // remove url host
+
+	if url.starts_with("manga/") {
+		// ex: https://mangasee123.com/manga/Kanojo-Okarishimasu
+		//     https://manga4life.com/manga/Kanojo-Okarishimasu
+
+		let id = &url[6..]; // remove "manga/"
+		let id_end = match id.find("/") {
+			Some(i) => i,
+			None => id.len(),
+		};
+		let manga_id = &id[..id_end];
+		let manga = get_manga_details(String::from(manga_id))?;
+
+		return Ok(DeepLink {
+			manga: Some(manga),
+			chapter: None,
+		});
+	} else if url.starts_with("read-online/") {
+		// ex: https://manga4life.com/read-online/Kanojo-Okarishimasu-chapter-232.html
+
+		let id = &url[12..]; // remove "read-online/"
+		let id_end = match id.find("-chapter") {
+			Some(i) => i,
+			None => id.len(),
+		};
+		let manga_id = &id[..id_end];
+		let manga = get_manga_details(String::from(manga_id))?;
+
+		return Ok(DeepLink {
+			manga: Some(manga),
+			chapter: None,
+		});
+	}
+
+	Err(aidoku::error::AidokuError { reason: aidoku::error::AidokuErrorKind::Unimplemented })
 }
