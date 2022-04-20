@@ -33,28 +33,28 @@ float power(float x, int y) {
 }
 
 double atof(char *arr) {
-    int i, j, flag;
-    double val;
-    char c;
-    i = 0;
-    j = 0;
-    val = 0;
-    flag = 0;
-    while ((c = *(arr + i)) != '\0') {
-        if (c != '.') {
-            val = (val * 10) + (c - '0');
-            if (flag == 1){
-                --j;
-            }
-        }
-        if (c == '.') {
+	int i, j, flag;
+	double val;
+	char c;
+	i = 0;
+	j = 0;
+	val = 0;
+	flag = 0;
+	while ((c = *(arr + i)) != '\0') {
+		if (c != '.') {
+			val = (val * 10) + (c - '0');
+			if (flag == 1){
+				--j;
+			}
+		}
+		if (c == '.') {
 			if (flag == 1) return 0;
 			flag = 1;
 		}
-        ++i;
-    }
-    val = val * power(10, j);
-    return val;
+		++i;
+	}
+	val = val * power(10, j);
+	return val;
 }
 
 // Get substring after last occurrence of deliminator

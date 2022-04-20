@@ -61,9 +61,9 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 
 	let offset = (page as usize - 1) * 20;
 
-    for filter in filters {
-        match filter.kind {
-            FilterType::Title => {
+	for filter in filters {
+		match filter.kind {
+			FilterType::Title => {
 				let title = filter.value.as_string()?.read().to_lowercase();
 				
 				let mut i = 0;
