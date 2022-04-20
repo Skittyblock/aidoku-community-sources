@@ -1,5 +1,6 @@
 use aidoku::{
-    error::Result, std::String, std::Vec, std::ObjectRef, Manga, MangaStatus, MangaContentRating, MangaViewer, Chapter,
+    error::Result, std::String, std::Vec, std::ObjectRef,
+    Manga, MangaStatus, MangaContentRating, MangaViewer, Chapter,
     std::defaults::defaults_get,
 };
 
@@ -12,7 +13,7 @@ pub fn parse_basic_manga(manga_object: ObjectRef) -> Result<Manga> {
     let titles = attributes.get("title").as_object()?;
     let title = match titles.get("en").as_string() { // try for english title
         Ok(title) => title.read(),
-        Err(_) => match titles.get("ja").as_string() { // try for japanese (possibly romaji)
+        Err(_) => match titles.get("ja-ro").as_string() { // try for japanese (possibly romaji)
             Ok(title) => title.read(),
             Err(_) => match titles.values().get(0).as_string() { // get first title instead
                 Ok(title) => title.read(),
@@ -24,22 +25,28 @@ pub fn parse_basic_manga(manga_object: ObjectRef) -> Result<Manga> {
     // Cover
     let mut cover_file: String = String::new();
     
-    let relationships = manga_object.get("relationships").as_array()?;
-    for relationship in relationships {
-        let relationship_obj = relationship.as_object()?;
-        let relation_type = relationship_obj.get("type").as_string()?.read();
-        if relation_type == "cover_art" {
-            let cover_attributes = relationship_obj.get("attributes").as_object()?;
-            cover_file = cover_attributes.get("fileName").as_string()?.read();
-            break;
+    if let Ok(relationships) = manga_object.get("relationships").as_array() {
+        for relationship in relationships {
+            if let Ok(relationship_obj) = relationship.as_object() {
+                let relation_type = relationship_obj.get("type").as_string()?.read();
+                if relation_type == "cover_art" {
+                    let cover_attributes = relationship_obj.get("attributes").as_object()?;
+                    cover_file = cover_attributes.get("fileName").as_string()?.read();
+                    break;
+                }
+            }
         }
     }
 
     let mut cover = String::from("https://uploads.mangadex.org/covers/");
-    cover.push_str(&id);
-    cover.push_str("/");
-    cover.push_str(&cover_file);
-    cover.push_str(&defaults_get("coverQuality").as_string()?.read());
+    if cover_file.is_empty() {
+        cover = cover_file;
+    } else {
+        cover.push_str(&id);
+        cover.push_str("/");
+        cover.push_str(&cover_file);
+        cover.push_str(&defaults_get("coverQuality").as_string()?.read());
+    }
 
     Ok(Manga {
         id,
@@ -65,7 +72,7 @@ pub fn parse_full_manga(manga_object: ObjectRef) -> Result<Manga> {
     let titles = attributes.get("title").as_object()?;
     let title = match titles.get("en").as_string() { // try for english title
         Ok(title) => title.read(),
-        Err(_) => match titles.get("ja").as_string() { // try for japanese (possibly romaji)
+        Err(_) => match titles.get("ja-ro").as_string() { // try for japanese (possibly romaji)
             Ok(title) => title.read(),
             Err(_) => match titles.values().get(0).as_string() { // get first title instead
                 Ok(title) => title.read(),
@@ -79,17 +86,18 @@ pub fn parse_full_manga(manga_object: ObjectRef) -> Result<Manga> {
     let mut author: String = String::new();
     let mut artist: String = String::new();
     
-    let relationships = manga_object.get("relationships").as_array()?;
-    for relationship in relationships {
-        let relationship_obj = relationship.as_object()?;
-        let relation_type = relationship_obj.get("type").as_string()?.read();
-        if let Ok(relationship_attributes) = relationship_obj.get("attributes").as_object() {
-            if relation_type == "cover_art" {
-                cover_file = relationship_attributes.get("fileName").as_string()?.read();
-            } else if relation_type == "author" {
-                author = relationship_attributes.get("name").as_string()?.read();
-            } else if relation_type == "artist" {
-                artist = relationship_attributes.get("name").as_string()?.read();
+    if let Ok(relationships) = manga_object.get("relationships").as_array() {
+        for relationship in relationships {
+            let relationship_obj = relationship.as_object()?;
+            let relation_type = relationship_obj.get("type").as_string()?.read();
+            if let Ok(relationship_attributes) = relationship_obj.get("attributes").as_object() {
+                if relation_type == "cover_art" {
+                    cover_file = relationship_attributes.get("fileName").as_string()?.read();
+                } else if relation_type == "author" {
+                    author = relationship_attributes.get("name").as_string()?.read();
+                } else if relation_type == "artist" {
+                    artist = relationship_attributes.get("name").as_string()?.read();
+                }
             }
         }
     }
@@ -217,14 +225,16 @@ pub fn parse_chapter(chapter_object: ObjectRef) -> Result<Chapter> {
 
 	let mut scanlator = String::new();
 
-	let relationships = chapter_object.get("relationships").as_array()?;
-	for relationship in relationships {
-		let relationship_object = relationship.as_object()?;
-		let relationship_type = relationship_object.get("type").as_string()?.read();
-		if relationship_type == "scanlation_group" {
-			let relationship_attributes = relationship_object.get("attributes").as_object()?;
-			scanlator = relationship_attributes.get("name").as_string()?.read();
-			break;
+	if let Ok(relationships) = chapter_object.get("relationships").as_array() {
+		for relationship in relationships {
+			let relationship_object = relationship.as_object()?;
+			let relationship_type = relationship_object.get("type").as_string()?.read();
+			if relationship_type == "scanlation_group" {
+				if let Ok(relationship_attributes) = relationship_object.get("attributes").as_object() {
+					scanlator = relationship_attributes.get("name").as_string()?.read();
+				}
+				break;
+			}
 		}
 	}
 

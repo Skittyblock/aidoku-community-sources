@@ -1,7 +1,7 @@
 #![no_std]
 use aidoku::{
     prelude::*, error::Result, std::String, std::Vec, std::ObjectRef, std::net::Request, std::net::HttpMethod,
-    Filter, FilterType, Listing, Manga, MangaPageResult, Chapter, Page,
+    Filter, FilterType, Listing, Manga, MangaPageResult, Chapter, Page, DeepLink,
     std::defaults::defaults_get,
 };
 
@@ -244,13 +244,54 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
             name: String::from("Sort"),
             value: selection.0,
         });
-    } else if listing.name == "Latest" {
-        selection.set("index", 0i32.into());
-        selection.set("ascending", false.into());
-        filters.push(Filter {
-            kind: FilterType::Sort,
-            name: String::from("Sort"),
-            value: selection.0,
+    } else if listing.name == "Latest" { // get recently published chapters
+        let offset = (page - 1) * 20;
+        let mut url = String::from("https://api.mangadex.org/chapter?includes[]=manga&order[publishAt]=desc&includeFutureUpdates=0&limit=20&offset=");
+        url.push_str(&i32_to_string(offset));
+        if let Ok(languages) = defaults_get("languages").as_array() {
+            for lang in languages {
+                if let Ok(lang) = lang.as_string() {
+                    url.push_str("&translatedLanguage[]=");
+                    url.push_str(&lang.read());
+                }
+            }
+        }
+
+        let json = Request::new(&url, HttpMethod::Get).json().as_object()?;
+
+        let data = json.get("data").as_array()?;
+    
+        let mut manga_arr: Vec<Manga> = Vec::new();
+        let mut manga_ids: Vec<String> = Vec::new();
+    
+        for chapter in data {
+            if let Ok(chapter_obj) = chapter.as_object() {
+                if let Ok(relationships) = chapter_obj.get("relationships").as_array() {
+                    for relationship in relationships {
+                        if let Ok(relationship_obj) = relationship.as_object() {
+                            let relation_type = relationship_obj.get("type").as_string()?.read();
+                            if relation_type == "manga" {
+                                let id = relationship_obj.get("id").as_string()?.read();
+                                if manga_ids.contains(&id) {
+                                    continue;
+                                }
+                                if let Ok(parsed_manga) = get_manga_details(id) {
+                                    manga_ids.push(parsed_manga.id.clone());
+                                    manga_arr.push(parsed_manga);
+                                }
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        let total = json.get("total").as_int().unwrap_or(0) as i32;
+    
+        return Ok(MangaPageResult {
+            manga: manga_arr,
+            has_more: offset + 20 < total,
         });
     }
 
@@ -263,7 +304,7 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 fn get_manga_details(id: String) -> Result<Manga> {
     let mut url = String::from("https://api.mangadex.org/manga/");
     url.push_str(&id);
-    url.push_str("/?includes[]=cover_art&includes[]=author&includes[]=artist");
+    url.push_str("?includes[]=cover_art&includes[]=author&includes[]=artist");
     let json = Request::new(&url, HttpMethod::Get).json().as_object()?;
 
     let data = json.get("data").as_object()?;
@@ -275,11 +316,13 @@ fn get_manga_details(id: String) -> Result<Manga> {
 fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
     let mut url = String::from("https://api.mangadex.org/manga/");
     url.push_str(&id);
-    url.push_str("/feed/?order[volume]=desc&order[chapter]=desc&limit=500&contentRating[]=pornographic&contentRating[]=erotica&contentRating[]=suggestive&contentRating[]=safe&includes[]=scanlation_group");
+    url.push_str("/feed?order[volume]=desc&order[chapter]=desc&limit=500&contentRating[]=pornographic&contentRating[]=erotica&contentRating[]=suggestive&contentRating[]=safe&includes[]=scanlation_group");
     if let Ok(languages) = defaults_get("languages").as_array() {
         for lang in languages {
-            url.push_str("&translatedLanguage[]=");
-            url.push_str(&lang.as_string()?.read());
+            if let Ok(lang) = lang.as_string() {
+                url.push_str("&translatedLanguage[]=");
+                url.push_str(&lang.read());
+            }
         }
     }
     if let Ok(groups_string) = defaults_get("blockedGroups").as_string() {
@@ -296,9 +339,10 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
     let mut chapters: Vec<Chapter> = Vec::new();
 
     for chapter in data {
-        let chapter_obj = chapter.as_object()?;
-        if let Ok(chapter) = parser::parse_chapter(chapter_obj) {
-            chapters.push(chapter);
+        if let Ok(chapter_obj) = chapter.as_object() {
+            if let Ok(chapter) = parser::parse_chapter(chapter_obj) {
+                chapters.push(chapter);
+            }
         }
     }
 
@@ -344,4 +388,55 @@ fn get_page_list(id: String) -> Result<Vec<Page>> {
     }
 
     Ok(pages)
+}
+
+#[handle_url]
+pub fn handle_url(url: String) -> Result<DeepLink> {
+    let url = &url[21..]; // remove "https://mangadex.org/"
+
+    if url.starts_with("title") { // ex: https://mangadex.org/title/a96676e5-8ae2-425e-b549-7f15dd34a6d8/komi-san-wa-komyushou-desu
+        let id = &url[6..]; // remove "title/"
+        let end = match id.find("/") {
+            Some(end) => end,
+            None => id.len(),
+        };
+        let manga_id = &id[..end];
+        let manga = get_manga_details(String::from(manga_id))?;
+
+        return Ok(DeepLink {
+            manga: Some(manga),
+            chapter: None,
+        });
+    } else if url.starts_with("chapter") { // ex: https://mangadex.org/chapter/56eecc6f-1a4e-464c-b6a4-a1cbdfdfd726/1
+        let id = &url[8..]; // remove "chapter/"
+        let end = match id.find("/") {
+            Some(end) => end,
+            None => id.len(),
+        };
+        let chapter_id = &id[..end];
+
+        let mut url = String::from("https://api.mangadex.org/chapter/");
+        url.push_str(&chapter_id);
+
+        let json = Request::new(&url, HttpMethod::Get).json().as_object()?;
+
+        let chapter_obj = json.get("data").as_object()?;
+        let relationships = chapter_obj.get("relationships").as_array()?;
+        for relationship in relationships {
+            if let Ok(relationship_obj) = relationship.as_object() {
+                let relation_type = relationship_obj.get("type").as_string()?.read();
+                if relation_type == "manga" {
+                    let manga_id = relationship_obj.get("id").as_string()?.read();
+                    let manga = get_manga_details(String::from(manga_id))?;
+                    let chapter = parser::parse_chapter(chapter_obj)?;
+                    return Ok(DeepLink {
+                        manga: Some(manga),
+                        chapter: Some(chapter),
+                    });
+                }
+            }
+        }
+    }
+
+    Err(aidoku::error::AidokuError { reason: aidoku::error::AidokuErrorKind::Unimplemented })
 }

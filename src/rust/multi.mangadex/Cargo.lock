@@ -5,7 +5,7 @@ version = 3
 [[package]]
 name = "aidoku"
 version = "0.1.0"
-source = "git+https://github.com/Aidoku/aidoku-rs#601326fcedbfb8542c8cde9ff2e842e5bbd50717"
+source = "git+https://github.com/Aidoku/aidoku-rs#654de8a847927fa0bf1d5f89eb0d7ea6f90b12a0"
 dependencies = [
  "aidoku_codegen",
  "aidoku_imports",
@@ -15,7 +15,7 @@ dependencies = [
 [[package]]
 name = "aidoku_codegen"
 version = "0.1.0"
-source = "git+https://github.com/Aidoku/aidoku-rs#601326fcedbfb8542c8cde9ff2e842e5bbd50717"
+source = "git+https://github.com/Aidoku/aidoku-rs#654de8a847927fa0bf1d5f89eb0d7ea6f90b12a0"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -25,7 +25,7 @@ dependencies = [
 [[package]]
 name = "aidoku_imports"
 version = "0.1.0"
-source = "git+https://github.com/Aidoku/aidoku-rs#601326fcedbfb8542c8cde9ff2e842e5bbd50717"
+source = "git+https://github.com/Aidoku/aidoku-rs#654de8a847927fa0bf1d5f89eb0d7ea6f90b12a0"
 
 [[package]]
 name = "cfg-if"
@@ -35,9 +35,9 @@ checksum = "4785bdd1c96b2a846b2bd7cc02e86b6b3dbf14e7e53446c4f54c92a361040822"
 
 [[package]]
 name = "libc"
-version = "0.2.123"
+version = "0.2.124"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cb691a747a7ab48abc15c5b42066eaafde10dc427e3b6ee2a1cf43db04c763bd"
+checksum = "21a41fed9d98f27ab1c6d161da622a4fa35e8a54a8adc24bbf3ddd0ef70b0e50"
 
 [[package]]
 name = "mangadex-aidoku"
