@@ -8,6 +8,6 @@
 	},
 	"listings": [
         {"name": "Latest"},
-        {"name": "Trending"}
+        {"name": "Top Rated"}
 	]
 }
