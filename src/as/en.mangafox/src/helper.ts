@@ -8,18 +8,19 @@ import {
     Filter,
     FilterType,
     console,
-} from "aidoku-as";
+    ValueRef,
+} from 'aidoku-as';
 
 export class Parser {
-    parseHomePage(document: Html, index: number): MangaPageResult {
+    parseHomePage(document: Html, listType: boolean): MangaPageResult {
         let result: Manga[] = [];
-        let _ul = 'ul.manga-list-1-list > li';
-        if (index == 1)  _ul = 'ul.manga-list-4-list > li';
-        let elements = document.select(_ul).array();
+        // two different types of collections styles
+        let ul = (listType) ? 'ul.manga-list-4-list > li' : 'ul.manga-list-1-list > li';
+        let elements = document.select(ul).array();
 
         for (let i=0; i<elements.length; i++) {
             let elem    = elements[i];
-            const id    = elem.select('a').attr('href').replace('/manga/', '').replace("/", '');
+            const id    = elem.select('a').attr('href').replace('/manga/', '').replace('/', '');
             const title = elem.select('a').attr('title')
             const img   = elem.select('img').attr('src');
             let manga   = new Manga(id, title);
@@ -70,10 +71,18 @@ export class Parser {
             const titleSplit = element.select('p.title3').text().trim().split('-');
             if (titleSplit.length >= 2) title = titleSplit.slice(1).join('-');
 
+            let dateString = element.select('.title2').text().trim();
+            console.log(dateString);
+            let dateObject = ValueRef.string(dateString);
+            let date = dateObject.toDate('MMM d, yyyy');
+            dateObject.close();
+
             let chapter = new Chapter(id, title);
             chapter.url     = url;
             chapter.lang    = 'en';
             chapter.chapter = parseFloat(spl[spl.length-1].replace('c', '')) as f32;
+            chapter.dateUpdated = date;
+
             if (spl.length > 2) {
                 chapter.volume = parseFloat(spl[spl.length-2].replace('v', '')) as f32;
             }
@@ -110,43 +119,43 @@ export class FilterMap {
 
     constructor(baseUrl: string) {
         this.baseUrl = baseUrl;
-        this.genreValues.set("Action",         "1");
-        this.genreValues.set("Adventure",      "2");
-        this.genreValues.set("Comedy",         "3");
-        this.genreValues.set("Drama",          "4");
-        this.genreValues.set("Fantasy",        "5");
-        this.genreValues.set("Martial Arts",   "6");
-        this.genreValues.set("Shounen",        "7");
-        this.genreValues.set("Horror",         "8");
-        this.genreValues.set("Supernatural",   "9");
-        this.genreValues.set("Harem",         "10");
-        this.genreValues.set("Psychological", "11");
-        this.genreValues.set("Romance",       "12");
-        this.genreValues.set("School Life",   "13");
-        this.genreValues.set("Shoujo",        "14");
-        this.genreValues.set("Mystery",       "15");
-        this.genreValues.set("Sci-fi",        "16");
-        this.genreValues.set("Seinen",        "17");
-        this.genreValues.set("Tragedy",       "18");
-        this.genreValues.set("Ecchi",         "19");
-        this.genreValues.set("Sports",        "20");
-        this.genreValues.set("Slice of Life", "21");
-        this.genreValues.set("Mature",        "22");
-        this.genreValues.set("Shoujo Ai",     "23");
-        this.genreValues.set("Webtoons",      "24");
-        this.genreValues.set("Doujinshi",     "25");
-        this.genreValues.set("One Shot",      "26");
-        this.genreValues.set("Smut",          "27");
-        this.genreValues.set("Yaoi",          "28");
-        this.genreValues.set("Josei",         "29");
-        this.genreValues.set("Historical",    "30");
-        this.genreValues.set("Shounen Ai",    "31");
-        this.genreValues.set("Gender Bender", "32");
-        this.genreValues.set("Adult",         "33");
-        this.genreValues.set("Yuri",          "34");
-        this.genreValues.set("Mecha",         "35");
-        this.genreValues.set("Lolicon",       "36");
-        this.genreValues.set("Shotacon",      "37");
+        this.genreValues.set('Action',         '1');
+        this.genreValues.set('Adventure',      '2');
+        this.genreValues.set('Comedy',         '3');
+        this.genreValues.set('Drama',          '4');
+        this.genreValues.set('Fantasy',        '5');
+        this.genreValues.set('Martial Arts',   '6');
+        this.genreValues.set('Shounen',        '7');
+        this.genreValues.set('Horror',         '8');
+        this.genreValues.set('Supernatural',   '9');
+        this.genreValues.set('Harem',         '10');
+        this.genreValues.set('Psychological', '11');
+        this.genreValues.set('Romance',       '12');
+        this.genreValues.set('School Life',   '13');
+        this.genreValues.set('Shoujo',        '14');
+        this.genreValues.set('Mystery',       '15');
+        this.genreValues.set('Sci-fi',        '16');
+        this.genreValues.set('Seinen',        '17');
+        this.genreValues.set('Tragedy',       '18');
+        this.genreValues.set('Ecchi',         '19');
+        this.genreValues.set('Sports',        '20');
+        this.genreValues.set('Slice of Life', '21');
+        this.genreValues.set('Mature',        '22');
+        this.genreValues.set('Shoujo Ai',     '23');
+        this.genreValues.set('Webtoons',      '24');
+        this.genreValues.set('Doujinshi',     '25');
+        this.genreValues.set('One Shot',      '26');
+        this.genreValues.set('Smut',          '27');
+        this.genreValues.set('Yaoi',          '28');
+        this.genreValues.set('Josei',         '29');
+        this.genreValues.set('Historical',    '30');
+        this.genreValues.set('Shounen Ai',    '31');
+        this.genreValues.set('Gender Bender', '32');
+        this.genreValues.set('Adult',         '33');
+        this.genreValues.set('Yuri',          '34');
+        this.genreValues.set('Mecha',         '35');
+        this.genreValues.set('Lolicon',       '36');
+        this.genreValues.set('Shotacon',      '37');
     }
 
     private getGenres(name: string): string {
@@ -156,29 +165,27 @@ export class FilterMap {
     getFilteredURL(filters: Filter[], page: number): string {
         let url = '';
         for (let i = 0; i < filters.length; i++) {
+            const getIndex = (filters[i].value.toInteger() as i32)
 			if (filters[i].type == FilterType.Title) {
                 url += `&name=${filters[i].value.toString().trim().replace(' ', '+')}`;
             }
-            else if (filters[i].name == 'Language' && (filters[i].value.toInteger() as i32) != 0) {
-                const value = (filters[i].value.toInteger() as i32);
-                // console.log(`Language ${value.toString()} and ${this.filtermap.getLangs(value)}`);
-                url += `&type=${value.toString()}`;
+            else if (filters[i].name == 'Language' && getIndex != 0) {
+                url += `&type=${getIndex}`;
             }
-            else if (filters[i].name == 'Rating' && (filters[i].value.toInteger() as i32) != 0) {
-                const value = (filters[i].value.toInteger() as i32);
-                url += `&rating=${value.toString()}`;
+            else if (filters[i].name == 'Rating' && getIndex != 0) {
+                url += `&rating_method=eq&rating=${getIndex}`;
             }
-            else if (filters[i].name == 'Completed' && (filters[i].value.toInteger() as i32) != 0) {
-                const value = (filters[i].value.toInteger() as i32);
-                url += `&st=${value.toString()}`;
+            else if (filters[i].name == 'Completed' && getIndex != 0) {
+                url += `&st=${getIndex}`;
             }
             else if (filters[i].type == FilterType.Genre) {
-                let value = filters[i].value.toInteger();
-				if (value == 1) url += "&genres=" + this.getGenres(filters[i].name);
-				if (value == 0) url += "&nogenres=" + this.getGenres(filters[i].name);
+				if (getIndex == 1) url += '&genres=' + this.getGenres(filters[i].name);
+				if (getIndex == 0) url += '&nogenres=' + this.getGenres(filters[i].name);
             }
         }
-        if (url.length > 0) return `${this.baseUrl}/search?page=${page.toString().replace(".0", "")}${url}`;
-        return `${this.baseUrl}/directory/${page.toString().replace(".0", "")}.html`;
+        if (url.length > 0) {
+            return `${this.baseUrl}/search?page=${page.toString().replace('.0', '')}${url}`;
+        }
+        return `${this.baseUrl}/directory/${page.toString().replace('.0', '')}.html`;
     }
 }
