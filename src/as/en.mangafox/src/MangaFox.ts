@@ -27,29 +27,25 @@ export class MangaFox extends Source {
 	constructor() {
 		super();
 		this.headers = new Map<string, string>();
-		this.headers.set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36");
-		this.headers.set("Referer", this.baseUrl);
+		this.headers.set('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36');
+		this.headers.set('Referer', this.baseUrl);
 	}
 
     getMangaList(filters: Filter[], page: number): MangaPageResult {
-        const url = this.filtermap.getFilteredURL(filters, page);
-        const index = (url.includes('search')) ? 1 : 0;
-        console.log(url);
+        const url   = this.filtermap.getFilteredURL(filters, page);
         let request     = Request.create(HttpMethod.GET);
         request.url     = url;
         request.headers = this.headers;
-        return this.parser.parseHomePage(request.html(), index);
+        console.log(request.url);
+        return this.parser.parseHomePage(request.html(), (url.includes('search') == true));
     }
 
     getMangaListing(listing: Listing, page: number): MangaPageResult {
-        let index = 1;
-        const pathArr = ['all', 'releases', 'trending'];
-        if (listing.name == 'Trending') index = 2;
-
         let request     = Request.create(HttpMethod.GET);
-        request.url     = `${this.baseUrl}/${pathArr[index]}/${page.toString().replace(".0", "")}.html`;
+        request.url = (listing.name == 'Latest') ? `${this.baseUrl}/releases/${page.toString().replace('.0', '')}.html` : `${this.baseUrl}/ranking`;
         request.headers = this.headers;
-        return this.parser.parseHomePage(request.html(), index);
+        console.log(request.url);
+        return this.parser.parseHomePage(request.html(), (listing.name == 'Latest'));
 	}
 
 	getMangaDetails(mangaId: string): Manga {
