@@ -8,7 +8,6 @@ import {
 	Page,
 	Request,
 	HttpMethod,
-	console,
     // DeepLink,
 } from 'aidoku-as';
 
@@ -36,7 +35,6 @@ export class MangaFox extends Source {
         let request     = Request.create(HttpMethod.GET);
         request.url     = url;
         request.headers = this.headers;
-        console.log(request.url);
         return this.parser.parseHomePage(request.html(), (url.includes('search') == true));
     }
 
@@ -44,7 +42,6 @@ export class MangaFox extends Source {
         let request     = Request.create(HttpMethod.GET);
         request.url = (listing.name == 'Latest') ? `${this.baseUrl}/releases/${page.toString().replace('.0', '')}.html` : `${this.baseUrl}/ranking`;
         request.headers = this.headers;
-        console.log(request.url);
         return this.parser.parseHomePage(request.html(), (listing.name == 'Latest'));
 	}
 
@@ -66,7 +63,6 @@ export class MangaFox extends Source {
         let request     = Request.create(HttpMethod.GET);
 		request.url     = `${this.mobUrl}/roll_manga/${chapterId}/1.html`;
 		request.headers = this.headers;
-        console.log(request.url);
         return this.parser.getPageList(request.html());
     }
 

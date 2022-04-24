@@ -7,7 +7,6 @@ import {
     Page,
     Filter,
     FilterType,
-    console,
     ValueRef,
 } from 'aidoku-as';
 
@@ -72,9 +71,8 @@ export class Parser {
             if (titleSplit.length >= 2) title = titleSplit.slice(1).join('-');
 
             let dateString = element.select('.title2').text().trim();
-            console.log(dateString);
             let dateObject = ValueRef.string(dateString);
-            let date = dateObject.toDate('MMM d, yyyy');
+            let date = dateObject.toDate('MMM d,yyyy');
             dateObject.close();
 
             let chapter = new Chapter(id, title);
