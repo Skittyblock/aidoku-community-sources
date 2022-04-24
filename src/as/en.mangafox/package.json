@@ -1,7 +1,7 @@
 {
-  "name": "tumangaonline-aidoku",
+  "name": "mangafox-aidoku",
   "version": "1.0.0",
-  "author": "Skitty",
+  "author": "NmN",
   "ascMain": "src/index.ts",
   "dependencies": {
     "aidoku-as": "github:Aidoku/aidoku-as",
@@ -14,4 +14,3 @@
     "asbuild": "npm run asbuild:untouched && npm run asbuild:optimized"
   }
 }
- 

@@ -1,0 +1,13 @@
+{
+	"info": {
+		"id": "en.mangafox",
+		"lang": "en",
+		"name": "MangaFox",
+		"version": 1,
+		"url": "https://fanfox.net"
+	},
+	"listings": [
+        {"name": "Latest"},
+        {"name": "Trending"}
+	]
+}
