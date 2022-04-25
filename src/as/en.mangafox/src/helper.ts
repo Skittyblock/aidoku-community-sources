@@ -164,7 +164,7 @@ export class FilterMap {
         let url = '';
         for (let i = 0; i < filters.length; i++) {
             const getIndex = (filters[i].value.toInteger() as i32)
-			if (filters[i].type == FilterType.Title) {
+            if (filters[i].type == FilterType.Title) {
                 url += `&name=${filters[i].value.toString().trim().replace(' ', '+')}`;
             }
             else if (filters[i].name == 'Language' && getIndex != 0) {
@@ -177,8 +177,8 @@ export class FilterMap {
                 url += `&st=${getIndex}`;
             }
             else if (filters[i].type == FilterType.Genre) {
-				if (getIndex == 1) url += '&genres=' + this.getGenres(filters[i].name);
-				if (getIndex == 0) url += '&nogenres=' + this.getGenres(filters[i].name);
+                if (getIndex == 1) url += '&genres=' + this.getGenres(filters[i].name);
+                if (getIndex == 0) url += '&nogenres=' + this.getGenres(filters[i].name);
             }
         }
         if (url.length > 0) {

@@ -1,20 +1,20 @@
 [
-	{ "type": "title" },
+    { "type": "title" },
     {
-		"type": "select",
-		"name": "Language",
-		"options": ["Any", "Japanese", "Korean", "Chinese", "European", "American", "Hongkong", "Other"]
-	},
-    {
-		"type": "select",
-		"name": "Rating",
-		"options": ["Any", "1 Stars", "2 Stars", "3 Stars", "4 Stars", "5 Stars"]
+        "type": "select",
+        "name": "Language",
+        "options": ["Any", "Japanese", "Korean", "Chinese", "European", "American", "Hongkong", "Other"]
     },
-	{
-		"type": "group",
-		"name": "Genres",
-		"filters": [
-			{
+    {
+        "type": "select",
+        "name": "Rating",
+        "options": ["Any", "1 Stars", "2 Stars", "3 Stars", "4 Stars", "5 Stars"]
+    },
+    {
+        "type": "group",
+        "name": "Genres",
+        "filters": [
+            {
                 "type": "genre",
                 "name": "Action",
                 "canExclude": true
@@ -199,11 +199,11 @@
                 "name": "Shotacon",
                 "canExclude": true
             }
-		]
-	},
+        ]
+    },
     {
-		"type": "select",
-		"name": "Completed",
-		"options": ["Either", "No", "Yes"]
-	}
+        "type": "select",
+        "name": "Completed",
+        "options": ["Either", "No", "Yes"]
+    }
 ]

@@ -19,16 +19,16 @@ const mangaFoxMOB = 'https://m.fanfox.net'
 export class MangaFox extends Source {
     private baseUrl: string = mangaFoxURL;
     private mobUrl : string = mangaFoxMOB;
-	private headers: Map<string, string>;
+    private headers: Map<string, string>;
     private parser: Parser = new Parser();
     private filtermap: FilterMap = new FilterMap(this.baseUrl);
 
-	constructor() {
-		super();
-		this.headers = new Map<string, string>();
-		this.headers.set('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36');
-		this.headers.set('Referer', this.baseUrl);
-	}
+    constructor() {
+        super();
+        this.headers = new Map<string, string>();
+        this.headers.set('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36');
+        this.headers.set('Referer', this.baseUrl);
+    }
 
     getMangaList(filters: Filter[], page: number): MangaPageResult {
         const url   = this.filtermap.getFilteredURL(filters, page);
@@ -43,30 +43,30 @@ export class MangaFox extends Source {
         request.url = (listing.name == 'Latest') ? `${this.baseUrl}/releases/${page.toString().replace('.0', '')}.html` : `${this.baseUrl}/ranking`;
         request.headers = this.headers;
         return this.parser.parseHomePage(request.html(), (listing.name == 'Latest'));
-	}
+    }
 
 	getMangaDetails(mangaId: string): Manga {
         let request     = Request.create(HttpMethod.GET);
-		request.url     = `${this.baseUrl}/manga/${mangaId}`;
-		request.headers = this.headers;
+        request.url     = `${this.baseUrl}/manga/${mangaId}`;
+        request.headers = this.headers;
         return this.parser.getMangaDetails(request.html(), mangaId);
     }
 
-	getChapterList(mangaId: string): Chapter[] {
+    getChapterList(mangaId: string): Chapter[] {
         let request     = Request.create(HttpMethod.GET);
-		request.url     = `${this.baseUrl}/manga/${mangaId}`;
-		request.headers = this.headers;
+        request.url     = `${this.baseUrl}/manga/${mangaId}`;
+        request.headers = this.headers;
         return this.parser.getChapterList(request.html(), mangaId);
     }
 
-	getPageList(chapterId: string): Page[] {
+    getPageList(chapterId: string): Page[] {
         let request     = Request.create(HttpMethod.GET);
-		request.url     = `${this.mobUrl}/roll_manga/${chapterId}/1.html`;
-		request.headers = this.headers;
+        request.url     = `${this.mobUrl}/roll_manga/${chapterId}/1.html`;
+        request.headers = this.headers;
         return this.parser.getPageList(request.html());
     }
 
-	modifyImageRequest(request: Request): void {
+    modifyImageRequest(request: Request): void {
         request.headers = this.headers;
     }
 
