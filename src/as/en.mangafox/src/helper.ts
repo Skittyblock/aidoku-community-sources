@@ -72,7 +72,7 @@ export class Parser {
 
             let dateString = element.select('.title2').text().trim();
             let dateObject = ValueRef.string(dateString);
-            let date = dateObject.toDate('MMM d,yyyy');
+            let date = dateObject.toDate('MMM d,yyyy', 'en_US');
             dateObject.close();
 
             let chapter = new Chapter(id, title);
