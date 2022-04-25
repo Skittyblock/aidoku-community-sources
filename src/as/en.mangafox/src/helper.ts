@@ -1,5 +1,5 @@
 import {
-	Manga,
+    Manga,
     Html,
     MangaPageResult,
     MangaStatus,

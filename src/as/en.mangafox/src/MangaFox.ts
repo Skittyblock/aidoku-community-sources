@@ -1,13 +1,13 @@
 import {
-	Source,
-	Filter,
-	Listing,
-	MangaPageResult,
-	Manga,
-	Chapter,
-	Page,
-	Request,
-	HttpMethod,
+    Source,
+    Filter,
+    Listing,
+    MangaPageResult,
+    Manga,
+    Chapter,
+    Page,
+    Request,
+    HttpMethod,
     // DeepLink,
 } from 'aidoku-as';
 
@@ -45,7 +45,7 @@ export class MangaFox extends Source {
         return this.parser.parseHomePage(request.html(), (listing.name == 'Latest'));
     }
 
-	getMangaDetails(mangaId: string): Manga {
+    getMangaDetails(mangaId: string): Manga {
         let request     = Request.create(HttpMethod.GET);
         request.url     = `${this.baseUrl}/manga/${mangaId}`;
         request.headers = this.headers;
@@ -72,7 +72,7 @@ export class MangaFox extends Source {
 
     // handleUrl(url: string): DeepLink | null {
     //     // [ 'https:', '', 'fanfox.net', 'manga', 'tales_of_demons_and_gods', '' ]
-	// 	const url_split = url.split('/');
+    //     const url_split = url.split('/');
     //     if (url_split[2] !== 'fanfox.net') return null;
     //     if (url_split[3] !== 'manga') return null;
     //     const mangaId: string = url_split[4];
@@ -80,5 +80,5 @@ export class MangaFox extends Source {
 
     //     const link: DeepLink = new DeepLink(manga, null);
     //     return link
-	// }
+    // }
 }
