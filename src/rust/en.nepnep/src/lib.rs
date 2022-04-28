@@ -202,7 +202,7 @@ fn get_page_list(id: String) -> Result<Vec<Page>> {
 		// pad page index to length 3 (e.g. 45 -> "046")
 		let mut vec: Vec<u8> = Vec::new();
 		let mut num = i as u8 + 1;
-		for _ in 0..2 {
+		loop {
 			vec.insert(0, num % 10 + b'0');
 			num /= 10;
 			if num < 1 { break; }
