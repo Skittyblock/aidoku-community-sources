@@ -3,6 +3,8 @@ import {
     Html,
     MangaPageResult,
     MangaStatus,
+    MangaContentRating,
+    MangaViewer,
     Chapter,
     Page,
     Filter,
@@ -46,12 +48,21 @@ export class Parser {
         if(stat == 'Ongoing')   manga.status = MangaStatus.Ongoing;
         if(stat == 'Completed') manga.status = MangaStatus.Completed;
 
+        let nsfw = false;
+
         let tags: string[] = [];
         const genreArr = document.select('.detail-info-right-tag-list a').array();
         for (let i=0; i<genreArr.length; i++) {
-            tags.push(genreArr[i].text().trim());
+            let genre = genreArr[i].text().trim();
+            tags.push(genre);
+            if (genre == 'Ecchi' || genre == 'Mature' || genre == 'Smut' || genre == 'Adult') nsfw = true;
         }
         manga.categories = tags;
+
+        if (nsfw) manga.rating = MangaContentRating.NSFW;
+
+        if (tags.includes("Webtoons")) manga.viewer = MangaViewer.Scroll;
+        else manga.viewer = MangaViewer.RTL;
 
         document.close();
         return manga

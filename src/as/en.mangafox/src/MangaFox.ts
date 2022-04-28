@@ -26,8 +26,8 @@ export class MangaFox extends Source {
     constructor() {
         super();
         this.headers = new Map<string, string>();
-        this.headers.set('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36');
         this.headers.set('Referer', this.baseUrl);
+        this.headers.set('Cookie', 'isAdult=1');
     }
 
     getMangaList(filters: Filter[], page: number): MangaPageResult {

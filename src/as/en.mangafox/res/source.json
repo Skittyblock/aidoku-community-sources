@@ -4,10 +4,11 @@
         "lang": "en",
         "name": "MangaFox",
         "version": 1,
-        "url": "https://fanfox.net"
+        "url": "https://fanfox.net",
+        "nsfw": 1
     },
     "listings": [
-        {"name": "Latest"},
-        {"name": "Top Rated"}
+        { "name": "Latest" },
+         {"name": "Top Rated" }
     ]
 }
