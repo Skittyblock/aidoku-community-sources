@@ -1,11 +1,11 @@
 {
 	"info": {
-		"id": "en.manganato",
+		"id": "en.mangabat",
 		"lang": "en",
-		"name": "MangaNato",
+		"name": "MangaBat",
 		"version": 1,
-		"nsfw": 0,
-		"url": "https://manganato.com"
+		"nsfw": 1,
+		"url": "https://m.mangabat.com"
 	},
 	"listings": [
 		{ "name": "Latest Updates" },
