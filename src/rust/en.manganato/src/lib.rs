@@ -177,14 +177,12 @@ fn modify_image_request(request: Request) {
 #[handle_url]
 pub fn handle_url(url: String) -> Result<DeepLink> {
 	let url = &url[26..];
-    println!("{}", url);
 	if url.starts_with("manga") {
 		let end = match url.find("/") {
 			Some(end) => end,
 			None => url.len(),
 		};
 		let manga_id = &url[..end];
-        println!("{}", manga_id);
 		let manga = get_manga_details(String::from(manga_id))?;
 
 		return Ok(DeepLink {
