@@ -122,7 +122,7 @@ pub fn get_chapter_number(id: String) -> f32 {
 
 pub fn get_search_url(query: String, page: i32, include: Vec<String>, exclude: Vec<String>, sort: String) -> String {
     let mut url = String::new();
-    url.push_str("https://manganato.com/advanced_search");
+    url.push_str("https://m.mangabat.com/advanced_search");
     url.push_str("?page=");
     url.push_str(&i32_to_string(page));
     if query.len() > 0 {
@@ -189,7 +189,7 @@ pub fn string_after(string: String, search: char, offset: i32) -> String {
 
 pub fn get_manga_url(id: String) -> String {
     let mut url = String::new();
-    url.push_str("https://readmanganato.com/");
+    url.push_str("https://m.mangabat.com/");
     url.push_str(id.as_str());
     return url;
 }

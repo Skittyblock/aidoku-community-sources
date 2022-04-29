@@ -44,15 +44,18 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 			_ => continue,
 		}
 	}
-
     let mut mangas: Vec<Manga> = Vec::new();
     let url = get_search_url(title, page, included_tags, excluded_tags, sort);
+    println!("url={}", url);
     let html = Request::new(url.as_str(), HttpMethod::Get).html();
-    for item in html.select("div.content-genres-item").array() {
+    for item in html.select("div.list-story-item").array() {
         let item_node = item.as_node();
         let title = item_node.select("a").first().attr("title").read();
         let id = string_after(item_node.select("a").first().attr("href").read(), '/', 3);
         let cover = item_node.select("img").first().attr("src").read();
+        println!("title={}", title);
+        println!("id={}", id);
+        println!("cover={}", cover);
         mangas.push(Manga {
             id,
             cover,
@@ -175,12 +178,12 @@ fn get_page_list(id: String) -> Result<Vec<Page>> {
 
 #[modify_image_request] 
 fn modify_image_request(request: Request) {
-    request.header("Referer", "https://readmanganato.com/");
+    request.header("Referer", "https://m.mangabat.com/");
 }
 
 #[handle_url]
 pub fn handle_url(url: String) -> Result<DeepLink> {
-	let url = &url[26..];
+	let url = &url[27..];
 	if url.starts_with("manga") {
 		let end = match url.find("/") {
 			Some(end) => end,
