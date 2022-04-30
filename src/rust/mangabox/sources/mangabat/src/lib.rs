@@ -27,26 +27,17 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 
 #[get_manga_details]
 fn get_manga_details(id: String) -> Result<Manga> {
-	template::get_manga_details(
-		String::from("https://m.mangabat.com"), 
-		id
-	)
+	template::get_manga_details(id)
 }
 
 #[get_chapter_list]
 fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
-	template::get_chapter_list(
-		String::from("https://m.mangabat.com"), 
-		id
-	)
+	template::get_chapter_list(id, String::from("MMM dd,yyyy HH:mm"))
 }
 
 #[get_page_list]
 fn get_page_list(id: String) -> Result<Vec<Page>> {
-	template::get_page_list(
-		String::from("https://m.mangabat.com"), 
-		id
-	)
+	template::get_page_list(id)
 }
 
 #[modify_image_request] 
@@ -59,8 +50,5 @@ fn modify_image_request(request: Request) {
 
 #[handle_url]
 pub fn handle_url(url: String) -> Result<DeepLink> {
-	template::handle_url(
-		String::from("https://m.mangabat.com"),
-		url
-	)
+	template::handle_url(url)
 }

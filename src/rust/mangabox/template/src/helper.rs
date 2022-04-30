@@ -58,28 +58,6 @@ pub fn join_string_array(array: ArrayRef, delimeter: String) -> String {
 	return string;
 }
 
-pub fn get_id(given_id: String) -> String {
-	let mut id = String::new();
-	for (i, c) in given_id.chars().enumerate() {
-		if c == '/' {
-			id.push_str(&given_id[i + 1..]);
-			break;
-		}
-	}
-	return id;
-}
-
-pub fn get_source_name(given_id: String) -> String {
-	let mut id = String::new();
-	for (i, c) in given_id.chars().enumerate() {
-		if c == '/' {
-			id.push_str(&given_id[..i]);
-			break;
-		}
-	}
-	return id;
-}
-
 pub fn status_from_string(status: String) -> MangaStatus {
 	if status == "Ongoing" {
 		return MangaStatus::Ongoing;
@@ -167,26 +145,6 @@ pub fn string_replace(string: String, search: String, replace: String) -> String
 		at += 1;
 	}
 	return result;
-}
-
-pub fn string_after(string: String, search: char, offset: i32) -> String {
-	let mut at = 0;
-	let mut os = offset;
-	for (i, c) in string.chars().enumerate() {
-		if c == search  && os != 0 {
-			at = i;
-			os -= 1;
-		}
-	}
-	return String::from(&string[at + 1..]);
-}
-
-pub fn get_manga_url(base_url: String, id: String) -> String {
-	let mut url = String::new();
-	url.push_str(&base_url);
-	url.push_str("/");
-	url.push_str(id.as_str());
-	return url;
 }
 
 pub fn get_tag_id(tag: String) -> String {
