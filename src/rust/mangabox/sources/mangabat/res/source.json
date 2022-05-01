@@ -1,0 +1,15 @@
+{
+	"info": {
+		"id": "en.mangabat",
+		"lang": "en",
+		"name": "MangaBat",
+		"version": 1,
+		"nsfw": 1,
+		"url": "https://m.mangabat.com"
+	},
+	"listings": [
+		{ "name": "Latest Updates" },
+		{ "name": "New Manga" },
+		{ "name": "Top Manga" }
+	]
+}
