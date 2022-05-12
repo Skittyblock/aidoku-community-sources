@@ -13,45 +13,67 @@ import {
   Page,
   ValueRef,
 } from "aidoku-as/src/index";
+import { Constants } from "./constants";
 
-const DOMAIN = "https://hentaivn.moe";
-
+// MARK: Utilities
 function parseEmailProtected(data: string): string {
-  console.log(`[HentaiVN.Parser.parseEmailProtected] Parsing ${data}`);
+  console.log(`[HentaiVN.Util.parseEmailProtected] Parsing ${data}`);
   let email = "";
   const key = parseInt(data.substr(0, 2), 16) as i64;
   for (let n = 2; data.length - n; n += 2) {
     const char = <i64> parseInt(data.substr(n, 2), 16) ^ key;
     email += String.fromCharCode(<i32> char);
   }
-  console.log(`[HentaiVN.Parser.parseEmailProtected] Resolved to ${email}`);
+  console.log(`[HentaiVN.Util.parseEmailProtected] Resolved to ${email}`);
   return email;
 }
 
 function parseAllEmailProtected(document: Html): Html {
-  const elements = document.select("span.__cf_email__").array();
   let html = document.html();
+  const elements = document.select("span.__cf_email__").array();
   console.log(
-    `[HentaiVN.Parser.parseAllEmailProtected] Found ${elements.length} emails need parsing
-    ${html}
-  `,
+    `[HentaiVN.Util.parseAllEmailProtected] Found ${elements.length} emails need parsing
+      ${html}
+    `,
   );
   for (let i = 0; i < elements.length; i++) {
     const elem = elements[i];
     const email = parseEmailProtected(elem.attr("data-cfemail"));
 
     console.log(
-      `[HentaiVN.Parser.parseAllEmailProtected] '${html}'.replace('${elem.outerHtml()}', '${email}')`,
+      `[HentaiVN.Util.parseAllEmailProtected] '${html}'.replace('${elem.outerHtml()}', '${email}')`,
     );
     html = html.replace(elem.outerHtml(), email);
   }
 
-  console.log(`[HentaiVN.Parser.parseAllEmailProtected] Done:
+  console.log(`[HentaiVN.Util.parseAllEmailProtected] Done:
     ${html}
   `);
+  document.close();
   return Html.parse(String.UTF8.encode(html));
 }
 
+function transformQuality(url: string, quality: i64): string {
+  if (quality == 1200) {
+    return url;
+  }
+
+  // https://upv2.hentaivn.moe/images/800/2022/05/11/1652291962-pic01.jpg?width=1200
+  // ['https:', '', 'upv2.hentaivn.moe', 'images', '800', '2022', '05', '11', '1652291962-pic01.jpg?width=1200']
+  let urlSplit = url.split("/");
+  const width = min(quality + 400, 9999);
+  urlSplit[4] = urlSplit[4].replace(
+    "1200",
+    quality.toString().replaceAll(".0", ""),
+  );
+  urlSplit[8] = urlSplit[8].replace(
+    "?imgmax=1200",
+    `?width=${width.toString().replaceAll(".0", "")}`,
+  );
+  return urlSplit.join("/");
+}
+
+// MARK: Parser
 export class Parser {
   parseNewOrCompletePage(document: Html): MangaPageResult {
     const elements = document.select("li.item").array();
@@ -61,9 +83,9 @@ export class Parser {
     const results = elements.map<Manga>((elem) => {
       const id = elem.select('div.box-description > p > a[href*="doc-truyen"]')
         .attr("href").split("/").pop();
-      const title = elem.select(
+      const title = parseAllEmailProtected(elem.select(
         'div.box-description > p > a[href*="doc-truyen"]',
-      ).text().trim();
+      )).text().trim();
       const img = elem.select("div.box-cover > a > img").attr("data-src");
 
       const manga = new Manga(id, title);
@@ -90,8 +112,9 @@ export class Parser {
       const id = elem.select("div.search-des > a").attr("href").split("/")
         .pop();
       const title = parseAllEmailProtected(
-        elem.select("div.search-des > a > b"),
+        elem.select("div.search-des > a > b")
       ).text().trim();
+      
       const img = elem.select("div.search-img > a > img").attr("src");
 
       const manga = new Manga(id, title);
@@ -193,14 +216,14 @@ export class Parser {
       chapterDateObject.close();
 
       const chapter = new Chapter(
-        `${DOMAIN}${url}`,
+        `${Constants.domain}${url}`,
         chapterInfo.length > 1
           ? chapterInfo[1]
           : chapterInfo[0].includes("Chap")
           ? ""
           : chapterInfo[0],
       );
-      chapter.url = `${DOMAIN}${url}`;
+      chapter.url = `${Constants.domain}${url}`;
       chapter.lang = "vi";
       chapter.chapter = chapterInfo[0].includes("Chap")
         ? parseFloat(chapterInfo[0].split(" ").pop()) as f32
@@ -226,32 +249,16 @@ export class Parser {
 
     if (elements.length == 0) {
       const tmp = new Page(0);
-      tmp.url = "https://i.imgur.com/ovHuAps.png";
+      tmp.url = Constants.imageNotFoundURL;
       document.close();
       return [tmp];
     }
 
     const pages = elements.map<Page>((elem: Html, idx: i32) => {
       const page = new Page(idx);
-      const pageQuality = defaults.get("pageQuality").toInteger();
+      const pageQuality = defaults.get(Constants.pageQualityKey).toInteger();
       let url = elem.attr("src");
-
-      if (pageQuality != 1200) {
-        // https://upv2.hentaivn.moe/images/800/2022/05/11/1652291962-pic01.jpg?width=1200
-        // ['https:', '', 'upv2.hentaivn.moe', 'images', '800', '2022', '05', '11', '1652291962-pic01.jpg?width=1200']
-        let urlSplit = url.split("/");
-        const width = pageQuality + 400 > 9999 ? 9999 : pageQuality + 400;
-        urlSplit[4] = urlSplit[4].replace(
-          "1200",
-          pageQuality.toString().replaceAll(".0", ""),
-        );
-        urlSplit[8] = urlSplit[8].replace(
-          "?imgmax=1200",
-          `?width=${width.toString().replaceAll(".0", "")}`,
-        );
-        url = urlSplit.join("/");
-      }
-      page.url = url;
+      page.url = transformQuality(url, pageQuality);
       return page;
     });
 

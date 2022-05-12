@@ -12,11 +12,10 @@ import {
   Source,
 } from "aidoku-as/src/index";
 import { Parser, Search } from "./parser";
-
-const DOMAIN = "https://hentaivn.moe";
+import { Constants } from "./constants";
 
 export class HentaiVN extends Source {
-  private baseUrl: string = DOMAIN;
+  private baseUrl: string = Constants.domain;
   private headers: Map<string, string>;
   private parser: Parser = new Parser();
   private search: Search = new Search(this.baseUrl);
@@ -25,10 +24,7 @@ export class HentaiVN extends Source {
     super();
     this.headers = new Map<string, string>();
     this.headers.set("Referer", this.baseUrl);
-    this.headers.set(
-      "User-Agent",
-      "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:84.0) Gecko/20100101 Firefox/84.0",
-    );
+    this.headers.set("User-Agent", Constants.userAgent);
   }
 
   private logRequest(prefix: string, method: string, request: Request): void {
