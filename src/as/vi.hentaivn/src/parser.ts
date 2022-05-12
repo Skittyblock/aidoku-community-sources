@@ -70,11 +70,13 @@ export class Parser {
         'div.box-description > p > a[href*="doc-truyen"]',
       )).text().trim();
       const img = elem.select("div.box-cover > a > img").attr("data-src");
+      const tags = elem.select("div.box-description > p:contains(Thể Loại)")
 
       const manga = new Manga(id, title);
       manga.cover_url = img;
-      manga.rating = MangaContentRating.NSFW;
-
+      manga.rating = tags.text().includes("Non-hen")
+        ? MangaContentRating.Suggestive
+        : MangaContentRating.NSFW;
       return manga;
     });
 
