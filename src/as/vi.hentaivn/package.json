@@ -5,7 +5,9 @@
   "ascMain": "src/index.ts",
   "scripts": {
     "clean": "wireit",
-    "build": "wireit",
+    "build": "rm -rf build/package.aix build/Payload\nnpm run asbuild:optimized\nmkdir -p build/Payload\ncp build/release.wasm build/Payload/main.wasm\ncp res/* build/Payload/\ncd build/ ; zip -r package.aix Payload",
+    "build-wireit": "wireit",
+    "asbuild:optimized": "asc src/index.ts --target release",
     "asbuild:debug": "wireit",
     "asbuild:release": "wireit",
     "asbuild": "wireit",

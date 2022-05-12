@@ -3,9 +3,9 @@
         "id": "vi.hentaivn",
         "lang": "vi",
         "name": "HentaiVN",
-        "version": 3,
+        "version": 1,
         "url": "https://hentaivn.moe",
-        "nsfw": 1
+        "nsfw": 2
     },
     "listings": [
         {

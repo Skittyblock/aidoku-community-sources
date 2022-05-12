@@ -17,14 +17,12 @@ import { Constants } from "./constants";
 
 // MARK: Utilities
 function parseEmailProtected(data: string): string {
-  console.log(`[HentaiVN.Util.parseEmailProtected] Parsing ${data}`);
   let email = "";
   const key = parseInt(data.substr(0, 2), 16) as i64;
   for (let n = 2; data.length - n; n += 2) {
     const char = <i64> parseInt(data.substr(n, 2), 16) ^ key;
     email += String.fromCharCode(<i32> char);
   }
-  console.log(`[HentaiVN.Util.parseEmailProtected] Resolved to ${email}`);
   return email;
 }
 
@@ -39,16 +37,9 @@ function parseAllEmailProtected(document: Html): Html {
   for (let i = 0; i < elements.length; i++) {
     const elem = elements[i];
     const email = parseEmailProtected(elem.attr("data-cfemail"));
-
-    console.log(
-      `[HentaiVN.Util.parseAllEmailProtected] '${html}'.replace('${elem.outerHtml()}', '${email}')`,
-    );
     html = html.replace(elem.outerHtml(), email);
   }
 
-  console.log(`[HentaiVN.Util.parseAllEmailProtected] Done:
-    ${html}
-  `);
   document.close();
   return Html.parse(String.UTF8.encode(html));
 }
@@ -77,9 +68,6 @@ function transformQuality(url: string, quality: i64): string {
 export class Parser {
   parseNewOrCompletePage(document: Html): MangaPageResult {
     const elements = document.select("li.item").array();
-    console.log(
-      `[HentaiVN.Parser.parseNewOrCompletePage] Found ${elements.length} mangas`,
-    );
     const results = elements.map<Manga>((elem) => {
       const id = elem.select('div.box-description > p > a[href*="doc-truyen"]')
         .attr("href").split("/").pop();
@@ -90,11 +78,7 @@ export class Parser {
 
       const manga = new Manga(id, title);
       manga.cover_url = img;
-
-      console.log(`[HentaiVN.Parser.parseNewOrCompletePage] ${manga.id}
-        Title: ${manga.title},
-        Image: ${manga.cover_url}
-      `);
+      manga.rating = MangaContentRating.NSFW;
 
       return manga;
     });
@@ -105,9 +89,6 @@ export class Parser {
 
   parseSearchPage(document: Html, page: i32): MangaPageResult {
     const elements = document.select("li.search-li").array();
-    console.log(
-      `[HentaiVN.Parser.parseSearchPage] Found ${elements.length} mangas`,
-    );
     const results = elements.map<Manga>((elem) => {
       const id = elem.select("div.search-des > a").attr("href").split("/")
         .pop();
@@ -120,11 +101,6 @@ export class Parser {
       const manga = new Manga(id, title);
       manga.cover_url = img;
 
-      console.log(`[HentaiVN.Parser.parseSearchPage] ${manga.id}
-        Title: ${manga.title},
-        Image: ${manga.cover_url}
-      `);
-
       return manga;
     });
 
@@ -132,10 +108,6 @@ export class Parser {
       document.select("ul.pagination > li").array().pop().text().trim(),
     );
     const searchHasNextPage = lastPage !== page;
-    console.log(
-      `[HentaiVN.Parser.parseSearchPage] Last page: ${lastPage}, has next page: ${searchHasNextPage}`,
-    );
-
     const mangaPageResult = new MangaPageResult(results, searchHasNextPage);
     document.close();
     return mangaPageResult;
@@ -176,29 +148,14 @@ export class Parser {
     manga.viewer = tags.includes("Webtoon")
       ? MangaViewer.Scroll
       : MangaViewer.RTL;
+    manga.url = `${Constants.domain}/${mangaId}`;
 
-    console.log(`[HentaiVN.Parser.getMangaDetails]
-      Title: ${manga.title},
-      Author: ${manga.author},
-      Description: ${manga.description},
-      Image: ${manga.cover_url},
-      Stat: ${stat},
-      Tags: ${
-      tags.reduce<string>(
-        (prev: string, curr: string) => prev + " | " + curr,
-        "",
-      )
-    }
-    `);
     document.close();
     return manga;
   }
 
   getChapterList(document: Html): Chapter[] {
     const elements = document.select("table.listing > tbody > tr").array();
-    console.log(
-      `[HentaiVN.Parser.getChapterList] Found ${elements.length} chapters`,
-    );
 
     const chapters = elements.map<Chapter>((elem) => {
       const url = elem.select("td:nth-child(1) > a").attr("href");
@@ -232,12 +189,6 @@ export class Parser {
         : 1;
       chapter.dateUpdated = chapterDate;
 
-      console.log(`[HentaiVN.Parser.getChapterList]
-        Chapter: ${chapter.chapter},
-        Title: ${chapter.title},
-        URL: ${chapter.url},
-      `);
-
       return chapter;
     });
 
@@ -247,7 +198,6 @@ export class Parser {
 
   getPageList(document: Html): Page[] {
     const elements = document.select("div#image > img").array();
-    console.log(`[HentaiVN.Parser.getPageList] Found ${elements.length} pages`);
 
     if (elements.length == 0) {
       const tmp = new Page(0);

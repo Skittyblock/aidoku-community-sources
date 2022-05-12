@@ -27,10 +27,6 @@ export class HentaiVN extends Source {
     this.headers.set("User-Agent", Constants.userAgent);
   }
 
-  private logRequest(prefix: string, method: string, request: Request): void {
-    console.log(`${prefix} ${method} ${request.url}`);
-  }
-
   modifyImageRequest(request: Request): void {
     request.headers = this.headers;
   }
@@ -40,7 +36,6 @@ export class HentaiVN extends Source {
     const resp = Request.create(HttpMethod.GET);
     resp.url = url ? url : this.baseUrl;
     resp.headers = this.headers;
-    this.logRequest("[HentaiVN.getMangaList]", "GET", resp);
     return this.parser.parseSearchPage(resp.html(), page);
   }
 
@@ -56,7 +51,6 @@ export class HentaiVN extends Source {
         page.toString().replaceAll(".0", "")
       }`;
     }
-    this.logRequest("[HentaiVN.getMangaListing]", "GET", resp);
     return this.parser.parseNewOrCompletePage(resp.html());
   }
 
@@ -64,7 +58,6 @@ export class HentaiVN extends Source {
     const resp = Request.create(HttpMethod.GET);
     resp.url = `${this.baseUrl}/${mangaId}`;
     resp.headers = this.headers;
-    this.logRequest("[HentaiVN.getMangaDetails]", "GET", resp);
     return this.parser.getMangaDetails(resp.html(), mangaId);
   }
 
@@ -78,7 +71,6 @@ export class HentaiVN extends Source {
         tempManga.join("-")
       }`;
     resp.headers = this.headers;
-    this.logRequest("[HentaiVN.getChapterList]", "GET", resp);
     return this.parser.getChapterList(resp.html());
   }
 
@@ -86,7 +78,6 @@ export class HentaiVN extends Source {
     const resp = Request.create(HttpMethod.GET);
     resp.url = chapterId;
     resp.headers = this.headers;
-    this.logRequest("[HentaiVN.getPageList]", "GET", resp);
     return this.parser.getPageList(resp.html());
   }
 
@@ -94,14 +85,10 @@ export class HentaiVN extends Source {
     const resp = Request.create(HttpMethod.GET);
     resp.url = chapterId;
     resp.headers = this.headers;
-    this.logRequest("[HentaiVN.getMangaDetailsFromChapterPage]", "GET", resp);
     const document = resp.html();
     const href = document.select(
       "div.bar-title-episode:contains(Xem thông tin) > a",
     ).attr("href");
-    console.log(
-      `[HentaiVN.getMangaDetailsFromChapterPage] Extracted URL ${href}`,
-    );
     document.close();
     const mangaId = href.split("/").pop();
     return this.getMangaDetails(mangaId);
@@ -110,8 +97,6 @@ export class HentaiVN extends Source {
   handleUrl(url: string): DeepLink | null {
     // https://hentaivn.moe/24706-doc-truyen-dieu-duong-tuoi-dep-nguyen-tac.html
     // ['https:', '', 'hentaivn.moe', '24706-doc-truyen-dieu-duong-tuoi-dep-nguyen-tac.html']
-    //
-    console.log(`[HentaiVN.handleUrl] Received URL ${url}`);
     const mangaOrChapterId = url.split("/").pop();
     if (mangaOrChapterId.includes("doc-truyen")) {
       const manga = this.getMangaDetails(mangaOrChapterId);
