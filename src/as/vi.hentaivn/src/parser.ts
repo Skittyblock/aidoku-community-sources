@@ -82,7 +82,7 @@ export class Parser {
     return new MangaPageResult(results, results.length !== 0);
   }
 
-  parseSearchPage(document: Html, page: i32): MangaPageResult {
+  parseSearchPage(document: Html, page: i32, includesNonHen: bool): MangaPageResult {
     const elements = document.select("li.search-li").array();
     const results = elements.map<Manga>((elem) => {
       const id = elem.select("div.search-des > a").attr("href").split("/")
@@ -95,6 +95,9 @@ export class Parser {
 
       const manga = new Manga(id, title);
       manga.cover_url = img;
+      manga.rating = includesNonHen
+        ? MangaContentRating.Suggestive
+        : MangaContentRating.NSFW;
 
       return manga;
     });

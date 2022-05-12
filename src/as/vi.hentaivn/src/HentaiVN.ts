@@ -36,7 +36,7 @@ export class HentaiVN extends Source {
     const resp = Request.create(HttpMethod.GET);
     resp.url = url ? url : this.baseUrl;
     resp.headers = this.headers;
-    return this.parser.parseSearchPage(resp.html(), page);
+    return this.parser.parseSearchPage(resp.html(), page, resp.url.includes('tag%5B%5D=201'));  // tag ID for non-hentai
   }
 
   getMangaListing(listing: Listing, page: i32): MangaPageResult {
