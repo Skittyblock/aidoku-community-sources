@@ -29,11 +29,6 @@ function parseEmailProtected(data: string): string {
 function parseAllEmailProtected(document: Html): Html {
   let html = document.html();
   const elements = document.select("span.__cf_email__").array();
-  console.log(
-    `[HentaiVN.Util.parseAllEmailProtected] Found ${elements.length} emails need parsing
-      ${html}
-    `,
-  );
   for (let i = 0; i < elements.length; i++) {
     const elem = elements[i];
     const email = parseEmailProtected(elem.attr("data-cfemail"));
