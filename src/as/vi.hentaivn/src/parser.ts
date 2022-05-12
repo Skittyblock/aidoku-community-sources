@@ -1,6 +1,5 @@
 import {
   Chapter,
-  console,
   defaults,
   Filter,
   FilterType,
