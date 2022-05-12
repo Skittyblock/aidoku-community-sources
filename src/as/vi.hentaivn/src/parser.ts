@@ -170,7 +170,9 @@ export class Parser {
       ? MangaStatus.Completed
       : MangaStatus.Ongoing;
     manga.categories = tags;
-    manga.rating = MangaContentRating.NSFW;
+    manga.rating = tags.includes("Non-hen") 
+      ? MangaContentRating.Suggestive 
+      : MangaContentRating.NSFW;
     manga.viewer = tags.includes("Webtoon")
       ? MangaViewer.Scroll
       : MangaViewer.RTL;
