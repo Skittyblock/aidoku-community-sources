@@ -1,0 +1,18 @@
+{
+    "info": {
+        "id": "vi.hentaivn",
+        "lang": "vi",
+        "name": "HentaiVN",
+        "version": 1,
+        "url": "https://hentaivn.moe",
+        "nsfw": 2
+    },
+    "listings": [
+        {
+            "name": "New"
+        },
+        {
+            "name": "Completed"
+        }
+    ]
+}
