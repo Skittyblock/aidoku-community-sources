@@ -17,7 +17,7 @@
     "clean": {
       "command": "shx rm -rf build/"
     },
-    "build": {
+    "build-wireit": {
       "dependencies": [
         "asbuild:release"
       ],

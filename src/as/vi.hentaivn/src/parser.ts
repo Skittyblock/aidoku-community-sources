@@ -84,8 +84,10 @@ export class Parser {
   }
 
   parseSearchPage(document: Html, page: i32, includesNonHen: bool): MangaPageResult {
+    const results: Manga[] = [];
     const elements = document.select("li.search-li").array();
-    const results = elements.map<Manga>((elem) => {
+    for (let i = 0; i < elements.length; i++) {
+      const elem = elements[i];
       const id = elem.select("div.search-des > a").attr("href").split("/")
         .pop();
       const title = parseAllEmailProtected(
@@ -100,8 +102,8 @@ export class Parser {
         ? MangaContentRating.Suggestive
         : MangaContentRating.NSFW;
 
-      return manga;
-    });
+      results.push(manga);
+    }
 
     const lastPage = <i32> parseInt(
       document.select("ul.pagination > li").array().pop().text().trim(),
