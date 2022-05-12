@@ -1,0 +1,17 @@
+[
+	{
+		"type": "group",
+		"title": "Settings",
+		"items": [
+			{
+				"type": "select",
+				"key": "pageQuality",
+				"title": "Page Quality",
+				"values": ["9999", "1200", "800", "600"],
+				"titles": ["Original",  "High",  "Medium",  "Low"],
+				"default": "1200",
+				"footer": "Original: full HD server\nHigh: default server\nMedium: server 1\nLow: server 2"
+			}
+		]
+	}
+]
