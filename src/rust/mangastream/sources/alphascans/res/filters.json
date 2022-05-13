@@ -1,0 +1,128 @@
+[
+    {
+        "type": "title"
+    },
+    {
+        "type": "group",
+        "name": "Tags",
+        "filters": [
+            {
+                "type": "genre",
+                "name": "Action"
+            },
+            {
+                "type": "genre",
+                "name": "Adventure"
+            },
+            {
+                "type": "genre",
+                "name": "Comedy"
+            },
+            {
+                "type": "genre",
+                "name": "Drama"
+            },
+            {
+                "type": "genre",
+                "name": "Ecchi"
+            },
+            {
+                "type": "genre",
+                "name": "Fantasy"
+            },
+            {
+                "type": "genre",
+                "name": "Harem"
+            },
+            {
+                "type": "genre",
+                "name": "Historical"
+            },
+            {
+                "type": "genre",
+                "name": "Horror"
+            },
+            {
+                "type": "genre",
+                "name": "Isekai"
+            },
+            {
+                "type": "genre",
+                "name": "Josei"
+            },
+            {
+                "type": "genre",
+                "name": "Martial Arts"
+            },
+            {
+                "type": "genre",
+                "name": "Medical"
+            },
+            {
+                "type": "genre",
+                "name": "Mystery"
+            },
+            {
+                "type": "genre",
+                "name": "Psychological"
+            },
+            {
+                "type": "genre",
+                "name": "Romance"
+            },
+            {
+                "type": "genre",
+                "name": "School Life"
+            },
+            {
+                "type": "genre",
+                "name": "Sci-Fi"
+            },
+            {
+                "type": "genre",
+                "name": "Seinen"
+            },
+            {
+                "type": "genre",
+                "name": "Shoujo"
+            },
+            {
+                "type": "genre",
+                "name": "Shounen"
+            },
+            {
+                "type": "genre",
+                "name": "Slice of Life"
+            },
+            {
+                "type": "genre",
+                "name": "Supernatural"
+            },
+            {
+                "type": "genre",
+                "name": "System"
+            }
+        ]
+    },
+    {
+        "type": "select",
+        "name": "Status",
+        "options": [
+            "All",
+            "Ongoing",
+            "Completed",
+            "Hiatus"
+        ]
+    },
+    {
+        "type": "select",
+        "name": "Type",
+        "options": [
+            "All",
+            "Manga",
+            "Manhwa",
+            "Manhua",
+            "Comic"
+        ]
+    }
+]

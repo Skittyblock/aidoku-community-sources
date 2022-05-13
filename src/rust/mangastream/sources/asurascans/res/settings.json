@@ -1,0 +1,16 @@
+[
+    {
+        "type": "group",
+        "title": "settings",
+        "items": [
+            {
+                "type": "select",
+                "key": "language",
+                "title": "Language",
+                "values": ["en", "tr"],
+                "titles": ["English", "Turkey"],
+                "default": "en"
+              }
+        ]
+    }
+]

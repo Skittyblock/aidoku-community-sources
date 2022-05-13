@@ -1,0 +1,276 @@
+[
+    {
+        "type": "title"
+    },
+    {
+        "type": "group",
+        "name": "Tags",
+        "filters": [
+            {
+                "type": "genre",
+                "name": "Action"
+            },
+            {
+                "type": "genre",
+                "name": "Acttion"
+            },
+            {
+                "type": "genre",
+                "name": "Adult"
+            },
+            {
+                "type": "genre",
+                "name": "Adventure"
+            },
+            {
+                "type": "genre",
+                "name": "Battle Royale"
+            },
+            {
+                "type": "genre",
+                "name": "Comedy"
+            },
+            {
+                "type": "genre",
+                "name": "Crime"
+            },
+            {
+                "type": "genre",
+                "name": "Demon"
+            },
+            {
+                "type": "genre",
+                "name": "Demons"
+            },
+            {
+                "type": "genre",
+                "name": "Drama"
+            },
+            {
+                "type": "genre",
+                "name": "Ecchi"
+            },
+            {
+                "type": "genre",
+                "name": "Fansaty"
+            },
+            {
+                "type": "genre",
+                "name": "Fantasi"
+            },
+            {
+                "type": "genre",
+                "name": "Fantasy"
+            },
+            {
+                "type": "genre",
+                "name": "Fantasy Shounen"
+            },
+            {
+                "type": "genre",
+                "name": "Full Color"
+            },
+            {
+                "type": "genre",
+                "name": "Game"
+            },
+            {
+                "type": "genre",
+                "name": "Gender Bender"
+            },
+            {
+                "type": "genre",
+                "name": "Gore"
+            },
+            {
+                "type": "genre",
+                "name": "Harem"
+            },
+            {
+                "type": "genre",
+                "name": "Historical"
+            },
+            {
+                "type": "genre",
+                "name": "Horror"
+            },
+            {
+                "type": "genre",
+                "name": "Hot blood"
+            },
+            {
+                "type": "genre",
+                "name": "Isekai"
+            },
+            {
+                "type": "genre",
+                "name": "Josei"
+            },
+            {
+                "type": "genre",
+                "name": "Lolicon"
+            },
+            {
+                "type": "genre",
+                "name": "Magic"
+            },
+            {
+                "type": "genre",
+                "name": "Manga"
+            },
+            {
+                "type": "genre",
+                "name": "Manhua"
+            },
+            {
+                "type": "genre",
+                "name": "Manhwa"
+            },
+            {
+                "type": "genre",
+                "name": "Martial Arts"
+            },
+            {
+                "type": "genre",
+                "name": "Mature"
+            },
+            {
+                "type": "genre",
+                "name": "Mecha"
+            },
+            {
+                "type": "genre",
+                "name": "Medical"
+            },
+            {
+                "type": "genre",
+                "name": "Murim"
+            },
+            {
+                "type": "genre",
+                "name": "Mystery"
+            },
+            {
+                "type": "genre",
+                "name": "Otherworld"
+            },
+            {
+                "type": "genre",
+                "name": "Post-Apocalyptic"
+            },
+            {
+                "type": "genre",
+                "name": "Psychological"
+            },
+            {
+                "type": "genre",
+                "name": "Rebirth"
+            },
+            {
+                "type": "genre",
+                "name": "Reincarnation"
+            },
+            {
+                "type": "genre",
+                "name": "Revenge"
+            },
+            {
+                "type": "genre",
+                "name": "Romance"
+            },
+            {
+                "type": "genre",
+                "name": "School Life"
+            },
+            {
+                "type": "genre",
+                "name": "Sci-Fi"
+            },
+            {
+                "type": "genre",
+                "name": "Seinen"
+            },
+            {
+                "type": "genre",
+                "name": "Shotacon"
+            },
+            {
+                "type": "genre",
+                "name": "Shoujo"
+            },
+            {
+                "type": "genre",
+                "name": "Shoujo Ai"
+            },
+            {
+                "type": "genre",
+                "name": "Shounen"
+            },
+            {
+                "type": "genre",
+                "name": "Slice of Life"
+            },
+            {
+                "type": "genre",
+                "name": "Smut"
+            },
+            {
+                "type": "genre",
+                "name": "Sports"
+            },
+            {
+                "type": "genre",
+                "name": "Supernatural"
+            },
+            {
+                "type": "genre",
+                "name": "Survival"
+            },
+            {
+                "type": "genre",
+                "name": "System"
+            },
+            {
+                "type": "genre",
+                "name": "Thriller"
+            },
+            {
+                "type": "genre",
+                "name": "Time Travel"
+            },
+            {
+                "type": "genre",
+                "name": "Tragedy"
+            },
+            {
+                "type": "genre",
+                "name": "Yuri"
+            },
+            {
+                "type": "genre",
+                "name": "Zombies"
+            }
+        ]
+    },
+    {
+        "type": "select",
+        "name": "Status",
+        "options": [
+            "All",
+            "Ongoing",
+            "Completed",
+            "Hiatus"
+        ]
+    },
+    {
+        "type": "select",
+        "name": "Type",
+        "options": [
+            "All",
+            "Manga",
+            "Manhwa",
+            "Manhua",
+            "Comic"
+        ]
+    }
+]

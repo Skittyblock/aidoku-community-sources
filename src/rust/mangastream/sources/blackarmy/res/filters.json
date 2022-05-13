@@ -1,0 +1,180 @@
+[
+    {
+        "type": "title"
+    },
+    {
+        "type": "group",
+        "name": "Tags",
+        "filters": [
+            {
+                "type": "genre",
+                "name": "Action"
+            },
+            {
+                "type": "genre",
+                "name": "Adulte"
+            },
+            {
+                "type": "genre",
+                "name": "Amitié"
+            },
+            {
+                "type": "genre",
+                "name": "Amour"
+            },
+            {
+                "type": "genre",
+                "name": "Arts martiaux"
+            },
+            {
+                "type": "genre",
+                "name": "Aventure"
+            },
+            {
+                "type": "genre",
+                "name": "Combat"
+            },
+            {
+                "type": "genre",
+                "name": "Comédie"
+            },
+            {
+                "type": "genre",
+                "name": "Drame"
+            },
+            {
+                "type": "genre",
+                "name": "Ecchi"
+            },
+            {
+                "type": "genre",
+                "name": "Fantaisie"
+            },
+            {
+                "type": "genre",
+                "name": "Fantastique"
+            },
+            {
+                "type": "genre",
+                "name": "Guerre"
+            },
+            {
+                "type": "genre",
+                "name": "Hentai"
+            },
+            {
+                "type": "genre",
+                "name": "Historique"
+            },
+            {
+                "type": "genre",
+                "name": "Horreur"
+            },
+            {
+                "type": "genre",
+                "name": "Humour"
+            },
+            {
+                "type": "genre",
+                "name": "Josei"
+            },
+            {
+                "type": "genre",
+                "name": "Mature"
+            },
+            {
+                "type": "genre",
+                "name": "Mecha"
+            },
+            {
+                "type": "genre",
+                "name": "Militaire"
+            },
+            {
+                "type": "genre",
+                "name": "mystère"
+            },
+            {
+                "type": "genre",
+                "name": "One shot"
+            },
+            {
+                "type": "genre",
+                "name": "Psychologique"
+            },
+            {
+                "type": "genre",
+                "name": "Romance"
+            },
+            {
+                "type": "genre",
+                "name": "Science-fiction"
+            },
+            {
+                "type": "genre",
+                "name": "Seinen"
+            },
+            {
+                "type": "genre",
+                "name": "Shôjo"
+            },
+            {
+                "type": "genre",
+                "name": "Shônen"
+            },
+            {
+                "type": "genre",
+                "name": "shounen"
+            },
+            {
+                "type": "genre",
+                "name": "Supernatural"
+            },
+            {
+                "type": "genre",
+                "name": "Superpuissances"
+            },
+            {
+                "type": "genre",
+                "name": "Surnaturel"
+            },
+            {
+                "type": "genre",
+                "name": "Tragédie"
+            },
+            {
+                "type": "genre",
+                "name": "Tranches de vie"
+            },
+            {
+                "type": "genre",
+                "name": "Vie scolaire"
+            },
+            {
+                "type": "genre",
+                "name": "Webtoon"
+            }
+        ]
+    },
+    {
+        "type": "select",
+        "name": "Status",
+        "options": [
+            "All",
+            "Ongoing",
+            "Completed",
+            "Hiatus"
+        ]
+    },
+    {
+        "type": "select",
+        "name": "Type",
+        "options": [
+            "All",
+            "Manga",
+            "Manhwa",
+            "Manhua",
+            "Comic"
+        ]
+    }
+]

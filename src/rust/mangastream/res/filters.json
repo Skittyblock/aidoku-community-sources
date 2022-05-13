@@ -1,0 +1,20 @@
+[
+    { "type": "title" },
+    {
+        "type":"group",
+        "name":"Tags",
+        "filters":[
+            
+        ]
+    },
+    {
+        "type": "select",
+        "name": "Status",
+        "options": ["All", "Ongoing", "Completed", "Dropped", "Mass Release", "Daily Release"]
+    },
+    {
+        "type": "select",
+        "name": "Type",
+        "options": ["All", "Manga", "Manhwa", "Manhua", "Comic"]
+    }    
+]
