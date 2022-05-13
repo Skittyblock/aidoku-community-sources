@@ -8,99 +8,123 @@
         "filters": [
             {
                 "type": "genre",
-                "name": "Action"
+                "name": "Action",
+                "id": "14"
             },
             {
                 "type": "genre",
-                "name": "Adventure"
+                "name": "Adventure",
+                "id": "16"
             },
             {
                 "type": "genre",
-                "name": "Comedy"
+                "name": "Comedy",
+                "id": "3"
             },
             {
                 "type": "genre",
-                "name": "Drama"
+                "name": "Drama",
+                "id": "10"
             },
             {
                 "type": "genre",
-                "name": "Ecchi"
+                "name": "Ecchi",
+                "id": "70"
             },
             {
                 "type": "genre",
-                "name": "Fantasy"
+                "name": "Fantasy",
+                "id": "11"
             },
             {
                 "type": "genre",
-                "name": "Harem"
+                "name": "Harem",
+                "id": "47"
             },
             {
                 "type": "genre",
-                "name": "Historical"
+                "name": "Historical",
+                "id": "78"
             },
             {
                 "type": "genre",
-                "name": "Horror"
+                "name": "Horror",
+                "id": "90"
             },
             {
                 "type": "genre",
-                "name": "Isekai"
+                "name": "Isekai",
+                "id": "56"
             },
             {
                 "type": "genre",
-                "name": "Josei"
+                "name": "Josei",
+                "id": "79"
             },
             {
                 "type": "genre",
-                "name": "Martial Arts"
+                "name": "Martial Arts",
+                "id": "32"
             },
             {
                 "type": "genre",
-                "name": "Medical"
+                "name": "Medical",
+                "id": "67"
             },
             {
                 "type": "genre",
-                "name": "Mystery"
+                "name": "Mystery",
+                "id": "20"
             },
             {
                 "type": "genre",
-                "name": "Psychological"
+                "name": "Psychological",
+                "id": "64"
             },
             {
                 "type": "genre",
-                "name": "Romance"
+                "name": "Romance",
+                "id": "18"
             },
             {
                 "type": "genre",
-                "name": "School Life"
+                "name": "School Life",
+                "id": "4"
             },
             {
                 "type": "genre",
-                "name": "Sci-Fi"
+                "name": "Sci-Fi",
+                "id": "66"
             },
             {
                 "type": "genre",
-                "name": "Seinen"
+                "name": "Seinen",
+                "id": "33"
             },
             {
                 "type": "genre",
-                "name": "Shoujo"
+                "name": "Shoujo",
+                "id": "12"
             },
             {
                 "type": "genre",
-                "name": "Shounen"
+                "name": "Shounen",
+                "id": "7"
             },
             {
                 "type": "genre",
-                "name": "Slice of Life"
+                "name": "Slice of Life",
+                "id": "8"
             },
             {
                 "type": "genre",
-                "name": "Supernatural"
+                "name": "Supernatural",
+                "id": "5"
             },
             {
                 "type": "genre",
-                "name": "System"
+                "name": "System",
+                "id": "84"
             }
         ]
     },

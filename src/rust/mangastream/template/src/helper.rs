@@ -1,6 +1,8 @@
-use aidoku::{std::{String, StringRef, html::Node}, std::Vec, MangaStatus, prelude::format, Listing};
+use aidoku::{
+    std::{String, StringRef, Vec, html::Node}, MangaStatus, Listing, prelude::format,
+};
 
-//generate url for listing page
+// generate url for listing page
 pub fn get_listing_url(base_url: String, pathname: String, listing: Listing, page: i32) -> String {
     let list_type = match listing.name.as_str() {
         "Latest" => "order=update",
@@ -14,112 +16,6 @@ pub fn get_listing_url(base_url: String, pathname: String, listing: Listing, pag
     else {
         return format!("{}/{}/?page={}&{}", base_url, pathname, page,list_type)
     }
-}
-
-// return the tag id that will be used to filter the genre
-pub fn get_tag_id(base_url: String, tag: String) -> String {
-    let tag_id;
-    if base_url.contains("alpha-scans") {
-        let id =  match tag.as_str() {
-            "Action" => "14",
-            "Adventure" => "16",
-            "Comedy" => "3",
-            "Drama" => "10",
-            "Ecchi" => "70",
-            "Fantasy" => "11",
-            "Harem" => "47",
-            "Historical" => "78",
-            "Horror" => "90",
-            "Isekai" => "56",
-            "Josei" => "79",
-            "Martial Arts" => "32",
-            "Medical" => "67",
-            "Mystery" => "20",
-            "Psychological" => "64",
-            "Romance" => "18",
-            "School Life" => "4",
-            "Sci-Fi" => "66",
-            "Seinen" => "33",
-            "Shoujo" => "12",
-            "Shounen" => "7",
-            "Slice of Life" => "8",
-            "Supernatural" => "5",
-            "System" => "84",
-            _ => "",
-        };
-        tag_id = String::from(id);
-    }
-    else if base_url.contains("readkomik") {
-        let id =  match tag.as_str() {
-            "Action" => "2",
-            "Acttion" => "949",
-            "Adult" => "523",
-            "Adventure" => "18",
-            "Battle Royale" => "1376",
-            "Comedy" => "12",
-            "Crime" => "727",
-            "Demon" => "1467",
-            "Demons" => "473",
-            "Drama" => "137",
-            "Ecchi" => "141",
-            "Fansaty" => "829",
-            "Fantasi" => "1328",
-            "Fantasy" => "3",
-            "Fantasy Shounen" => "1611",
-            "Full Color" => "1370",
-            "Game" => "15",
-            "Gender Bender" => "544",
-            "Gore" => "1509",
-            "Harem" => "139",
-            "Historical" => "344",
-            "Horror" => "274",
-            "Hot blood" => "1371",
-            "Isekai" => "13",
-            "Josei" => "561",
-            "Lolicon" => "764",
-            "Magic" => "4",
-            "Manga" => "1212",
-            "Manhua" => "1243",
-            "Manhwa" => "1064",
-            "Martial Arts" => "22",
-            "Mature" => "138",
-            "Mecha" => "507",
-            "Medical" => "797",
-            "Murim" => "1547",
-            "Mystery" => "275",
-            "Otherworld" => "1627",
-            "Post-Apocalyptic" => "1244",
-            "Psychological" => "592",
-            "Rebirth" => "839",
-            "Reincarnation" => "349",
-            "Revenge" => "1339",
-            "Romance" => "308",
-            "School Life" => "160",
-            "Sci-Fi" => "23",
-            "Seinen" => "140",
-            "Shotacon" => "480",
-            "Shoujo" => "516",
-            "Shoujo Ai" => "689",
-            "Shounen" => "161",
-            "Slice of Life" => "162",
-            "Smut" => "765",
-            "Sports" => "163",
-            "Supernatural" => "165",
-            "Survival" => "1245",
-            "System" => "1282",
-            "Thriller" => "922",
-            "Time Travel" => "1018",
-            "Tragedy" => "276",
-            "Yuri" => "720",
-            "Zombies" => "1260",
-            _ => "",
-        };
-        tag_id = String::from(id);
-    }
-    else {
-        tag_id =  String::from(tag.to_lowercase().replace(" ", "-").as_str());
-    }
-    return tag_id;
 }
 
 // return the manga status 
@@ -182,7 +78,7 @@ pub fn get_search_url(base_url: String, query: String,page: i32, included_tags: 
             },
         }            
     }
-    if query.len() > 0 {
+    if !query.is_empty() {
         url.push_str("/page/");
         url.push_str(&i32_to_string(page));
         url.push_str("?s=");
@@ -191,19 +87,18 @@ pub fn get_search_url(base_url: String, query: String,page: i32, included_tags: 
     } else {
         url.push_str("/?page=");
         url.push_str(&i32_to_string(page));
-        
     }
-    if included_tags.len() > 0 {
+    if !included_tags.is_empty() {
         for tag in included_tags {
             url.push_str("&genre%5B%5D=");
             url.push_str(&tag);
         }
     }
-    if status.len() > 0 {
+    if !status.is_empty() {
         url.push_str("&status=");
         url.push_str(&status);
     }
-    if manga_type.len() > 0 {
+    if !manga_type.is_empty() {
         url.push_str("&type=");
         url.push_str(&manga_type);
     }

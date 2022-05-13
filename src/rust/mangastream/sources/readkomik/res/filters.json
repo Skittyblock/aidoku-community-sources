@@ -8,247 +8,308 @@
         "filters": [
             {
                 "type": "genre",
-                "name": "Action"
+                "name": "Action",
+                "id": "2"
             },
             {
                 "type": "genre",
-                "name": "Acttion"
+                "name": "Acttion",
+                "id": "949"
             },
             {
                 "type": "genre",
-                "name": "Adult"
+                "name": "Adult",
+                "id": "523"
             },
             {
                 "type": "genre",
-                "name": "Adventure"
+                "name": "Adventure",
+                "id": "18"
             },
             {
                 "type": "genre",
-                "name": "Battle Royale"
+                "name": "Battle Royale",
+                "id": "1376"
             },
             {
                 "type": "genre",
-                "name": "Comedy"
+                "name": "Comedy",
+                "id": "12"
             },
             {
                 "type": "genre",
-                "name": "Crime"
+                "name": "Crime",
+                "id": "727"
             },
             {
                 "type": "genre",
-                "name": "Demon"
+                "name": "Demon",
+                "id": "1467"
             },
             {
                 "type": "genre",
-                "name": "Demons"
+                "name": "Demons",
+                "id": "473"
             },
             {
                 "type": "genre",
-                "name": "Drama"
+                "name": "Drama",
+                "id": "137"
             },
             {
                 "type": "genre",
-                "name": "Ecchi"
+                "name": "Ecchi",
+                "id": "141"
             },
             {
                 "type": "genre",
-                "name": "Fansaty"
+                "name": "Fansaty",
+                "id": "829"
             },
             {
                 "type": "genre",
-                "name": "Fantasi"
+                "name": "Fantasi",
+                "id": "1328"
             },
             {
                 "type": "genre",
-                "name": "Fantasy"
+                "name": "Fantasy",
+                "id": "3"
             },
             {
                 "type": "genre",
-                "name": "Fantasy Shounen"
+                "name": "Fantasy Shounen",
+                "id": "1611"
             },
             {
                 "type": "genre",
-                "name": "Full Color"
+                "name": "Full Color",
+                "id": "1370"
             },
             {
                 "type": "genre",
-                "name": "Game"
+                "name": "Game",
+                "id": "15"
             },
             {
                 "type": "genre",
-                "name": "Gender Bender"
+                "name": "Gender Bender",
+                "id": "544"
             },
             {
                 "type": "genre",
-                "name": "Gore"
+                "name": "Gore",
+                "id": "1509"
             },
             {
                 "type": "genre",
-                "name": "Harem"
+                "name": "Harem",
+                "id": "139"
             },
             {
                 "type": "genre",
-                "name": "Historical"
+                "name": "Historical",
+                "id": "344"
             },
             {
                 "type": "genre",
-                "name": "Horror"
+                "name": "Horror",
+                "id": "274"
             },
             {
                 "type": "genre",
-                "name": "Hot blood"
+                "name": "Hot blood",
+                "id": "1371"
             },
             {
                 "type": "genre",
-                "name": "Isekai"
+                "name": "Isekai",
+                "id": "13"
             },
             {
                 "type": "genre",
-                "name": "Josei"
+                "name": "Josei",
+                "id": "561"
             },
             {
                 "type": "genre",
-                "name": "Lolicon"
+                "name": "Lolicon",
+                "id": "764"
             },
             {
                 "type": "genre",
-                "name": "Magic"
+                "name": "Magic",
+                "id": "4"
             },
             {
                 "type": "genre",
-                "name": "Manga"
+                "name": "Manga",
+                "id": "1212"
             },
             {
                 "type": "genre",
-                "name": "Manhua"
+                "name": "Manhua",
+                "id": "1243"
             },
             {
                 "type": "genre",
-                "name": "Manhwa"
+                "name": "Manhwa",
+                "id": "1064"
             },
             {
                 "type": "genre",
-                "name": "Martial Arts"
+                "name": "Martial Arts",
+                "id": "22"
             },
             {
                 "type": "genre",
-                "name": "Mature"
+                "name": "Mature",
+                "id": "138"
             },
             {
                 "type": "genre",
-                "name": "Mecha"
+                "name": "Mecha",
+                "id": "507"
             },
             {
                 "type": "genre",
-                "name": "Medical"
+                "name": "Medical",
+                "id": "797"
             },
             {
                 "type": "genre",
-                "name": "Murim"
+                "name": "Murim",
+                "id": "1547"
             },
             {
                 "type": "genre",
-                "name": "Mystery"
+                "name": "Mystery",
+                "id": "275"
             },
             {
                 "type": "genre",
-                "name": "Otherworld"
+                "name": "Otherworld",
+                "id": "1627"
             },
             {
                 "type": "genre",
-                "name": "Post-Apocalyptic"
+                "name": "Post-Apocalyptic",
+                "id": "1244"
             },
             {
                 "type": "genre",
-                "name": "Psychological"
+                "name": "Psychological",
+                "id": "592"
             },
             {
                 "type": "genre",
-                "name": "Rebirth"
+                "name": "Rebirth",
+                "id": "839"
             },
             {
                 "type": "genre",
-                "name": "Reincarnation"
+                "name": "Reincarnation",
+                "id": "349"
             },
             {
                 "type": "genre",
-                "name": "Revenge"
+                "name": "Revenge",
+                "id": "1339"
             },
             {
                 "type": "genre",
-                "name": "Romance"
+                "name": "Romance",
+                "id": "308"
             },
             {
                 "type": "genre",
-                "name": "School Life"
+                "name": "School Life",
+                "id": "160"
             },
             {
                 "type": "genre",
-                "name": "Sci-Fi"
+                "name": "Sci-Fi",
+                "id": "23"
             },
             {
                 "type": "genre",
-                "name": "Seinen"
+                "name": "Seinen",
+                "id": "140"
             },
             {
                 "type": "genre",
-                "name": "Shotacon"
+                "name": "Shotacon",
+                "id": "480"
             },
             {
                 "type": "genre",
-                "name": "Shoujo"
+                "name": "Shoujo",
+                "id": "518"
             },
             {
                 "type": "genre",
-                "name": "Shoujo Ai"
+                "name": "Shoujo Ai",
+                "id": "689"
             },
             {
                 "type": "genre",
-                "name": "Shounen"
+                "name": "Shounen",
+                "id": "161"
             },
             {
                 "type": "genre",
-                "name": "Slice of Life"
+                "name": "Slice of Life",
+                "id": "162"
             },
             {
                 "type": "genre",
-                "name": "Smut"
+                "name": "Smut",
+                "id": "765"
             },
             {
                 "type": "genre",
-                "name": "Sports"
+                "name": "Sports",
+                "id": "163"
             },
             {
                 "type": "genre",
-                "name": "Supernatural"
+                "name": "Supernatural",
+                "id": "165"
             },
             {
                 "type": "genre",
-                "name": "Survival"
+                "name": "Survival",
+                "id": "1245"
             },
             {
                 "type": "genre",
-                "name": "System"
+                "name": "System",
+                "id": "1282"
             },
             {
                 "type": "genre",
-                "name": "Thriller"
+                "name": "Thriller",
+                "id": "922"
             },
             {
                 "type": "genre",
-                "name": "Time Travel"
+                "name": "Time Travel",
+                "id": "1018"
             },
             {
                 "type": "genre",
-                "name": "Tragedy"
+                "name": "Tragedy",
+                "id": "276"
             },
             {
                 "type": "genre",
-                "name": "Yuri"
+                "name": "Yuri",
+                "id": "720"
             },
             {
                 "type": "genre",
-                "name": "Zombies"
+                "name": "Zombies",
+                "id": "1260"
             }
         ]
     },

@@ -8,151 +8,188 @@
         "filters": [
             {
                 "type": "genre",
-                "name": "Action"
+                "name": "Action",
+                "id": "action"
             },
             {
                 "type": "genre",
-                "name": "Adulte"
+                "name": "Adulte",
+                "id": "adulte"
             },
             {
                 "type": "genre",
-                "name": "Amitié"
+                "name": "Amitié",
+                "id": "amitie"
             },
             {
                 "type": "genre",
-                "name": "Amour"
+                "name": "Amour",
+                "id": "amour"
             },
             {
                 "type": "genre",
-                "name": "Arts martiaux"
+                "name": "Arts martiaux",
+                "id": "arts-martiaux"
             },
             {
                 "type": "genre",
-                "name": "Aventure"
+                "name": "Aventure",
+                "id": "aventure"
             },
             {
                 "type": "genre",
-                "name": "Combat"
+                "name": "Combat",
+                "id": "combat"
             },
             {
                 "type": "genre",
-                "name": "Comédie"
+                "name": "Comédie",
+                "id": "comedie"
             },
             {
                 "type": "genre",
-                "name": "Drame"
+                "name": "Drame",
+                "id": "drame"
             },
             {
                 "type": "genre",
-                "name": "Ecchi"
+                "name": "Ecchi",
+                "id": "ecchi"
             },
             {
                 "type": "genre",
-                "name": "Fantaisie"
+                "name": "Fantaisie",
+                "id": "fantaisie"
             },
             {
                 "type": "genre",
-                "name": "Fantastique"
+                "name": "Fantastique",
+                "id": "fantastique"
             },
             {
                 "type": "genre",
-                "name": "Guerre"
+                "name": "Guerre",
+                "id": "guerre"
             },
             {
                 "type": "genre",
-                "name": "Hentai"
+                "name": "Hentai",
+                "id": "hentai"
             },
             {
                 "type": "genre",
-                "name": "Historique"
+                "name": "Historique",
+                "id": "historique"
             },
             {
                 "type": "genre",
-                "name": "Horreur"
+                "name": "Horreur",
+                "id": "horreur"
             },
             {
                 "type": "genre",
-                "name": "Humour"
+                "name": "Humour",
+                "id": "humour"
             },
             {
                 "type": "genre",
-                "name": "Josei"
+                "name": "Josei",
+                "id": "josei"
             },
             {
                 "type": "genre",
-                "name": "Mature"
+                "name": "Mature",
+                "id": "mature"
             },
             {
                 "type": "genre",
-                "name": "Mecha"
+                "name": "Mecha",
+                "id": "mecha"
             },
             {
                 "type": "genre",
-                "name": "Militaire"
+                "name": "Militaire",
+                "id": "militaire"
             },
             {
                 "type": "genre",
-                "name": "mystère"
+                "name": "mystère",
+                "id": "mystere"
             },
             {
                 "type": "genre",
-                "name": "One shot"
+                "name": "One shot",
+                "id": "one-shot"
             },
             {
                 "type": "genre",
-                "name": "Psychologique"
+                "name": "Psychologique",
+                "id": "psychologique"
             },
             {
                 "type": "genre",
-                "name": "Romance"
+                "name": "Romance",
+                "id": "romance"
             },
             {
                 "type": "genre",
-                "name": "Science-fiction"
+                "name": "Science-fiction",
+                "id": "science-fiction"
             },
             {
                 "type": "genre",
-                "name": "Seinen"
+                "name": "Seinen",
+                "id": "seinen"
             },
             {
                 "type": "genre",
-                "name": "Shôjo"
+                "name": "Shôjo",
+                "id": "shojo"
             },
             {
                 "type": "genre",
-                "name": "Shônen"
+                "name": "Shônen",
+                "id": "shonen"
             },
             {
                 "type": "genre",
-                "name": "shounen"
+                "name": "shounen",
+                "id": "shounen"
             },
             {
                 "type": "genre",
-                "name": "Supernatural"
+                "name": "Supernatural",
+                "id": "supernatural"
             },
             {
                 "type": "genre",
-                "name": "Superpuissances"
+                "name": "Superpuissances",
+                "id": "superpuissances"
             },
             {
                 "type": "genre",
-                "name": "Surnaturel"
+                "name": "Surnaturel",
+                "id": "surnaturel"
             },
             {
                 "type": "genre",
-                "name": "Tragédie"
+                "name": "Tragédie",
+                "id": "tragedie"
             },
             {
                 "type": "genre",
-                "name": "Tranches de vie"
+                "name": "Tranches de vie",
+                "id": "tranches-de-vie"
             },
             {
                 "type": "genre",
-                "name": "Vie scolaire"
+                "name": "Vie scolaire",
+                "id": "vie-scolaire"
             },
             {
                 "type": "genre",
-                "name": "Webtoon"
+                "name": "Webtoon",
+                "id": "webtoon"
             }
         ]
     },

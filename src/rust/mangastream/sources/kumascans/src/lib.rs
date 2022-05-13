@@ -10,7 +10,7 @@ const BASE_URL: &str = "https://kumascans.com";
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
-	template::parse_manga_list(String::from(BASE_URL), String::from("manga"),filters, page)
+	template::parse_manga_list(String::from(BASE_URL), String::from("manga"), filters, page)
 }
 
 #[get_manga_listing]
@@ -25,7 +25,7 @@ fn get_manga_details(id: String) -> Result<Manga> {
 
 #[get_chapter_list]
 fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
-	template::parse_chapter_list(id, String::from("MMM dd,yyyy"), String::from("en"),"en")
+	template::parse_chapter_list(id, String::from("MMM dd,yyyy"), String::from("en"), "en")
 }
 
 #[get_page_list]

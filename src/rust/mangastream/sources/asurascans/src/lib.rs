@@ -10,7 +10,7 @@ use helper::*;
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
-	template::parse_manga_list(get_base_url(), String::from("manga"),filters, page)
+	template::parse_manga_list(get_base_url(), String::from("manga"), filters, page)
 }
 
 #[get_manga_listing]
@@ -29,7 +29,7 @@ fn get_manga_details(id: String) -> Result<Manga> {
 
 #[get_chapter_list]
 fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
-	template::parse_chapter_list(id, String::from("MMM dd, yyyy"), get_lang_code(),"en_US")
+	template::parse_chapter_list(id, String::from("MMM dd, yyyy"), get_lang_code(), "en_US")
 }
 
 #[get_page_list]

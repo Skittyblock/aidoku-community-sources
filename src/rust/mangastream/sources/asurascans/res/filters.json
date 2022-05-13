@@ -8,271 +8,318 @@
         "filters": [
             {
                 "type": "genre",
-                "name": "Action"
+                "name": "Action",
+                "id": "action"
             },
             {
                 "type": "genre",
-                "name": "Adaptation"
+                "name": "Adaptation",
+                "id": "adaptation"
             },
             {
                 "type": "genre",
-                "name": "Adult"
+                "name": "Adventure",
+                "id": "adventure"
             },
             {
                 "type": "genre",
-                "name": "Adventure"
+                "name": "Another chance",
+                "id": "another-chance"
             },
             {
                 "type": "genre",
-                "name": "Another chance"
+                "name": "Apocalypse",
+                "id": "apocalypse"
             },
             {
                 "type": "genre",
-                "name": "apocalypse"
+                "name": "Comedy",
+                "id": "comedy"
             },
             {
                 "type": "genre",
-                "name": "Comedy"
+                "name": "Cultivation",
+                "id": "cultivation"
             },
             {
                 "type": "genre",
-                "name": "Coming Soon"
+                "name": "Demon",
+                "id": "demon"
             },
             {
                 "type": "genre",
-                "name": "Cultivation"
+                "name": "Discord",
+                "id": "discord"
             },
             {
                 "type": "genre",
-                "name": "Demon"
+                "name": "Drama",
+                "id": "drama"
             },
             {
                 "type": "genre",
-                "name": "Discord"
+                "name": "Dungeons",
+                "id": "dungeons"
             },
             {
                 "type": "genre",
-                "name": "Drama"
+                "name": "Fantasy",
+                "id": "fantasy"
             },
             {
                 "type": "genre",
-                "name": "Dungeons"
+                "name": "Game",
+                "id": "game"
             },
             {
                 "type": "genre",
-                "name": "Ecchi"
+                "name": "Genius",
+                "id": "genius"
             },
             {
                 "type": "genre",
-                "name": "Fantasy"
+                "name": "Harem",
+                "id": "harem"
             },
             {
                 "type": "genre",
-                "name": "Game"
+                "name": "Hero",
+                "id": "hero"
             },
             {
                 "type": "genre",
-                "name": "Genius"
+                "name": "Historical",
+                "id": "historical"
             },
             {
                 "type": "genre",
-                "name": "Harem"
+                "name": "Isekai",
+                "id": "isekai"
             },
             {
                 "type": "genre",
-                "name": "Hero"
+                "name": "Josei",
+                "id": "josei"
             },
             {
                 "type": "genre",
-                "name": "Historical"
+                "name": "Kool Kids",
+                "id": "kool-kids"
             },
             {
                 "type": "genre",
-                "name": "Isekai"
+                "name": "Loli",
+                "id": "loli"
             },
             {
                 "type": "genre",
-                "name": "Josei"
+                "name": "Magic",
+                "id": "magic"
             },
             {
                 "type": "genre",
-                "name": "Kool Kids"
+                "name": "Martial Arts",
+                "id": "martial-arts"
             },
             {
                 "type": "genre",
-                "name": "Loli"
+                "name": "Mature",
+                "id": "mature"
             },
             {
                 "type": "genre",
-                "name": "Magic"
+                "name": "Mecha",
+                "id": "mecha"
             },
             {
                 "type": "genre",
-                "name": "Martial Arts"
+                "name": "Modern Setting",
+                "id": "modern-setting"
             },
             {
                 "type": "genre",
-                "name": "Mature"
+                "name": "Monsters",
+                "id": "monsters"
             },
             {
                 "type": "genre",
-                "name": "Mecha"
+                "name": "Murim",
+                "id": "murim"
             },
             {
                 "type": "genre",
-                "name": "Modern Setting"
+                "name": "Mystery",
+                "id": "mystery"
             },
             {
                 "type": "genre",
-                "name": "Monsters"
+                "name": "Necromancer",
+                "id": "necro"
             },
             {
                 "type": "genre",
-                "name": "Murim"
+                "name": "Noble",
+                "id": "noble"
             },
             {
                 "type": "genre",
-                "name": "Mystery"
+                "name": "Overpowered",
+                "id": "overpowered"
             },
             {
                 "type": "genre",
-                "name": "Necromancer"
+                "name": "Pets",
+                "id": "pets"
             },
             {
                 "type": "genre",
-                "name": "Noble"
+                "name": "Psychological",
+                "id": "psychological"
             },
             {
                 "type": "genre",
-                "name": "Overpowered"
+                "name": "Rebirth",
+                "id": "rebirth"
             },
             {
                 "type": "genre",
-                "name": "Pets"
+                "name": "Reincarnation",
+                "id": "reincarnation"
             },
             {
                 "type": "genre",
-                "name": "Post-Apocalyptic"
+                "name": "Return",
+                "id": "return"
             },
             {
                 "type": "genre",
-                "name": "Psychological"
+                "name": "Returned",
+                "id": "returned"
             },
             {
                 "type": "genre",
-                "name": "Rebirth"
+                "name": "Returner",
+                "id": "returner"
             },
             {
                 "type": "genre",
-                "name": "Reincarnation"
+                "name": "Revenge",
+                "id": "revenge"
             },
             {
                 "type": "genre",
-                "name": "Return"
+                "name": "Romance",
+                "id": "romance"
             },
             {
                 "type": "genre",
-                "name": "Returned"
+                "name": "School Life",
+                "id": "school-life"
             },
             {
                 "type": "genre",
-                "name": "Returner"
+                "name": "Sci-fi",
+                "id": "sci-fi"
             },
             {
                 "type": "genre",
-                "name": "Revenge"
+                "name": "Seinen",
+                "id": "seinen"
             },
             {
                 "type": "genre",
-                "name": "Romance"
+                "name": "Shoujo",
+                "id": "shoujo"
             },
             {
                 "type": "genre",
-                "name": "School Life"
+                "name": "Shounen",
+                "id": "shounen"
             },
             {
                 "type": "genre",
-                "name": "Sci-fi"
+                "name": "Slice of Life",
+                "id": "slice-of-life"
             },
             {
                 "type": "genre",
-                "name": "Seinen"
+                "name": "Super Hero",
+                "id": "super-hero"
             },
             {
                 "type": "genre",
-                "name": "Shoujo"
+                "name": "Superhero",
+                "id": "superhero"
             },
             {
                 "type": "genre",
-                "name": "Shounen"
+                "name": "Supernatural",
+                "id": "supernatural"
             },
             {
                 "type": "genre",
-                "name": "Slice of Life"
+                "name": "Survival",
+                "id": "survival"
             },
             {
                 "type": "genre",
-                "name": "Super Hero"
+                "name": "System",
+                "id": "system"
             },
             {
                 "type": "genre",
-                "name": "Superhero"
+                "name": "Time Travel",
+                "id": "time-travel"
             },
             {
                 "type": "genre",
-                "name": "Supernatural"
+                "name": "Time Travel (Future)",
+                "id": "time-travel-future"
             },
             {
                 "type": "genre",
-                "name": "Survival"
+                "name": "Tragedy",
+                "id": "tragedy"
             },
             {
                 "type": "genre",
-                "name": "System"
+                "name": "Video Game",
+                "id": "video-game"
             },
             {
                 "type": "genre",
-                "name": "Time Travel"
+                "name": "Video Games",
+                "id": "video-games"
             },
             {
                 "type": "genre",
-                "name": "Time Travel (Future)"
+                "name": "Villain",
+                "id": "villain"
             },
             {
                 "type": "genre",
-                "name": "Tragedy"
+                "name": "Virtual Game",
+                "id": "virtual-game"
             },
             {
                 "type": "genre",
-                "name": "Video Game"
+                "name": "Virtual Reality",
+                "id": "virtual-reality"
             },
             {
                 "type": "genre",
-                "name": "Video Games"
+                "name": "Virtual World",
+                "id": "virtual-world"
             },
             {
                 "type": "genre",
-                "name": "Villain"
+                "name": "Webtoon",
+                "id": "webtoon"
             },
             {
                 "type": "genre",
-                "name": "Virtual Game"
-            },
-            {
-                "type": "genre",
-                "name": "Virtual Reality"
-            },
-            {
-                "type": "genre",
-                "name": "Virtual World"
-            },
-            {
-                "type": "genre",
-                "name": "Webtoon"
-            },
-            {
-                "type": "genre",
-                "name": "Wuxia"
+                "name": "Wuxia",
+                "id": "wuxia"
             }
         ]
     },

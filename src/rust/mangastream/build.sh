@@ -1,7 +1,7 @@
 # template source build script
 # usage: ./build.sh [source_name/-a]
 
-if [ "$1" != "-a" ]; then
+if [ "$1" != "-a" ] && [ "$1" != "" ]; then
     # compile specified source
     cargo +nightly build --release
     

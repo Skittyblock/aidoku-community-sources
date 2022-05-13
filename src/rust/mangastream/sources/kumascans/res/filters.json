@@ -8,635 +8,398 @@
         "filters": [
             {
                 "type": "genre",
-                "name": "Action"
+                "name": "Action",
+                "id": "action"
             },
             {
                 "type": "genre",
-                "name": "Adaptation"
+                "name": "Adaptation",
+                "id": "adaptation"
             },
             {
                 "type": "genre",
-                "name": "Adult"
+                "name": "Adult",
+                "id": "adult"
             },
             {
                 "type": "genre",
-                "name": "Adventure"
+                "name": "Adventure",
+                "id": "adventure"
             },
             {
                 "type": "genre",
-                "name": "Chinese"
+                "name": "Chinese",
+                "id": "chinese"
             },
             {
                 "type": "genre",
-                "name": "Comedy"
+                "name": "Comedy",
+                "id": "comedy"
             },
             {
                 "type": "genre",
-                "name": "Coming Soon"
+                "name": "Coming Soon",
+                "id": "coming-soon"
             },
             {
                 "type": "genre",
-                "name": "Cooking"
+                "name": "Cooking",
+                "id": "cooking"
             },
             {
                 "type": "genre",
-                "name": "Crime"
+                "name": "Crime",
+                "id": "crime"
             },
             {
                 "type": "genre",
-                "name": "Demons"
+                "name": "Demons",
+                "id": "demons"
             },
             {
                 "type": "genre",
-                "name": "Doujinshi"
+                "name": "Doujinshi",
+                "id": "doujinshi"
             },
             {
                 "type": "genre",
-                "name": "Drama"
+                "name": "Drama",
+                "id": "drama"
             },
             {
                 "type": "genre",
-                "name": "Ecchi"
+                "name": "Ecchi",
+                "id": "ecchi"
             },
             {
                 "type": "genre",
-                "name": "Fantasy"
+                "name": "Fantasy",
+                "id": "fantasy"
             },
             {
                 "type": "genre",
-                "name": "Full Color"
+                "name": "Full Color",
+                "id": "full-color"
             },
             {
                 "type": "genre",
-                "name": "Game"
+                "name": "Game",
+                "id": "game"
             },
             {
                 "type": "genre",
-                "name": "Games"
+                "name": "Games",
+                "id": "games"
             },
             {
                 "type": "genre",
-                "name": "Gender Bender"
+                "name": "Gender Bender",
+                "id": "gender-bender"
             },
             {
                 "type": "genre",
-                "name": "Gore"
+                "name": "Gore",
+                "id": "gore"
             },
             {
                 "type": "genre",
-                "name": "Harem"
+                "name": "Harem",
+                "id": "harem"
             },
             {
                 "type": "genre",
-                "name": "Hentai"
+                "name": "Hentai",
+                "id": "hentai"
             },
             {
                 "type": "genre",
-                "name": "Historical"
+                "name": "Historical",
+                "id": "historical"
             },
             {
                 "type": "genre",
-                "name": "Horror"
+                "name": "Horror",
+                "id": "horror"
             },
             {
                 "type": "genre",
-                "name": "Hot blood"
+                "name": "Hot blood",
+                "id": "hot-blood"
             },
             {
                 "type": "genre",
-                "name": "Isekai"
+                "name": "Isekai",
+                "id": "isekai"
             },
             {
                 "type": "genre",
-                "name": "Japanese"
+                "name": "Japanese",
+                "id": "japanese"
             },
             {
                 "type": "genre",
-                "name": "Josei"
+                "name": "Josei",
+                "id": "josei"
             },
             {
                 "type": "genre",
-                "name": "Korean"
+                "name": "Korean",
+                "id": "korean"
             },
             {
                 "type": "genre",
-                "name": "Live action"
+                "name": "Live action",
+                "id": "live-action"
             },
             {
                 "type": "genre",
-                "name": "Lolicon"
+                "name": "Lolicon",
+                "id": "lolicon"
             },
             {
                 "type": "genre",
-                "name": "Magic"
+                "name": "Magic",
+                "id": "magic"
             },
             {
                 "type": "genre",
-                "name": "Manhua"
+                "name": "Manhua",
+                "id": "manhua"
             },
             {
                 "type": "genre",
-                "name": "Manhwa"
+                "name": "Manhwa",
+                "id": "manhwa"
             },
             {
                 "type": "genre",
-                "name": "Martial Arts"
+                "name": "Martial Arts",
+                "id": "martial-arts"
             },
             {
                 "type": "genre",
-                "name": "Mature"
+                "name": "Mature",
+                "id": "mature"
             },
             {
                 "type": "genre",
-                "name": "Mecha"
+                "name": "Mecha",
+                "id": "mecha"
             },
             {
                 "type": "genre",
-                "name": "Medical"
+                "name": "Medical",
+                "id": "medical"
             },
             {
                 "type": "genre",
-                "name": "Military"
+                "name": "Military",
+                "id": "military"
             },
             {
                 "type": "genre",
-                "name": "Modern"
+                "name": "Modern",
+                "id": "modern"
             },
             {
                 "type": "genre",
-                "name": "Money"
+                "name": "Money",
+                "id": "money"
             },
             {
                 "type": "genre",
-                "name": "Monster"
+                "name": "Monster",
+                "id": "monster"
             },
             {
                 "type": "genre",
-                "name": "MONSTER GIRLS"
+                "name": "MONSTER GIRLS",
+                "id": "monster-girls"
             },
             {
                 "type": "genre",
-                "name": "Mystery"
+                "name": "Mystery",
+                "id": "mystery"
             },
             {
                 "type": "genre",
-                "name": "N/A"
+                "name": "N/A",
+                "id": "n-a"
             },
             {
                 "type": "genre",
-                "name": "ONESHOT"
+                "name": "ONESHOT",
+                "id": "oneshot"
             },
             {
                 "type": "genre",
-                "name": "Psychological"
+                "name": "Psychological",
+                "id": "psychological"
             },
             {
                 "type": "genre",
-                "name": "Reincarnation"
+                "name": "Reincarnation",
+                "id": "reincarnation"
             },
             {
                 "type": "genre",
-                "name": "Revenge"
+                "name": "Revenge",
+                "id": "revenge"
             },
             {
                 "type": "genre",
-                "name": "Romance"
+                "name": "Romance",
+                "id": "romance"
             },
             {
                 "type": "genre",
-                "name": "Samurai"
+                "name": "Samurai",
+                "id": "samurai"
             },
             {
                 "type": "genre",
-                "name": "School Life"
+                "name": "School Life",
+                "id": "school-life"
             },
             {
                 "type": "genre",
-                "name": "Sci-fi"
+                "name": "Sci-fi",
+                "id": "sci-fi"
             },
             {
                 "type": "genre",
-                "name": "Seinen"
+                "name": "Seinen",
+                "id": "seinen"
             },
             {
                 "type": "genre",
-                "name": "Shonen Ai"
+                "name": "Shonen Ai",
+                "id": "shonen-ai"
             },
             {
                 "type": "genre",
-                "name": "Shotacon"
+                "name": "Shotacon",
+                "id": "shotacon"
             },
             {
                 "type": "genre",
-                "name": "Shoujo"
+                "name": "Shoujo",
+                "id": "shoujo"
             },
             {
                 "type": "genre",
-                "name": "Shoujo ai"
+                "name": "Shoujo ai",
+                "id": "shoujo-ai"
             },
             {
                 "type": "genre",
-                "name": "Shounen"
+                "name": "Shounen",
+                "id": "shounen"
             },
             {
                 "type": "genre",
-                "name": "Shounen ai"
+                "name": "Shounen ai",
+                "id": "shounen-ai"
             },
             {
                 "type": "genre",
-                "name": "Slice of Life"
+                "name": "Slice of Life",
+                "id": "slice-of-life"
             },
             {
                 "type": "genre",
-                "name": "Smut"
+                "name": "Smut",
+                "id": "smut"
             },
             {
                 "type": "genre",
-                "name": "Sports"
+                "name": "Sports",
+                "id": "sports"
             },
             {
                 "type": "genre",
-                "name": "Supernatural"
+                "name": "Supernatural",
+                "id": "supernatural"
             },
             {
                 "type": "genre",
-                "name": "Survival"
+                "name": "Survival",
+                "id": "survival"
             },
             {
                 "type": "genre",
-                "name": "System"
+                "name": "System",
+                "id": "system"
             },
             {
                 "type": "genre",
-                "name": "teacher"
+                "name": "teacher",
+                "id": "teacher"
             },
             {
                 "type": "genre",
-                "name": "Terror"
+                "name": "Terror",
+                "id": "terror"
             },
             {
                 "type": "genre",
-                "name": "Thriller"
+                "name": "Thriller",
+                "id": "thriller"
             },
             {
                 "type": "genre",
-                "name": "Time Travel"
+                "name": "Time Travel",
+                "id": "time-travel"
             },
             {
                 "type": "genre",
-                "name": "Tragedy"
+                "name": "Tragedy",
+                "id": "tragedy"
             },
             {
                 "type": "genre",
-                "name": "Updating"
+                "name": "Updating",
+                "id": "updating"
             },
             {
                 "type": "genre",
-                "name": "Video Games"
+                "name": "Video Games",
+                "id": "video-games"
             },
             {
                 "type": "genre",
-                "name": "Villainess"
+                "name": "Villainess",
+                "id": "villainess"
             },
             {
                 "type": "genre",
-                "name": "Webtoon"
+                "name": "Webtoon",
+                "id": "webtoon"
             },
             {
                 "type": "genre",
-                "name": "Webtoons"
+                "name": "Webtoons",
+                "id": "webtoons"
             },
             {
                 "type": "genre",
-                "name": "Wuxia"
+                "name": "Wuxia",
+                "id": "wuxia"
             },
             {
                 "type": "genre",
-                "name": "Yaoi"
+                "name": "Yaoi",
+                "id": "yaoi"
             },
             {
                 "type": "genre",
-                "name": "Yuri"
+                "name": "Yuri",
+                "id": "yuri"
             },
             {
                 "type": "genre",
-                "name": "Zombies"
-            },
-            {
-                "type": "genre",
-                "name": "Action"
-            },
-            {
-                "type": "genre",
-                "name": "Adaptation"
-            },
-            {
-                "type": "genre",
-                "name": "Adult"
-            },
-            {
-                "type": "genre",
-                "name": "Adventure"
-            },
-            {
-                "type": "genre",
-                "name": "Chinese"
-            },
-            {
-                "type": "genre",
-                "name": "Comedy"
-            },
-            {
-                "type": "genre",
-                "name": "Coming Soon"
-            },
-            {
-                "type": "genre",
-                "name": "Cooking"
-            },
-            {
-                "type": "genre",
-                "name": "Crime"
-            },
-            {
-                "type": "genre",
-                "name": "Demons"
-            },
-            {
-                "type": "genre",
-                "name": "Doujinshi"
-            },
-            {
-                "type": "genre",
-                "name": "Drama"
-            },
-            {
-                "type": "genre",
-                "name": "Ecchi"
-            },
-            {
-                "type": "genre",
-                "name": "Fantasy"
-            },
-            {
-                "type": "genre",
-                "name": "Full Color"
-            },
-            {
-                "type": "genre",
-                "name": "Game"
-            },
-            {
-                "type": "genre",
-                "name": "Games"
-            },
-            {
-                "type": "genre",
-                "name": "Gender Bender"
-            },
-            {
-                "type": "genre",
-                "name": "Gore"
-            },
-            {
-                "type": "genre",
-                "name": "Harem"
-            },
-            {
-                "type": "genre",
-                "name": "Hentai"
-            },
-            {
-                "type": "genre",
-                "name": "Historical"
-            },
-            {
-                "type": "genre",
-                "name": "Horror"
-            },
-            {
-                "type": "genre",
-                "name": "Hot blood"
-            },
-            {
-                "type": "genre",
-                "name": "Isekai"
-            },
-            {
-                "type": "genre",
-                "name": "Japanese"
-            },
-            {
-                "type": "genre",
-                "name": "Josei"
-            },
-            {
-                "type": "genre",
-                "name": "Korean"
-            },
-            {
-                "type": "genre",
-                "name": "Live action"
-            },
-            {
-                "type": "genre",
-                "name": "Lolicon"
-            },
-            {
-                "type": "genre",
-                "name": "Magic"
-            },
-            {
-                "type": "genre",
-                "name": "Manhua"
-            },
-            {
-                "type": "genre",
-                "name": "Manhwa"
-            },
-            {
-                "type": "genre",
-                "name": "Martial Arts"
-            },
-            {
-                "type": "genre",
-                "name": "Mature"
-            },
-            {
-                "type": "genre",
-                "name": "Mecha"
-            },
-            {
-                "type": "genre",
-                "name": "Medical"
-            },
-            {
-                "type": "genre",
-                "name": "Military"
-            },
-            {
-                "type": "genre",
-                "name": "Modern"
-            },
-            {
-                "type": "genre",
-                "name": "Money"
-            },
-            {
-                "type": "genre",
-                "name": "Monster"
-            },
-            {
-                "type": "genre",
-                "name": "MONSTER GIRLS"
-            },
-            {
-                "type": "genre",
-                "name": "Mystery"
-            },
-            {
-                "type": "genre",
-                "name": "N/A"
-            },
-            {
-                "type": "genre",
-                "name": "ONESHOT"
-            },
-            {
-                "type": "genre",
-                "name": "Psychological"
-            },
-            {
-                "type": "genre",
-                "name": "Reincarnation"
-            },
-            {
-                "type": "genre",
-                "name": "Revenge"
-            },
-            {
-                "type": "genre",
-                "name": "Romance"
-            },
-            {
-                "type": "genre",
-                "name": "Samurai"
-            },
-            {
-                "type": "genre",
-                "name": "School Life"
-            },
-            {
-                "type": "genre",
-                "name": "Sci-fi"
-            },
-            {
-                "type": "genre",
-                "name": "Seinen"
-            },
-            {
-                "type": "genre",
-                "name": "Shonen Ai"
-            },
-            {
-                "type": "genre",
-                "name": "Shotacon"
-            },
-            {
-                "type": "genre",
-                "name": "Shoujo"
-            },
-            {
-                "type": "genre",
-                "name": "Shoujo ai"
-            },
-            {
-                "type": "genre",
-                "name": "Shounen"
-            },
-            {
-                "type": "genre",
-                "name": "Shounen ai"
-            },
-            {
-                "type": "genre",
-                "name": "Slice of Life"
-            },
-            {
-                "type": "genre",
-                "name": "Smut"
-            },
-            {
-                "type": "genre",
-                "name": "Sports"
-            },
-            {
-                "type": "genre",
-                "name": "Supernatural"
-            },
-            {
-                "type": "genre",
-                "name": "Survival"
-            },
-            {
-                "type": "genre",
-                "name": "System"
-            },
-            {
-                "type": "genre",
-                "name": "teacher"
-            },
-            {
-                "type": "genre",
-                "name": "Terror"
-            },
-            {
-                "type": "genre",
-                "name": "Thriller"
-            },
-            {
-                "type": "genre",
-                "name": "Time Travel"
-            },
-            {
-                "type": "genre",
-                "name": "Tragedy"
-            },
-            {
-                "type": "genre",
-                "name": "Updating"
-            },
-            {
-                "type": "genre",
-                "name": "Video Games"
-            },
-            {
-                "type": "genre",
-                "name": "Villainess"
-            },
-            {
-                "type": "genre",
-                "name": "Webtoon"
-            },
-            {
-                "type": "genre",
-                "name": "Webtoons"
-            },
-            {
-                "type": "genre",
-                "name": "Wuxia"
-            },
-            {
-                "type": "genre",
-                "name": "Yaoi"
-            },
-            {
-                "type": "genre",
-                "name": "Yuri"
-            },
-            {
-                "type": "genre",
-                "name": "Zombies"
+                "name": "Zombies",
+                "id": "zombies"
             }
         ]
     },

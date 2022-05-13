@@ -10,7 +10,7 @@ const BASE_URL: &str = "https://blackarmy.fr";
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
-	template::parse_manga_list(String::from(BASE_URL), String::from("manga"),filters, page)
+	template::parse_manga_list(String::from(BASE_URL), String::from("manga"), filters, page)
 }
 
 #[get_manga_listing]
@@ -25,7 +25,7 @@ fn get_manga_details(id: String) -> Result<Manga> {
 
 #[get_chapter_list]
 fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
-	template::parse_chapter_list(id, String::from("MMMM dd,yyyy"), String::from("fr"),"fr")
+	template::parse_chapter_list(id, String::from("MMMM dd,yyyy"), String::from("fr"), "fr")
 }
 
 #[get_page_list]
@@ -35,8 +35,7 @@ fn get_page_list(id: String) -> Result<Vec<Page>> {
 
 #[modify_image_request] 
 fn modify_image_request(request: Request) {
-	template::modify_image_request(
-		String::from(BASE_URL), request)
+	template::modify_image_request(String::from(BASE_URL), request)
 }
 
 #[handle_url]
