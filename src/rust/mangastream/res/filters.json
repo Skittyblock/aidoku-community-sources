@@ -1,0 +1,13 @@
+[
+    { "type": "title" },
+    {
+        "type": "select",
+        "name": "Status",
+        "options": ["All", "Ongoing", "Completed", "Dropped", "Mass Release", "Daily Release"]
+    },
+    {
+        "type": "select",
+        "name": "Type",
+        "options": ["All", "Manga", "Manhwa", "Manhua", "Comic"]
+    }    
+]
