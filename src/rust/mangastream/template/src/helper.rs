@@ -20,13 +20,13 @@ pub fn get_listing_url(base_url: String, pathname: String, listing: Listing, pag
 
 // return the manga status 
 pub fn manga_status(status: String) -> MangaStatus {
-    if status == "ONGOING" {
+    if status == "ONGOING" || status == "DEVAM EDIYOR" {
         return MangaStatus::Ongoing;
-    } else if status == "COMPLETED" {
+    } else if status == "COMPLETED" || status == "TAMAMLANDI" {
         return MangaStatus::Completed;
-    } else if status == "HIATUS" {
+    } else if status == "HIATUS" || status == "DURDURULDU" {
         return MangaStatus::Hiatus;
-    } else if status == "CANCELLED" {
+    } else if status == "CANCELLED" || status == "BIRAKILDI" || status == "DROPPED" {
         return MangaStatus::Cancelled;
     } else {
         return MangaStatus::Unknown;
@@ -113,6 +113,7 @@ pub fn get_date(id: String, date_format: String, locale: &str, raw_date: StringR
     }
 }
 
+//get the image sources as some images are in base64 format
 pub fn get_image_src(node:Node) -> String{
     let image = node.select("img").first().attr("src").read();
     if image.starts_with("data") || image == "" {

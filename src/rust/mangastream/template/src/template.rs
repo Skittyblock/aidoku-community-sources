@@ -130,10 +130,17 @@ pub fn parse_manga_details(id: String) -> Result<Manga> {
 	} else {
 		cover = image;
 	}
-	let author = html.select("span:contains(Author:), span:contains(Pengarang:), .fmed b:contains(Author)+span, .imptdt:contains(Author) i").text().read();
+	let mut author = String::from(html.select("span:contains(Author:), span:contains(Pengarang:), .fmed b:contains(Author)+span, .imptdt:contains(Author) i, .fmed b:contains(Yazar)+span, .fmed b:contains(Autheur)+span").text().read()
+		.replace("[Add, ]","")
+		.replace("Author","").trim());
+	if author == "-" {
+        author = String::from("No Author");
+    }
 	let artist = html.select("#last_episode small").text().read();
 	let description = html.select(".entry-content p").text().read();
-	let status = manga_status(html.select(".imptdt i").text().read().to_uppercase());
+	let status = manga_status(String::from(html.select(".imptdt:contains(Status), .imptdt:contains(Durum), .imptdt:contains(Statut) i").text().read()
+		.replace("Status","")
+		.replace("Statut","").to_uppercase().trim()));
 	let mut categories = Vec::new();
 	let mut nsfw = MangaContentRating::Safe;
 	for node in html.select("span.mgen a").array() {
