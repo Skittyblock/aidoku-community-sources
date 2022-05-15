@@ -49,7 +49,7 @@ fn get_manga_details(id: String) -> Result<Manga> {
 
 #[get_chapter_list]
 fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
-    template::get_chapter_list(id, true, |c| c == '#' || c == '_', String::from("div.col-xs-3"), convert_time)
+    template::get_chapter_list(id, trunc_trailing_comic, true, String::from("div.col-xs-3"), convert_time)
 }
 
 #[get_page_list]

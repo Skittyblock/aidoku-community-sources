@@ -1,10 +1,9 @@
 use aidoku::{
-    error::Result, std::String, std::Vec, std::net::Request, std::net::HttpMethod,
+    error::Result, std::String, std::Vec, std::net::Request, std::net::HttpMethod, prelude::println,
     Listing, Manga, MangaPageResult, Page, MangaStatus, MangaContentRating, MangaViewer, Chapter, DeepLink
 };
 
-use crate::helper::{i32_to_string, append_protocol, https_upgrade};
-use crate::scan;
+use crate::helper::{i32_to_string, append_protocol, https_upgrade, extract_i32_from_string};
 
 pub fn get_manga_list(search_url: String, title_transformer: fn(String) -> String) -> Result<MangaPageResult> {
     let mut mangas: Vec<Manga> = Vec::new();
@@ -88,10 +87,12 @@ pub fn get_manga_details(id: String, status_from_string: fn(String) -> MangaStat
     })
 }
 
-pub fn get_chapter_list(id: String, skip_first: bool, chapter_title_separator: fn(char) -> bool, chapter_date_selector: String, chapter_date_converter: fn(String) -> f64) -> Result<Vec<Chapter>> {
+pub fn get_chapter_list(id: String, title_transformer: fn(String) -> String, skip_first: bool, chapter_date_selector: String, chapter_date_converter: fn(String) -> f64) -> Result<Vec<Chapter>> {
     let mut skipped_first = false;
     let mut chapters: Vec<Chapter> = Vec::new();
     let html = Request::new(id.clone().as_str(), HttpMethod::Get).html();
+    let title_untrimmed = title_transformer(html.select("h1.title-detail").text().read());
+    let title = title_untrimmed.trim();
     for chapter in html.select("div.list-chapter > nav > ul > li").array() {
         if skip_first && !skipped_first {
             skipped_first = true;
@@ -101,13 +102,17 @@ pub fn get_chapter_list(id: String, skip_first: bool, chapter_title_separator: f
         let chapter_url = chapter_node.select("div.chapter > a").attr("href").read().replacen("http://", "https://", 1);
         let chapter_id = chapter_url.clone();
         let chapter_title = chapter_node.select("div.chapter > a").text().read();
-        let chapter_number_string = scan!(chapter_title, chapter_title_separator, String, f32, String);
+        println!("Title: {}", title);
+        println!("Text: {}", chapter_title);
+        let extracted = extract_i32_from_string(String::from(title), chapter_title);
+        println!("Extracted: {}", extracted);
+        let chapter_number = extracted.split(" ").collect::<Vec<&str>>().into_iter().map(|a| a.parse::<f32>().unwrap_or(0.0)).find(|a| *a > 0.0);
         let date_updated = chapter_date_converter(chapter_node.select(&chapter_date_selector).text().read());
         chapters.push(Chapter {
             id: chapter_id,
             title: String::from(""),
             volume: -1.0,
-            chapter: chapter_number_string.1.unwrap_or(0.0),
+            chapter: chapter_number.unwrap_or(0.0),
             date_updated,
             scanlator: String::new(),
             url: chapter_url,

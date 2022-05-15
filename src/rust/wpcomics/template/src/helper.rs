@@ -10,6 +10,9 @@ macro_rules! scan {
     }}
 }
 
+pub fn extract_i32_from_string(title: String, text: String) -> String {  
+    text.replace(&title, "").chars().filter(|a| (*a >= '0' && *a <= '9') || *a == ' ').collect::<String>()
+}
 
 pub fn append_protocol(url: String) -> String {
     if !url.starts_with("http") {
