@@ -6,7 +6,7 @@ use wpcomics_template::helper::i32_to_string;
 // MARK: Mappings
 pub fn get_tag_id(genre: String) -> String {
     let id = match genre.as_str() {
-		"Action" => "1",
+        "Action" => "1",
         "Adult" => "2",
         "Adventure" => "3",
         "Anime" => "4",
@@ -64,8 +64,8 @@ pub fn get_tag_id(genre: String) -> String {
         "16+" => "60",
         "18+" => "61",
         _ => "",
-	};
-	return String::from(id);
+    };
+    return String::from(id);
 }
 
 pub fn listing_map(listing: String) -> String {
