@@ -60,7 +60,7 @@ pub fn get_manga_details(id: String, status_from_string: fn(String) -> MangaStat
     let description = details.select("div.detail-content > p").text().read();
     let mut categories = Vec::new();
     let mut nsfw = MangaContentRating::Safe;
-    let mut viewer = MangaViewer::Default;
+    let mut viewer = MangaViewer::Rtl;
     for node in details.select("li.kind.row > p.col-xs-8").text().read().split(" - ") {
         let category = String::from(node);
         if category == String::from("Smut") || category == String::from("Mature") || category == String::from("Adult") || category == String::from("18+") {
@@ -68,7 +68,7 @@ pub fn get_manga_details(id: String, status_from_string: fn(String) -> MangaStat
         } else if category == String::from("Ecchi") || category == String::from("16+") {
             nsfw = MangaContentRating::Suggestive;
         }
-        if category.contains("Webtoon") {
+        if category.contains("Webtoon") || category.contains("Manhwa") || category.contains("Manhua") {
             viewer = MangaViewer::Scroll;
         }
         categories.push(category.clone());
