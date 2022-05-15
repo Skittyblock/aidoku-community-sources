@@ -104,11 +104,11 @@ pub fn get_chapter_list(id: String, title_transformer: fn(String) -> String, ski
         let chapter_url = chapter_node.select("div.chapter > a").attr("href").read().replacen("http://", "https://", 1);
         let chapter_id = chapter_url.clone();
         let chapter_title = chapter_node.select("div.chapter > a").text().read();
-        let chapter_number = extract_i32_from_string(String::from(title), chapter_title).split(" ").collect::<Vec<&str>>().into_iter().map(|a| a.parse::<f32>().unwrap_or(0.0)).find(|a| *a > 0.0);
+        let chapter_number = extract_i32_from_string(String::from(title), String::from(&chapter_title)).split(" ").collect::<Vec<&str>>().into_iter().map(|a| a.parse::<f32>().unwrap_or(0.0)).find(|a| *a > 0.0);
         let date_updated = chapter_date_converter(chapter_node.select(&chapter_date_selector).text().read());
         chapters.push(Chapter {
             id: chapter_id,
-            title: String::from(""),
+            title: chapter_title,
             volume: -1.0,
             chapter: chapter_number.unwrap_or(-1.0),
             date_updated,
