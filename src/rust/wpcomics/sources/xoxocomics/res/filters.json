@@ -6,6 +6,7 @@
         "type": "select",
         "name": "Genre",
         "options": [
+            "None",
             "Marvel",
             "DC Comics",
             "Action",

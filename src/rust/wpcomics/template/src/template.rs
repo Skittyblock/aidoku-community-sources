@@ -61,9 +61,9 @@ pub fn get_manga_details(id: String, status_from_string: fn(String) -> MangaStat
     let mut viewer = MangaViewer::Default;
     for node in details.select("li.kind.row > p.col-xs-8").text().read().split(" - ") {
         let category = String::from(node);
-        if category == String::from("Smut") || category == String::from("Mature") || category == String::from("Ecchi") || category == String::from("Adult") || category == String::from("18+") {
+        if category == String::from("Smut") || category == String::from("Mature") || category == String::from("Adult") || category == String::from("18+") {
             nsfw = MangaContentRating::Nsfw;
-        } else if category == String::from("16+") {
+        } else if category == String::from("Ecchi") || category == String::from("16+") {
             nsfw = MangaContentRating::Suggestive;
         }
         if category.contains("Webtoon") {
@@ -106,9 +106,9 @@ pub fn get_chapter_list(id: String, title_transformer: fn(String) -> String, ski
         let date_updated = chapter_date_converter(chapter_node.select(&chapter_date_selector).text().read());
         chapters.push(Chapter {
             id: chapter_id,
-            title: String::from(""),
+            title: chapter_title,
             volume: -1.0,
-            chapter: chapter_number.unwrap_or(0.0),
+            chapter: chapter_number.unwrap_or(-1.0),
             date_updated,
             scanlator: String::new(),
             url: chapter_url,
