@@ -10,8 +10,16 @@ macro_rules! scan {
     }}
 }
 
-pub fn extract_i32_from_string(title: String, text: String) -> String {  
-    text.replace(&title, "").chars().filter(|a| (*a >= '0' && *a <= '9') || *a == ' ').collect::<String>()
+pub fn extract_i32_from_string(title: String, text: String) -> f32 {  
+    text.replace(&title, "")
+        .chars()
+        .filter(|a| (*a >= '0' && *a <= '9') || *a == ' ' || *a == '.')
+        .collect::<String>()
+        .split(" ")
+        .collect::<Vec<&str>>().into_iter()
+        .map(|a| a.parse::<f32>().unwrap_or(0.0))
+        .find(|a| *a > 0.0)
+        .unwrap_or(0.0)
 }
 
 pub fn append_protocol(url: String) -> String {
