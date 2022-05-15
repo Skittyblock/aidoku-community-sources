@@ -1,5 +1,5 @@
 use aidoku::{
-    error::Result, std::String, std::Vec, std::net::Request, std::net::HttpMethod, prelude::println,
+    error::Result, std::String, std::Vec, std::net::Request, std::net::HttpMethod,
     Listing, Manga, MangaPageResult, Page, MangaStatus, MangaContentRating, MangaViewer, Chapter, DeepLink
 };
 
@@ -102,11 +102,7 @@ pub fn get_chapter_list(id: String, title_transformer: fn(String) -> String, ski
         let chapter_url = chapter_node.select("div.chapter > a").attr("href").read().replacen("http://", "https://", 1);
         let chapter_id = chapter_url.clone();
         let chapter_title = chapter_node.select("div.chapter > a").text().read();
-        println!("Title: {}", title);
-        println!("Text: {}", chapter_title);
-        let extracted = extract_i32_from_string(String::from(title), chapter_title);
-        println!("Extracted: {}", extracted);
-        let chapter_number = extracted.split(" ").collect::<Vec<&str>>().into_iter().map(|a| a.parse::<f32>().unwrap_or(0.0)).find(|a| *a > 0.0);
+        let chapter_number = extract_i32_from_string(String::from(title), chapter_title).split(" ").collect::<Vec<&str>>().into_iter().map(|a| a.parse::<f32>().unwrap_or(0.0)).find(|a| *a > 0.0);
         let date_updated = chapter_date_converter(chapter_node.select(&chapter_date_selector).text().read());
         chapters.push(Chapter {
             id: chapter_id,
