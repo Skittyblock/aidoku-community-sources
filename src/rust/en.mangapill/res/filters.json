@@ -8,7 +8,7 @@
     {
         "type": "select",
         "name": "Status",
-        "options": ["All", "Publishing", "Finished", "On Haitus", "discontinued"]
+        "options": ["All", "Publishing", "Finished", "On Haitus", "Discontinued"]
     },
     {
         "type": "group",

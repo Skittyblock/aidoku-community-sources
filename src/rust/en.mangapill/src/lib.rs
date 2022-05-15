@@ -1,8 +1,7 @@
 #![no_std]
 use aidoku::{
-    prelude::*, error::Result, std::String, std::ArrayRef, std::ValueRef, std::ObjectRef, std::Vec, std::net::Request, std::net::HttpMethod,
-    Filter, FilterType, Listing, Manga, MangaPageResult, Page, MangaStatus, MangaContentRating, MangaViewer, Chapter, DeepLink,
-    std::defaults::defaults_get,
+    prelude::*, error::Result, std::String, std::Vec, std::net::Request, std::net::HttpMethod,
+    Filter, Manga, MangaPageResult, Page, Chapter,
 };
 
 mod parser;
@@ -32,11 +31,6 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
             has_more: false,
         })
     }
-}
-
-#[get_manga_listing]
-fn get_manga_listing(_: Listing, _: i32) -> Result<MangaPageResult> {
-    todo!()
 }
 
 #[get_manga_details]

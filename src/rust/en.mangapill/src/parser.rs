@@ -1,8 +1,6 @@
 use aidoku::{
-    prelude::*, error::Result, std::String, std::ArrayRef, std::ValueRef, std::ObjectRef, std::Vec, std::net::Request, std::net::HttpMethod,
-    Filter, FilterType, Listing, Manga, MangaPageResult, Page, MangaStatus, MangaContentRating, MangaViewer, Chapter, DeepLink,
-    std::defaults::defaults_get,
-    std::html::Node,
+    prelude::*, error::Result, std::String, std::Vec, std::html::Node,
+    Filter, FilterType, Manga, Page, MangaStatus, MangaContentRating, MangaViewer, Chapter,
 };
 
 pub fn parse_recents(html: Node, result: &mut Vec<Manga>) {
@@ -59,12 +57,39 @@ pub fn parse_manga(obj: Node, id: String) -> Result<Manga> {
     let title = obj.select(".lazy").attr("alt").read();
     let cover = obj.select(".lazy").attr("data-src").read();
     let description = obj.select(".text-sm.text--secondary").text().read();
-    let status_str = obj.select(".grid.grid-cols-1.gap-3.mb-3 div:nth-child(2) div:nth-child(2)").text().read();
+    let type_str = obj.select(".grid.grid-cols-1.gap-3.mb-3 div:first-child div").text().read().to_lowercase();
+    let status_str = obj.select(".grid.grid-cols-1.gap-3.mb-3 div:nth-child(2) div:nth-child(2)").text().read().to_lowercase();
 
-    let mut status = MangaStatus::Ongoing;
-    if !status_str.contains("publishing") {
-        status = MangaStatus::Completed;
-    }
+    let url = format!("https://www.mangapill.com{}", &id);
+
+    let mut categories: Vec<String> = Vec::new();
+    obj.select("a[href*=genre]")
+        .array()
+        .for_each(|tag| categories.push(tag.as_node().text().read()));
+
+    let status = if status_str.contains("publishing") {
+        MangaStatus::Ongoing
+    } else if status_str.contains("finished") {
+        MangaStatus::Completed
+    } else {
+        MangaStatus::Unknown
+    };
+
+    let nsfw = if obj.select(".alert-warning").text().read().contains("Mature") {
+        MangaContentRating::Nsfw
+    } else if categories.contains(&String::from("Ecchi")) {
+        MangaContentRating::Suggestive
+    } else {
+        MangaContentRating::Safe
+    };
+
+    let viewer = match type_str.as_str() {
+        "manga" => MangaViewer::Rtl,
+        "manhwa" => MangaViewer::Scroll,
+        _ => MangaViewer::Rtl
+    };
+
+    println!("{}", type_str);
 
     Ok(Manga {
         id,
@@ -73,11 +98,11 @@ pub fn parse_manga(obj: Node, id: String) -> Result<Manga> {
         author: String::new(),
         artist: String::new(),
         description,
-        url: String::new(),
-        categories: Vec::new(),
+        url,
+        categories,
         status,
-        nsfw: MangaContentRating::Safe,
-        viewer: MangaViewer::Default
+        nsfw,
+        viewer
     })
 }
 
@@ -127,7 +152,7 @@ pub fn get_page_list(obj: Node) -> Result<Vec<Page>> {
     Ok(pages)
 }
 
-pub fn get_filtered_url(filters: Vec<Filter>, page: i32, url: &mut String){
+pub fn get_filtered_url(filters: Vec<Filter>, page: i32, url: &mut String) {
     let mut is_searching = false;
     let mut query = String::new();
     let mut search_string = String::new();
