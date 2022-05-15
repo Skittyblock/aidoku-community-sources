@@ -2,8 +2,12 @@
 .build
 *.aix
 
+src/**/out
+
 src/as/*/build
 src/as/*/node_modules
+src/as/*/.wireit
+
 src/rust/*/target
 src/rust/node_modules
 src/rust/en.readm
