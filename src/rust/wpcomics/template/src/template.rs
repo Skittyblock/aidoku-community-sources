@@ -108,7 +108,7 @@ pub fn get_chapter_list(id: String, title_transformer: fn(String) -> String, ski
         let date_updated = chapter_date_converter(chapter_node.select(&chapter_date_selector).text().read());
         chapters.push(Chapter {
             id: chapter_id,
-            title: chapter_title,
+            title: String::from(""),
             volume: -1.0,
             chapter: chapter_number.unwrap_or(-1.0),
             date_updated,
