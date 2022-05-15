@@ -13,7 +13,6 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 
     let mut url = String::new();
     parser::get_filtered_url(filters, page, &mut url);
-    println!("{}", url.as_str());
     let html = Request::new(url.as_str(), HttpMethod::Get).html();
 
     if url.contains("search") {
