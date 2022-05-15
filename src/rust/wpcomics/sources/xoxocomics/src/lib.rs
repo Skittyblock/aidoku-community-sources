@@ -20,6 +20,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
                 match filter.name.as_str() {
                     "Genre" => {
                         genre = get_tag_id(filter.value.as_int().unwrap_or(0));
+                        println!("genre: {}", genre);
                     },
                     _ => continue,
                 }
@@ -33,13 +34,14 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
             genre,
             page,
         ),
+        String::from("li > a[rel=next]"),
         trunc_trailing_comic
     )
 }
 
 #[get_manga_listing]
 fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
-    template::get_manga_listing(String::from("https://xoxocomics.com"), listing, listing_map, trunc_trailing_comic, page)
+    template::get_manga_listing(String::from("https://xoxocomics.com"), listing, String::from("li > a[rel=next]"), listing_map, trunc_trailing_comic, page)
 }
 
 #[get_manga_details]

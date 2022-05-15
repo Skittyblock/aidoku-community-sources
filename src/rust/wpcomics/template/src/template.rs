@@ -5,12 +5,11 @@ use aidoku::{
 
 use crate::helper::{i32_to_string, append_protocol, https_upgrade, extract_i32_from_string};
 
-pub fn get_manga_list(search_url: String, title_transformer: fn(String) -> String) -> Result<MangaPageResult> {
+pub fn get_manga_list(search_url: String, next_page_selector: String, title_transformer: fn(String) -> String) -> Result<MangaPageResult> {
     let mut mangas: Vec<Manga> = Vec::new();
-    let mut count: i32 = 0;
+    let mut has_next_page = next_page_selector.len() > 0;
     let html = Request::new(&search_url, HttpMethod::Get).html();
     for item in html.select("div.items > div.row > div.item > figure.clearfix").array() {
-        count += 1;
         let item_node = item.as_node();
         let title = String::from(item_node.select("figcaption > h3 > a").first().text().read().trim().replacen("http://", "https://", 1));
         let id = https_upgrade(item_node.select("div.image > a").first().attr("href").read());
@@ -29,13 +28,16 @@ pub fn get_manga_list(search_url: String, title_transformer: fn(String) -> Strin
             viewer: MangaViewer::Default
         });
     }
+    if next_page_selector.len() > 0 {
+        has_next_page = html.select(&next_page_selector).array().len() > 0;
+    }
     Ok(MangaPageResult {
         manga: mangas,
-        has_more: count > 0,
+        has_more: has_next_page,
     })
 }
 
-pub fn get_manga_listing(base_url: String, listing: Listing, listing_mapping: fn(String) -> String, title_transformer: fn(String) -> String, page: i32) -> Result<MangaPageResult> {
+pub fn get_manga_listing(base_url: String, listing: Listing, next_page_selector: String, listing_mapping: fn(String) -> String, title_transformer: fn(String) -> String, page: i32) -> Result<MangaPageResult> {
     let mut url = String::new();
     url.push_str(&base_url);
     if listing.name != String::from("All") {
@@ -47,7 +49,7 @@ pub fn get_manga_listing(base_url: String, listing: Listing, listing_mapping: fn
         url.push_str("/?page=");
         url.push_str(&i32_to_string(page));
     }
-    get_manga_list(url, title_transformer)
+    get_manga_list(url, next_page_selector, title_transformer)
 }
 
 pub fn get_manga_details(id: String, status_from_string: fn(String) -> MangaStatus, title_transformer: fn(String) -> String) -> Result<Manga> {
