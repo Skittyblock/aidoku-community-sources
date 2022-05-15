@@ -39,8 +39,8 @@ function Package-Source {
         Copy-Item res/* target/wasm32-unknown-unknown/release/Payload -ErrorAction SilentlyContinue
         Copy-Item sources/$source/res/* target/wasm32-unknown-unknown/release/Payload -ErrorAction SilentlyContinue
         Set-Location target/wasm32-unknown-unknown/release
-        Copy-Item "$source.wasm" Payload/
-        zip -rq ../../../$source.aix Payload
+        Copy-Item "$source.wasm" Payload/main.wasm
+        zip -rq "../../../$source.aix" Payload
         Remove-Item -Recurse -Force Payload/
         Set-Location ../../..
     }
