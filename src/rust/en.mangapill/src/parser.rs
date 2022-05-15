@@ -220,6 +220,25 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32, url: &mut String) {
 	}
 }
 
+pub fn parse_incoming_url(url: String) -> String {
+    // https://mangapill.com/manga/6290/one-piece-pirate-recipes
+    // https://mangapill.com/chapters/6290-10006000/one-piece-pirate-recipes-chapter-6
+
+    let split = url.as_str().split("/");
+    let vec = split.collect::<Vec<&str>>();
+    let mut manga_id = String::from("/manga/");
+
+    if url.contains("/chapters/") {
+        let split  = vec[vec.len() - 2].split("-");
+        let ch_vec = split.collect::<Vec<&str>>();
+        manga_id.push_str(ch_vec[0]);
+    } else {
+        manga_id.push_str(vec[vec.len() - 2]);
+    }
+    manga_id.push_str("/");
+    manga_id.push_str(vec[vec.len() - 1]);
+    return manga_id;
+}
 
 // HELPER FUNCTIONS
 

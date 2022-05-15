@@ -49,7 +49,17 @@ fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 
 #[get_page_list]
 fn get_page_list(chapter_id: String) -> Result<Vec<Page>> {
-	let url = format!("https://www.mangapill.com{}", &chapter_id);
-	let html = Request::new(url.clone().as_str(), HttpMethod::Get).html();
-	return parser::get_page_list(html);
+    let url = format!("https://www.mangapill.com{}", &chapter_id);
+    let html = Request::new(url.clone().as_str(), HttpMethod::Get).html();
+    return parser::get_page_list(html);
+}
+
+#[handle_url]
+pub fn handle_url(url: String) -> Result<DeepLink> {
+    let parsed_manga_id = parser::parse_incoming_url(url);
+
+    Ok(DeepLink {
+        manga: Some(get_manga_details(parsed_manga_id.clone())?),
+        chapter: None
+    })
 }

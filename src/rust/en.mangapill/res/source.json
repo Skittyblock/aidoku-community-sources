@@ -4,7 +4,11 @@
 		"lang": "en",
 		"name": "MangaPill",
 		"version": 1,
-		"url": "https://mangapill.com",
+		"urls": [
+            "https://mangapill.com",
+            "https://www.mangapill.com"
+		],
 		"nsfw": 1
-	}
+	},
+    "listings": []
 }
