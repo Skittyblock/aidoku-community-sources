@@ -86,17 +86,18 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
             completed,
             chapter_count,
         ),
+        |title| title
     )
 }
 
 #[get_manga_listing]
 fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
-	template::get_manga_listing(String::from("https://www.nettruyenco.com"), listing, listing_map, page)
+	template::get_manga_listing(String::from("https://www.nettruyenco.com"), listing, listing_map, |title| title, page)
 }
 
 #[get_manga_details]
 fn get_manga_details(id: String) -> Result<Manga> {
-	template::get_manga_details(id, status_map)
+	template::get_manga_details(id, status_map, |title| title)
 }
 
 #[get_chapter_list]
@@ -135,5 +136,5 @@ fn modify_image_request(request: Request) {
 
 #[handle_url]
 pub fn handle_url(url: String) -> Result<DeepLink> {
-	template::handle_url(url, status_map)
+	template::handle_url(url, status_map, |title| title)
 }

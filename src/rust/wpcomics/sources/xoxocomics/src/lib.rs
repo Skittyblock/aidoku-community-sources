@@ -33,17 +33,18 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
             genre,
             page,
         ),
+        trunc_trailing_comic
     )
 }
 
 #[get_manga_listing]
 fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
-	template::get_manga_listing(String::from("https://xoxocomics.com"), listing, listing_map, page)
+	template::get_manga_listing(String::from("https://xoxocomics.com"), listing, listing_map, trunc_trailing_comic, page)
 }
 
 #[get_manga_details]
 fn get_manga_details(id: String) -> Result<Manga> {
-	template::get_manga_details(id, status_map)
+	template::get_manga_details(id, status_map, trunc_trailing_comic)
 }
 
 #[get_chapter_list]
@@ -69,5 +70,5 @@ fn modify_image_request(request: Request) {
 
 #[handle_url]
 pub fn handle_url(url: String) -> Result<DeepLink> {
-	template::handle_url(url, status_map)
+	template::handle_url(url, status_map, trunc_trailing_comic)
 }

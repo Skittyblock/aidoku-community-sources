@@ -3,6 +3,10 @@ use aidoku::{
 };
 use wpcomics_template::helper::i32_to_string;
 
+pub fn trunc_trailing_comic(title: String) -> String {
+    return title.chars().rev().collect::<String>().replacen("cimoC", "", 1).chars().rev().collect::<String>();
+}
+
 // MARK: Mappings
 pub fn get_tag_id(genre: i64) -> String {
     return String::from(match genre {

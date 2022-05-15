@@ -6,7 +6,7 @@ use aidoku::{
 use crate::helper::{i32_to_string, append_protocol, https_upgrade};
 use crate::scan;
 
-pub fn get_manga_list(search_url: String) -> Result<MangaPageResult> {
+pub fn get_manga_list(search_url: String, title_transformer: fn(String) -> String) -> Result<MangaPageResult> {
 	let mut mangas: Vec<Manga> = Vec::new();
 	let mut count: i32 = 0;
 	let html = Request::new(&search_url, HttpMethod::Get).html();
@@ -19,7 +19,7 @@ pub fn get_manga_list(search_url: String) -> Result<MangaPageResult> {
 		mangas.push(Manga {
 			id,
 			cover,
-			title,
+			title: title_transformer(title),
 			author: String::new(),
 			artist: String::new(),
 			description: String::new(),
@@ -36,7 +36,7 @@ pub fn get_manga_list(search_url: String) -> Result<MangaPageResult> {
 	})
 }
 
-pub fn get_manga_listing(base_url: String, listing: Listing, listing_mapping: fn(String) -> String, page: i32) -> Result<MangaPageResult> {
+pub fn get_manga_listing(base_url: String, listing: Listing, listing_mapping: fn(String) -> String, title_transformer: fn(String) -> String, page: i32) -> Result<MangaPageResult> {
 	let mut url = String::new();
 	url.push_str(&base_url);
 	if listing.name != String::from("All") {
@@ -48,10 +48,10 @@ pub fn get_manga_listing(base_url: String, listing: Listing, listing_mapping: fn
 		url.push_str("/?page=");
 		url.push_str(&i32_to_string(page));
 	}
-	get_manga_list(url)
+	get_manga_list(url, title_transformer)
 }
 
-pub fn get_manga_details(id: String, status_from_string: fn(String) -> MangaStatus) -> Result<Manga> {
+pub fn get_manga_details(id: String, status_from_string: fn(String) -> MangaStatus, title_transformer: fn(String) -> String) -> Result<Manga> {
 	let details = Request::new(id.clone().as_str(), HttpMethod::Get).html();
 	let title = details.select("h1.title-detail").text().read();
 	let cover = append_protocol(details.select("div.col-image > img").attr("src").read());
@@ -76,7 +76,7 @@ pub fn get_manga_details(id: String, status_from_string: fn(String) -> MangaStat
 	Ok(Manga {
 		id: id.clone(),
 		cover,
-		title,
+		title: title_transformer(title),
 		author,
 		artist: String::new(),
 		description,
@@ -144,9 +144,9 @@ pub fn modify_image_request(base_url: String, user_agent: String, request: Reque
 	request.header("Referer", &base_url).header("User-Agent", &user_agent);
 }
 
-pub fn handle_url(url: String, status_from_string: fn(String) -> MangaStatus) -> Result<DeepLink> {
+pub fn handle_url(url: String, status_from_string: fn(String) -> MangaStatus, title_transformer: fn(String) -> String) -> Result<DeepLink> {
 	Ok(DeepLink {
-		manga: Some(get_manga_details(url.clone(), status_from_string)?),
+		manga: Some(get_manga_details(url.clone(), status_from_string, title_transformer)?),
 		chapter: None
 	})
 }
