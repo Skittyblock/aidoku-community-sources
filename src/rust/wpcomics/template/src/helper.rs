@@ -10,7 +10,7 @@ macro_rules! scan {
     }}
 }
 
-pub fn extract_i32_from_string(title: String, text: String) -> f32 {  
+pub fn extract_f32_from_string(title: String, text: String) -> f32 {  
     text.replace(&title, "")
         .chars()
         .filter(|a| (*a >= '0' && *a <= '9') || *a == ' ' || *a == '.')
