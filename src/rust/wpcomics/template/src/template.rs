@@ -11,7 +11,7 @@ pub fn get_manga_list(search_url: String, next_page_selector: String, title_tran
     let html = Request::new(&search_url, HttpMethod::Get).html();
     for item in html.select("div.items > div.row > div.item > figure.clearfix").array() {
         let item_node = item.as_node();
-        let title = String::from(item_node.select("figcaption > h3 > a").first().text().read().trim().replacen("http://", "https://", 1));
+        let title = item_node.select("figcaption > h3 > a").first().text().read();
         let id = https_upgrade(item_node.select("div.image > a").first().attr("href").read());
         let cover = append_protocol(item_node.select("div.image > a > img").first().attr("data-original").read());
         mangas.push(Manga {

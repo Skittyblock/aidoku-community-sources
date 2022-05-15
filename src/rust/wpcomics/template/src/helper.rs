@@ -23,7 +23,7 @@ pub fn append_protocol(url: String) -> String {
 }
 
 pub fn https_upgrade(url: String) -> String {
-    return url.replace("http://", "https://");
+    return url.replacen("http://", "https://", 1);
 }
 
 pub fn urlencode(string: String) -> String {
