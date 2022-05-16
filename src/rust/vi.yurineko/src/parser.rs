@@ -10,7 +10,7 @@ pub fn parse_manga(manga_object: ObjectRef) -> Result<Manga> {
     let id = manga_object.get("id").as_int().unwrap_or(-1);
     let title = manga_object.get("originalName").as_string()?.read();
     let cover = manga_object.get("thumbnail").as_string()?.read();
-    let url = format!("https://yurineko.net/manga/{}", id);
+    let url = format!("https://yurineko.net/manga/{id}");
 
     let authors = manga_object.get("author").as_array()?;
     let author = authors
@@ -65,8 +65,8 @@ pub fn parse_manga(manga_object: ObjectRef) -> Result<Manga> {
 pub fn parse_chapter(scanlator: String, chapter_object: ObjectRef) -> Result<Chapter> {
     let id = chapter_object.get("id").as_int().unwrap_or(-1);
     let manga_id = chapter_object.get("mangaID").as_int().unwrap_or(-1);
-    let chapter_id = format!("{}/{}", manga_id, id);
-    let url = format!("https://yurineko.net/read/{}", chapter_id);
+    let chapter_id = format!("{manga_id}/{id}");
+    let url = format!("https://yurineko.net/read/{chapter_id}");
     let title = chapter_object.get("name").as_string()?.read();
     let chapter_number = extract_f32_from_string(String::from("-"), String::from(&title));
 

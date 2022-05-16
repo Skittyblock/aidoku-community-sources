@@ -1,4 +1,5 @@
 use aidoku::{
+    prelude::format,
     std::{String, Vec},
     MangaStatus,
 };
@@ -262,20 +263,11 @@ pub fn extract_f32_from_string(title: String, text: String) -> f32 {
 }
 
 pub fn get_search_url(base_url: String, query: String, tag: String, page: i32) -> String {
-    let mut url = String::from(base_url);
     if query.len() > 0 {
-        url.push_str("/search?query=");
-        url.push_str(query.as_str());
-        url.push_str("&page=");
-        url.push_str(&i32_to_string(page));
+        return format!("{base_url}/search?query={query}&page={page}");
     } else if tag.len() > 0 {
-        url.push_str("/searchType?type=tag&id=");
-        url.push_str(tag.as_str());
-        url.push_str("&page=");
-        url.push_str(&i32_to_string(page));
+        return format!("{base_url}/searchType?type=tag&id={tag}&page={page}");
     } else {
-        url.push_str("/lastest2?page=");
-        url.push_str(&i32_to_string(page));
+        return format!("{base_url}/lastest2?page={page}");
     }
-    return url;
 }

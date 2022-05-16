@@ -52,9 +52,8 @@ pub fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult
 #[get_manga_listing]
 pub fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
     let url = format!(
-        "https://api.yurineko.net/{}?page={}",
-        listing_map(listing.name),
-        page
+        "https://api.yurineko.net/{}?page={page}",
+        listing_map(listing.name)
     );
 
     let result = Request::new(url.as_str(), HttpMethod::Get)
@@ -76,7 +75,7 @@ pub fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult>
 
 #[get_manga_details]
 fn get_manga_details(id: String) -> Result<Manga> {
-    let url = format!("https://api.yurineko.net/manga/{}", id);
+    let url = format!("https://api.yurineko.net/manga/{id}");
     let json = Request::new(url.as_str(), HttpMethod::Get)
         .json()
         .as_object()?;
@@ -85,7 +84,7 @@ fn get_manga_details(id: String) -> Result<Manga> {
 
 #[get_chapter_list]
 fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
-    let url = format!("https://api.yurineko.net/manga/{}", id);
+    let url = format!("https://api.yurineko.net/manga/{id}");
 
     let json = Request::new(url.as_str(), HttpMethod::Get)
         .json()
@@ -113,7 +112,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 
 #[get_page_list]
 fn get_page_list(id: String) -> Result<Vec<Page>> {
-    let url = format!("https://api.yurineko.net/read/{}", id);
+    let url = format!("https://api.yurineko.net/read/{id}");
 
     let json = Request::new(url.as_str(), HttpMethod::Get)
         .json()
@@ -158,7 +157,7 @@ pub fn handle_url(url: String) -> Result<DeepLink> {
         let manga_id = &id[..end];
         let manga = get_manga_details(String::from(manga_id))?;
 
-        let api_url = format!("https://api.yurineko.net/read/{}", id);
+        let api_url = format!("https://api.yurineko.net/read/{id}");
         let json = Request::new(api_url.as_str(), HttpMethod::Get)
             .json()
             .as_object()?;
