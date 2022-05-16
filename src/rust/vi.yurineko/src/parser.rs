@@ -27,7 +27,9 @@ pub fn parse_manga(manga_object: ObjectRef) -> Result<Manga> {
     let description = description_node.text().0.as_string()?.read();
 
     let tags = manga_object.get("tag").as_array()?;
+    let couples = manga_object.get("couple").as_array()?;
     let categories = tags
+        .chain(couples)
         .map(|tag| {
             let tag_object = tag.as_object()?;
             Ok(tag_object.get("name").as_string()?.read())
