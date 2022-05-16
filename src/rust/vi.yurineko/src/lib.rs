@@ -116,6 +116,11 @@ fn get_page_list(id: String) -> Result<Vec<Page>> {
 	Ok(page_arr)
 }
 
+#[modify_image_request] 
+fn modify_image_request(request: Request) {
+    request.header("Referer", "https://yurineko.net").header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.54 Safari/537.36 Edg/101.0.1210.39");
+}
+
 #[handle_url]
 pub fn handle_url(url: String) -> Result<DeepLink> {
 	let url = &url[21..]; // remove https://yurineko.net/
