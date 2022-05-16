@@ -8,7 +8,7 @@ use crate::{
 use aidoku::{
     error::Result,
     prelude::*,
-    std::{net::HttpMethod, net::Request, String, Vec, defaults::defaults_get},
+    std::{defaults::defaults_get, net::HttpMethod, net::Request, String, Vec},
     Chapter, DeepLink, Filter, FilterType, Listing, Manga, MangaPageResult, Page,
 };
 
@@ -114,10 +114,15 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 fn get_page_list(id: String) -> Result<Vec<Page>> {
     let url = format!("https://api.yurineko.net/read/{id}");
     let mut request = Request::new(url.as_str(), HttpMethod::Get)
-        .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjE2NjMwLCJyb2xlIjoxLCJpYXQiOjE2NTI3MDk5MzYsImV4cCI6MTY1Nzg5MzkzNn0.q4NSW_AaWnlMJgSYkN9yE__wxpiD2aXDN82cdozfODg");
+        .header(
+            "Authorization", 
+            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjE2NjMwLCJyb2xlIjoxLCJpYXQiOjE2NTI3MDk5MzYsImV4cCI6MTY1Nzg5MzkzNn0.q4NSW_AaWnlMJgSYkN9yE__wxpiD2aXDN82cdozfODg"
+        );
     if let Ok(r18_token) = defaults_get("r18Token").as_string() {
-        request = Request::new(url.as_str(), HttpMethod::Get)
-            .header("Authorization", format!("Bearer {}", r18_token.read()).as_str());
+        request = Request::new(url.as_str(), HttpMethod::Get).header(
+            "Authorization",
+            format!("Bearer {}", r18_token.read()).as_str(),
+        );
     }
     let json = request.json().as_object()?;
     let pages = json.get("url").as_array()?;
