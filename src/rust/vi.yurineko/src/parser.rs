@@ -24,6 +24,7 @@ pub fn parse_manga(manga_object: ObjectRef) -> Result<Manga> {
 
 	let description_html = manga_object.get("description").as_string()?.read();
 	let description_node = Node::new_fragment(description_html.as_bytes());
+    // TODO: revert to `description_node.text().read()` when it doesn't crash the source anymore
 	let description = description_node.text().0.as_string()?.read();
 
 	let tags = manga_object.get("tag").as_array()?;
