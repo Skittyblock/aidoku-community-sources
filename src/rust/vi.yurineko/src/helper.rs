@@ -192,9 +192,13 @@ pub fn listing_map(listing: String) -> String {
 
 pub fn status_map(status: i64) -> MangaStatus {
     match status {
+        1 => MangaStatus::Unknown, // "Chưa ra mắt" => Not released
         2 => MangaStatus::Completed,
-        3 => MangaStatus::Unknown, // These are for upcoming mangas
+        3 => MangaStatus::Unknown, // "Sắp ra mắt" => Upcoming
         4 => MangaStatus::Ongoing,
+        5 => MangaStatus::Cancelled, // "Ngừng dịch" => source not translating it anymomre
+        6 => MangaStatus::Hiatus,
+        7 => MangaStatus::Cancelled, // "Ngừng xuất bản" => No more publications
         _ => MangaStatus::Unknown,
     }
 }
