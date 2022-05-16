@@ -3,7 +3,7 @@ use aidoku::{
     Listing, Manga, MangaPageResult, Page, MangaStatus, MangaContentRating, MangaViewer, Chapter, DeepLink
 };
 
-use crate::helper::{i32_to_string, append_protocol, https_upgrade, extract_i32_from_string};
+use crate::helper::{i32_to_string, append_protocol, https_upgrade, extract_f32_from_string};
 
 pub fn get_manga_list(search_url: String, next_page_selector: String, title_transformer: fn(String) -> String) -> Result<MangaPageResult> {
     let mut mangas: Vec<Manga> = Vec::new();
@@ -104,13 +104,13 @@ pub fn get_chapter_list(id: String, title_transformer: fn(String) -> String, ski
         let chapter_url = chapter_node.select("div.chapter > a").attr("href").read().replacen("http://", "https://", 1);
         let chapter_id = chapter_url.clone();
         let chapter_title = chapter_node.select("div.chapter > a").text().read();
-        let chapter_number = extract_i32_from_string(String::from(title), String::from(&chapter_title)).split(" ").collect::<Vec<&str>>().into_iter().map(|a| a.parse::<f32>().unwrap_or(0.0)).find(|a| *a > 0.0);
+        let chapter_number = extract_f32_from_string(String::from(title), String::from(&chapter_title));
         let date_updated = chapter_date_converter(chapter_node.select(&chapter_date_selector).text().read());
         chapters.push(Chapter {
             id: chapter_id,
             title: chapter_title,
             volume: -1.0,
-            chapter: chapter_number.unwrap_or(-1.0),
+            chapter: chapter_number,
             date_updated,
             scanlator: String::new(),
             url: chapter_url,

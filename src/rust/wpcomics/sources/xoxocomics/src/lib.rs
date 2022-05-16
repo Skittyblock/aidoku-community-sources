@@ -20,7 +20,6 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
                 match filter.name.as_str() {
                     "Genre" => {
                         genre = get_tag_id(filter.value.as_int().unwrap_or(0));
-                        println!("genre: {}", genre);
                     },
                     _ => continue,
                 }

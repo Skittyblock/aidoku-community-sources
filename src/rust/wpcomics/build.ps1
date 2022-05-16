@@ -40,7 +40,7 @@ function Package-Source {
         Copy-Item sources/$source/res/* target/wasm32-unknown-unknown/release/Payload -ErrorAction SilentlyContinue
         Set-Location target/wasm32-unknown-unknown/release
         Copy-Item "$source.wasm" Payload/main.wasm
-        zip -rq "../../../$source.aix" Payload
+        Compress-Archive -Force -Path Payload -DestinationPath "../../../$source.aix"
         Remove-Item -Recurse -Force Payload/
         Set-Location ../../..
     }
