@@ -8,7 +8,7 @@ use crate::{
 use aidoku::{
     error::Result,
     prelude::*,
-    std::{net::HttpMethod, net::Request, String, Vec},
+    std::{net::HttpMethod, net::Request, String, Vec, defaults::defaults_get},
     Chapter, DeepLink, Filter, FilterType, Listing, Manga, MangaPageResult, Page,
 };
 
@@ -113,10 +113,13 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 #[get_page_list]
 fn get_page_list(id: String) -> Result<Vec<Page>> {
     let url = format!("https://api.yurineko.net/read/{id}");
-
-    let json = Request::new(url.as_str(), HttpMethod::Get)
-        .json()
-        .as_object()?;
+    let mut request = Request::new(url.as_str(), HttpMethod::Get)
+        .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjE2NjMwLCJyb2xlIjoxLCJpYXQiOjE2NTI3MDk5MzYsImV4cCI6MTY1Nzg5MzkzNn0.q4NSW_AaWnlMJgSYkN9yE__wxpiD2aXDN82cdozfODg");
+    if let Ok(r18_token) = defaults_get("r18Token").as_string() {
+        request = Request::new(url.as_str(), HttpMethod::Get)
+            .header("Authorization", format!("Bearer {}", r18_token.read()).as_str());
+    }
+    let json = request.json().as_object()?;
     let pages = json.get("url").as_array()?;
     let mut page_arr: Vec<Page> = Vec::new();
     for (idx, page) in pages.enumerate() {
@@ -132,7 +135,15 @@ fn get_page_list(id: String) -> Result<Vec<Page>> {
 
 #[modify_image_request]
 fn modify_image_request(request: Request) {
-    request.header("Referer", "https://yurineko.net").header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.54 Safari/537.36 Edg/101.0.1210.39");
+    if let Ok(r18_token) = defaults_get("r18Token").as_string() {
+        request.header("Referer", "https://yurineko.net")
+            .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.54 Safari/537.36 Edg/101.0.1210.39")
+            .header("Authorization", format!("Bearer {}", r18_token.read()).as_str());
+    } else {
+        request.header("Referer", "https://yurineko.net")
+            .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.54 Safari/537.36 Edg/101.0.1210.39")
+            .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjE2NjMwLCJyb2xlIjoxLCJpYXQiOjE2NTI3MDk5MzYsImV4cCI6MTY1Nzg5MzkzNn0.q4NSW_AaWnlMJgSYkN9yE__wxpiD2aXDN82cdozfODg");
+    }
 }
 
 #[handle_url]
