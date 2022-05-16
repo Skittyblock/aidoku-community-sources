@@ -3,8 +3,9 @@
         "id": "vi.yurineko",
         "lang": "vi",
         "name": "YuriNeko",
+        "version": 1,
         "url": "https://yurineko.net",
-        "version": 1
+        "nsfw": 2
     },
     "listings": [
         {
