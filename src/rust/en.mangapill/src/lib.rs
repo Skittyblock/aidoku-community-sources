@@ -1,7 +1,7 @@
 #![no_std]
 use aidoku::{
 	prelude::*, error::Result, std::String, std::Vec, std::net::Request, std::net::HttpMethod,
-	Filter, Manga, MangaPageResult, Page, Chapter,
+	Filter, Manga, MangaPageResult, Page, Chapter, DeepLink
 };
 
 mod parser;
