@@ -1,109 +1,110 @@
 use aidoku::{
-    MangaStatus, std::{String, Vec}
+    std::{String, Vec},
+    MangaStatus,
 };
 
 // MARK: Mappings
 pub fn get_tag_id(genre: i64) -> String {
     String::from(match genre {
-        1 => "1", // R18
-        2 => "113", // Action
-        3 => "114", // Adventure
-        4 => "115", // Comedy
-        5 => "116", // Demon
-        6 => "117", // Drama
-        7 => "118", // Ecchi
-        8 => "119", // Fantasy
-        9 => "120", // Game
-        10 => "121", // Gender Bender
-        11 => "122", // Harem
-        12 => "123", // Historical
-        13 => "124", // Horror
-        14 => "125", // Martial Arts
-        15 => "126", // Mecha
-        16 => "127", // Military
-        17 => "128", // Music
-        18 => "129", // Mystery
-        19 => "130", // Parody
-        20 => "131", // Psychological
-        21 => "132", // Romance
-        22 => "133", // School Life
-        23 => "134", // Sci-Fi
-        24 => "137", // Slice of  Life
-        25 => "138", // Sports
-        26 => "139", // Supernatural
-        27 => "140", // Vampire
-        28 => "141", // Violence
-        29 => "142", // Tragedy
-        30 => "143", // Adult Life
-        31 => "144", // Isekai
-        32 => "145", // College
-        33 => "146", // Manhua
-        34 => "147", // Manhwa
-        35 => "148", // Full Color
-        36 => "149", // 4-koma
-        37 => "150", // No Text
-        38 => "151", // Yuri
-        39 => "152", // Hints
-        40 => "153", // Lỗi: không tìm thấy trai
-        41 => "156", // Glasses
-        42 => "157", // Blushing
-        43 => "158", // Body Swap
-        44 => "159", // Reversal
-        45 => "160", // Het
-        46 => "161", // Excuse me WTF?
-        47 => "162", // Pay for Gay
-        48 => "163", // FBI Warning!!
-        49 => "164", // Moe Paradise
-        50 => "165", // Science Babies
-        51 => "166", // Student x Teacher
-        52 => "167", // Siscon
-        53 => "168", // Mahou Shoujo
-        54 => "169", // Idol
-        55 => "170", // Tomboy
-        56 => "171", // Yankee
-        57 => "172", // Maid
-        58 => "173", // Monster Girl
-        59 => "174", // Office Lady
-        60 => "175", // Animal Ears
-        61 => "176", // Bisexual
-        62 => "177", // Tsundere
-        63 => "178", // Yandere
-        64 => "179", // Age Gap
-        65 => "180", // Co-worker
-        66 => "181", // Roommates
-        67 => "182", // Childhood Friends
-        68 => "183", // Love Triangle
-        69 => "184", // Threesome
-        70 => "185", // Polyamory
-        71 => "186", // Twins
-        72 => "187", // Incest
-        73 => "188", // Marriage
-        74 => "189", // Christmas
-        75 => "190", // Halloween
-        76 => "191", // New Year's
-        77 => "192", // Valentine
-        78 => "193", // Thất Tịch
-        79 => "194", // Birthday
-        80 => "195", // Big Breasts
-        81 => "196", // Butts
-        82 => "197", // Loli
-        83 => "198", // Netorare
-        84 => "199", // BDSM
-        85 => "200", // Toys
-        86 => "201", // Futanari
-        87 => "202", // Tentacles
-        88 => "203", // Rape
-        89 => "204", // Massage
-        90 => "205", // Masturbation
-        91 => "206", // Guro
-        92 => "208", // Dark Skin
-        93 => "209", // Anal
-        94 => "210", // Boob Sex
-        95 => "211", // Ahegao
-        96 => "212", // Pocky Game
-        97 => "214", // Anime
-        98 => "215", // School Girl
-        99 => "216", // Light Novel
+        1 => "1",     // R18
+        2 => "113",   // Action
+        3 => "114",   // Adventure
+        4 => "115",   // Comedy
+        5 => "116",   // Demon
+        6 => "117",   // Drama
+        7 => "118",   // Ecchi
+        8 => "119",   // Fantasy
+        9 => "120",   // Game
+        10 => "121",  // Gender Bender
+        11 => "122",  // Harem
+        12 => "123",  // Historical
+        13 => "124",  // Horror
+        14 => "125",  // Martial Arts
+        15 => "126",  // Mecha
+        16 => "127",  // Military
+        17 => "128",  // Music
+        18 => "129",  // Mystery
+        19 => "130",  // Parody
+        20 => "131",  // Psychological
+        21 => "132",  // Romance
+        22 => "133",  // School Life
+        23 => "134",  // Sci-Fi
+        24 => "137",  // Slice of  Life
+        25 => "138",  // Sports
+        26 => "139",  // Supernatural
+        27 => "140",  // Vampire
+        28 => "141",  // Violence
+        29 => "142",  // Tragedy
+        30 => "143",  // Adult Life
+        31 => "144",  // Isekai
+        32 => "145",  // College
+        33 => "146",  // Manhua
+        34 => "147",  // Manhwa
+        35 => "148",  // Full Color
+        36 => "149",  // 4-koma
+        37 => "150",  // No Text
+        38 => "151",  // Yuri
+        39 => "152",  // Hints
+        40 => "153",  // Lỗi: không tìm thấy trai
+        41 => "156",  // Glasses
+        42 => "157",  // Blushing
+        43 => "158",  // Body Swap
+        44 => "159",  // Reversal
+        45 => "160",  // Het
+        46 => "161",  // Excuse me WTF?
+        47 => "162",  // Pay for Gay
+        48 => "163",  // FBI Warning!!
+        49 => "164",  // Moe Paradise
+        50 => "165",  // Science Babies
+        51 => "166",  // Student x Teacher
+        52 => "167",  // Siscon
+        53 => "168",  // Mahou Shoujo
+        54 => "169",  // Idol
+        55 => "170",  // Tomboy
+        56 => "171",  // Yankee
+        57 => "172",  // Maid
+        58 => "173",  // Monster Girl
+        59 => "174",  // Office Lady
+        60 => "175",  // Animal Ears
+        61 => "176",  // Bisexual
+        62 => "177",  // Tsundere
+        63 => "178",  // Yandere
+        64 => "179",  // Age Gap
+        65 => "180",  // Co-worker
+        66 => "181",  // Roommates
+        67 => "182",  // Childhood Friends
+        68 => "183",  // Love Triangle
+        69 => "184",  // Threesome
+        70 => "185",  // Polyamory
+        71 => "186",  // Twins
+        72 => "187",  // Incest
+        73 => "188",  // Marriage
+        74 => "189",  // Christmas
+        75 => "190",  // Halloween
+        76 => "191",  // New Year's
+        77 => "192",  // Valentine
+        78 => "193",  // Thất Tịch
+        79 => "194",  // Birthday
+        80 => "195",  // Big Breasts
+        81 => "196",  // Butts
+        82 => "197",  // Loli
+        83 => "198",  // Netorare
+        84 => "199",  // BDSM
+        85 => "200",  // Toys
+        86 => "201",  // Futanari
+        87 => "202",  // Tentacles
+        88 => "203",  // Rape
+        89 => "204",  // Massage
+        90 => "205",  // Masturbation
+        91 => "206",  // Guro
+        92 => "208",  // Dark Skin
+        93 => "209",  // Anal
+        94 => "210",  // Boob Sex
+        95 => "211",  // Ahegao
+        96 => "212",  // Pocky Game
+        97 => "214",  // Anime
+        98 => "215",  // School Girl
+        99 => "216",  // Light Novel
         100 => "218", // Oneshot
         101 => "219", // Drunk
         102 => "220", // Creepy
@@ -229,13 +230,14 @@ pub fn urlencode(string: String) -> String {
     let mut result: Vec<u8> = Vec::with_capacity(string.len() * 3);
     let hex = "0123456789abcdef".as_bytes();
     let bytes = string.as_bytes();
-    
+
     for byte in bytes {
         let curr = *byte;
         if (b'a' <= curr && curr <= b'z')
             || (b'A' <= curr && curr <= b'Z')
-            || (b'0' <= curr && curr <= b'9') {
-                result.push(curr);
+            || (b'0' <= curr && curr <= b'9')
+        {
+            result.push(curr);
         } else {
             result.push(b'%');
             result.push(hex[curr as usize >> 4]);
@@ -246,13 +248,14 @@ pub fn urlencode(string: String) -> String {
     String::from_utf8(result).unwrap_or(String::new())
 }
 
-pub fn extract_f32_from_string(title: String, text: String) -> f32 {  
+pub fn extract_f32_from_string(title: String, text: String) -> f32 {
     text.replace(&title, " ")
         .chars()
         .filter(|a| (*a >= '0' && *a <= '9') || *a == ' ' || *a == '.')
         .collect::<String>()
         .split(" ")
-        .collect::<Vec<&str>>().into_iter()
+        .collect::<Vec<&str>>()
+        .into_iter()
         .map(|a| a.parse::<f32>().unwrap_or(0.0))
         .find(|a| *a > 0.0)
         .unwrap_or(0.0)
