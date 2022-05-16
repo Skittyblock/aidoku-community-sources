@@ -89,8 +89,6 @@ pub fn parse_manga(obj: Node, id: String) -> Result<Manga> {
 		_ => MangaViewer::Rtl
 	};
 
-	println!("{}", type_str);
-
 	Ok(Manga {
 		id,
 		cover,
