@@ -1,0 +1,14 @@
+{
+    "info": {
+        "id": "vi.yurineko",
+        "lang": "vi",
+        "name": "YuriNeko",
+        "url": "https://yurineko.net",
+        "version": 1
+    },
+    "listings": [
+        {
+            "name": "Random"
+        }
+    ]
+}
