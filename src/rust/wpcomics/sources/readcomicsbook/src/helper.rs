@@ -22,7 +22,6 @@ pub fn status_map(arg1: String) -> MangaStatus {
 }
 
 pub fn convert_time(time_ago: String) -> f64 {
-	#[allow(unused_assignments)]
 	let time_object = StringRef::from(time_ago).0;
 	return time_object
 		.as_date("MM/dd/yyyy", Some("en_US"), None)
