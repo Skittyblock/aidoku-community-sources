@@ -419,7 +419,7 @@ export class Search {
           `name=${encodeURI(filter.value.toString().replaceAll(" ", "+"))}`,
         );
       }
-      if (filter.type == FilterType.Genre) {
+      if (filter.type == FilterType.Genre && filter.value.toInteger() == 1) {
         qs.push(`tag%5B%5D=${this.getGenres(filter.name)}`);
       }
     }

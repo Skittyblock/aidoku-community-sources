@@ -1,0 +1,14 @@
+[
+	{
+		"type": "group",
+		"title": "Token",
+		"footer": "Token YuriNeko để đọc nội dung R18. Mặc định sẽ dùng token có sẵn trong source.\nNếu muốn dùng token riêng:\n- Đăng nhập vào YuriNeko\n- Lấy cookie \"user\" của YuriNeko\n- Decode nó bằng URL decoder, sẽ ra JSON\n- Lấy giá trị \"token\" từ JSON.",
+		"items": [
+			{
+				"type": "text",
+				"key": "r18Token",
+				"placeholder": "Token"
+			}
+		]
+	}
+]

@@ -1,0 +1,249 @@
+[
+	{ "type": "title" },
+	{
+		"type": "select",
+		"name": "Type",
+		"options": ["All", "Manga", "Novel", "One Shot", "Doujinshi", "Manhwa", "Manhua", "Oel"]
+	},
+	{
+		"type": "select",
+		"name": "Status",
+		"options": ["All", "Publishing", "Finished", "On Haitus", "Discontinued"]
+	},
+	{
+		"type": "group",
+		"name": "Genres",
+		"filters": [
+			{
+				"type": "genre",
+				"name": "Action",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Adventure",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Cars",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Comedy",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Dementia",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Demons",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Doujinshi",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Drama",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Ecchi",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Fantasy",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Game",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Gender Bender",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Harem",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Historical",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Horror",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Isekai",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Josei",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Kids",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Magic",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Martial Arts",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Mecha",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Military",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Music",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Mystery",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Parody",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Police",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Psychological",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Romance",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Samurai",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "School",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Sci-Fi",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Seinen",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Shoujo",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Shoujo Ai",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Shounen",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Shounen Ai",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Slice of Life",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Space",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Sports",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Super Power",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Supernatural",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Thriller",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Tragedy",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Vampire",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Yaoi",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Yuri",
+				"canExclude": false
+			}
+		]
+	}
+]

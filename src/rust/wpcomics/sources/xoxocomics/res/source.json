@@ -1,0 +1,24 @@
+{
+    "info": {
+        "id": "en.xoxocomics",
+        "lang": "en",
+        "name": "XOXO Comics",
+        "version": 1,
+        "url": "https://xoxocomics.com/",
+        "nsfw": 1
+    },
+    "listings": [
+        { 
+            "name": "Hot" 
+        },
+        {
+            "name": "Popular"
+        },
+        {
+            "name": "Ongoing"
+        },
+        {
+            "name": "Completed"
+        }
+    ]
+}

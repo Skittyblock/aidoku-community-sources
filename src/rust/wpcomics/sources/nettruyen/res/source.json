@@ -1,0 +1,21 @@
+{
+    "info": {
+        "id": "vi.nettruyen",
+        "lang": "vi",
+        "name": "NetTruyen",
+        "version": 1,
+        "url": "https://www.nettruyenco.com",
+        "nsfw": 1
+    },
+    "listings": [
+        { 
+            "name": "Hot" 
+        },
+        {
+            "name": "Truyện con gái" 
+        },
+        {
+            "name": "Truyện con trai"
+        }
+    ]
+}
