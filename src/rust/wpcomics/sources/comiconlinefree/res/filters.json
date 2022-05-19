@@ -3,10 +3,10 @@
 		"type": "title"
 	},
 	{
-        "type": "select",
-        "name": "Status",
-        "options": ["All", "Ongoing", "Completed"]
-    },
+		"type": "select",
+		"name": "Status",
+		"options": ["All", "Ongoing", "Completed"]
+	},
 	{
 		"type": "group",
 		"name": "Genres",
