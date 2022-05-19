@@ -25,7 +25,7 @@ pub static SELECTORS: Selectors = Selectors {
     manga_details_author: "div.manga-details > table > tbody > tr > td:contains(Author) + td",
     manga_details_author_transformer: |title| String::from(title.trim()),
     manga_details_description: "div.manga-desc > p.pdesc",
-    manga_details_tags: "div.manga-details > table > tbody > tr > td:contains(Author) + td",
+    manga_details_tags: "div.manga-details > table > tbody > tr > td:contains(Genre) + td",
     manga_details_tags_splitter: ", ",
     manga_details_status: "div.manga-details > table > tbody > tr > td:contains(Status) + td",
     manga_details_status_transformer: |title| String::from(title.trim()),
