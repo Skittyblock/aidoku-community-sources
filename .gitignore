@@ -2,10 +2,13 @@
 .build
 *.aix
 
+src/**/out
+
 src/as/*/build
 src/as/*/node_modules
 src/as/*/.wireit
-src/as/*/out
 
 src/rust/*/target
-
+src/rust/node_modules
+src/rust/en.readm
+src/rust/mangastream/sources/xcalibrscans
