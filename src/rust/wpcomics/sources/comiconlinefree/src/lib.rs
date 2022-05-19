@@ -83,12 +83,11 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 
 #[get_manga_listing]
 fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
-	let url;
-	if page > 1 {
-		url = format!("https://comiconlinefree.net/{}/{page}", listing_mapping(listing.name));
+	let url = if page > 1 {
+		format!("https://comiconlinefree.net/{}/{page}", listing_mapping(listing.name))
 	} else {
-		url = format!("https://comiconlinefree.net/{}/", listing_mapping(listing.name));
-	}
+		format!("https://comiconlinefree.net/{}/", listing_mapping(listing.name))
+	};
 	template::get_manga_list(url, &SELECTORS)
 }
 
