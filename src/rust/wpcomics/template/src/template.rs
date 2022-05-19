@@ -19,6 +19,7 @@ pub struct Selectors {
     pub manga_details_author_transformer: fn(String) -> String,
     pub manga_details_description: &'static str,
     pub manga_details_tags: &'static str,
+    pub manga_details_tags_splitter: &'static str,
     pub manga_details_status: &'static str,
     pub manga_details_status_transformer: fn(String) -> String,
     pub manga_details_chapters: &'static str,
@@ -47,13 +48,13 @@ pub fn get_manga_list(search_url: String, selectors: &Selectors) -> Result<Manga
                 .attr("href")
                 .read(),
         );
-        let cover = append_protocol(
+        let cover = https_upgrade(append_protocol(
             item_node
                 .select(selectors.manga_cell_image)
                 .first()
                 .attr("data-original")
                 .read(),
-        );
+        ));
         mangas.push(Manga {
             id,
             cover,
@@ -128,7 +129,7 @@ pub fn get_manga_details(
             .select(selectors.manga_details_tags)
             .text()
             .read()
-            .split(" - ")
+            .split(selectors.manga_details_tags_splitter)
         {
             let category = String::from(node);
             if category == String::from("Smut")
