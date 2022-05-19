@@ -132,7 +132,7 @@ pub fn get_search_url(
 }
 
 pub fn convert_time(time_ago: String) -> f64 {
-	let mut time: f64 = 0.0;
+	let time: f64;
 	let current_time = current_date();
 	let time_arr = time_ago.split(" ").collect::<Vec<&str>>();
 	if time_arr.len() > 2 {

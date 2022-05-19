@@ -83,8 +83,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 
 #[get_manga_listing]
 fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
-	#[allow(unused_assignments)]
-	let mut url = String::new();
+	let url;
 	if page > 1 {
 		url = format!("https://comiconlinefree.net/{}/{page}", listing_mapping(listing.name));
 	} else {
