@@ -1,0 +1,21 @@
+{
+	"info": {
+		"id": "en.comiconlinefree",
+		"lang": "en",
+		"name": "ComicOnlineFree",
+		"version": 1,
+		"url": "https://comiconlinefree.net",
+		"nsfw": 0
+	},
+	"languages": [
+
+	],
+	"listings": [
+		{
+			"name": "Hot"
+		},
+		{
+			"name": "Popular"
+		}
+	]
+}
