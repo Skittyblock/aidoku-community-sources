@@ -100,7 +100,7 @@ fn get_manga_details(id: String) -> Result<Manga> {
 
 #[get_chapter_list]
 fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
-    template::get_chapter_list(id, &SELECTORS, true, convert_time)
+    template::get_chapter_list(id, &SELECTORS, false, convert_time)
 }
 
 #[get_page_list]
