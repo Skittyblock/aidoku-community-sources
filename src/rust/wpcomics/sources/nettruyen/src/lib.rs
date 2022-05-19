@@ -2,10 +2,35 @@
 pub mod helper;
 use aidoku::{
     prelude::*, error::Result, std::String, std::{Vec, defaults::defaults_get}, std::net::Request,
-    Filter, Listing, Manga, MangaPageResult, Chapter, DeepLink, FilterType, Page
+    Filter, Listing, Manga, MangaPageResult, Chapter, DeepLink, FilterType, Page, MangaViewer
 };
-use wpcomics_template::{template,helper::urlencode};
+use wpcomics_template::{
+    template,
+    template::Selectors,
+    helper::urlencode
+};
 use crate::helper::*;
+
+static SELECTORS: Selectors = Selectors {
+    next_page: "li.active + li > a[title*=\"kết quả\"]",
+    manga_cell: "div.items > div.row > div.item > figure.clearfix",
+    manga_cell_title: "figcaption > h3 > a",
+    manga_cell_url: "div.image > a",
+    manga_cell_image: "div.image > a > img",
+
+    manga_details_title: "h1.title-detail",
+    manga_details_cover: "div.col-image > img",
+    manga_details_author: "ul.list-info > li.author > p.col-xs-8",
+    manga_details_description: "div.detail-content > p",
+    manga_details_tags: "li.kind.row > p.col-xs-8",
+    manga_details_status: "li.status.row > p.col-xs-8",
+    manga_details_chapters: "div.list-chapter > nav > ul > li",
+
+    manga_viewer_page: "div.page-chapter > img",
+
+    chapter_anchor_selector: "div.chapter > a",
+    chapter_date_selector: "div.col-xs-4"
+};
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
@@ -86,29 +111,35 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
             completed,
             chapter_count,
         ),
-        String::from("li.active + li > a[title*=\"kết quả\"]"),
-        |title| title
+        &SELECTORS,
+        |title| title,
     )
 }
 
 #[get_manga_listing]
 fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
-    template::get_manga_listing(String::from("https://www.nettruyenco.com"), listing, String::from("li.active + li > a[title*=\"kết quả\"]"), listing_map, |title| title, page)
+    template::get_manga_listing(
+        String::from("https://www.nettruyenco.com"), 
+        listing, 
+        &SELECTORS,
+        listing_map, 
+        |title| title, page
+    )
 }
 
 #[get_manga_details]
 fn get_manga_details(id: String) -> Result<Manga> {
-    template::get_manga_details(id, status_map, |title| title)
+    template::get_manga_details(id, &SELECTORS, MangaViewer::Rtl, status_map, |title| title)
 }
 
 #[get_chapter_list]
 fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
-    template::get_chapter_list(id, |title| title, false, String::from("div.col-xs-4"), convert_time)
+    template::get_chapter_list(id, &SELECTORS, |title| title, false, convert_time)
 }
 
 #[get_page_list]
 fn get_page_list(id: String) -> Result<Vec<Page>> {
-    template::get_page_list(id, String::from(""), |url| {
+    template::get_page_list(id, &SELECTORS, String::from(""), |url| {
         let mut server_two = String::from("https://images2-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&resize_h=0&rewriteMime=image%2F*&url=");
         if let Ok(server_selection) = defaults_get("serverSelection").as_int() {
             match server_selection {
@@ -137,5 +168,5 @@ fn modify_image_request(request: Request) {
 
 #[handle_url]
 pub fn handle_url(url: String) -> Result<DeepLink> {
-    template::handle_url(url, status_map, |title| title)
+    template::handle_url(url, &SELECTORS, MangaViewer::Rtl, status_map, |title| title)
 }
