@@ -4,55 +4,26 @@
 	},
 	{
 		"type": "select",
-		"name": "Số lượng chapter",
-		"options": [
-			"> 0 chapter",
-			">= 50 chapters",
-			">= 100 chapters",
-			">= 200 chapters",
-			">= 300 chapters",
-			">= 400 chapters",
-			">= 500 chapters"
-		]
-	},
-	{
-		"type": "select",
-		"name": "Tình trạng",
-		"options": ["Tất cả", "Đang tiến hành", "Đã hoàn thành"]
-	},
-	{
-		"type": "select",
-		"name": "Dành cho",
-		"options": ["Tất cả", "Con gái", "Con trai"]
-	},
-	{
-		"type": "select",
-		"name": "Sắp xếp theo",
-		"options": [
-			"Chapter mới",
-			"Truyện mới",
-			"Xem nhiều nhất",
-			"Xem nhiều nhất tháng",
-			"Xem nhiều nhất tuần",
-			"Xem nhiều nhất hôm nay",
-			"Theo dõi nhiều nhất",
-			"Bình luận nhiều nhất",
-			"Số chapter nhiều nhất",
-			"Theo ABC"
-		]
+		"name": "Status",
+		"options": ["All", "Ongoing", "Completed"]
 	},
 	{
 		"type": "group",
-		"name": "Thể loại",
+		"name": "Genres",
 		"filters": [
 			{
 				"type": "genre",
-				"name": "Action",
+				"name": "Marvel",
 				"canExclude": true
 			},
 			{
 				"type": "genre",
-				"name": "Adult",
+				"name": "DC Comics",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Action",
 				"canExclude": true
 			},
 			{
@@ -62,12 +33,22 @@
 			},
 			{
 				"type": "genre",
-				"name": "Anime",
+				"name": "Anthology",
 				"canExclude": true
 			},
 			{
 				"type": "genre",
-				"name": "Chuyển Sinh",
+				"name": "Anthropomorphic",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Biography",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Children",
 				"canExclude": true
 			},
 			{
@@ -77,22 +58,22 @@
 			},
 			{
 				"type": "genre",
-				"name": "Comic",
+				"name": "Crime",
 				"canExclude": true
 			},
 			{
 				"type": "genre",
-				"name": "Cooking",
+				"name": "Cyborgs",
 				"canExclude": true
 			},
 			{
 				"type": "genre",
-				"name": "Cổ Đại",
+				"name": "Dark Horse",
 				"canExclude": true
 			},
 			{
 				"type": "genre",
-				"name": "Doujinshi",
+				"name": "Demons",
 				"canExclude": true
 			},
 			{
@@ -102,32 +83,32 @@
 			},
 			{
 				"type": "genre",
-				"name": "Đam Mỹ",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Ecchi",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
 				"name": "Fantasy",
 				"canExclude": true
 			},
 			{
 				"type": "genre",
-				"name": "Gender Bender",
+				"name": "Family",
 				"canExclude": true
 			},
 			{
 				"type": "genre",
-				"name": "Harem",
+				"name": "Fighting",
 				"canExclude": true
 			},
 			{
 				"type": "genre",
-				"name": "Lịch sử",
+				"name": "Gore",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Graphic Novels",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Historical",
 				"canExclude": true
 			},
 			{
@@ -137,27 +118,22 @@
 			},
 			{
 				"type": "genre",
-				"name": "Josei",
+				"name": "Leading Ladies",
 				"canExclude": true
 			},
 			{
 				"type": "genre",
-				"name": "Live action",
+				"name": "Literature",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Magic",
 				"canExclude": true
 			},
 			{
 				"type": "genre",
 				"name": "Manga",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Manhua",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Manhwa",
 				"canExclude": true
 			},
 			{
@@ -177,17 +153,22 @@
 			},
 			{
 				"type": "genre",
+				"name": "Military",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Movie Cinematic Link",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
 				"name": "Mystery",
 				"canExclude": true
 			},
 			{
 				"type": "genre",
-				"name": "Ngôn Tình",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "One shot",
+				"name": "Mythology",
 				"canExclude": true
 			},
 			{
@@ -197,42 +178,37 @@
 			},
 			{
 				"type": "genre",
+				"name": "Personal",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Political",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Post-Apocalyptic",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Pulp",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Robots",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
 				"name": "Romance",
 				"canExclude": true
 			},
 			{
 				"type": "genre",
-				"name": "School Life",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Sci-fi",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Seinen",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Shoujo",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Shoujo Ai",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Shounen",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Shounen Ai",
+				"name": "Sci-Fi",
 				"canExclude": true
 			},
 			{
@@ -242,17 +218,7 @@
 			},
 			{
 				"type": "genre",
-				"name": "Smut",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Soft Yaoi",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Soft Yuri",
+				"name": "Science Fiction",
 				"canExclude": true
 			},
 			{
@@ -262,17 +228,27 @@
 			},
 			{
 				"type": "genre",
+				"name": "Spy",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Superhero",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
 				"name": "Supernatural",
 				"canExclude": true
 			},
 			{
 				"type": "genre",
-				"name": "Tạp chí truyện tranh",
+				"name": "Suspense",
 				"canExclude": true
 			},
 			{
 				"type": "genre",
-				"name": "Thiếu Nhi",
+				"name": "Thriller",
 				"canExclude": true
 			},
 			{
@@ -282,52 +258,32 @@
 			},
 			{
 				"type": "genre",
-				"name": "Trinh Thám",
+				"name": "Vampires",
 				"canExclude": true
 			},
 			{
 				"type": "genre",
-				"name": "Truyện Màu",
+				"name": "Vertigo",
 				"canExclude": true
 			},
 			{
 				"type": "genre",
-				"name": "Truyện scan",
+				"name": "Video Games",
 				"canExclude": true
 			},
 			{
 				"type": "genre",
-				"name": "Việt Nam",
+				"name": "War",
 				"canExclude": true
 			},
 			{
 				"type": "genre",
-				"name": "Webtoon",
+				"name": "Western",
 				"canExclude": true
 			},
 			{
 				"type": "genre",
-				"name": "Xuyên Không",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Yaoi",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Yuri",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "16+",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "18+",
+				"name": "Zombies",
 				"canExclude": true
 			}
 		]
