@@ -28,6 +28,7 @@ pub static SELECTORS: Selectors = Selectors {
     manga_details_author_transformer: |title| title.replace("Author(s): ", ""),
     manga_details_description: "div.summary-content",
     manga_details_tags: "div.meta-data.view + div.meta-data",
+    manga_details_tags_splitter: " - ",
     manga_details_status: "div.meta-data:contains(Status)",
     manga_details_status_transformer: |title| title.replace("Status: ", ""),
     manga_details_chapters: "ul.chapter-list > li",

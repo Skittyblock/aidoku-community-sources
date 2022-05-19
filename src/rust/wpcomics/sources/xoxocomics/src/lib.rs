@@ -21,6 +21,7 @@ static SELECTORS: Selectors = Selectors {
     manga_details_author_transformer: |title| title,
     manga_details_description: "div.detail-content > p",
     manga_details_tags: "li.kind.row > p.col-xs-8",
+    manga_details_tags_splitter: " - ",
     manga_details_status: "li.status.row > p.col-xs-8",
     manga_details_status_transformer: |title| title,
     manga_details_chapters: "div.list-chapter > nav > ul > li",
