@@ -1,15 +1,11 @@
 #![no_std]
 pub mod helper;
-use aidoku::{
-    prelude::*, error::Result, std::String, std::Vec, std::net::Request,
-    Filter, Listing, Manga, MangaPageResult, Chapter, DeepLink, FilterType, Page, MangaViewer
-};
-use wpcomics_template::{
-    template,
-    template::Selectors,
-    helper::urlencode
-};
 use crate::helper::*;
+use aidoku::{
+    error::Result, prelude::*, std::net::Request, std::String, std::Vec, Chapter, DeepLink, Filter,
+    FilterType, Listing, Manga, MangaPageResult, MangaViewer, Page,
+};
+use wpcomics_template::{helper::urlencode, template, template::Selectors};
 
 static SELECTORS: Selectors = Selectors {
     next_page: "li > a[rel=next]",
@@ -32,7 +28,7 @@ static SELECTORS: Selectors = Selectors {
     manga_viewer_page: "div.page-chapter > img",
 
     chapter_anchor_selector: "div.chapter > a",
-    chapter_date_selector: "div.col-xs-3"
+    chapter_date_selector: "div.col-xs-3",
 };
 
 #[get_manga_list]
@@ -43,24 +39,17 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
         match filter.kind {
             FilterType::Title => {
                 title = urlencode(filter.value.as_string()?.read());
-            },
-            _ => {
-                match filter.name.as_str() {
-                    "Genre" => {
-                        genre = get_tag_id(filter.value.as_int().unwrap_or(0));
-                    },
-                    _ => continue,
+            }
+            _ => match filter.name.as_str() {
+                "Genre" => {
+                    genre = get_tag_id(filter.value.as_int().unwrap_or(0));
                 }
+                _ => continue,
             },
         }
     }
     template::get_manga_list(
-        get_search_url(
-            String::from("https://xoxocomics.com"),
-            title,
-            genre,
-            page,
-        ),
+        get_search_url(String::from("https://xoxocomics.com"), title, genre, page),
         &SELECTORS,
     )
 }
@@ -68,11 +57,11 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 #[get_manga_listing]
 fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
     template::get_manga_listing(
-        String::from("https://xoxocomics.com"), 
-        listing, 
+        String::from("https://xoxocomics.com"),
+        listing,
         &SELECTORS,
-        listing_map, 
-        page
+        listing_map,
+        page,
     )
 }
 
@@ -93,7 +82,7 @@ fn get_page_list(id: String) -> Result<Vec<Page>> {
     })
 }
 
-#[modify_image_request] 
+#[modify_image_request]
 fn modify_image_request(request: Request) {
     template::modify_image_request(
         String::from("https://xoxocomics.com"),

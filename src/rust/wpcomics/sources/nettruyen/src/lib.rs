@@ -1,15 +1,15 @@
 #![no_std]
 pub mod helper;
-use aidoku::{
-    prelude::*, error::Result, std::String, std::{Vec, defaults::defaults_get}, std::net::Request,
-    Filter, Listing, Manga, MangaPageResult, Chapter, DeepLink, FilterType, Page, MangaViewer
-};
-use wpcomics_template::{
-    template,
-    template::Selectors,
-    helper::urlencode
-};
 use crate::helper::*;
+use aidoku::{
+    error::Result,
+    prelude::*,
+    std::net::Request,
+    std::String,
+    std::{defaults::defaults_get, Vec},
+    Chapter, DeepLink, Filter, FilterType, Listing, Manga, MangaPageResult, MangaViewer, Page,
+};
+use wpcomics_template::{helper::urlencode, template, template::Selectors};
 
 static SELECTORS: Selectors = Selectors {
     next_page: "li.active + li > a[title*=\"kết quả\"]",
@@ -32,7 +32,7 @@ static SELECTORS: Selectors = Selectors {
     manga_viewer_page: "div.page-chapter > img",
 
     chapter_anchor_selector: "div.chapter > a",
-    chapter_date_selector: "div.col-xs-4"
+    chapter_date_selector: "div.col-xs-4",
 };
 
 #[get_manga_list]
@@ -48,13 +48,11 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
         match filter.kind {
             FilterType::Title => {
                 title = urlencode(filter.value.as_string()?.read());
-            },
-            FilterType::Genre => {
-                match filter.value.as_int().unwrap_or(-1) {
-                    0 => excluded_tags.push(get_tag_id(String::from(&filter.name))),
-                    1 => included_tags.push(get_tag_id(String::from(&filter.name))),
-                    _ => continue,
-                }
+            }
+            FilterType::Genre => match filter.value.as_int().unwrap_or(-1) {
+                0 => excluded_tags.push(get_tag_id(String::from(&filter.name))),
+                1 => included_tags.push(get_tag_id(String::from(&filter.name))),
+                _ => continue,
             },
             _ => {
                 match filter.name.as_str() {
@@ -63,22 +61,22 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
                         if completed == 0 {
                             completed = -1;
                         }
-                    },
+                    }
                     "Số lượng chapter" => {
                         chapter_count = match filter.value.as_int().unwrap_or(0) {
                             0 => 1,
                             1 => 50,
-                            2 => 100, 
+                            2 => 100,
                             3 => 200,
                             4 => 300,
                             5 => 400,
                             6 => 500,
                             _ => 1,
                         };
-                    },
+                    }
                     "Sắp xếp theo" => {
                         sort_by = match filter.value.as_int().unwrap_or(0) {
-                            0 => 0, // new chapters
+                            0 => 0,  // new chapters
                             1 => 15, // new mangas
                             2 => 10, // most watched
                             3 => 11, // most watched this month
@@ -87,19 +85,19 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
                             6 => 20, // most followed
                             7 => 25, // most commented
                             8 => 30, // most chapters
-                            9 => 5, // alphabetical
+                            9 => 5,  // alphabetical
                             _ => 0,
                         };
-                    },
+                    }
                     "Dành cho" => {
-                        gender =  filter.value.as_int().unwrap_or(-1) as i32;
+                        gender = filter.value.as_int().unwrap_or(-1) as i32;
                         if gender == 0 {
                             gender = -1;
                         }
                     }
                     _ => continue,
                 }
-            },
+            }
         }
     }
     template::get_manga_list(
@@ -121,11 +119,11 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 #[get_manga_listing]
 fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
     template::get_manga_listing(
-        String::from("https://www.nettruyenco.com"), 
-        listing, 
+        String::from("https://www.nettruyenco.com"),
+        listing,
         &SELECTORS,
-        listing_map, 
-        page
+        listing_map,
+        page,
     )
 }
 
@@ -148,7 +146,7 @@ fn get_page_list(id: String) -> Result<Vec<Page>> {
                 2 => {
                     server_two.push_str(&urlencode(url));
                     return server_two;
-                },
+                }
                 _ => {
                     return url;
                 }
@@ -159,7 +157,7 @@ fn get_page_list(id: String) -> Result<Vec<Page>> {
     })
 }
 
-#[modify_image_request] 
+#[modify_image_request]
 fn modify_image_request(request: Request) {
     template::modify_image_request(
         String::from("https://www.nettruyenco.com"),

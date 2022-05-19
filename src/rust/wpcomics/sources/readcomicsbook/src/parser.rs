@@ -1,8 +1,8 @@
 use aidoku::{
-    prelude::format,
     error::Result,
-    std::{ObjectRef, String, Vec}, 
-    Manga, MangaViewer, MangaStatus, MangaContentRating
+    prelude::format,
+    std::{ObjectRef, String, Vec},
+    Manga, MangaContentRating, MangaStatus, MangaViewer,
 };
 
 pub fn parse_comic(base_url: String, comic_object: ObjectRef) -> Result<Manga> {
@@ -23,6 +23,6 @@ pub fn parse_comic(base_url: String, comic_object: ObjectRef) -> Result<Manga> {
         categories: Vec::new(),
         status: MangaStatus::Unknown,
         nsfw: MangaContentRating::Safe,
-        viewer: MangaViewer::Ltr
+        viewer: MangaViewer::Ltr,
     })
 }

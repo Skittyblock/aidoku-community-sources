@@ -1,5 +1,7 @@
 use aidoku::{
-    std::{String, current_date, StringRef}, std::Vec, MangaStatus
+    std::Vec,
+    std::{current_date, String, StringRef},
+    MangaStatus,
 };
 use wpcomics_template::helper::i32_to_string;
 
@@ -78,7 +80,7 @@ pub fn listing_map(listing: String) -> String {
     return String::from(url);
 }
 
-pub fn status_map (arg1: String) -> MangaStatus {
+pub fn status_map(arg1: String) -> MangaStatus {
     return match arg1.as_str() {
         "Đang tiến hành" => MangaStatus::Ongoing,
         "Đã hoàn thành" => MangaStatus::Completed,
@@ -87,7 +89,17 @@ pub fn status_map (arg1: String) -> MangaStatus {
 }
 
 // MARK: Other utilities
-pub fn get_search_url(base_url: String, query: String, page: i32, include: Vec<String>, exclude: Vec<String>, sort_by: i32, gender: i32, completed: i32, chapter_count: i32) -> String {
+pub fn get_search_url(
+    base_url: String,
+    query: String,
+    page: i32,
+    include: Vec<String>,
+    exclude: Vec<String>,
+    sort_by: i32,
+    gender: i32,
+    completed: i32,
+    chapter_count: i32,
+) -> String {
     let mut url = String::new();
     url.push_str(&base_url);
     if query.len() > 0 {
@@ -134,7 +146,9 @@ pub fn convert_time(time_ago: String) -> f64 {
         };
     } else if String::from(time_arr[0]) == time_ago {
         let time_object = StringRef::from(time_ago).0;
-        time = time_object.as_date("dd/MM/yy", Some("en_US"), Some("Asia/Ho_Chi_Minh")).unwrap_or(0.0);  
+        time = time_object
+            .as_date("dd/MM/yy", Some("en_US"), Some("Asia/Ho_Chi_Minh"))
+            .unwrap_or(0.0);
     } else {
         let current_year: i32 = 1970 + (current_time / 31536000.0) as i32;
         let mut modified_time = String::from(time_arr[0]);
@@ -143,7 +157,9 @@ pub fn convert_time(time_ago: String) -> f64 {
         modified_time.push_str("/");
         modified_time.push_str(&i32_to_string(current_year));
         let time_object = StringRef::from(modified_time).0;
-        time = time_object.as_date("HH:mm dd/MM/yyyy", Some("en_US"), Some("Asia/Ho_Chi_Minh")).unwrap_or(0.0);
+        time = time_object
+            .as_date("HH:mm dd/MM/yyyy", Some("en_US"), Some("Asia/Ho_Chi_Minh"))
+            .unwrap_or(0.0);
     }
     return time;
 }

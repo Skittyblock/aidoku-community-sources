@@ -1,10 +1,18 @@
 use aidoku::{
-    std::{String, StringRef}, MangaStatus
+    std::{String, StringRef},
+    MangaStatus,
 };
 use wpcomics_template::helper::i32_to_string;
 
 pub fn trunc_trailing_comic(title: String) -> String {
-    return title.chars().rev().collect::<String>().replacen("cimoC", "", 1).chars().rev().collect::<String>();
+    return title
+        .chars()
+        .rev()
+        .collect::<String>()
+        .replacen("cimoC", "", 1)
+        .chars()
+        .rev()
+        .collect::<String>();
 }
 
 // MARK: Mappings
@@ -64,7 +72,7 @@ pub fn get_tag_id(genre: i64) -> String {
         52 => "war",
         53 => "western",
         54 => "zombies",
-        _ => ""
+        _ => "",
     });
 }
 
@@ -79,7 +87,7 @@ pub fn listing_map(listing: String) -> String {
     return String::from(url);
 }
 
-pub fn status_map (arg1: String) -> MangaStatus {
+pub fn status_map(arg1: String) -> MangaStatus {
     return match arg1.as_str() {
         "Ongoing" => MangaStatus::Ongoing,
         "Completed" => MangaStatus::Completed,
@@ -108,5 +116,7 @@ pub fn get_search_url(base_url: String, query: String, genre: String, page: i32)
 pub fn convert_time(time_ago: String) -> f64 {
     #[allow(unused_assignments)]
     let time_object = StringRef::from(time_ago).0;
-    return time_object.as_date("MM/dd/yyyy", Some("en_US"), None).unwrap_or(0.0);
+    return time_object
+        .as_date("MM/dd/yyyy", Some("en_US"), None)
+        .unwrap_or(0.0);
 }

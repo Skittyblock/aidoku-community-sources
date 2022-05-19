@@ -1,6 +1,7 @@
 use aidoku::{
+    prelude::format,
     std::{String, StringRef},
-    MangaStatus, prelude::format
+    MangaStatus,
 };
 
 pub fn listing_mapping(listing: String) -> String {
@@ -23,7 +24,9 @@ pub fn status_map(arg1: String) -> MangaStatus {
 pub fn convert_time(time_ago: String) -> f64 {
     #[allow(unused_assignments)]
     let time_object = StringRef::from(time_ago).0;
-    return time_object.as_date("MM/dd/yyyy", Some("en_US"), None).unwrap_or(0.0);
+    return time_object
+        .as_date("MM/dd/yyyy", Some("en_US"), None)
+        .unwrap_or(0.0);
 }
 
 pub fn get_tag_id(genre: i64) -> String {
@@ -82,7 +85,7 @@ pub fn get_tag_id(genre: i64) -> String {
         52 => "war",
         53 => "western",
         54 => "zombies",
-        _ => ""
+        _ => "",
     });
 }
 
