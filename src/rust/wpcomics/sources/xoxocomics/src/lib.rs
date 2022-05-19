@@ -19,11 +19,14 @@ static SELECTORS: Selectors = Selectors {
     manga_cell_image: "div.image > a > img",
 
     manga_details_title: "h1.title-detail",
+    manga_details_title_transformer: trunc_trailing_comic,
     manga_details_cover: "div.col-image > img",
     manga_details_author: "ul.list-info > li.author > p.col-xs-8",
+    manga_details_author_transformer: |title| title,
     manga_details_description: "div.detail-content > p",
     manga_details_tags: "li.kind.row > p.col-xs-8",
     manga_details_status: "li.status.row > p.col-xs-8",
+    manga_details_status_transformer: |title| title,
     manga_details_chapters: "div.list-chapter > nav > ul > li",
 
     manga_viewer_page: "div.page-chapter > img",
@@ -59,7 +62,6 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
             page,
         ),
         &SELECTORS,
-        trunc_trailing_comic
     )
 }
 
@@ -70,19 +72,18 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
         listing, 
         &SELECTORS,
         listing_map, 
-        trunc_trailing_comic, 
         page
     )
 }
 
 #[get_manga_details]
 fn get_manga_details(id: String) -> Result<Manga> {
-    template::get_manga_details(id, &SELECTORS, MangaViewer::Ltr, status_map, trunc_trailing_comic)
+    template::get_manga_details(id, &SELECTORS, MangaViewer::Ltr, status_map)
 }
 
 #[get_chapter_list]
 fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
-    template::get_chapter_list(id, &SELECTORS, trunc_trailing_comic, true, convert_time)
+    template::get_chapter_list(id, &SELECTORS, true, convert_time)
 }
 
 #[get_page_list]
@@ -103,5 +104,5 @@ fn modify_image_request(request: Request) {
 
 #[handle_url]
 pub fn handle_url(url: String) -> Result<DeepLink> {
-    template::handle_url(url, &SELECTORS, MangaViewer::Ltr, status_map, trunc_trailing_comic)
+    template::handle_url(url, &SELECTORS, MangaViewer::Ltr, status_map)
 }

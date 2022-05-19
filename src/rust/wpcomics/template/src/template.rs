@@ -13,11 +13,14 @@ pub struct Selectors {
     pub manga_cell_image: &'static str, 
 
     pub manga_details_title: &'static str,
+    pub manga_details_title_transformer: fn(String) -> String,
     pub manga_details_cover: &'static str,
     pub manga_details_author: &'static str,
+    pub manga_details_author_transformer: fn(String) -> String,
     pub manga_details_description: &'static str,
     pub manga_details_tags: &'static str,
     pub manga_details_status: &'static str,
+    pub manga_details_status_transformer: fn(String) -> String,
     pub manga_details_chapters: &'static str,
 
     pub manga_viewer_page: &'static str,
@@ -29,7 +32,6 @@ pub struct Selectors {
 pub fn get_manga_list(
     search_url: String, 
     selectors: &Selectors,
-    title_transformer: fn(String) -> String
 ) -> Result<MangaPageResult> {
     let mut mangas: Vec<Manga> = Vec::new();
     let mut has_next_page = selectors.next_page.len() > 0;
@@ -42,7 +44,7 @@ pub fn get_manga_list(
         mangas.push(Manga {
             id,
             cover,
-            title: title_transformer(title),
+            title: (selectors.manga_details_title_transformer)(title),
             author: String::new(),
             artist: String::new(),
             description: String::new(),
@@ -66,8 +68,7 @@ pub fn get_manga_listing(
     base_url: String, 
     listing: Listing, 
     selectors: &Selectors,
-    listing_mapping: fn(String) -> String, 
-    title_transformer: fn(String) -> String, 
+    listing_mapping: fn(String) -> String,
     page: i32
 ) -> Result<MangaPageResult> {
     let mut url = String::new();
@@ -81,35 +82,38 @@ pub fn get_manga_listing(
         url.push_str("/?page=");
         url.push_str(&i32_to_string(page));
     }
-    get_manga_list(url, selectors, title_transformer)
+    get_manga_list(url, selectors)
 }
 
-pub fn get_manga_details(id: String, selectors: &Selectors, default_viewer: MangaViewer, status_from_string: fn(String) -> MangaStatus, title_transformer: fn(String) -> String) -> Result<Manga> {
+pub fn get_manga_details(id: String, selectors: &Selectors, default_viewer: MangaViewer, status_from_string: fn(String) -> MangaStatus) -> Result<Manga> {
     let details = Request::new(id.clone().as_str(), HttpMethod::Get).html();
     let title = details.select(selectors.manga_details_title).text().read();
     let cover = append_protocol(details.select(selectors.manga_details_cover).attr("src").read());
-    let author = details.select(selectors.manga_details_author).text().read();
+    let author = (selectors.manga_details_author_transformer)(details.select(selectors.manga_details_author).text().read());
     let description = details.select(selectors.manga_details_description).text().read();
     let mut categories = Vec::new();
     let mut nsfw = MangaContentRating::Safe;
     let mut viewer = default_viewer;
-    for node in details.select(selectors.manga_details_tags).text().read().split(" - ") {
-        let category = String::from(node);
-        if category == String::from("Smut") || category == String::from("Mature") || category == String::from("Adult") || category == String::from("18+") {
-            nsfw = MangaContentRating::Nsfw;
-        } else if category == String::from("Ecchi") || category == String::from("16+") {
-            nsfw = MangaContentRating::Suggestive;
+
+    if selectors.manga_details_tags.len() > 0 {
+        for node in details.select(selectors.manga_details_tags).text().read().split(" - ") {
+            let category = String::from(node);
+            if category == String::from("Smut") || category == String::from("Mature") || category == String::from("Adult") || category == String::from("18+") {
+                nsfw = MangaContentRating::Nsfw;
+            } else if category == String::from("Ecchi") || category == String::from("16+") {
+                nsfw = MangaContentRating::Suggestive;
+            }
+            if category.contains("Webtoon") || category.contains("Manhwa") || category.contains("Manhua") {
+                viewer = MangaViewer::Scroll;
+            }
+            categories.push(category.clone());
         }
-        if category.contains("Webtoon") || category.contains("Manhwa") || category.contains("Manhua") {
-            viewer = MangaViewer::Scroll;
-        }
-        categories.push(category.clone());
     }
-    let status = status_from_string(details.select(selectors.manga_details_status).text().read());
+    let status = status_from_string((selectors.manga_details_status_transformer)(details.select(selectors.manga_details_status).text().read()));
     Ok(Manga {
         id: id.clone(),
         cover,
-        title: title_transformer(title),
+        title: (selectors.manga_details_title_transformer)(title),
         author,
         artist: String::new(),
         description,
@@ -121,11 +125,11 @@ pub fn get_manga_details(id: String, selectors: &Selectors, default_viewer: Mang
     })
 }
 
-pub fn get_chapter_list(id: String, selectors: &Selectors, title_transformer: fn(String) -> String, skip_first: bool, chapter_date_converter: fn(String) -> f64) -> Result<Vec<Chapter>> {
+pub fn get_chapter_list(id: String, selectors: &Selectors, skip_first: bool, chapter_date_converter: fn(String) -> f64) -> Result<Vec<Chapter>> {
     let mut skipped_first = false;
     let mut chapters: Vec<Chapter> = Vec::new();
     let html = Request::new(id.clone().as_str(), HttpMethod::Get).html();
-    let title_untrimmed = title_transformer(html.select(selectors.manga_details_title).text().read());
+    let title_untrimmed = (selectors.manga_details_title_transformer)(html.select(selectors.manga_details_title).text().read());
     let title = title_untrimmed.trim();
     for chapter in html.select(selectors.manga_details_chapters).array() {
         if skip_first && !skipped_first {
@@ -179,9 +183,9 @@ pub fn modify_image_request(base_url: String, user_agent: String, request: Reque
     request.header("Referer", &base_url).header("User-Agent", &user_agent);
 }
 
-pub fn handle_url(url: String, selectors: &Selectors, default_viewer: MangaViewer, status_from_string: fn(String) -> MangaStatus, title_transformer: fn(String) -> String) -> Result<DeepLink> {
+pub fn handle_url(url: String, selectors: &Selectors, default_viewer: MangaViewer, status_from_string: fn(String) -> MangaStatus) -> Result<DeepLink> {
     Ok(DeepLink {
-        manga: Some(get_manga_details(url.clone(), selectors, default_viewer, status_from_string, title_transformer)?),
+        manga: Some(get_manga_details(url.clone(), selectors, default_viewer, status_from_string)?),
         chapter: None
     })
 }

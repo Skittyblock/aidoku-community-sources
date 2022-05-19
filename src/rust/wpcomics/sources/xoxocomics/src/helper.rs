@@ -55,7 +55,7 @@ pub fn get_tag_id(genre: i64) -> String {
         43 => "sport",
         44 => "spy",
         45 => "superhero",
-        46 => "supernatural-",
+        46 => "supernatural",
         47 => "suspense",
         48 => "thriller",
         49 => "vampires",

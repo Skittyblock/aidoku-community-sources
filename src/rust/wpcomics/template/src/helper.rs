@@ -124,42 +124,6 @@ pub fn get_chapter_number(id: String) -> f32 {
     return number_string.parse::<f32>().unwrap_or(0.0);
 }
 
-pub fn get_search_url(base_url: String, query: String, page: i32, include: Vec<String>, exclude: Vec<String>, sort: String) -> String {
-    let mut url = String::new();
-    url.push_str(&base_url);
-    url.push_str("/advanced_search/?page=");
-    url.push_str(&i32_to_string(page));
-    if query.len() > 0 {
-        url.push_str("&keyw=");
-        url.push_str(&stupidencode(query));
-    }
-    if include.len() > 0 {
-        url.push_str("&g_i=");
-        for (i, tag) in include.iter().enumerate() {
-            if i == 0 {
-                url.push_str("_");
-            }
-            url.push_str(tag.as_str());
-            url.push_str("_");
-        }
-    }
-    if exclude.len() > 0 {
-        url.push_str("&g_e=");
-        for (i, tag) in exclude.iter().enumerate() {
-            if i == 0 {
-                url.push_str("_");
-            }
-            url.push_str(tag.as_str());
-            url.push_str("_");
-        }
-    }
-    if sort.len() > 0 {
-        url.push_str("&orby=");
-        url.push_str(sort.as_str());
-    }
-    return url;
-}
-
 pub fn string_replace(string: String, search: String, replace: String) -> String {
     let mut result = String::new();
     let mut at = 0;
@@ -177,53 +141,6 @@ pub fn string_replace(string: String, search: String, replace: String) -> String
         at += 1;
     }
     return result;
-}
-
-pub fn get_tag_id(tag: String) -> String {
-    let id = match tag.as_str() {
-        "Action" => 2,
-        "Adult" => 3,
-        "Adventure" => 4,
-        "Comedy" => 6,
-        "Cooking" => 7,
-        "Doujinshi" => 9,
-        "Drama" => 10,
-        "Ecchi" => 11,
-        "Fantasy" => 12,
-        "Gender bender" => 13,
-        "Harem" => 14,
-        "Historical" => 15,
-        "Horror" => 16,
-        "Isekai" => 45,
-        "Josei" => 17,
-        "Manhua" => 44,
-        "Manhwa" => 43,
-        "Martial arts" => 19,
-        "Mature" => 20,
-        "Mecha" => 21,
-        "Medical" => 22,
-        "Mystery" => 24,
-        "One shot" => 25,
-        "Psychological" => 26,
-        "Romance" => 27,
-        "School life" => 28,
-        "Sci fi" => 29,
-        "Seinen" => 30,
-        "Shoujo" => 31,
-        "Shoujo ai" => 32,
-        "Shounen" => 33,
-        "Shounen ai" => 34,
-        "Slice of life" => 35,
-        "Smut" => 36,
-        "Sports" => 37,
-        "Supernatural" => 38,
-        "Tragedy" => 39,
-        "Webtoons" => 40,
-        "Yaoi" => 41,
-        "Yuri" => 42,
-        _ => -1,
-    };
-    return i32_to_string(id);
 }
 
 pub fn stupidencode(string: String) -> String {
