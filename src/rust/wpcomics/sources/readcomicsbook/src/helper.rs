@@ -86,10 +86,8 @@ pub fn get_tag_id(genre: i64) -> String {
     });
 }
 
-pub fn get_search_url(base_url: String, query: String, genre: String, page: i32) -> String {
-    if query.len() > 0 {
-        return format!("{base_url}/ajax/search?q={query}");
-    } else if genre.len() > 0 {
+pub fn get_search_url(base_url: String, genre: String, page: i32) -> String {
+    if genre.len() > 0 {
         return format!("{base_url}/genre/{genre}?page={page}");
     }
     return format!("{base_url}/comic-updates?page={page}");

@@ -78,7 +78,6 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
         template::get_manga_list(
             get_search_url(
                 String::from("https://readcomicsbook.com"),
-                title,
                 genre,
                 page,
             ),
