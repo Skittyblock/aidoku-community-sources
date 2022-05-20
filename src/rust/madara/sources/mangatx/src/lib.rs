@@ -43,14 +43,6 @@ fn get_page_list(id: String) -> Result<Vec<Page>> {
 	template::get_page_list(id, get_data(),)
 }
 
-#[modify_image_request]
-fn modify_image_request(request: Request) {
-	template::modify_image_request(
-		String::from("https://readmanganato.com"),
-		request
-	)
-}
-
 #[handle_url]
 pub fn handle_url(url: String) -> Result<DeepLink> {
 	template::handle_url(url, get_data())
