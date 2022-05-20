@@ -1,0 +1,80 @@
+name: Build sources
+on:
+  push:
+    paths:
+    - 'src/**'
+    - 'lib/**'
+    - '.github/workflows/build.yaml'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    -
+      uses: actions/checkout@v3
+    - 
+      uses: actions/setup-node@v3
+      with:
+        node-version: 16
+        cache: npm
+        cache-dependency-path: '**/package-lock.json'
+    -
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: nightly
+        override: true
+        target: wasm32-unknown-unknown
+    -
+      uses: actions/cache@v3
+      with:
+        path: |
+         ~/.cargo/registry
+         ~/.cargo/git
+         src/rust/**/target
+        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-cargo-
+    -
+      name: Install aidoku-cli
+      run: brew install beerpiss/tap/aidoku-cli
+    -
+      name: Build AssemblyScript sources
+      run: |
+        for src in ./src/as/*; do
+        (
+          cd "$src"
+          npm install
+          npm run build
+        )
+    -
+      name: Build C sources
+      run: |
+        for src in ./src/c/*; do
+          (
+            cd "$src"
+            make package.aix
+          )
+        done
+    -
+      name: Build Rust sources
+      run: |
+        for src in ./src/rust/*; do
+          (
+            cd "$src"
+            ./build.sh -a
+          )
+        done
+    -
+      name: Building source list
+      run: |
+        aidoku build ./**/*.aix
+    -
+      name: Deploy to GitHub Pages
+      uses: JamesIves/github-pages-deploy-action@v4.2.5
+      with:
+        branch: nightly
+        folder: public
+        git-config-name: GitHub Actions
+        git-config-email: github-actions[bot]@users.noreply.github.com
+        single-commit: true
+
