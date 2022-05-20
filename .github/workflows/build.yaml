@@ -35,17 +35,20 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-cargo-
     -
-      name: Install aidoku-cli
-      run: brew install beerpiss/tap/aidoku-cli
+      name: Install build dependencies
+      run: |
+        sudo ln -s $(which wasm-ld-13 || which wasm-ld-12 || which wasm-ld-11 || which wasm-ld-10) /usr/bin/wasm-ld
+        brew install beerpiss/tap/aidoku-cli
     -
       name: Build AssemblyScript sources
       run: |
         for src in ./src/as/*; do
-        (
-          cd "$src"
-          npm install
-          npm run build
-        )
+          (
+            cd "$src"
+            npm install
+            npm run build
+          )
+        done
     -
       name: Build C sources
       run: |
