@@ -45,10 +45,11 @@ jobs:
         for src in ./src/as/*; do
           (
             cd "$src"
-            npm install
+            npm clean-install
             npm run build
-          )
+          ) &
         done
+        wait
     -
       name: Build C sources
       run: |
