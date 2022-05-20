@@ -12,6 +12,8 @@ jobs:
     steps:
     -
       uses: actions/checkout@v3
+    -
+      uses: google/wireit@setup-github-actions-caching/v1
     - 
       uses: actions/setup-node@v3
       with:
@@ -81,4 +83,3 @@ jobs:
         git-config-name: GitHub Actions
         git-config-email: github-actions[bot]@users.noreply.github.com
         single-commit: true
-
