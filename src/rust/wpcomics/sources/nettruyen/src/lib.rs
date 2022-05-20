@@ -86,7 +86,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 					}
 					"Sắp xếp theo" => {
 						sort_by = match filter.value.as_int().unwrap_or(0) {
-							0 => 0,	 // new chapters
+							0 => 0,  // new chapters
 							1 => 15, // new mangas
 							2 => 10, // most watched
 							3 => 11, // most watched this month
@@ -95,7 +95,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 							6 => 20, // most followed
 							7 => 25, // most commented
 							8 => 30, // most chapters
-							9 => 5,	 // alphabetical
+							9 => 5,  // alphabetical
 							_ => 0,
 						};
 					}
