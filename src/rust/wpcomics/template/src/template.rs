@@ -4,7 +4,7 @@ use aidoku::{
 	MangaPageResult, MangaStatus, MangaViewer, Page,
 };
 
-use crate::helper::{append_protocol, extract_f32_from_string, https_upgrade, status_from_string};
+use crate::helper::{append_protocol, extract_f32_from_string, https_upgrade};
 
 pub struct WPComicsSource {
 	pub base_url: &'static str,
@@ -239,7 +239,13 @@ impl Default for WPComicsSource {
 		WPComicsSource {
 			base_url: "",
 			listing_mapping: |str| str,
-			status_mapping: status_from_string,
+			status_mapping: |status| match status.as_str() {
+				"Ongoing" => MangaStatus::Ongoing,
+				"Completed" => MangaStatus::Completed,
+				"Hiatus" => MangaStatus::Hiatus,
+				"Cancelled" => MangaStatus::Cancelled,
+				_ => MangaStatus::Unknown,
+			},
 			time_converter: |str| {
 				StringRef::from(str)
 					.0

@@ -6,7 +6,7 @@ use aidoku::{
 	FilterType, Listing, Manga, MangaPageResult, MangaViewer, Page,
 };
 use wpcomics_template::{
-	helper::urlencode,
+	helper::{get_tag_id, urlencode},
 	template::{self, WPComicsSource},
 };
 
@@ -14,7 +14,6 @@ fn get_instance() -> WPComicsSource {
 	WPComicsSource {
 		base_url: "https://readcomicsfree.com",
 		listing_mapping: listing_map,
-		status_mapping: status_map,
 
 		manga_cell_image: "",
 

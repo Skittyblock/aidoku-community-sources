@@ -6,14 +6,16 @@ use aidoku::{
 	std::{net::Request, String, Vec},
 	Chapter, DeepLink, Filter, FilterType, Listing, Manga, MangaPageResult, MangaViewer, Page,
 };
-use helper::{convert_time, listing_mapping, status_map, trunc_trailing_comic};
-use wpcomics_template::{helper::urlencode, template, template::WPComicsSource};
+use helper::{convert_time, listing_mapping};
+use wpcomics_template::{
+	helper::{trunc_trailing_comic, urlencode},
+	template::{self, WPComicsSource},
+};
 
 fn get_instance() -> WPComicsSource {
 	WPComicsSource {
 		base_url: "https://comiconlinefree.net",
 		listing_mapping,
-		status_mapping: status_map,
 		time_converter: convert_time,
 
 		next_page: "div.general-nav > a:contains(Next)",

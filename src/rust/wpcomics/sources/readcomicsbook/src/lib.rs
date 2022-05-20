@@ -7,10 +7,10 @@ use aidoku::{
 	std::{net::HttpMethod, net::Request, String, Vec},
 	Chapter, DeepLink, Filter, FilterType, Listing, Manga, MangaPageResult, MangaViewer, Page,
 };
-use helper::{get_search_url, get_tag_id, listing_mapping, status_map};
+use helper::{get_search_url, listing_mapping};
 use parser::parse_comic;
 use wpcomics_template::{
-	helper::urlencode,
+	helper::{get_tag_id, urlencode},
 	template::{self, *},
 };
 
@@ -18,7 +18,6 @@ fn get_instance() -> WPComicsSource {
 	WPComicsSource {
 		base_url: "https://readcomicsbook.com",
 		listing_mapping,
-		status_mapping: status_map,
 
 		manga_cell: "li[itemtype=\"https://schema.org/Book\"]",
 		manga_cell_title: "div.manga-info > h3 > a",
