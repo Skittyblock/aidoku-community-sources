@@ -1,0 +1,47 @@
+[
+  {
+    "id": "en.readcomicsfree",
+    "name": "ReadComicsFree",
+    "file": "en.readcomicsfree-v1.aix",
+    "icon": "en.readcomicsfree-v1.png",
+    "lang": "en",
+    "version": 1,
+    "nsfw": 0
+  },
+  {
+    "id": "en.comiconlinefree",
+    "name": "ComicOnlineFree",
+    "file": "en.comiconlinefree-v1.aix",
+    "icon": "en.comiconlinefree-v1.png",
+    "lang": "en",
+    "version": 1,
+    "nsfw": 0
+  },
+  {
+    "id": "en.readcomicsbook",
+    "name": "ReadComicsBook",
+    "file": "en.readcomicsbook-v1.aix",
+    "icon": "en.readcomicsbook-v1.png",
+    "lang": "en",
+    "version": 1,
+    "nsfw": 0
+  },
+  {
+    "id": "en.xoxocomics",
+    "name": "XOXO Comics",
+    "file": "en.xoxocomics-v1.aix",
+    "icon": "en.xoxocomics-v1.png",
+    "lang": "en",
+    "version": 1,
+    "nsfw": 1
+  },
+  {
+    "id": "vi.nettruyen",
+    "name": "NetTruyen",
+    "file": "vi.nettruyen-v1.aix",
+    "icon": "vi.nettruyen-v1.png",
+    "lang": "vi",
+    "version": 1,
+    "nsfw": 1
+  }
+]
