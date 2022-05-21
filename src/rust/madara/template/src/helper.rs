@@ -78,7 +78,7 @@ pub fn get_image_url(obj: Node) -> String {
 }
 
 
-pub fn get_filtered_url(filters: Vec<Filter>, page: i32, url: &mut String) -> bool {
+pub fn get_filtered_url(filters: Vec<Filter>, page: i32, url: &mut String, search_path: String) -> bool {
 	let mut is_searching = false;
 	let mut query = String::new();
 	let mut search_string = String::new();
@@ -137,7 +137,9 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32, url: &mut String) -> bo
 	}
 
 	if is_searching {
-		url.push_str("/page/");
+        url.push_str("/");
+		url.push_str(&search_path);
+        url.push_str("/");
 		url.push_str(&i32_to_string(page));
 		url.push_str("/?s=");
 		url.push_str(&search_string);

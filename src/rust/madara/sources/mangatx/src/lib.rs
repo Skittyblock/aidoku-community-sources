@@ -8,7 +8,6 @@ use madara_template::template;
 fn get_data() ->  template::MadaraSiteData {
     let data: template::MadaraSiteData = template::MadaraSiteData {
         base_url: String::from("https://mangatx.com"),
-        advanced_search: true,
         ..Default::default()
     };
     return data;

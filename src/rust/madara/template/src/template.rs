@@ -13,9 +13,7 @@ pub struct MadaraSiteData {
 	pub search_path: String,
 	pub search_selector: String,
 	pub image_selector: String,
-	pub advanced_search: bool,
 	pub alt_ajax: bool,
-	pub is_paged: bool,
 }
 
 impl Default for MadaraSiteData {
@@ -23,20 +21,18 @@ impl Default for MadaraSiteData {
 		MadaraSiteData{
 			base_url: String::new(),
 			lang: String::from("en"),
-			source_path: String::from("manga"),
-			search_path: String::from("page"),
-			search_selector: String::from("div.c-tabs-item__content"),
-			image_selector: String::from("div.page-break > img"),
-			advanced_search: false,
-			alt_ajax: false,
-			is_paged: false,
+			source_path: String::from("manga"), // www.example.com/{source_path}/manga-id/
+			search_path: String::from("page"), // www.example.com/{search_path}/?query
+			search_selector: String::from("div.c-tabs-item__content"), // selector div for search results page
+			image_selector: String::from("div.page-break > img"),      // div to select images from a chapter
+			alt_ajax: false,                    // choose between two options for chapter list POST request
 		}
 	}
 }
 
 pub fn get_manga_list(filters: Vec<Filter>, page: i32, data: MadaraSiteData) -> Result<MangaPageResult> {
 	let mut url = data.base_url.clone();
-	let did_search = get_filtered_url(filters, page, &mut url);
+	let did_search = get_filtered_url(filters, page, &mut url, data.search_path.clone());
 
 	if did_search {
 		get_search_result(data, url)

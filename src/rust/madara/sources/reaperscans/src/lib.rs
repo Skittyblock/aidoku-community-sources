@@ -10,7 +10,6 @@ fn get_data() ->  template::MadaraSiteData {
 	let data: template::MadaraSiteData = template::MadaraSiteData {
 		base_url: String::from("https://reaperscans.com"),
 		source_path: String::from("series"),
-		advanced_search: true,
 		alt_ajax: true,
 		..Default::default()
 	};
