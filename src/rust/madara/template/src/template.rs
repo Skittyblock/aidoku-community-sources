@@ -39,7 +39,6 @@ pub fn get_manga_list(filters: Vec<Filter>, page: i32, data: MadaraSiteData) -> 
 	let did_search = get_filtered_url(filters, page, &mut url);
 
 	if did_search {
-		println!("URL Search \"{}\"", url);
 		get_search_result(data, url)
 	} else {
 		get_series_page(data, "_latest_update", page)
@@ -84,8 +83,6 @@ pub fn get_search_result(data: MadaraSiteData, url: String) -> Result<MangaPageR
 
 pub fn get_series_page(data: MadaraSiteData, listing: &str, page: i32) -> Result<MangaPageResult> {
 	let url = data.base_url.clone() + "/wp-admin/admin-ajax.php";
-
-	println!("URL Home \"{}\"", url);
 
 	let body_content =  format!("action=madara_load_more&page={}&template=madara-core%2Fcontent%2Fcontent-archive&vars%5Bpaged%5D=1&vars%5Borderby%5D=meta_value_num&vars%5Btemplate%5D=archive&vars%5Bsidebar%5D=full&vars%5Bpost_type%5D=wp-manga&vars%5Bpost_status%5D=publish&vars%5Bmeta_key%5D={}&vars%5Border%5D=desc&vars%5Bmeta_query%5D%5Brelation%5D=OR&vars%5Bmanga_archives_item_layout%5D=big_thumbnail", &page-1, listing);
 
