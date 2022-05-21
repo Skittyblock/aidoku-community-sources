@@ -71,14 +71,20 @@ jobs:
           )
         done
     -
+      name: Test if all source packages are valid
+      run: |
+        aidoku verify ./**/*.aix
+    -
       name: Building source list
+      if: ${{ github.ref == 'refs/heads/main' }}
       run: |
         aidoku build ./**/*.aix
     -
       name: Deploy to GitHub Pages
       uses: JamesIves/github-pages-deploy-action@v4.2.5
+      if: ${{ github.ref == 'refs/heads/main' }}
       with:
-        branch: nightly
+        branch: gh-pages
         folder: public
         git-config-name: GitHub Actions
         git-config-email: github-actions[bot]@users.noreply.github.com

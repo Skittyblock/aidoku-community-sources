@@ -1,0 +1,102 @@
+name: Test PR
+on:
+  pull_request:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+    -
+      uses: actions/checkout@v3
+    -
+      name: Get changed files
+      id: files
+      uses: jitterbit/get-changed-files@v1
+      with:
+        format: json
+    -
+      name: Process changed files
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        readarray -t TEMP <<< "$(jq -r '.[]' <<<'${{ steps.files.outputs.added_modified }}')"
+        for line in "${TEMP[@]}"
+        do
+          if [[ "$line" == *"src/rust"* ]]; then
+            echo "SETUP_RUST=true" >> $GITHUB_ENV
+          elif [[ "$line" == *"src/as"* ]]; then
+            echo "SETUP_AS=true" >> $GITHUB_ENV
+          fi         
+        done
+    -
+      uses: google/wireit@setup-github-actions-caching/v1
+      if: ${{ env.SETUP_AS == 'true' }}
+    - 
+      uses: actions/setup-node@v3
+      if: ${{ env.SETUP_AS == 'true' }}
+      with:
+        node-version: 16
+        cache: npm
+        cache-dependency-path: '**/package-lock.json'
+    -
+      uses: actions-rs/toolchain@v1
+      if: ${{ env.SETUP_RUST == 'true' }}
+      with:
+        toolchain: nightly
+        override: true
+        target: wasm32-unknown-unknown
+    -
+      uses: actions/cache@v3
+      if: ${{ env.SETUP_RUST == 'true' }}
+      with:
+        path: |
+         ~/.cargo/registry
+         ~/.cargo/git
+         src/rust/**/target
+        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-cargo-
+    -
+      name: Install build dependencies
+      run: |
+        sudo ln -s $(which wasm-ld-13 || which wasm-ld-12 || which wasm-ld-11 || which wasm-ld-10) /usr/bin/wasm-ld
+        brew install beerpiss/tap/aidoku-cli
+    -
+      name: Build sources
+      run: |
+        REBUILD_C_SOURCES="false"
+        readarray -t TEMP <<< "$(jq -r '.[]' <<<'${{ steps.files.outputs.added_modified }}')"
+
+        while IFS= read -r -d $'\0' i; do
+          if [[ "$i" == *"src/rust"* ]]; then
+            (
+              cd "$i"
+              ./build.sh -a
+            )
+          elif [[ "$i" == *"src/as"* ]]; then
+            (
+              cd "$i"
+              npm clean-install
+              npm run build
+            )
+          elif [[ "$i" == *"src/c"* ]]; then
+            (
+              cd "$i"
+              make package.aix
+            )
+          elif [[ "$i" == *"lib/c" ]]; then
+            REBUILD_C_SOURCES="true"
+          fi
+        done < <(printf "%s\n" "${TEMP[@]}" | cut -d'/' -f-3 | sort -u | grep 'src' | tr '\n' '\0')
+
+        if [ "$REBUILD_C_SOURCES" = "true" ]; then
+          for src in ./src/c/*; do
+            (
+              cd "$src"
+              make package.aix
+            )
+          done
+        fi
+    -
+      name: Test if sources are valid
+      run: aidoku verify ./**/*.aix
