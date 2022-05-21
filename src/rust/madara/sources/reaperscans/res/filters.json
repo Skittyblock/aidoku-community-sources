@@ -1,3 +1,160 @@
 [
-    { "type": "title" }
+	{ "type": "title" },
+	{
+		"type": "select",
+		"name": "Condition",
+		"options": ["OR (having one of the selected genre)", "AND (having all of the selected genres)"]
+	},
+	{
+		"type": "select",
+		"name": "Status",
+		"options": ["All", "Ongoing", "On Hold", "Cancelled", "Completed"]
+	},
+	{
+		"type": "select",
+		"name": "Adult",
+		"options": ["All", "No Adult Content", "Only Adult Contnt"]
+	},
+	{
+		"type": "group",
+		"name": "Genres",
+		"filters": [
+			{
+				"type": "genre",
+				"name": "action"
+			},
+			{
+				"type": "genre",
+				"name": "adult"
+			},
+			{
+				"type": "genre",
+				"name": "adventure"
+			},
+			{
+				"type": "genre",
+				"name": "comedy"
+			},
+			{
+				"type": "genre",
+				"name": "crime"
+			},
+			{
+				"type": "genre",
+				"name": "drama"
+			},
+			{
+				"type": "genre",
+				"name": "ecchi"
+			},
+			{
+				"type": "genre",
+				"name": "fantasy"
+			},
+			{
+				"type": "genre",
+				"name": "gaming"
+			},
+			{
+				"type": "genre",
+				"name": "harem"
+			},
+			{
+				"type": "genre",
+				"name": "historical"
+			},
+			{
+				"type": "genre",
+				"name": "horror"
+			},
+			{
+				"type": "genre",
+				"name": "isekai"
+			},
+			{
+				"type": "genre",
+				"name": "manhua"
+			},
+			{
+				"type": "genre",
+				"name": "manhwa"
+			},
+			{
+				"type": "genre",
+				"name": "martial-arts"
+			},
+			{
+				"type": "genre",
+				"name": "mature"
+			},
+			{
+				"type": "genre",
+				"name": "mecha"
+			},
+			{
+				"type": "genre",
+				"name": "medical"
+			},
+			{
+				"type": "genre",
+				"name": "mystery"
+			},
+			{
+				"type": "genre",
+				"name": "novel"
+			},
+			{
+				"type": "genre",
+				"name": "otherworld"
+			},
+			{
+				"type": "genre",
+				"name": "psychological"
+			},
+			{
+				"type": "genre",
+				"name": "revenge"
+			},
+			{
+				"type": "genre",
+				"name": "romance"
+			},
+			{
+				"type": "genre",
+				"name": "school-life"
+			},
+			{
+				"type": "genre",
+				"name": "sci-fi"
+			},
+			{
+				"type": "genre",
+				"name": "seinen"
+			},
+			{
+				"type": "genre",
+				"name": "shoujo"
+			},
+			{
+				"type": "genre",
+				"name": "shounen"
+			},
+			{
+				"type": "genre",
+				"name": "slice-of-life"
+			},
+			{
+				"type": "genre",
+				"name": "sports"
+			},
+			{
+				"type": "genre",
+				"name": "supernatural"
+			},
+			{
+				"type": "genre",
+				"name": "tragedy"
+			}
+		]
+	}
 ]

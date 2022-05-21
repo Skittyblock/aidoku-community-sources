@@ -1,24 +1,24 @@
 #![no_std]
 use aidoku::{
-	prelude::*, error::Result, std::String, std::Vec, std::net::Request,
+	prelude::*, error::Result, std::String, std::Vec,
 	Filter, Listing, Manga, MangaPageResult, Page, Chapter, DeepLink,
 };
 
 use madara_template::template;
 
 fn get_data() ->  template::MadaraSiteData {
-    let data: template::MadaraSiteData = template::MadaraSiteData {
-        base_url: String::from("https://coloredmanga.com"),
-        advanced_search: true,
-        alt_ajax: true,
-        ..Default::default()
-    };
-    return data;
+	let data: template::MadaraSiteData = template::MadaraSiteData {
+		base_url: String::from("https://coloredmanga.com"),
+		advanced_search: true,
+		alt_ajax: true,
+		..Default::default()
+	};
+	return data;
 }
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
-	template::search_or_listing(filters, page, get_data())
+	template::get_manga_list(filters, page, get_data())
 }
 
 #[get_manga_listing]

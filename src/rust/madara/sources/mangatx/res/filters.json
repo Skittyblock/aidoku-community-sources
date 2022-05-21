@@ -1,3 +1,208 @@
 [
-    { "type": "title" }
+	{ "type": "title" },
+	{
+		"type": "select",
+		"name": "Condition",
+		"options": ["OR (having one of the selected genre)", "AND (having all of the selected genres)"]
+	},
+	{
+		"type": "select",
+		"name": "Status",
+		"options": ["All", "Ongoing", "On Hold", "Cancelled", "Completed"]
+	},
+	{
+		"type": "select",
+		"name": "Adult",
+		"options": ["All", "No Adult Content", "Only Adult Contnt"]
+	},
+	{
+		"type": "group",
+		"name": "Genres",
+		"filters": [
+			{
+				"type": "genre",
+				"name": "action"
+			},
+			{
+				"type": "genre",
+				"name": "adventure"
+			},
+			{
+				"type": "genre",
+				"name": "based-on-a-novel"
+			},
+			{
+				"type": "genre",
+				"name": "comedy"
+			},
+			{
+				"type": "genre",
+				"name": "comic"
+			},
+			{
+				"type": "genre",
+				"name": "completed-manga"
+			},
+			{
+				"type": "genre",
+				"name": "cooking"
+			},
+			{
+				"type": "genre",
+				"name": "doujinshi"
+			},
+			{
+				"type": "genre",
+				"name": "drama"
+			},
+			{
+				"type": "genre",
+				"name": "ecchi"
+			},
+			{
+				"type": "genre",
+				"name": "fantasy"
+			},
+			{
+				"type": "genre",
+				"name": "harem"
+			},
+			{
+				"type": "genre",
+				"name": "hentai-manhwa"
+			},
+			{
+				"type": "genre",
+				"name": "historical"
+			},
+			{
+				"type": "genre",
+				"name": "horror"
+			},
+			{
+				"type": "genre",
+				"name": "isekai"
+			},
+			{
+				"type": "genre",
+				"name": "josei"
+			},
+			{
+				"type": "genre",
+				"name": "magic"
+			},
+			{
+				"type": "genre",
+				"name": "manga"
+			},
+			{
+				"type": "genre",
+				"name": "manhua"
+			},
+			{
+				"type": "genre",
+				"name": "manhwa"
+			},
+			{
+				"type": "genre",
+				"name": "martial-arts"
+			},
+			{
+				"type": "genre",
+				"name": "free-mature-manga"
+			},
+			{
+				"type": "genre",
+				"name": "read-free-mecha-manga"
+			},
+			{
+				"type": "genre",
+				"name": "medical"
+			},
+			{
+				"type": "genre",
+				"name": "mystery"
+			},
+			{
+				"type": "genre",
+				"name": "novel"
+			},
+			{
+				"type": "genre",
+				"name": "psychological"
+			},
+			{
+				"type": "genre",
+				"name": "read-reincarnation-manga"
+			},
+			{
+				"type": "genre",
+				"name": "romance"
+			},
+			{
+				"type": "genre",
+				"name": "rpg-mangazuki"
+			},
+			{
+				"type": "genre",
+				"name": "school-life"
+			},
+			{
+				"type": "genre",
+				"name": "sci-fi"
+			},
+			{
+				"type": "genre",
+				"name": "seinen"
+			},
+			{
+				"type": "genre",
+				"name": "shoujo"
+			},
+			{
+				"type": "genre",
+				"name": "shoujo-ai"
+			},
+			{
+				"type": "genre",
+				"name": "shounen-manga-free-at-mangatx"
+			},
+			{
+				"type": "genre",
+				"name": "shounen-ai-manga-free"
+			},
+			{
+				"type": "genre",
+				"name": "slice-of-life"
+			},
+			{
+				"type": "genre",
+				"name": "soft-yaoi-mangatx"
+			},
+			{
+				"type": "genre",
+				"name": "soft-yuri-free-mangatx"
+			},
+			{
+				"type": "genre",
+				"name": "sports-manga"
+			},
+			{
+				"type": "genre",
+				"name": "supernatural"
+			},
+			{
+				"type": "genre",
+				"name": "free-tragedy-manga"
+			},
+			{
+				"type": "genre",
+				"name": "webtoon"
+			},
+			{
+				"type": "genre",
+				"name": "zombie"
+			}
+		]
+	}
 ]

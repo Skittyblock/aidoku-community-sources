@@ -1,7 +1,6 @@
 use aidoku::{
-    prelude::*,
-	std::String, std::ArrayRef, std::Vec, MangaStatus,
-    std::html::Node,
+	std::String, std::Vec, std::html::Node, std::net::Request, std::net::HttpMethod,
+	Filter, FilterType,
 };
 
 pub fn urlencode(string: String) -> String {
@@ -47,21 +46,103 @@ pub fn i32_to_string(mut integer: i32) -> String {
 	return string;
 }
 
-pub fn get_image_url(obj: Node) -> String {
-    let mut img;
-    img = obj.attr("data-src").read();
-    if img.len() == 0 {
-        img = obj.attr("data-lazy-src").read();
-    }
-    if img.len() == 0 {
-        img = obj.attr("src").read();
-    }
-    if img.len() == 0 {
-        img = obj.attr("srcset").read();
+pub fn get_int_manga_id(manga_id: String, base_url: String, path: String) -> String {
+	let url = base_url + "/" +
+			  path.as_str()+ "/" +
+			  manga_id.as_str();
 
-    }
-    // img = img.replace("-175x238", "").replace("-350x476", "").replace("-110x150", "");
-    img = String::from(img.trim());
-    println!("image `{}`", img);
-    return img;
+	let html = Request::new(url.as_str(), HttpMethod::Get).html();
+
+	let id_html = html.select("script#wp-manga-js-extra").html().read();
+	let id = &id_html[id_html.find("manga_id").unwrap()+11..id_html.find("\"};").unwrap()];
+
+	return String::from(id);
+}
+
+pub fn get_image_url(obj: Node) -> String {
+	let mut img;
+	img = obj.attr("data-src").read();
+	if img.len() == 0 {
+		img = obj.attr("data-lazy-src").read();
+	}
+	if img.len() == 0 {
+		img = obj.attr("src").read();
+	}
+	if img.len() == 0 {
+		img = obj.attr("srcset").read();
+
+	}
+	// img = img.replace("-175x238", "").replace("-350x476", "").replace("-110x150", "");
+	img = String::from(img.trim());
+	return img;
+}
+
+
+pub fn get_filtered_url(filters: Vec<Filter>, page: i32, url: &mut String) -> bool {
+	let mut is_searching = false;
+	let mut query = String::new();
+	let mut search_string = String::new();
+
+	for filter in filters {
+		match filter.kind {
+			FilterType::Title => {
+				if let Ok(filter_value) = filter.value.as_string() {
+					search_string.push_str(urlencode(filter_value.read().to_lowercase()).as_str());
+					is_searching = true;
+				}
+			},
+			FilterType::Genre => {
+				query.push_str("&genre[]=");
+				query.push_str(&urlencode(filter.name.as_str().to_lowercase()));
+				is_searching = true;
+			},
+			FilterType::Select => {
+				if filter.name.as_str() == "Condition" {
+					match filter.value.as_int().unwrap_or(-1) {
+						0 =>  query.push_str("&op="),  // OR
+						1 =>  query.push_str("&op=1"), // AND
+						_ => continue,
+					}
+					if filter.value.as_int().unwrap_or(-1) > 0 {
+						is_searching = true;
+					}
+				}
+				if filter.name.as_str() == "Adult" {
+					match filter.value.as_int().unwrap_or(-1) {
+						0 =>  query.push_str(""),		 // default=
+						1 =>  query.push_str("&adult=0"), // None
+						2 =>  query.push_str("&adult=1"), // Only
+						_ => continue,
+					}
+					if filter.value.as_int().unwrap_or(-1) > 0 {
+						is_searching = true;
+					}
+				}
+				if filter.name.as_str() == "Status" {
+					match filter.value.as_int().unwrap_or(-1) {
+						0 =>  query.push_str(""),
+						1 =>  query.push_str("&status[]=on-going"),
+						2 =>  query.push_str("&status[]=on-hold"),
+						3 =>  query.push_str("&status[]=canceled"),
+						4 =>  query.push_str("&status[]=end"),
+						_ => continue,
+					}
+					if filter.value.as_int().unwrap_or(-1) > 0 {
+						is_searching = true;
+					}
+				}
+			},
+			_ => continue,
+		}
+	}
+
+	if is_searching {
+		url.push_str("/page/");
+		url.push_str(&i32_to_string(page));
+		url.push_str("/?s=");
+		url.push_str(&search_string);
+		url.push_str("&post_type=wp-manga");
+		url.push_str(&query);
+	}
+	return is_searching;
 }
