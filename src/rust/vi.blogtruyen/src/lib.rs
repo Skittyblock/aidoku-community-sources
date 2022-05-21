@@ -170,12 +170,13 @@ fn get_manga_details(id: String) -> Result<Manga> {
 fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
     let url = format!("https://blogtruyen.vn{id}");
     let html = Request::new(url.as_str(), HttpMethod::Get).html();
-    let scanlator = html
+    let mut scanlator = html
         .select("span.translater")
         .array()
         .map(|val| val.as_node().text().read())
-        .collect::<Vec<String>>()
-        .join(", ");
+        .collect::<Vec<String>>();
+	scanlator.dedup();
+	let scanlator_string = scanlator.join(", ");
     let manga_title = html
         .select("div.thumbnail > img")
         .attr("alt")
@@ -185,12 +186,19 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
     for chapter_item in html.select("p[id^=\"chapter\"]").array() {
         let chapter_node = chapter_item.as_node();
         let chapter_id = chapter_node.select("span.title > a").attr("href").read();
-        let title = chapter_node
+        let mut title = chapter_node
             .select("span.title > a")
             .text()
             .read()
             .replace(manga_title.trim(), "");
         let chapter = extract_f32_from_string(String::from(""), String::from(&title));
+		let splitter = format!(" {}", chapter);
+		if title.contains(&splitter) {
+			let split = title.splitn(2, &splitter).collect::<Vec<&str>>();
+			title = String::from(split[1]).replacen(|char| {
+				return char == ':' || char == '-'
+			}, "", 1);
+		}
         let date_updated = chapter_node
             .select("span.publishedDate")
             .text()
@@ -204,7 +212,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
             volume: -1.0,
             chapter,
             date_updated,
-            scanlator: String::from(&scanlator),
+            scanlator: String::from(&scanlator_string),
             url,
             lang: String::from("vi"),
         });
