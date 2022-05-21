@@ -21,11 +21,16 @@ impl Default for MadaraSiteData {
 		MadaraSiteData{
 			base_url: String::new(),
 			lang: String::from("en"),
-			source_path: String::from("manga"), // www.example.com/{source_path}/manga-id/
-			search_path: String::from("page"), // www.example.com/{search_path}/?query
-			search_selector: String::from("div.c-tabs-item__content"), // selector div for search results page
-			image_selector: String::from("div.page-break > img"),      // div to select images from a chapter
-			alt_ajax: false,                    // choose between two options for chapter list POST request
+			// www.example.com/{source_path}/manga-id/
+			source_path: String::from("manga"),
+			// www.example.com/{search_path}/?search_query
+			search_path: String::from("page"),
+			// selector div for search results page
+			search_selector: String::from("div.c-tabs-item__content"),
+			// div to select images from a chapter
+			image_selector: String::from("div.page-break > img"),
+			// choose between two options for chapter list POST request
+			alt_ajax: false,
 		}
 	}
 }
