@@ -39,23 +39,25 @@ jobs:
         cache: npm
         cache-dependency-path: '**/package-lock.json'
     -
+      uses: actions/cache@v3
+      if: ${{ env.SETUP_RUST == 'true' }}
+      with:
+        path: |
+         ~/.cargo/registry/index
+         ~/.cargo/registry/cache
+         ~/.cargo/git/db
+         ~/.cargo/bin
+         src/rust/**/target
+        key: ${{ runner.os }}-cargo3-${{ hashFiles('**/Cargo.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-cargo3-
+    -
       uses: actions-rs/toolchain@v1
       if: ${{ env.SETUP_RUST == 'true' }}
       with:
         toolchain: nightly
         override: true
         target: wasm32-unknown-unknown
-    -
-      uses: actions/cache@v3
-      if: ${{ env.SETUP_RUST == 'true' }}
-      with:
-        path: |
-         ~/.cargo/registry
-         ~/.cargo/git
-         src/rust/**/target
-        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-cargo-
     -
       name: Install build dependencies
       run: |
