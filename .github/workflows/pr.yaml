@@ -101,4 +101,4 @@ jobs:
         fi
     -
       name: Test if sources are valid
-      run: aidoku verify ./**/*.aix
+      run: aidoku verify --force-color ./**/*.aix
