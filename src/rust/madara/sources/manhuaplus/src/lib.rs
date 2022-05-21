@@ -3,11 +3,14 @@ use aidoku::{
 	prelude::*, error::Result, std::String, std::Vec,
 	Filter, Listing, Manga, MangaPageResult, Page, Chapter, DeepLink,
 };
+
 use madara_template::template;
 
 fn get_data() ->  template::MadaraSiteData {
 	let data: template::MadaraSiteData = template::MadaraSiteData {
-		base_url: String::from("https://mangatx.com"),
+		base_url: String::from("https://manhuaplus.com"),
+		alt_ajax: true,
+		image_selector: String::from("li.blocks-gallery-item > figure > img, div.page-break > img, div#chapter-video-frame > p > img, div.text-left > p > img"),
 		..Default::default()
 	};
 	return data;

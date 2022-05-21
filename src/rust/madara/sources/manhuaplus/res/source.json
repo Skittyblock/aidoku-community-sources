@@ -1,0 +1,16 @@
+{
+	"info": {
+		"id": "en.manhuaplus",
+		"lang": "en",
+		"name": "ManhuaPlus",
+		"version": 1,
+		"urls": [
+			"https://manhuaplus.com"
+		],
+		"nsfw": 0
+	},
+    "listings": [
+        { "name": "Trending" },
+         {"name": "Popular" }
+    ]
+}
