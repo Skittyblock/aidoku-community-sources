@@ -71,10 +71,6 @@ jobs:
           )
         done
     -
-      name: Test if all source packages are valid
-      run: |
-        aidoku verify ./**/*.aix
-    -
       name: Building source list
       if: ${{ github.ref == 'refs/heads/main' }}
       run: |
