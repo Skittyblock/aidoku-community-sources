@@ -65,6 +65,7 @@ jobs:
         brew install beerpiss/tap/aidoku-cli
     -
       name: Build sources
+      id: build
       run: |
         REBUILD_C_SOURCES="false"
         readarray -t TEMP <<< "$(jq -r '.[]' <<<'${{ steps.files.outputs.added_modified }}')"
@@ -102,3 +103,14 @@ jobs:
     -
       name: Test if sources are valid
       run: aidoku verify --force-color ./**/*.aix
+    -
+      name: Flatten packages directory
+      if: always()
+      run: aidoku build ./**/*.aix
+    - 
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: packages
+        path: public/sources/*.aix
+        if-no-files-found: ignore

@@ -74,7 +74,6 @@ jobs:
         done
     -
       name: Building source list
-      if: ${{ github.ref == 'refs/heads/main' }}
       run: |
         aidoku build ./**/*.aix
     -
@@ -87,3 +86,20 @@ jobs:
         git-config-name: GitHub Actions
         git-config-email: github-actions[bot]@users.noreply.github.com
         single-commit: true
+    - 
+      name: Uploading packages as artifact
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: packages
+        path: public/sources/*.aix
+        if-no-files-found: ignore
+    -
+      name: Uploading gh-pages deployment as artifact
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: gh-pages
+        path: public
+        if-no-files-found: ignore
+
