@@ -7,7 +7,7 @@ use aidoku::{
 };
 use wpcomics_template::{
 	helper::{get_tag_id, urlencode},
-	template::{self, WPComicsSource},
+	template::{WPComicsSource},
 };
 
 fn get_instance() -> WPComicsSource {
@@ -73,8 +73,7 @@ fn get_page_list(id: String) -> Result<Vec<Page>> {
 }
 
 #[modify_image_request]
-fn modify_image_request(request: Request) {
-}
+fn modify_image_request(_request: Request) {}
 
 #[handle_url]
 pub fn handle_url(url: String) -> Result<DeepLink> {

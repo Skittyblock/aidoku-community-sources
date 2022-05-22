@@ -18,7 +18,7 @@ pub fn extract_f32_from_string(title: String, text: String) -> f32 {
 		.chars()
 		.filter(|a| (*a >= '0' && *a <= '9') || *a == ' ' || *a == '.')
 		.collect::<String>()
-		.split(" ")
+		.split(' ')
 		.collect::<Vec<&str>>()
 		.into_iter()
 		.map(|a| a.parse::<f32>().unwrap_or(0.0))
@@ -28,14 +28,14 @@ pub fn extract_f32_from_string(title: String, text: String) -> f32 {
 
 pub fn append_protocol(url: String) -> String {
 	if !url.starts_with("http") {
-		return format!("{}{}", "https:", url);
+		format!("{}{}", "https:", url)
 	} else {
-		return url;
+		url
 	}
 }
 
 pub fn https_upgrade(url: String) -> String {
-	return url.replacen("http://", "https://", 1);
+	url.replacen("http://", "https://", 1)
 }
 
 pub fn urlencode(string: String) -> String {
@@ -45,9 +45,7 @@ pub fn urlencode(string: String) -> String {
 
 	for byte in bytes {
 		let curr = *byte;
-		if (b'a' <= curr && curr <= b'z')
-			|| (b'A' <= curr && curr <= b'Z')
-			|| (b'0' <= curr && curr <= b'9')
+		if curr.is_ascii_alphanumeric()
 		{
 			result.push(curr);
 		} else {
@@ -57,11 +55,11 @@ pub fn urlencode(string: String) -> String {
 		}
 	}
 
-	String::from_utf8(result).unwrap_or(String::new())
+	String::from_utf8(result).unwrap_or_default()
 }
 
 pub fn get_tag_id(genre: i64) -> String {
-	return String::from(match genre {
+	String::from(match genre {
 		1 => "marvel",
 		2 => "dc-comics",
 		3 => "action",
@@ -117,5 +115,5 @@ pub fn get_tag_id(genre: i64) -> String {
 		53 => "western",
 		54 => "zombies",
 		_ => "",
-	});
+	})
 }

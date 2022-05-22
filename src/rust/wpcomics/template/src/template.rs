@@ -42,7 +42,7 @@ pub struct WPComicsSource {
 impl WPComicsSource {
 	pub fn get_manga_list(&self, search_url: String) -> Result<MangaPageResult> {
 		let mut mangas: Vec<Manga> = Vec::new();
-		let mut has_next_page = self.next_page.len() > 0;
+		let mut has_next_page = !self.next_page.is_empty();
 		let html = Request::new(&search_url, HttpMethod::Get).html();
 		for item in html.select(self.manga_cell).array() {
 			let item_node = item.as_node();
@@ -58,7 +58,7 @@ impl WPComicsSource {
 					.attr("href")
 					.read(),
 			);
-			let cover = if self.manga_cell_image != "" {
+			let cover = if !self.manga_cell_image.is_empty() {
 				https_upgrade(append_protocol(
 					item_node
 						.select(self.manga_cell_image)
@@ -83,7 +83,7 @@ impl WPComicsSource {
 				viewer: MangaViewer::Default,
 			});
 		}
-		if self.next_page.len() > 0 {
+		if !self.next_page.is_empty() {
 			has_next_page = html.select(self.next_page).array().len() > 0;
 		}
 		Ok(MangaPageResult {
@@ -102,7 +102,7 @@ impl WPComicsSource {
 	}
 
 	pub fn get_manga_details(&self, id: String, default_viewer: MangaViewer) -> Result<Manga> {
-		let details = Request::new(id.clone().as_str(), HttpMethod::Get).html();
+		let details = Request::new(id.as_str(), HttpMethod::Get).html();
 		let title = details.select(self.manga_details_title).text().read();
 		let cover = append_protocol(details.select(self.manga_details_cover).attr("src").read());
 		let author = (self.manga_details_author_transformer)(
@@ -113,30 +113,25 @@ impl WPComicsSource {
 		let mut nsfw = MangaContentRating::Safe;
 		let mut viewer = default_viewer;
 
-		if self.manga_details_tags.len() > 0 {
+		if !self.manga_details_tags.is_empty() {
 			for node in details
 				.select(self.manga_details_tags)
 				.text()
 				.read()
 				.split(self.manga_details_tags_splitter)
 			{
-				let category = String::from(node);
-				if category == String::from("Smut")
-					|| category == String::from("Mature")
-					|| category == String::from("Adult")
-					|| category == String::from("18+")
-				{
-					nsfw = MangaContentRating::Nsfw;
-				} else if category == String::from("Ecchi") || category == String::from("16+") {
-					nsfw = MangaContentRating::Suggestive;
+				categories.push(String::from(node));
+				match node {
+					"Smut" | "Mature" | "Adult" | "18+" => nsfw = MangaContentRating::Nsfw,
+					"Ecchi" | "16+" => {
+						nsfw = match nsfw {
+							MangaContentRating::Nsfw => MangaContentRating::Nsfw,
+							_ => MangaContentRating::Suggestive,
+						}
+					},
+					"Webtoon" | "Manhwa" | "Manhua" => viewer = MangaViewer::Scroll,
+					_ => continue,
 				}
-				if category.contains("Webtoon")
-					|| category.contains("Manhwa")
-					|| category.contains("Manhua")
-				{
-					viewer = MangaViewer::Scroll;
-				}
-				categories.push(category.clone());
 			}
 		}
 		let status = (self.status_mapping)((self.manga_details_status_transformer)(
@@ -149,7 +144,7 @@ impl WPComicsSource {
 			author,
 			artist: String::new(),
 			description,
-			url: id.clone(),
+			url: id,
 			categories,
 			status,
 			nsfw,
@@ -160,7 +155,7 @@ impl WPComicsSource {
 	pub fn get_chapter_list(&self, id: String) -> Result<Vec<Chapter>> {
 		let mut skipped_first = false;
 		let mut chapters: Vec<Chapter> = Vec::new();
-		let html = Request::new(id.clone().as_str(), HttpMethod::Get).html();
+		let html = Request::new(id.as_str(), HttpMethod::Get).html();
 		let title_untrimmed = (self.manga_details_title_transformer)(
 			html.select(self.manga_details_title).text().read(),
 		);
@@ -208,27 +203,25 @@ impl WPComicsSource {
 		let mut pages: Vec<Page> = Vec::new();
 		let url = format!("{}{}", &id, self.manga_viewer_page_url_suffix);
 		let html = Request::new(&url, HttpMethod::Get).html();
-		let mut at = 0;
-		for page in html.select(self.manga_viewer_page).array() {
+		for (at, page) in html.select(self.manga_viewer_page).array().enumerate() {
 			let page_node = page.as_node();
 			let mut page_url = page_node.attr("data-original").read();
 			if !page_url.starts_with("http") {
-				page_url = String::from(String::from("https:") + &page_url);
+				page_url = String::from("https:") + &page_url;
 			}
 			pages.push(Page {
-				index: at,
+				index: at as i32,
 				url: (self.page_url_transformer)(page_url),
 				base64: String::new(),
 				text: String::new(),
 			});
-			at += 1;
 		}
 		Ok(pages)
 	}
 
 	pub fn handle_url(&self, url: String, default_viewer: MangaViewer) -> Result<DeepLink> {
 		Ok(DeepLink {
-			manga: Some(self.get_manga_details(url.clone(), default_viewer)?),
+			manga: Some(self.get_manga_details(url, default_viewer)?),
 			chapter: None,
 		})
 	}
