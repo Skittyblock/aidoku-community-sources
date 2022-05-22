@@ -187,7 +187,7 @@ fn get_manga_details(id: String) -> Result<Manga> {
 		title: String::from(title.trim()),
 		author,
 		artist: String::new(),
-		description,
+		description: String::from(description.trim()),
 		url,
 		categories,
 		status,
