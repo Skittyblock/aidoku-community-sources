@@ -1,8 +1,8 @@
 #![no_std]
 mod helper;
 use crate::helper::{
-	category_parser, extract_f32_from_string, genre_map, status_from_string, urlencode,
-	text_with_newlines
+	category_parser, extract_f32_from_string, genre_map, status_from_string, text_with_newlines,
+	urlencode,
 };
 use aidoku::{
 	error::Result,
@@ -10,7 +10,7 @@ use aidoku::{
 	std::{
 		json::parse,
 		net::{HttpMethod, Request},
-		String, Vec
+		String, Vec,
 	},
 	Chapter, DeepLink, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
 	MangaViewer, Page,
@@ -114,6 +114,35 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 			HttpMethod::Get,
 		)
 		.html();
+
+		// Get daily featured mangas
+		if page == 1 {
+			for (image, tooltip) in html
+				.select("a.tiptip")
+				.array()
+				.zip(html.select("div.tiptip-content").array())
+			{
+				let image_node = image.as_node();
+				let tooltip_node = tooltip.as_node();
+				let id = image_node.attr("href").read();
+				let url = format!("https://blogtruyen.vn{id}");
+				let cover = image_node.select("img").attr("src").read();
+				let title = tooltip_node.select("p.bold").text().read();
+				let description = text_with_newlines(tooltip_node.select("p:not(.bold)"));				manga_arr.push(Manga {
+					id,
+					cover,
+					title,
+					author: String::new(),
+					artist: String::new(),
+					description: String::from(description.trim()),
+					url,
+					categories: Vec::new(),
+					status: MangaStatus::Unknown,
+					nsfw: MangaContentRating::Safe,
+					viewer: MangaViewer::Rtl,
+				});
+			}
+		}
 		for info in html.select("div.storyitem").array() {
 			let info_node = info.as_node();
 			let title = info_node.select("div.fl-l > a").attr("title").read();
@@ -161,9 +190,8 @@ fn get_manga_details(id: String) -> Result<Manga> {
 		.read()
 		.replace("truyện tranh", "");
 	let cover = html.select("div.thumbnail > img").attr("src").read();
-	let description = text_with_newlines(
-		html.select("section.manga-detail > div.detail > div.content")
-	);
+	let description =
+		text_with_newlines(html.select("section.manga-detail > div.detail > div.content"));
 	let author = html
 		.select("div.description > p:contains(Tác giả) > a")
 		.array()
@@ -302,9 +330,7 @@ fn get_page_list(id: String) -> Result<Vec<Page>> {
 
 #[modify_image_request]
 fn modify_image_request(request: Request) {
-	request
-		.header("Referer", "https://blogtruyen.vn")
-		.header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.64 Safari/537.36 Edg/101.0.1210.47");
+	request.header("Referer", "https://blogtruyen.vn");
 }
 
 #[handle_url]
