@@ -7,7 +7,7 @@ use aidoku::{
 };
 use wpcomics_template::{
 	helper::{get_tag_id, urlencode},
-	template::{WPComicsSource},
+	template::WPComicsSource,
 };
 
 fn get_instance() -> WPComicsSource {

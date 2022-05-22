@@ -128,7 +128,7 @@ impl WPComicsSource {
 							MangaContentRating::Nsfw => MangaContentRating::Nsfw,
 							_ => MangaContentRating::Suggestive,
 						}
-					},
+					}
 					"Webtoon" | "Manhwa" | "Manhua" => viewer = MangaViewer::Scroll,
 					_ => continue,
 				}
@@ -191,10 +191,12 @@ impl WPComicsSource {
 				let splitter2 = format!("#{}", chapter);
 				if chapter_title.contains(&splitter) {
 					let split = chapter_title.splitn(2, &splitter).collect::<Vec<&str>>();
-					chapter_title = String::from(split[1]).replacen(|char| char == ':' || char == '-', "", 1);
+					chapter_title =
+						String::from(split[1]).replacen(|char| char == ':' || char == '-', "", 1);
 				} else if chapter_title.contains(&splitter2) {
 					let split = chapter_title.splitn(2, &splitter2).collect::<Vec<&str>>();
-					chapter_title = String::from(split[1]).replacen(|char| char == ':' || char == '-', "", 1);
+					chapter_title =
+						String::from(split[1]).replacen(|char| char == ':' || char == '-', "", 1);
 				}
 			}
 			let date_updated = (self.time_converter)(
