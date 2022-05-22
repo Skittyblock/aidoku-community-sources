@@ -177,11 +177,18 @@ impl WPComicsSource {
 				.select(self.chapter_anchor_selector)
 				.text()
 				.read();
-			let chapter_number =
+			let numbers =
 				extract_f32_from_string(String::from(title), String::from(&chapter_title));
-			if chapter_number >= 0.0 {
-				let splitter = format!(" {}", chapter_number);
-				let splitter2 = format!("#{}", chapter_number);
+			let (volume, chapter) = if numbers.len() > 1 {
+				(numbers[0], numbers[1])
+			} else if !numbers.is_empty() {
+				(-1.0, numbers[0])
+			} else {
+				(-1.0, -1.0)
+			};
+			if chapter >= 0.0 {
+				let splitter = format!(" {}", chapter);
+				let splitter2 = format!("#{}", chapter);
 				if chapter_title.contains(&splitter) {
 					let split = chapter_title.splitn(2, &splitter).collect::<Vec<&str>>();
 					chapter_title = String::from(split[1]).replacen(|char| char == ':' || char == '-', "", 1);
@@ -199,8 +206,8 @@ impl WPComicsSource {
 			chapters.push(Chapter {
 				id: chapter_id,
 				title: String::from(chapter_title.trim()),
-				volume: -1.0,
-				chapter: chapter_number,
+				volume,
+				chapter,
 				date_updated,
 				scanlator: String::new(),
 				url: chapter_url,

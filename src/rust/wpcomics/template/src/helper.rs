@@ -13,17 +13,17 @@ pub fn trunc_trailing_comic(title: String) -> String {
 	}
 }
 
-pub fn extract_f32_from_string(title: String, text: String) -> f32 {
+pub fn extract_f32_from_string(title: String, text: String) -> Vec<f32> {
 	text.replace(&title, "")
 		.chars()
-		.filter(|a| (*a >= '0' && *a <= '9') || *a == ' ' || *a == '.')
+		.filter(|a| (*a >= '0' && *a <= '9') || *a == ' ' || *a == '.' || *a == '+')
 		.collect::<String>()
 		.split(' ')
 		.collect::<Vec<&str>>()
 		.into_iter()
-		.map(|a| a.parse::<f32>().unwrap_or(0.0))
-		.find(|a| *a > 0.0)
-		.unwrap_or(-1.0)
+		.map(|a| a.parse::<f32>().unwrap_or(-1.0))
+		.filter(|a| *a >= 0.0)
+		.collect::<Vec<f32>>()
 }
 
 pub fn append_protocol(url: String) -> String {
