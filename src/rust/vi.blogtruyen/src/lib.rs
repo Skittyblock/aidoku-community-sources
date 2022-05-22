@@ -277,7 +277,7 @@ fn get_page_list(id: String) -> Result<Vec<Page>> {
 	// some chapters push pages from script
 	let script = html
 		.select("article#content > script:contains(listImageCaption)")
-		.text()
+		.html()
 		.read();
 	if !script.is_empty() {
 		let images_array_string = script.split(';').collect::<Vec<&str>>()[0]
