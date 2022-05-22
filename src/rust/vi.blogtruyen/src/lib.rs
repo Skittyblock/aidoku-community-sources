@@ -1,6 +1,8 @@
 #![no_std]
 mod helper;
-use crate::helper::{extract_f32_from_string, genre_map, status_from_string, urlencode};
+use crate::helper::{
+	category_parser, extract_f32_from_string, genre_map, status_from_string, urlencode,
+};
 use aidoku::{
 	error::Result,
 	prelude::*,
@@ -49,7 +51,8 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 		}
 	}
 
-	let url = if !included_tags.is_empty()
+	let mut manga_arr: Vec<Manga> = Vec::new();
+	if !included_tags.is_empty()
 		|| !excluded_tags.is_empty()
 		|| !title.is_empty()
 		|| !author.is_empty()
@@ -64,49 +67,87 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 		} else {
 			String::from("-1")
 		};
-		format!(
-			// This page has a scanlator search feature, maybe add that when Aidoku has it
-			"https://blogtruyen.vn/timkiem/nangcao/1/{status}/{}/{}?txt={title}&aut={author}&p={page}&gr=",
-			included_tags_string,
-			excluded_tags_string,
+		let html = Request::new(
+			format!(
+				// This page has a scanlator search feature, maybe add that when Aidoku has it
+				"https://blogtruyen.vn/timkiem/nangcao/1/{status}/{}/{}?txt={title}&aut={author}&p={page}&gr=",
+				included_tags_string,
+				excluded_tags_string,
+			)
+			.as_str(),
+			HttpMethod::Get,
 		)
+		.html();
+		for (url_info, info) in html.select("div.list > p > span.tiptip > a").array().zip(
+			html.select("div.list > div.tiptip-content > div.row")
+				.array(),
+		) {
+			let url_node = url_info.as_node();
+			let info_node = info.as_node();
+			let title = info_node.select("div.col-sm-8 > div.al-c").text().read();
+			let description = info_node.select("div.col-sm-8 > div.al-j").text().read();
+			let cover = info_node.select("div.col-sm-4 > img").attr("src").read();
+			let id = url_node.attr("href").read();
+			let url = format!("https://blogtruyen.vn{id}");
+			manga_arr.push(Manga {
+				id,
+				cover,
+				title: String::from(title.trim()),
+				author: String::new(),
+				artist: String::new(),
+				description: String::from(description.trim()),
+				url,
+				categories: Vec::new(),
+				status: MangaStatus::Unknown,
+				nsfw: MangaContentRating::Safe,
+				viewer: MangaViewer::Rtl,
+			});
+		}
+		Ok(MangaPageResult {
+			manga: manga_arr,
+			has_more: html.select("a:contains([cuối])").array().len() > 0,
+		})
 	} else {
-		format!(
-			"https://blogtruyen.vn/ajax/Category/AjaxLoadMangaByCategory?id=0&orderBy=5&p={page}"
+		let html = Request::new(
+			format!("https://blogtruyen.vn/page-{page}").as_str(),
+			HttpMethod::Get,
 		)
-	};
-	let html = Request::new(url.as_str(), HttpMethod::Get).html();
-	let mut manga_arr: Vec<Manga> = Vec::new();
-	for (url, info) in html.select("div.list > p > span.tiptip > a").array().zip(
-		html.select("div.list > div.tiptip-content > div.row")
-			.array(),
-	) {
-		let url_node = url.as_node();
-		let info_node = info.as_node();
-		let title = info_node.select("div.col-sm-8 > div.al-c").text().read();
-		let description = info_node.select("div.col-sm-8 > div.al-j").text().read();
-		let cover = info_node.select("div.col-sm-4 > img").attr("src").read();
-		let id = url_node.attr("href").read();
-		let url = format!("https://blogtruyen.vn{id}");
-		manga_arr.push(Manga {
-			id,
-			cover,
-			title: String::from(title.trim()),
-			author: String::new(),
-			artist: String::new(),
-			description: String::from(description.trim()),
-			url,
-			categories: Vec::new(),
-			status: MangaStatus::Unknown,
-			nsfw: MangaContentRating::Safe,
-			viewer: MangaViewer::Rtl,
-		});
+		.html();
+		for info in html.select("div.storyitem").array() {
+			let info_node = info.as_node();
+			let title = info_node.select("div.fl-l > a").attr("title").read();
+			let description = info_node.select("div.fl-r > p.al-j").text().read();
+			let cover = info_node
+				.select("div.fl-l img:not(.imgBack)")
+				.attr("src")
+				.read();
+			let id = info_node.select("div.fl-l > a").attr("href").read();
+			let url = format!("https://blogtruyen.vn{id}");
+			let categories = html
+				.select("div.category > a")
+				.array()
+				.map(|category| category.as_node().attr("title").read())
+				.collect::<Vec<String>>();
+			let (nsfw, viewer) = category_parser(&categories);
+			manga_arr.push(Manga {
+				id,
+				cover,
+				title: String::from(title.trim()),
+				author: String::new(),
+				artist: String::new(),
+				description: String::from(description.trim()),
+				url,
+				categories,
+				status: MangaStatus::Unknown,
+				nsfw,
+				viewer,
+			});
+		}
+		Ok(MangaPageResult {
+			manga: manga_arr,
+			has_more: html.select("a[title=\"Trang cuối\"]").array().len() > 0,
+		})
 	}
-	Ok(MangaPageResult {
-		manga: manga_arr,
-		has_more: html.select("a[title=\"Trang cuối\"]").array().len() > 0
-			|| html.select("a:contains([cuối])").array().len() > 0,
-	})
 }
 
 #[get_manga_details]
@@ -139,21 +180,7 @@ fn get_manga_details(id: String) -> Result<Manga> {
 			.text()
 			.read(),
 	);
-	let mut viewer = MangaViewer::Rtl;
-	let mut nsfw = MangaContentRating::Safe;
-	for category in &categories {
-		match category.as_str() {
-			"Smut" | "Mature" | "18+" => nsfw = MangaContentRating::Nsfw,
-			"Ecchi" | "16+" => {
-				nsfw = match nsfw {
-					MangaContentRating::Nsfw => MangaContentRating::Nsfw,
-					_ => MangaContentRating::Suggestive,
-				}
-			}
-			"Webtoon" | "Manhwa" | "Manhua" => viewer = MangaViewer::Scroll,
-			_ => continue,
-		}
-	}
+	let (nsfw, viewer) = category_parser(&categories);
 	Ok(Manga {
 		id,
 		cover,
@@ -194,11 +221,20 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 			.text()
 			.read()
 			.replace(manga_title.trim(), "");
-		let chapter = extract_f32_from_string(String::from(""), String::from(&title));
-		let splitter = format!(" {}", chapter);
-		if title.contains(&splitter) {
-			let split = title.splitn(2, &splitter).collect::<Vec<&str>>();
-			title = String::from(split[1]).replacen(|char| char == ':' || char == '-', "", 1);
+		let numbers = extract_f32_from_string(String::from(&manga_title), String::from(&title));
+		let (volume, chapter) = if numbers.len() > 1 {
+			(numbers[0], numbers[1])
+		} else if !numbers.is_empty() {
+			(-1.0, numbers[0])
+		} else {
+			(-1.0, -1.0)
+		};
+		if chapter >= 0.0 {
+			let splitter = format!(" {}", chapter);
+			if title.contains(&splitter) {
+				let split = title.splitn(2, &splitter).collect::<Vec<&str>>();
+				title = String::from(split[1]).replacen(|char| char == ':' || char == '-', "", 1);
+			}
 		}
 		let date_updated = chapter_node
 			.select("span.publishedDate")
@@ -210,7 +246,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 		chapter_arr.push(Chapter {
 			id: chapter_id,
 			title: String::from(title.trim()),
-			volume: -1.0,
+			volume,
 			chapter,
 			date_updated,
 			scanlator: String::from(&scanlator_string),

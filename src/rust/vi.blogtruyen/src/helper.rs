@@ -1,17 +1,17 @@
-use aidoku::{std::String, std::Vec, MangaStatus};
-pub fn extract_f32_from_string(title: String, text: String) -> f32 {
+use aidoku::{std::String, std::Vec, MangaContentRating, MangaStatus, MangaViewer};
+pub fn extract_f32_from_string(title: String, text: String) -> Vec<f32> {
 	text.replace(&title, "")
-		.replace('+', " ")
 		.chars()
-		.filter(|a| (*a >= '0' && *a <= '9') || *a == ' ' || *a == '.')
+		.filter(|a| (*a >= '0' && *a <= '9') || *a == ' ' || *a == '.' || *a == '+')
 		.collect::<String>()
 		.split(' ')
 		.collect::<Vec<&str>>()
 		.into_iter()
-		.map(|a| a.parse::<f32>().unwrap_or(0.0))
-		.find(|a| *a > 0.0)
-		.unwrap_or(0.0)
+		.map(|a| a.parse::<f32>().unwrap_or(-1.0))
+		.filter(|a| *a >= 0.0)
+		.collect::<Vec<f32>>()
 }
+
 pub fn urlencode(string: String) -> String {
 	let mut result: Vec<u8> = Vec::with_capacity(string.len() * 3);
 	let hex = "0123456789ABCDEF".as_bytes();
@@ -29,6 +29,7 @@ pub fn urlencode(string: String) -> String {
 	}
 	String::from_utf8(result).unwrap_or_default()
 }
+
 pub fn status_from_string(status: String) -> MangaStatus {
 	return match status.as_str() {
 		"Đang tiến hành" => MangaStatus::Ongoing,
@@ -37,6 +38,25 @@ pub fn status_from_string(status: String) -> MangaStatus {
 		"Cancelled" => MangaStatus::Cancelled,
 		_ => MangaStatus::Unknown,
 	};
+}
+
+pub fn category_parser(categories: &Vec<String>) -> (MangaContentRating, MangaViewer) {
+	let mut nsfw = MangaContentRating::Safe;
+	let mut viewer = MangaViewer::Rtl;
+	for category in categories {
+		match category.as_str() {
+			"Smut" | "Mature" | "18+" => nsfw = MangaContentRating::Nsfw,
+			"Ecchi" | "16+" => {
+				nsfw = match nsfw {
+					MangaContentRating::Nsfw => MangaContentRating::Nsfw,
+					_ => MangaContentRating::Suggestive,
+				}
+			}
+			"Webtoon" | "Manhwa" | "Manhua" => viewer = MangaViewer::Scroll,
+			_ => continue,
+		}
+	}
+	(nsfw, viewer)
 }
 
 pub fn genre_map(genre: String) -> String {
