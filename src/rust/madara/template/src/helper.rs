@@ -91,9 +91,22 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32, url: &mut String, searc
 					is_searching = true;
 				}
 			},
+			FilterType::Check => {
+				match filter.value.as_int().unwrap_or(-1) {
+					0 =>  query.push_str("&status[]=on-going"),
+					1 =>  query.push_str("&status[]=on-hold"),
+					2 =>  query.push_str("&status[]=canceled"),
+					3 =>  query.push_str("&status[]=end"),
+					_ => continue,
+				}
+				if filter.value.as_int().unwrap_or(-1) > 0 {
+					is_searching = true;
+				}
+			}
 			FilterType::Genre => {
 				query.push_str("&genre[]=");
-				query.push_str(&urlencode(filter.name.as_str().to_lowercase()));
+                let id = filter.object.get("id").as_string().unwrap();
+				query.push_str(&id);
 				is_searching = true;
 			},
 			FilterType::Select => {
@@ -118,33 +131,20 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32, url: &mut String, searc
 						is_searching = true;
 					}
 				}
-				if filter.name.as_str() == "Status" {
-					match filter.value.as_int().unwrap_or(-1) {
-						0 =>  query.push_str(""),
-						1 =>  query.push_str("&status[]=on-going"),
-						2 =>  query.push_str("&status[]=on-hold"),
-						3 =>  query.push_str("&status[]=canceled"),
-						4 =>  query.push_str("&status[]=end"),
-						_ => continue,
-					}
-					if filter.value.as_int().unwrap_or(-1) > 0 {
-						is_searching = true;
-					}
-				}
 			},
 			_ => continue,
 		}
 	}
 
 	if is_searching {
-        url.push_str("/");
+		url.push_str("/");
 		url.push_str(&search_path);
-        url.push_str("/");
+		url.push_str("/");
 		url.push_str(&i32_to_string(page));
 		url.push_str("/?s=");
 		url.push_str(&search_string);
 		url.push_str("&post_type=wp-manga");
 		url.push_str(&query);
 	}
-	return is_searching;
+    return is_searching;
 }
