@@ -208,7 +208,10 @@ fn get_manga_details(id: String) -> Result<Manga> {
 			.text()
 			.read(),
 	);
-	let (nsfw, viewer) = category_parser(&categories);
+	let (mut nsfw, viewer) = category_parser(&categories);
+	if html.select("div.modal-header:contains(Cảnh báo độ tuổi)").array().len() > 0 {
+		nsfw = MangaContentRating::Nsfw;
+	}
 	Ok(Manga {
 		id,
 		cover,
@@ -250,7 +253,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 			.read()
 			.replace(manga_title.trim(), "");
 		let numbers = extract_f32_from_string(String::from(&manga_title), String::from(&title));
-		let (volume, chapter) = if numbers.len() > 1 {
+		let (volume, chapter) = if numbers.len() > 1 && title.to_ascii_lowercase().contains("vol") {
 			(numbers[0], numbers[1])
 		} else if !numbers.is_empty() {
 			(-1.0, numbers[0])
