@@ -173,12 +173,23 @@ impl WPComicsSource {
 					.read(),
 			);
 			let chapter_id = chapter_url.clone();
-			let chapter_title = chapter_node
+			let mut chapter_title = chapter_node
 				.select(self.chapter_anchor_selector)
 				.text()
 				.read();
 			let chapter_number =
 				extract_f32_from_string(String::from(title), String::from(&chapter_title));
+			if chapter_number >= 0.0 {
+				let splitter = format!(" {}", chapter_number);
+				let splitter2 = format!("#{}", chapter_number);
+				if chapter_title.contains(&splitter) {
+					let split = chapter_title.splitn(2, &splitter).collect::<Vec<&str>>();
+					chapter_title = String::from(split[1]).replacen(|char| char == ':' || char == '-', "", 1);
+				} else if chapter_title.contains(&splitter2) {
+					let split = chapter_title.splitn(2, &splitter2).collect::<Vec<&str>>();
+					chapter_title = String::from(split[1]).replacen(|char| char == ':' || char == '-', "", 1);
+				}
+			}
 			let date_updated = (self.time_converter)(
 				chapter_node
 					.select(self.chapter_date_selector)
@@ -187,7 +198,7 @@ impl WPComicsSource {
 			);
 			chapters.push(Chapter {
 				id: chapter_id,
-				title: chapter_title,
+				title: String::from(chapter_title.trim()),
 				volume: -1.0,
 				chapter: chapter_number,
 				date_updated,
