@@ -49,17 +49,17 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 		}
 	}
 
-	let url = if included_tags.len() > 0
-		|| excluded_tags.len() > 0
-		|| title.len() > 0
-		|| author.len() > 0
+	let url = if !included_tags.is_empty()
+		|| !excluded_tags.is_empty()
+		|| !title.is_empty()
+		|| !author.is_empty()
 	{
-		let included_tags_string = if included_tags.len() > 0 {
+		let included_tags_string = if !included_tags.is_empty() {
 			included_tags.join(",")
 		} else {
 			String::from("-1")
 		};
-		let excluded_tags_string = if excluded_tags.len() > 0 {
+		let excluded_tags_string = if !excluded_tags.is_empty() {
 			excluded_tags.join(",")
 		} else {
 			String::from("-1")
@@ -90,7 +90,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 		let url = format!("https://blogtruyen.vn{id}");
 		manga_arr.push(Manga {
 			id,
-			cover: String::from(cover),
+			cover,
 			title: String::from(title.trim()),
 			author: String::new(),
 			artist: String::new(),
@@ -199,7 +199,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 		if title.contains(&splitter) {
 			let split = title.splitn(2, &splitter).collect::<Vec<&str>>();
 			title =
-				String::from(split[1]).replacen(|char| return char == ':' || char == '-', "", 1);
+				String::from(split[1]).replacen(|char| char == ':' || char == '-', "", 1);
 		}
 		let date_updated = chapter_node
 			.select("span.publishedDate")
@@ -244,9 +244,9 @@ fn get_page_list(id: String) -> Result<Vec<Page>> {
 		.select("article#content > script:contains(listImageCaption)")
 		.text()
 		.read();
-	if script != "" {
-		let images_array_string = script.split(";").collect::<Vec<&str>>()[0]
-			.split("=")
+	if !script.is_empty() {
+		let images_array_string = script.split(';').collect::<Vec<&str>>()[0]
+			.split('=')
 			.collect::<Vec<&str>>()[1];
 		let val = parse(images_array_string.as_bytes());
 		if let Ok(images_array) = val.as_array() {
@@ -276,7 +276,7 @@ fn modify_image_request(request: Request) {
 fn handle_url(url: String) -> Result<DeepLink> {
 	// https://blogtruyen.vn/19588/uchi-no-hentai-maid-ni-osowareteru
 	// 'https:', '', 'blogtruyen.vn', '19588', 'uchi-no-hentai-maid-ni-osowareteru'
-	let split = url.split("/").collect::<Vec<&str>>();
+	let split = url.split('/').collect::<Vec<&str>>();
 	let id = format!("/{}", &split[3..].join("/"));
 	if id.contains("chuong") {
 		let html = Request::new(url.as_str(), HttpMethod::Get).html();

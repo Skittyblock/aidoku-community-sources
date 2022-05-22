@@ -1,11 +1,11 @@
 use aidoku::{std::String, std::Vec, MangaStatus};
 pub fn extract_f32_from_string(title: String, text: String) -> f32 {
 	text.replace(&title, "")
-		.replace("+", " ")
+		.replace('+', " ")
 		.chars()
 		.filter(|a| (*a >= '0' && *a <= '9') || *a == ' ' || *a == '.')
 		.collect::<String>()
-		.split(" ")
+		.split(' ')
 		.collect::<Vec<&str>>()
 		.into_iter()
 		.map(|a| a.parse::<f32>().unwrap_or(0.0))
@@ -19,9 +19,9 @@ pub fn urlencode(string: String) -> String {
 
 	for byte in bytes {
 		let curr = *byte;
-		if (b'a' <= curr && curr <= b'z')
-			|| (b'A' <= curr && curr <= b'Z')
-			|| (b'0' <= curr && curr <= b'9')
+		if (b'a'..=b'z').contains(&curr)
+			|| (b'A'..=b'Z').contains(&curr)
+			|| (b'0'..=b'9').contains(&curr)
 		{
 			result.push(curr);
 		} else {
@@ -30,7 +30,7 @@ pub fn urlencode(string: String) -> String {
 			result.push(hex[curr as usize & 15]);
 		}
 	}
-	String::from_utf8(result).unwrap_or(String::new())
+	String::from_utf8(result).unwrap_or_default()
 }
 pub fn status_from_string(status: String) -> MangaStatus {
 	return match status.as_str() {
