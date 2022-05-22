@@ -198,8 +198,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 		let splitter = format!(" {}", chapter);
 		if title.contains(&splitter) {
 			let split = title.splitn(2, &splitter).collect::<Vec<&str>>();
-			title =
-				String::from(split[1]).replacen(|char| char == ':' || char == '-', "", 1);
+			title = String::from(split[1]).replacen(|char| char == ':' || char == '-', "", 1);
 		}
 		let date_updated = chapter_node
 			.select("span.publishedDate")
