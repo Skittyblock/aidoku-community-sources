@@ -105,8 +105,9 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32, url: &mut String, searc
 			}
 			FilterType::Genre => {
 				query.push_str("&genre[]=");
-                let id = filter.object.get("id").as_string().unwrap();
-				query.push_str(&id);
+                if let Ok(filter_id) = filter.object.get("id").as_string() {
+                    query.push_str(filter_id.read().as_str());
+                }
 				is_searching = true;
 			},
 			FilterType::Select => {
