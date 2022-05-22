@@ -2,6 +2,7 @@
 mod helper;
 use crate::helper::{
 	category_parser, extract_f32_from_string, genre_map, status_from_string, urlencode,
+	text_with_newlines
 };
 use aidoku::{
 	error::Result,
@@ -9,7 +10,7 @@ use aidoku::{
 	std::{
 		json::parse,
 		net::{HttpMethod, Request},
-		String, Vec,
+		String, Vec
 	},
 	Chapter, DeepLink, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
 	MangaViewer, Page,
@@ -85,7 +86,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 			let url_node = url_info.as_node();
 			let info_node = info.as_node();
 			let title = info_node.select("div.col-sm-8 > div.al-c").text().read();
-			let description = info_node.select("div.col-sm-8 > div.al-j").text().read();
+			let description = text_with_newlines(info_node.select("div.col-sm-8 > div.al-j"));
 			let cover = info_node.select("div.col-sm-4 > img").attr("src").read();
 			let id = url_node.attr("href").read();
 			let url = format!("https://blogtruyen.vn{id}");
@@ -116,14 +117,14 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 		for info in html.select("div.storyitem").array() {
 			let info_node = info.as_node();
 			let title = info_node.select("div.fl-l > a").attr("title").read();
-			let description = info_node.select("div.fl-r > p.al-j").text().read();
+			let description = text_with_newlines(info_node.select("div.fl-r > p.al-j"));
 			let cover = info_node
 				.select("div.fl-l img:not(.imgBack)")
 				.attr("src")
 				.read();
 			let id = info_node.select("div.fl-l > a").attr("href").read();
 			let url = format!("https://blogtruyen.vn{id}");
-			let categories = html
+			let categories = info_node
 				.select("div.category > a")
 				.array()
 				.map(|category| category.as_node().attr("title").read())
@@ -160,10 +161,9 @@ fn get_manga_details(id: String) -> Result<Manga> {
 		.read()
 		.replace("truyện tranh", "");
 	let cover = html.select("div.thumbnail > img").attr("src").read();
-	let description = html
-		.select("section.manga-detail > div.detail > div.content")
-		.text()
-		.read();
+	let description = text_with_newlines(
+		html.select("section.manga-detail > div.detail > div.content")
+	);
 	let author = html
 		.select("div.description > p:contains(Tác giả) > a")
 		.array()

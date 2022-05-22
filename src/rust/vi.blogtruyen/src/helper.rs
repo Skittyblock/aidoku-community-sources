@@ -1,4 +1,4 @@
-use aidoku::{std::String, std::Vec, MangaContentRating, MangaStatus, MangaViewer};
+use aidoku::{std::String, std::{Vec, html::Node}, MangaContentRating, MangaStatus, MangaViewer};
 pub fn extract_f32_from_string(title: String, text: String) -> Vec<f32> {
 	text.replace(&title, "")
 		.chars()
@@ -57,6 +57,15 @@ pub fn category_parser(categories: &Vec<String>) -> (MangaContentRating, MangaVi
 		}
 	}
 	(nsfw, viewer)
+}
+
+pub fn text_with_newlines(node: Node) -> String {
+	Node::new_fragment(
+		node.html().read().replace("<br>", "{{ .LINEBREAK }}").as_bytes()
+	)
+		.text()
+		.read()
+		.replace("{{ .LINEBREAK }}", "\n")
 }
 
 pub fn genre_map(genre: String) -> String {
