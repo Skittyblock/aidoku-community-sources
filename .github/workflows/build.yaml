@@ -8,6 +8,10 @@ on:
 
 jobs:
   build:
+    env:
+      RUSTC_WRAPPER: sccache
+      SCCACHE_CACHE_SIZE: 2G
+      SCCACHE_VERSION: 0.3.0
     runs-on: ubuntu-latest
     steps:
     -
@@ -21,6 +25,7 @@ jobs:
         cache: npm
         cache-dependency-path: '**/package-lock.json'
     -
+      name: Cache rust stuff
       uses: actions/cache@v3
       with:
         path: |
@@ -33,6 +38,13 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-cargo3-
     -
+      name: sccache
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/sccache
+        key: ${{ runner.os }}-sccache-${{ github.sha }}
+        restore-keys: ${{ runner.os }}-sccache-
+    -
       uses: actions-rs/toolchain@v1
       with:
         toolchain: nightly
@@ -43,6 +55,11 @@ jobs:
       run: |
         sudo ln -s $(which wasm-ld-13 || which wasm-ld-12 || which wasm-ld-11 || which wasm-ld-10) /usr/bin/wasm-ld
         brew install beerpiss/tap/aidoku-cli
+
+        SCCACHE_FILE=sccache-v$SCCACHE_VERSION-x86_64-unknown-linux-musl
+        curl -L https://github.com/mozilla/sccache/releases/download/v$SCCACHE_VERSION/$SCCACHE_FILE.tar.gz | tar -xz
+        sudo mv -f $SCCACHE_FILE/sccache /usr/local/bin/sccache
+        sudo chmod +x /usr/local/bin/sccache
     -
       name: Build AssemblyScript sources
       run: |
@@ -60,7 +77,7 @@ jobs:
         for src in ./src/c/*; do
           (
             cd "$src"
-            make package.aix
+            make CC="sccache clang" package.aix
           )
         done
     -
