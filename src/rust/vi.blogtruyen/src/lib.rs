@@ -49,7 +49,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
         }
     }
 
-	let url = if included_tags.len() > 0
+    let url = if included_tags.len() > 0
         || excluded_tags.len() > 0
         || title.len() > 0
         || author.len() > 0
@@ -70,40 +70,43 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 			included_tags_string,
 			excluded_tags_string,
 		)
-	} else {
-		format!("https://blogtruyen.vn/ajax/Category/AjaxLoadMangaByCategory?id=0&orderBy=5&p={page}")
-	};
-	let html = Request::new(url.as_str(), HttpMethod::Get).html();
-	let mut manga_arr: Vec<Manga> = Vec::new();
-	for (url, info) in html.select("div.list > p > span.tiptip > a").array().zip(
-		html.select("div.list > div.tiptip-content > div.row")
-			.array(),
-	) {
-		let url_node = url.as_node();
-		let info_node = info.as_node();
-		let title = info_node.select("div.col-sm-8 > div.al-c").text().read();
-		let description = info_node.select("div.col-sm-8 > div.al-j").text().read();
-		let cover = info_node.select("div.col-sm-4 > img").attr("src").read();
-		let id = url_node.attr("href").read();
-		let url = format!("https://blogtruyen.vn{id}");
-		manga_arr.push(Manga {
-			id,
-			cover: String::from(cover),
-			title: String::from(title.trim()),
-			author: String::new(),
-			artist: String::new(),
-			description: String::from(description.trim()),
-			url,
-			categories: Vec::new(),
-			status: MangaStatus::Unknown,
-			nsfw: MangaContentRating::Safe,
-			viewer: MangaViewer::Rtl,
-		});
-	}
-	Ok(MangaPageResult {
-		manga: manga_arr,
-		has_more: html.select("a[title=\"Trang cuối\"]").array().len() > 0 || html.select("a:contains([cuối])").array().len() > 0,
-	})
+    } else {
+        format!(
+            "https://blogtruyen.vn/ajax/Category/AjaxLoadMangaByCategory?id=0&orderBy=5&p={page}"
+        )
+    };
+    let html = Request::new(url.as_str(), HttpMethod::Get).html();
+    let mut manga_arr: Vec<Manga> = Vec::new();
+    for (url, info) in html.select("div.list > p > span.tiptip > a").array().zip(
+        html.select("div.list > div.tiptip-content > div.row")
+            .array(),
+    ) {
+        let url_node = url.as_node();
+        let info_node = info.as_node();
+        let title = info_node.select("div.col-sm-8 > div.al-c").text().read();
+        let description = info_node.select("div.col-sm-8 > div.al-j").text().read();
+        let cover = info_node.select("div.col-sm-4 > img").attr("src").read();
+        let id = url_node.attr("href").read();
+        let url = format!("https://blogtruyen.vn{id}");
+        manga_arr.push(Manga {
+            id,
+            cover: String::from(cover),
+            title: String::from(title.trim()),
+            author: String::new(),
+            artist: String::new(),
+            description: String::from(description.trim()),
+            url,
+            categories: Vec::new(),
+            status: MangaStatus::Unknown,
+            nsfw: MangaContentRating::Safe,
+            viewer: MangaViewer::Rtl,
+        });
+    }
+    Ok(MangaPageResult {
+        manga: manga_arr,
+        has_more: html.select("a[title=\"Trang cuối\"]").array().len() > 0
+            || html.select("a:contains([cuối])").array().len() > 0,
+    })
 }
 
 #[get_manga_details]
@@ -175,8 +178,8 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
         .array()
         .map(|val| val.as_node().text().read())
         .collect::<Vec<String>>();
-	scanlator.dedup();
-	let scanlator_string = scanlator.join(", ");
+    scanlator.dedup();
+    let scanlator_string = scanlator.join(", ");
     let manga_title = html
         .select("div.thumbnail > img")
         .attr("alt")
@@ -192,13 +195,12 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
             .read()
             .replace(manga_title.trim(), "");
         let chapter = extract_f32_from_string(String::from(""), String::from(&title));
-		let splitter = format!(" {}", chapter);
-		if title.contains(&splitter) {
-			let split = title.splitn(2, &splitter).collect::<Vec<&str>>();
-			title = String::from(split[1]).replacen(|char| {
-				return char == ':' || char == '-'
-			}, "", 1);
-		}
+        let splitter = format!(" {}", chapter);
+        if title.contains(&splitter) {
+            let split = title.splitn(2, &splitter).collect::<Vec<&str>>();
+            title =
+                String::from(split[1]).replacen(|char| return char == ':' || char == '-', "", 1);
+        }
         let date_updated = chapter_node
             .select("span.publishedDate")
             .text()
@@ -238,26 +240,25 @@ fn get_page_list(id: String) -> Result<Vec<Page>> {
     }
 
     // some chapters push pages from script
-    let script = html.select("article#content > script").text().read();
-    if script != "" && script.contains("listImageCaption") {
-        if let Some(images_array_string) = script.split(";").collect::<Vec<&str>>()[0]
+    let script = html
+        .select("article#content > script:contains(listImageCaption)")
+        .text()
+        .read();
+    if script != "" {
+        let images_array_string = script.split(";").collect::<Vec<&str>>()[0]
             .split("=")
-            .collect::<Vec<&str>>()
-            .last()
-        {
-            let val = parse(images_array_string.as_bytes());
-            if let Ok(images_array) = val.as_array() {
-                images_array.for_each(|val| {
-                    if let Ok(url) = val.as_string() {
-                        page_arr.push(Page {
-                            index: page_index,
-                            url: url.read(),
-                            base64: String::new(),
-                            text: String::new(),
-                        });
-                        page_index += 1;
-                    }
-                })
+            .collect::<Vec<&str>>()[1];
+        let val = parse(images_array_string.as_bytes());
+        if let Ok(images_array) = val.as_array() {
+            for image in images_array {
+                let image_object = image.as_object()?;
+                page_arr.push(Page {
+                    index: page_index,
+                    url: image_object.get("url").as_string()?.read(),
+                    base64: String::new(),
+                    text: String::new(),
+                });
+                page_index += 1;
             }
         }
     }
@@ -274,22 +275,25 @@ fn modify_image_request(request: Request) {
 #[handle_url]
 fn handle_url(url: String) -> Result<DeepLink> {
     // https://blogtruyen.vn/19588/uchi-no-hentai-maid-ni-osowareteru
-	// 'https:', '', 'blogtruyen.vn', '19588', 'uchi-no-hentai-maid-ni-osowareteru'
+    // 'https:', '', 'blogtruyen.vn', '19588', 'uchi-no-hentai-maid-ni-osowareteru'
     let split = url.split("/").collect::<Vec<&str>>();
-	let id = format!("/{}", &split[3..].join("/"));
+    let id = format!("/{}", &split[3..].join("/"));
     if id.contains("chuong") {
-		let html = Request::new(url.as_str(), HttpMethod::Get).html();
-		let manga_id = html.select("div.breadcrumbs > a:nth-child(2)").attr("href").read();
-		let manga = get_manga_details(manga_id)?;
-		Ok(DeepLink {
-			manga: Some(manga),
-			chapter: None,
-		})
-	} else {
-		let manga = get_manga_details(id)?;
-		Ok(DeepLink {
-			manga: Some(manga),
-			chapter: None,
-		})
-	}
+        let html = Request::new(url.as_str(), HttpMethod::Get).html();
+        let manga_id = html
+            .select("div.breadcrumbs > a:nth-child(2)")
+            .attr("href")
+            .read();
+        let manga = get_manga_details(manga_id)?;
+        Ok(DeepLink {
+            manga: Some(manga),
+            chapter: None,
+        })
+    } else {
+        let manga = get_manga_details(id)?;
+        Ok(DeepLink {
+            manga: Some(manga),
+            chapter: None,
+        })
+    }
 }
