@@ -352,7 +352,7 @@ fn get_page_list(id: String) -> Result<Vec<Page>> {
 
 #[modify_image_request]
 fn modify_image_request(request: Request) {
-	request.header("Referer", "{BASE_URL}");
+	request.header("Referer", BASE_URL);
 }
 
 #[handle_url]
