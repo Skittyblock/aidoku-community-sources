@@ -49,15 +49,15 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 				author = urlencode(filter.value.as_string()?.read());
 			}
 			FilterType::Genre => {
-				let genre_id = genre_map(filter.name);
-				if genre_id.as_str() != "" {
-					match filter.value.as_int().unwrap_or(-1) {
-						0 => excluded_tags.push(genre_id),
-						1 => included_tags.push(genre_id),
-						_ => continue,
-					}
+				let id = if let Ok(genre_id) = filter.object.get("id").as_string() {
+					genre_id.read()
 				} else {
-					continue;
+					genre_map(filter.name)
+				};
+				match filter.value.as_int().unwrap_or(-1) {
+					0 => excluded_tags.push(id),
+					1 => included_tags.push(id),
+					_ => continue,
 				}
 			}
 			_ => match filter.name.as_str() {
