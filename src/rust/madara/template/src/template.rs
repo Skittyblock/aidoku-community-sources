@@ -47,25 +47,25 @@ pub fn get_manga_list(filters: Vec<Filter>, page: i32, data: MadaraSiteData) -> 
 }
 
 pub fn get_search_result(data: MadaraSiteData, url: String) -> Result<MangaPageResult> {
+    println!("get_search_result: {}", url);
+
 	let html = Request::new(url.as_str(), HttpMethod::Get).html();
-	let mut result: Vec<Manga> = Vec::new();
-	let mut r_len = 0;
+	let mut manga: Vec<Manga> = Vec::new();
+	let mut has_more = false;
 
 	for item in html.select(data.search_selector.clone().as_str()).array() {
-		let obj   = item.as_node();
+		let obj = item.as_node();
 
-		let id	= obj.select("a").attr("href").read().replace(&data.base_url.clone(), "").replace(&data.source_path.clone(), "").replace("/", "");
+		let id = obj.select("a").attr("href").read().replace(&data.base_url.clone(), "").replace(&data.source_path.clone(), "").replace("/", "");
 		let title = obj.select("a").attr("title").read();
-		let img   = get_image_url(obj.select("img"));
+		let cover = get_image_url(obj.select("img"));
 
 		let genres = obj.select("div.post-content_item div.summary-content a");
-		if genres.text().read().to_lowercase().contains("novel") {
-			continue;
-		}
+		if genres.text().read().to_lowercase().contains("novel") { continue; }
 
-		result.push(Manga {
+		manga.push(Manga {
 			id,
-			cover: img,
+			cover,
 			title,
 			author: String::new(),
 			artist: String::new(),
@@ -76,10 +76,10 @@ pub fn get_search_result(data: MadaraSiteData, url: String) -> Result<MangaPageR
 			nsfw: MangaContentRating::Safe,
 			viewer: MangaViewer::Default
 		});
-		r_len += 1;
+		has_more = true;
 	}
 
-	Ok(MangaPageResult { manga: result, has_more: r_len > 0, })
+	Ok(MangaPageResult { manga, has_more })
 }
 
 pub fn get_series_page(data: MadaraSiteData, listing: &str, page: i32) -> Result<MangaPageResult> {
@@ -90,9 +90,9 @@ pub fn get_series_page(data: MadaraSiteData, listing: &str, page: i32) -> Result
 	let req = Request::new(url.clone().as_str(),  HttpMethod::Post).body(body_content.as_bytes()).header("Content-Type", "application/x-www-form-urlencoded");
 
 	let html = req.html();
-	let mut result: Vec<Manga> = Vec::new();
 
-	let mut r_len = 0;
+	let mut manga: Vec<Manga> = Vec::new();
+	let mut has_more = false;
 	for item in html.select("div.page-item-detail").array() {
 		let obj = item.as_node();
 
@@ -109,7 +109,7 @@ pub fn get_series_page(data: MadaraSiteData, listing: &str, page: i32) -> Result
 		let title = obj.select("h3.h5 > a").text().read();
 		let img = get_image_url(obj.select("img"));
 
-		result.push(Manga {
+		manga.push(Manga {
 			id,
 			cover: img,
 			title,
@@ -122,13 +122,10 @@ pub fn get_series_page(data: MadaraSiteData, listing: &str, page: i32) -> Result
 			nsfw: MangaContentRating::Safe,
 			viewer: MangaViewer::Default
 		});
-		r_len += 1;
+		has_more = true;
 	}
 
-	Ok(MangaPageResult {
-		manga: result,
-		has_more: r_len > 0,
-	})
+	Ok(MangaPageResult { manga, has_more })
 }
 
 pub fn get_manga_listing(data: MadaraSiteData, _listing: Listing, page: i32) -> Result<MangaPageResult> {
@@ -138,12 +135,7 @@ pub fn get_manga_listing(data: MadaraSiteData, _listing: Listing, page: i32) -> 
 	if _listing.name == "Trending" {
 		return get_series_page(data, "_wp_manga_week_views_value", page);
 	}
-
-	let result: Vec<Manga> = Vec::new();
-	Ok(MangaPageResult {
-		manga: result,
-		has_more: false,
-	})
+    return get_series_page(data, "_latest_update", page);
 }
 
 pub fn get_manga_details(manga_id: String, data: MadaraSiteData) -> Result<Manga> {
@@ -153,18 +145,15 @@ pub fn get_manga_details(manga_id: String, data: MadaraSiteData) -> Result<Manga
 
 	let html = Request::new(url.clone().as_str(), HttpMethod::Get).html();
 
-	let title = html.select("div.post-title h1").text().read();
-
-	let img = get_image_url(html.select("div.summary_image img"));
+	let title  = html.select("div.post-title h1").text().read();
+	let cover  = get_image_url(html.select("div.summary_image img"));
 	let author = html.select("div.author-content a").text().read();
 	let artist = html.select("div.artist-content a").text().read();
 	let description = html.select("div.description-summary div p").text().read();
 
 	let mut categories: Vec<String> = Vec::new();
 	for item in html.select("div.genres-content a").array() {
-		let obj = item.as_node();
-		let category = obj.text().read();
-		categories.push(category);
+		categories.push(item.as_node().text().read());
 	}
 
 	let mut status = MangaStatus::Unknown;
@@ -199,7 +188,7 @@ pub fn get_manga_details(manga_id: String, data: MadaraSiteData) -> Result<Manga
 
 	Ok(Manga {
 		id: manga_id,
-		cover: img,
+		cover,
 		title,
 		author,
 		artist,
@@ -215,10 +204,9 @@ pub fn get_manga_details(manga_id: String, data: MadaraSiteData) -> Result<Manga
 pub fn get_chapter_list(manga_id: String, data: MadaraSiteData) -> Result<Vec<Chapter>> {
 	let mut url = data.base_url.clone() + "/wp-admin/admin-ajax.php";
 	if data.alt_ajax {
-		url = data.base_url.clone() + "/"
-		+  data.source_path.clone().as_str()+ "/" +
-		manga_id.as_str() + "/"
-		+ "ajax/chapters";
+		url = data.base_url.clone() + "/" +
+              data.source_path.clone().as_str() + "/" +
+		      manga_id.as_str() + "/ajax/chapters";
 	}
 
 	let int_id = get_int_manga_id(manga_id, data.base_url.clone(), data.source_path.clone());
@@ -237,11 +225,11 @@ pub fn get_chapter_list(manga_id: String, data: MadaraSiteData) -> Result<Vec<Ch
 		let id = obj.select("a").attr("href").read()
 			.replace(&(data.base_url.clone() + "/"), "")
 			.replace(&(data.source_path.clone() + "/"), "");
-		let mut title = String::new();
 
-		let title_html = obj.select("a").text().read();
-		if title_html.contains("-") {
-			title.push_str(title_html[title_html.find("-").unwrap()+1..].trim());
+		let mut title = String::new();
+		let t_tag = obj.select("a").text().read();
+		if  t_tag.contains("-") {
+			title.push_str(t_tag[t_tag.find("-").unwrap()+1..].trim());
 		}
 
 		/*  Chapter number is first occourance of a number in the last element of url
@@ -252,10 +240,9 @@ pub fn get_chapter_list(manga_id: String, data: MadaraSiteData) -> Result<Vec<Ch
 			parasite-chromatique-french/volume-10/chapitre-062/
 			will return 62
 		*/
-		let mut chap_num = 0.0;
+		let mut chapter = 0.0;
 
-		let slash_split = id.as_str().split("/");
-		let slash_vec = slash_split.collect::<Vec<&str>>();
+		let slash_vec = id.as_str().split("/").collect::<Vec<&str>>();
 
 		let dash_split = slash_vec[slash_vec.len()-2].split("-");
 		let dash_vec = dash_split.collect::<Vec<&str>>();
@@ -263,28 +250,27 @@ pub fn get_chapter_list(manga_id: String, data: MadaraSiteData) -> Result<Vec<Ch
 		for obj in dash_vec {
 			let item = obj.replace("/", "").parse::<f32>().unwrap_or(-1.0);
 			if item != -1.0 {
-				chap_num = item;
+				chapter = item;
 				break;
 			}
 		}
 
 		let date_str = obj.select("span.chapter-release-date > i").text().read();
-		let mut date = StringRef::from(&date_str).0.as_date("MMM d, yyyy", Some("en"), None).unwrap_or(-1.0);
+		let mut date_updated = StringRef::from(&date_str).0.as_date("MMM d, yyyy", Some("en"), None).unwrap_or(-1.0);
+        if date_updated == -1.0 { date_updated = current_date(); }
 
-		if date == -1.0 {
-			date = current_date()
-		}
-		let chap_url = obj.select("a").attr("href").read();
+        let url = obj.select("a").attr("href").read();
+        let lang = data.lang.clone();
 
 		chapters.push(Chapter {
-			id: String::from(id),
+			id,
 			title,
-			volume: -1.0,
-			chapter: chap_num,
-			date_updated: date,
+			volume : -1.0,
+			chapter,
+			date_updated,
 			scanlator: String::new(),
-			url: chap_url,
-			lang: data.lang.clone(),
+			url,
+			lang,
 		});
 	}
 	Ok(chapters)
@@ -294,18 +280,16 @@ pub fn get_page_list(chapter_id: String, data: MadaraSiteData) -> Result<Vec<Pag
 	let url = data.base_url.clone()  + "/" +
 			data.source_path.clone().as_str() + "/" +
 			chapter_id.as_str();
-
-	let mut pages: Vec<Page> = Vec::new();
 	let html = Request::new(url.clone().as_str(), HttpMethod::Get).html();
+
 	let mut ind = 0;
+    let mut pages: Vec<Page> = Vec::new();
 	for item in html.select(data.image_selector.clone().as_str()).array() {
-		let obj = item.as_node();
-		let page_url = get_image_url(obj);
 		pages.push(Page {
-			index: ind,
-			url: page_url,
+			index : ind,
+			url   : get_image_url(item.as_node()),
 			base64: String::new(),
-			text: String::new(),
+			text  : String::new(),
 		});
 		ind += 1;
 	}

@@ -1,4 +1,5 @@
 use aidoku::{
+	prelude::*,
 	std::String, std::Vec, std::html::Node, std::net::Request, std::net::HttpMethod,
 	Filter, FilterType,
 };
@@ -50,12 +51,9 @@ pub fn get_int_manga_id(manga_id: String, base_url: String, path: String) -> Str
 	let url = base_url + "/" +
 			  path.as_str()+ "/" +
 			  manga_id.as_str();
-
 	let html = Request::new(url.as_str(), HttpMethod::Get).html();
-
 	let id_html = html.select("script#wp-manga-js-extra").html().read();
 	let id = &id_html[id_html.find("manga_id").unwrap()+11..id_html.find("\"};").unwrap()];
-
 	return String::from(id);
 }
 
@@ -74,6 +72,7 @@ pub fn get_image_url(obj: Node) -> String {
 	}
 	// img = img.replace("-175x238", "").replace("-350x476", "").replace("-110x150", "");
 	img = String::from(img.trim());
+	println!("img {}", img);
 	return img;
 }
 
@@ -92,16 +91,17 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32, url: &mut String, searc
 				}
 			},
 			FilterType::Check => {
-				match filter.value.as_int().unwrap_or(-1) {
-					0 =>  query.push_str("&status[]=on-going"),
-					1 =>  query.push_str("&status[]=on-hold"),
-					2 =>  query.push_str("&status[]=canceled"),
-					3 =>  query.push_str("&status[]=end"),
+				if filter.value.as_int().unwrap_or(-1) <= 0 {
+					continue;
+				}
+				match filter.name.as_str() {
+					"Ongoing"   =>  query.push_str("&status[]=on-going"),
+					"On Hold"   =>  query.push_str("&status[]=on-hold"),
+					"Cancelled" =>  query.push_str("&status[]=canceled"),
+					"Completed" =>  query.push_str("&status[]=end"),
 					_ => continue,
 				}
-				if filter.value.as_int().unwrap_or(-1) > 0 {
-					is_searching = true;
-				}
+				is_searching = true;
 			}
 			FilterType::Genre => {
 				query.push_str("&genre[]=");
@@ -123,7 +123,7 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32, url: &mut String, searc
 				}
 				if filter.name.as_str() == "Adult" {
 					match filter.value.as_int().unwrap_or(-1) {
-						0 =>  query.push_str(""),		 // default=
+						0 =>  query.push_str(""),		 // default
 						1 =>  query.push_str("&adult=0"), // None
 						2 =>  query.push_str("&adult=1"), // Only
 						_ => continue,
