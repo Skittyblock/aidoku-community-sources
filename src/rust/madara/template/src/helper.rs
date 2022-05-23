@@ -1,5 +1,4 @@
 use aidoku::{
-	prelude::*,
 	std::String, std::Vec, std::html::Node, std::net::Request, std::net::HttpMethod,
 	Filter, FilterType,
 };
