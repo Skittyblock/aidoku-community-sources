@@ -1,4 +1,4 @@
-use aidoku::{prelude::format, std::String, std::Vec};
+use aidoku::{prelude::format, std::String, std::Vec, std::html::Node};
 
 pub fn trunc_trailing_comic(title: String) -> String {
 	let temp = title.chars().rev().collect::<String>();
@@ -115,4 +115,21 @@ pub fn get_tag_id(genre: i64) -> String {
 		54 => "zombies",
 		_ => "",
 	})
+}
+
+pub fn text_with_newlines(node: Node) -> String {
+	let html = node.html().read();
+	if !String::from(html.trim()).is_empty() {
+		Node::new_fragment(
+			node.html()
+				.read()
+				.replace("<br>", "{{ .LINEBREAK }}")
+				.as_bytes(),
+		)
+		.text()
+		.read()
+		.replace("{{ .LINEBREAK }}", "\n")
+	} else {
+		String::new()
+	}
 }

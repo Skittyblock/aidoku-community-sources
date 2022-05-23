@@ -1,10 +1,10 @@
 use aidoku::{
-	error::Result, prelude::format, std::net::HttpMethod, std::net::Request, std::String,
-	std::StringRef, std::Vec, Chapter, DeepLink, Listing, Manga, MangaContentRating,
+	error::Result, prelude::format, std::html::Node, std::net::HttpMethod, std::net::Request,
+	std::String, std::StringRef, std::Vec, Chapter, DeepLink, Listing, Manga, MangaContentRating,
 	MangaPageResult, MangaStatus, MangaViewer, Page,
 };
 
-use crate::helper::{append_protocol, extract_f32_from_string, https_upgrade};
+use crate::helper::{append_protocol, extract_f32_from_string, https_upgrade, text_with_newlines};
 
 pub struct WPComicsSource {
 	pub base_url: &'static str,
@@ -37,6 +37,20 @@ pub struct WPComicsSource {
 	pub manga_viewer_page: &'static str,
 	pub manga_viewer_page_url_suffix: &'static str,
 	pub page_url_transformer: fn(String) -> String,
+}
+
+static mut CACHED_MANGA_ID: Option<String> = None;
+static mut CACHED_MANGA: Option<Vec<u8>> = None;
+
+fn cache_manga_page(url: &str) {
+	if unsafe { CACHED_MANGA_ID.is_some() } && unsafe { CACHED_MANGA_ID.clone().unwrap() } == url {
+		return;
+	}
+
+	unsafe {
+		CACHED_MANGA = Some(Request::new(url, HttpMethod::Get).data());
+		CACHED_MANGA_ID = Some(String::from(url));
+	};
 }
 
 impl WPComicsSource {
@@ -102,13 +116,14 @@ impl WPComicsSource {
 	}
 
 	pub fn get_manga_details(&self, id: String, default_viewer: MangaViewer) -> Result<Manga> {
-		let details = Request::new(id.as_str(), HttpMethod::Get).html();
+		cache_manga_page(id.as_str());
+		let details = unsafe { Node::new(&CACHED_MANGA.clone().unwrap()) };
 		let title = details.select(self.manga_details_title).text().read();
 		let cover = append_protocol(details.select(self.manga_details_cover).attr("src").read());
 		let author = (self.manga_details_author_transformer)(
 			details.select(self.manga_details_author).text().read(),
 		);
-		let description = details.select(self.manga_details_description).text().read();
+		let description = text_with_newlines(details.select(self.manga_details_description));
 		let mut categories = Vec::new();
 		let mut nsfw = MangaContentRating::Safe;
 		let mut viewer = default_viewer;
@@ -155,7 +170,8 @@ impl WPComicsSource {
 	pub fn get_chapter_list(&self, id: String) -> Result<Vec<Chapter>> {
 		let mut skipped_first = false;
 		let mut chapters: Vec<Chapter> = Vec::new();
-		let html = Request::new(id.as_str(), HttpMethod::Get).html();
+		cache_manga_page(id.as_str());
+		let html = unsafe { Node::new(&CACHED_MANGA.clone().unwrap()) };
 		let title_untrimmed = (self.manga_details_title_transformer)(
 			html.select(self.manga_details_title).text().read(),
 		);
@@ -179,13 +195,14 @@ impl WPComicsSource {
 				.read();
 			let numbers =
 				extract_f32_from_string(String::from(title), String::from(&chapter_title));
-			let (volume, chapter) = if numbers.len() > 1 {
-				(numbers[0], numbers[1])
-			} else if !numbers.is_empty() {
-				(-1.0, numbers[0])
-			} else {
-				(-1.0, -1.0)
-			};
+			let (volume, chapter) =
+				if numbers.len() > 1 && chapter_title.to_ascii_lowercase().contains("vol") {
+					(numbers[0], numbers[1])
+				} else if !numbers.is_empty() {
+					(-1.0, numbers[0])
+				} else {
+					(-1.0, -1.0)
+				};
 			if chapter >= 0.0 {
 				let splitter = format!(" {}", chapter);
 				let splitter2 = format!("#{}", chapter);
