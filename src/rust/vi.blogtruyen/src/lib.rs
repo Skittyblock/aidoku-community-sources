@@ -8,6 +8,7 @@ use aidoku::{
 	error::Result,
 	prelude::*,
 	std::{
+		html::Node,
 		json::parse,
 		net::{HttpMethod, Request},
 		String, Vec,
@@ -15,6 +16,22 @@ use aidoku::{
 	Chapter, DeepLink, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
 	MangaViewer, Page,
 };
+
+static mut CACHED_MANGA_ID: Option<String> = None;
+static mut CACHED_MANGA: Option<Vec<u8>> = None;
+static BASE_URL: &str = "https://blogtruyen.vn";
+
+fn cache_manga_page(id: &str) {
+	if unsafe { CACHED_MANGA_ID.is_some() } && unsafe { CACHED_MANGA_ID.clone().unwrap() } == id {
+		return;
+	}
+
+	unsafe {
+		CACHED_MANGA =
+			Some(Request::new(format!("{BASE_URL}{id}").as_str(), HttpMethod::Get).data());
+		CACHED_MANGA_ID = Some(String::from(id));
+	};
+}
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
@@ -71,9 +88,8 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 		let html = Request::new(
 			format!(
 				// This page has a scanlator search feature, maybe add that when Aidoku has it
-				"https://blogtruyen.vn/timkiem/nangcao/1/{status}/{}/{}?txt={title}&aut={author}&p={page}&gr=",
-				included_tags_string,
-				excluded_tags_string,
+				"{BASE_URL}/timkiem/nangcao/1/{status}/{}/{}?txt={title}&aut={author}&p={page}&gr=",
+				included_tags_string, excluded_tags_string,
 			)
 			.as_str(),
 			HttpMethod::Get,
@@ -89,7 +105,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 			let description = text_with_newlines(info_node.select("div.col-sm-8 > div.al-j"));
 			let cover = info_node.select("div.col-sm-4 > img").attr("src").read();
 			let id = url_node.attr("href").read();
-			let url = format!("https://blogtruyen.vn{id}");
+			let url = format!("{BASE_URL}{id}");
 			manga_arr.push(Manga {
 				id,
 				cover,
@@ -109,11 +125,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 			has_more: html.select("a:contains([cuối])").array().len() > 0,
 		})
 	} else {
-		let html = Request::new(
-			format!("https://blogtruyen.vn/page-{page}").as_str(),
-			HttpMethod::Get,
-		)
-		.html();
+		let html = Request::new(format!("{BASE_URL}/page-{page}").as_str(), HttpMethod::Get).html();
 
 		// Get daily featured mangas
 		if page == 1 {
@@ -125,10 +137,11 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 				let image_node = image.as_node();
 				let tooltip_node = tooltip.as_node();
 				let id = image_node.attr("href").read();
-				let url = format!("https://blogtruyen.vn{id}");
+				let url = format!("{BASE_URL}{id}");
 				let cover = image_node.select("img").attr("src").read();
 				let title = tooltip_node.select("p.bold").text().read();
-				let description = text_with_newlines(tooltip_node.select("p:not(.bold)"));				manga_arr.push(Manga {
+				let description = text_with_newlines(tooltip_node.select("p:not(.bold)"));
+				manga_arr.push(Manga {
 					id,
 					cover,
 					title,
@@ -152,7 +165,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 				.attr("src")
 				.read();
 			let id = info_node.select("div.fl-l > a").attr("href").read();
-			let url = format!("https://blogtruyen.vn{id}");
+			let url = format!("{BASE_URL}{id}");
 			let categories = info_node
 				.select("div.category > a")
 				.array()
@@ -182,8 +195,9 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 
 #[get_manga_details]
 fn get_manga_details(id: String) -> Result<Manga> {
-	let url = format!("https://blogtruyen.vn{id}");
-	let html = Request::new(url.as_str(), HttpMethod::Get).html();
+	cache_manga_page(&id);
+	let html = unsafe { Node::new(&CACHED_MANGA.clone().unwrap()) };
+	let url = format!("{BASE_URL}{id}");
 	let title = html
 		.select("div.thumbnail > img")
 		.attr("alt")
@@ -209,7 +223,11 @@ fn get_manga_details(id: String) -> Result<Manga> {
 			.read(),
 	);
 	let (mut nsfw, viewer) = category_parser(&categories);
-	if html.select("div.modal-header:contains(Cảnh báo độ tuổi)").array().len() > 0 {
+	if html
+		.select("div.modal-header:contains(Cảnh báo độ tuổi)")
+		.array()
+		.len() > 0
+	{
 		nsfw = MangaContentRating::Nsfw;
 	}
 	Ok(Manga {
@@ -229,8 +247,8 @@ fn get_manga_details(id: String) -> Result<Manga> {
 
 #[get_chapter_list]
 fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
-	let url = format!("https://blogtruyen.vn{id}");
-	let html = Request::new(url.as_str(), HttpMethod::Get).html();
+	cache_manga_page(&id);
+	let html = unsafe { Node::new(&CACHED_MANGA.clone().unwrap()) };
 	let mut scanlator = html
 		.select("span.translater")
 		.array()
@@ -273,7 +291,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 			.0
 			.as_date("dd/MM/yyyy HH:mm", Some("en_US"), Some("Asia/Ho_Chi_Minh"))
 			.unwrap_or(-1.0);
-		let url = format!("https://blogtruyen.vn{chapter_id}");
+		let url = format!("{BASE_URL}{chapter_id}");
 		chapter_arr.push(Chapter {
 			id: chapter_id,
 			title: String::from(title.trim()),
@@ -290,7 +308,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 
 #[get_page_list]
 fn get_page_list(id: String) -> Result<Vec<Page>> {
-	let url = format!("https://blogtruyen.vn{id}");
+	let url = format!("{BASE_URL}{id}");
 	let html = Request::new(url.as_str(), HttpMethod::Get).html();
 	let mut page_arr: Vec<Page> = Vec::new();
 	let mut page_index = 0;
@@ -306,6 +324,7 @@ fn get_page_list(id: String) -> Result<Vec<Page>> {
 	}
 
 	// some chapters push pages from script
+	// refer to tachiyomiorg/tachiyomi-extensions#10615
 	let script = html
 		.select("article#content > script:contains(listImageCaption)")
 		.html()
@@ -333,25 +352,53 @@ fn get_page_list(id: String) -> Result<Vec<Page>> {
 
 #[modify_image_request]
 fn modify_image_request(request: Request) {
-	request.header("Referer", "https://blogtruyen.vn");
+	request.header("Referer", "{BASE_URL}");
 }
 
 #[handle_url]
 fn handle_url(url: String) -> Result<DeepLink> {
 	// https://blogtruyen.vn/19588/uchi-no-hentai-maid-ni-osowareteru
 	// 'https:', '', 'blogtruyen.vn', '19588', 'uchi-no-hentai-maid-ni-osowareteru'
+	// https://blogtruyen.vn/c694877/shounen-no-abyss-chap-93-ket-thuc
+	// 'https:', '', 'blogtruyen.vn', 'c694877', 'shounen-no-abyss-chap-93-ket-thuc'
 	let split = url.split('/').collect::<Vec<&str>>();
 	let id = format!("/{}", &split[3..].join("/"));
-	if id.contains("chuong") {
-		let html = Request::new(url.as_str(), HttpMethod::Get).html();
+	if split[3].contains('c') {
+		let html = Request::new(format!("{BASE_URL}{id}").as_str(), HttpMethod::Get).html();
 		let manga_id = html
 			.select("div.breadcrumbs > a:nth-child(2)")
 			.attr("href")
 			.read();
 		let manga = get_manga_details(manga_id)?;
+		let mut title = html.select("header h1").text().read();
+		let numbers = extract_f32_from_string(String::from(&manga.title), String::from(&title));
+		let (volume, chapter) = if numbers.len() > 1 && title.to_ascii_lowercase().contains("vol") {
+			(numbers[0], numbers[1])
+		} else if !numbers.is_empty() {
+			(-1.0, numbers[0])
+		} else {
+			(-1.0, -1.0)
+		};
+		if chapter >= 0.0 {
+			let splitter = format!(" {}", chapter);
+			if title.contains(&splitter) {
+				let split = title.splitn(2, &splitter).collect::<Vec<&str>>();
+				title = String::from(split[1]).replacen(|char| char == ':' || char == '-', "", 1);
+			}
+		}
+		let chapter = Chapter {
+			id,
+			title,
+			volume,
+			chapter,
+			date_updated: -1.0,
+			scanlator: String::new(),
+			url,
+			lang: String::from("vi"),
+		};
 		Ok(DeepLink {
 			manga: Some(manga),
-			chapter: None,
+			chapter: Some(chapter),
 		})
 	} else {
 		let manga = get_manga_details(id)?;
