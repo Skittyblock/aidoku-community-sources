@@ -74,6 +74,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 		|| !excluded_tags.is_empty()
 		|| !title.is_empty()
 		|| !author.is_empty()
+		|| status != 0
 	{
 		let included_tags_string = if !included_tags.is_empty() {
 			included_tags.join(",")
