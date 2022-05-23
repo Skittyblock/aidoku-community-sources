@@ -72,7 +72,6 @@ pub fn get_image_url(obj: Node) -> String {
 	}
 	// img = img.replace("-175x238", "").replace("-350x476", "").replace("-110x150", "");
 	img = String::from(img.trim());
-	println!("img {}", img);
 	return img;
 }
 
