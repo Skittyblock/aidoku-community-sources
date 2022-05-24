@@ -76,12 +76,12 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 		|| !author.is_empty()
 		|| status != 0
 	{
-		let included_tags_string = if !included_tags.is_empty() {
+		let included = if !included_tags.is_empty() {
 			included_tags.join(",")
 		} else {
 			String::from("-1")
 		};
-		let excluded_tags_string = if !excluded_tags.is_empty() {
+		let excluded = if !excluded_tags.is_empty() {
 			excluded_tags.join(",")
 		} else {
 			String::from("-1")
@@ -89,8 +89,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 		let html = Request::new(
 			format!(
 				// This page has a scanlator search feature, maybe add that when Aidoku has it
-				"{BASE_URL}/timkiem/nangcao/1/{status}/{}/{}?txt={title}&aut={author}&p={page}&gr=",
-				included_tags_string, excluded_tags_string,
+				"{BASE_URL}/timkiem/nangcao/1/{status}/{included}/{excluded}?txt={title}&aut={author}&p={page}&gr="
 			)
 			.as_str(),
 			HttpMethod::Get,
