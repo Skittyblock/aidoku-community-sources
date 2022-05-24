@@ -6,21 +6,23 @@ use aidoku::{
 	FilterType, Listing, Manga, MangaPageResult, MangaViewer, Page,
 };
 use wpcomics_template::{
-	helper::{get_tag_id, trunc_trailing_comic, urlencode},
-	template::{self, WPComicsSource},
+	helper::{get_tag_id, urlencode},
+	template::WPComicsSource,
 };
 
 fn get_instance() -> WPComicsSource {
 	WPComicsSource {
-		base_url: "https://xoxocomics.com",
+		base_url: "https://readcomicsfree.com",
 		listing_mapping: listing_map,
 
-		manga_details_title_transformer: trunc_trailing_comic,
+		manga_cell_image: "",
+
+		manga_details_status_transformer: |str| String::from(str.trim()),
 
 		chapter_skip_first: true,
 		chapter_date_selector: "div.col-xs-3",
-		manga_viewer_page_url_suffix: "/all",
 
+		manga_viewer_page_url_suffix: "/all",
 		..Default::default()
 	}
 }
@@ -43,7 +45,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 		}
 	}
 	get_instance().get_manga_list(get_search_url(
-		String::from("https://xoxocomics.com"),
+		String::from("https://readcomicsfree.com"),
 		title,
 		genre,
 		page,
@@ -71,13 +73,7 @@ fn get_page_list(id: String) -> Result<Vec<Page>> {
 }
 
 #[modify_image_request]
-fn modify_image_request(request: Request) {
-	template::modify_image_request(
-		String::from("https://xoxocomics.com"),
-		String::from("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.54 Safari/537.36 Edg/101.0.1210.39"),
-		request,
-	)
-}
+fn modify_image_request(_request: Request) {}
 
 #[handle_url]
 pub fn handle_url(url: String) -> Result<DeepLink> {
