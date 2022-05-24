@@ -1,0 +1,14 @@
+{
+	"info": {
+		"id": "vi.blogtruyen",
+		"lang": "vi",
+		"name": "BlogTruyen",
+		"version": 1,
+		"url": "https://blogtruyen.vn",
+		"urls": [
+			"https://blogtruyen.vn",
+			"https://m.blogtruyen.vn"
+		],
+		"nsfw": 1
+	}
+}
