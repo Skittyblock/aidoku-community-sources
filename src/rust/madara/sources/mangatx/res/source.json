@@ -1,0 +1,16 @@
+{
+	"info": {
+		"id": "en.mangatx",
+		"lang": "en",
+		"name": "MangaTX",
+		"version": 1,
+		"urls": [
+			"https://mangatx.com"
+		],
+		"nsfw": 0
+	},
+	"listings": [
+		{"name": "Trending"},
+		{"name": "Popular"}
+	]
+}
