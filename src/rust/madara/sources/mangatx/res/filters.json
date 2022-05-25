@@ -36,7 +36,7 @@
 		"type": "group",
 		"name": "Genres",
 		"filters": [
-            {"type": "genre", "name": "Action"           , "id": "action"                        },
+			{"type": "genre", "name": "Action"           , "id": "action"                        },
 			{"type": "genre", "name": "Adventure"        , "id": "adventure"                     },
 			{"type": "genre", "name": "Based on a Novel" , "id": "based-on-a-novel"              },
 			{"type": "genre", "name": "Comedy"           , "id": "comedy"                        },
