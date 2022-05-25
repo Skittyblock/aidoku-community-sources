@@ -1,0 +1,15 @@
+[
+	{
+		"type": "group",
+		"title": "Settings",
+		"items": [
+			{
+				"type": "switch",
+				"key": "skipImages",
+				"title": "Skip Images",
+				"subtitle": "Skip images in search (much faster)",
+				"default": true
+			}
+		]
+	}
+]

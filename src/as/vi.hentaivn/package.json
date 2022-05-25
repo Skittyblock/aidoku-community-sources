@@ -5,9 +5,7 @@
   "ascMain": "src/index.ts",
   "scripts": {
     "clean": "wireit",
-    "build": "rm -rf build/package.aix build/Payload\nnpm run asbuild:optimized\nmkdir -p build/Payload\ncp build/release.wasm build/Payload/main.wasm\ncp res/* build/Payload/\ncd build/ ; zip -r package.aix Payload",
-    "build-wireit": "wireit",
-    "asbuild:optimized": "asc src/index.ts --target release",
+    "build": "wireit",
     "asbuild:debug": "wireit",
     "asbuild:release": "wireit",
     "asbuild": "wireit",
@@ -17,7 +15,7 @@
     "clean": {
       "command": "shx rm -rf build/"
     },
-    "build-wireit": {
+    "build": {
       "dependencies": [
         "asbuild:release"
       ],
@@ -76,7 +74,6 @@
   "devDependencies": {
     "aidoku-serve": "^1.1.2",
     "assemblyscript": "^0.20.6",
-    "rimraf": "^3.0.2",
     "shx": "^0.3.4",
     "wireit": "^0.3.1"
   }

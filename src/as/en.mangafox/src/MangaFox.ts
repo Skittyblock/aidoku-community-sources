@@ -9,7 +9,7 @@ import {
     Request,
     HttpMethod,
     // DeepLink,
-} from 'aidoku-as';
+} from 'aidoku-as/src';
 
 import { Parser, FilterMap } from './helper';
 

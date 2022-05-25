@@ -1,0 +1,384 @@
+[
+	{
+		"type": "title"
+	},
+	{
+		"type": "author"
+	},
+	{
+		"type": "select",
+		"name": "Trạng thái",
+		"options": [
+			"Sao cũng được",
+			"Đang tiến hành",
+			"Đã hoàn thành",
+			"Tạm ngưng"
+		]
+	},
+	{
+		"type": "group",
+		"name": "Thể loại",
+		"filters": [
+			{
+				"type": "genre",
+				"name": "16+",
+				"id": "54",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "18+",
+				"id": "45",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Action",
+				"id": "1",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Adult",
+				"id": "2",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Adventure",
+				"id": "3",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Anime",
+				"id": "4",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Bạo lực - Máu me",
+				"id": "67",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Comedy",
+				"id": "5",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Comic",
+				"id": "6",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Doujinshi",
+				"id": "7",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Drama",
+				"id": "49",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Ecchi",
+				"id": "48",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Event BT",
+				"id": "60",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Fantasy",
+				"id": "50",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Full màu",
+				"id": "64",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Game",
+				"id": "61",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Gender Bender",
+				"id": "51",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Harem",
+				"id": "12",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Historical",
+				"id": "13",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Horror",
+				"id": "14",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Isekai/Dị giới/Trọng sinh",
+				"id": "63",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Josei",
+				"id": "15",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Live action",
+				"id": "16",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Magic",
+				"id": "46",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "manga",
+				"id": "55",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Manhua",
+				"id": "17",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Manhwa",
+				"id": "18",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Martial Arts",
+				"id": "19",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Mature",
+				"id": "20",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Mecha",
+				"id": "21",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Mystery",
+				"id": "22",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Nấu Ăn",
+				"id": "56",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Ngôn Tình",
+				"id": "65",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "NTR",
+				"id": "62",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "One shot",
+				"id": "23",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Psychological",
+				"id": "24",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Romance",
+				"id": "25",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "School Life",
+				"id": "26",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Sci-fi",
+				"id": "27",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Seinen",
+				"id": "28",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Shoujo",
+				"id": "29",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Shoujo Ai",
+				"id": "30",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Shounen",
+				"id": "31",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Shounen Ai",
+				"id": "32",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Slice of life",
+				"id": "33",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Smut",
+				"id": "34",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Soft Yaoi",
+				"id": "35",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Soft Yuri",
+				"id": "36",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Sports",
+				"id": "37",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Supernatural",
+				"id": "38",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Tạp chí truyện tranh",
+				"id": "39",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Tragedy",
+				"id": "40",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Trap (Crossdressing)",
+				"id": "58",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Trinh Thám",
+				"id": "57",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Truyện scan",
+				"id": "41",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Tu chân - tu tiên",
+				"id": "66",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Video Clip",
+				"id": "53",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "VnComic",
+				"id": "42",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Webtoon",
+				"id": "52",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Yuri",
+				"id": "59",
+				"canExclude": true
+			}
+		]
+	}
+]
