@@ -1,12 +1,12 @@
 #![no_std]
 use aidoku::{
-	prelude::*, error::Result, std::String, std::Vec,
-	Filter, Listing, Manga, MangaPageResult, Page, Chapter, DeepLink,
+	error::Result, prelude::*, std::String, std::Vec, Chapter, DeepLink, Filter, Listing, Manga,
+	MangaPageResult, Page,
 };
 
 use madara_template::template;
 
-fn get_data() ->  template::MadaraSiteData {
+fn get_data() -> template::MadaraSiteData {
 	let data: template::MadaraSiteData = template::MadaraSiteData {
 		base_url: String::from("https://coloredmanga.com"),
 		alt_ajax: true,
@@ -22,10 +22,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 
 #[get_manga_listing]
 fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
-	template::get_manga_listing(
-		get_data(),
-		listing, page
-	)
+	template::get_manga_listing(get_data(), listing, page)
 }
 
 #[get_manga_details]
@@ -40,7 +37,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 
 #[get_page_list]
 fn get_page_list(id: String) -> Result<Vec<Page>> {
-	template::get_page_list(id, get_data(),)
+	template::get_page_list(id, get_data())
 }
 
 #[handle_url]

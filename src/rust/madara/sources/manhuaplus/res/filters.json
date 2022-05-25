@@ -3,7 +3,7 @@
 	{
 		"type": "select",
 		"name": "Adult",
-		"options": ["All", "No Adult Content", "Only Adult Contnt"]
+		"options": ["All", "No Adult Content", "Only Adult Content"]
 	 },
 	{
 		"type": "group",
