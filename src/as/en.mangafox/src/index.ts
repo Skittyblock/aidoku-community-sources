@@ -1,4 +1,4 @@
-import { ValueRef, ArrayRef, Filter, Listing, Request, Chapter, Manga } from "aidoku-as";
+import { ValueRef, ArrayRef, Filter, Listing, Request, Chapter, Manga } from "aidoku-as/src";
 
 import { MangaFox as Source } from "./MangaFox";
 
