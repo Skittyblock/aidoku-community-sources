@@ -102,6 +102,7 @@ jobs:
         folder: public
         git-config-name: GitHub Actions
         git-config-email: github-actions[bot]@users.noreply.github.com
+        commit-message: Update source list
         single-commit: true
     - 
       name: Uploading packages as artifact
