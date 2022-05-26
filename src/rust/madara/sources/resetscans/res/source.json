@@ -10,7 +10,11 @@
 		"nsfw": 0
 	},
 	"listings": [
-		{"name": "Trending"},
-		{"name": "Popular"}
+		{
+			"name": "Trending"
+		},
+		{
+			"name": "Popular"
+		}
 	]
 }

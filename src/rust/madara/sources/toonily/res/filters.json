@@ -47,13 +47,13 @@
 		"filters": [
 			{
 				"type": "genre",
-				"name": "Action",
-				"id": "action"
+				"name": "4-Koma",
+				"id": "4-koma"
 			},
 			{
 				"type": "genre",
-				"name": "Adult",
-				"id": "adult"
+				"name": "Action",
+				"id": "action"
 			},
 			{
 				"type": "genre",
@@ -62,13 +62,23 @@
 			},
 			{
 				"type": "genre",
-				"name": "Anime",
-				"id": "anime"
+				"name": "Age Gap",
+				"id": "age-gap"
 			},
 			{
 				"type": "genre",
-				"name": "Cartoon",
-				"id": "cartoon"
+				"name": "All Ages",
+				"id": "all-ages"
+			},
+			{
+				"type": "genre",
+				"name": "BDSM",
+				"id": "bdsm"
+			},
+			{
+				"type": "genre",
+				"name": "Campus",
+				"id": "campus"
 			},
 			{
 				"type": "genre",
@@ -77,23 +87,13 @@
 			},
 			{
 				"type": "genre",
-				"name": "Comic",
-				"id": "comic"
+				"name": "Crime",
+				"id": "crime"
 			},
 			{
 				"type": "genre",
-				"name": "Cooking",
-				"id": "cooking"
-			},
-			{
-				"type": "genre",
-				"name": "Detective",
-				"id": "detective"
-			},
-			{
-				"type": "genre",
-				"name": "Doujinshi",
-				"id": "doujinshi"
+				"name": "Dance",
+				"id": "dance"
 			},
 			{
 				"type": "genre",
@@ -102,18 +102,28 @@
 			},
 			{
 				"type": "genre",
-				"name": "Ecchi",
-				"id": "ecchi"
-			},
-			{
-				"type": "genre",
 				"name": "Fantasy",
 				"id": "fantasy"
 			},
 			{
 				"type": "genre",
+				"name": "Female Friend",
+				"id": "female-friend"
+			},
+			{
+				"type": "genre",
+				"name": "Female Professor",
+				"id": "female-professor"
+			},
+			{
+				"type": "genre",
 				"name": "Gender Bender",
 				"id": "gender-bender"
+			},
+			{
+				"type": "genre",
+				"name": "Gossip",
+				"id": "gossip"
 			},
 			{
 				"type": "genre",
@@ -132,28 +142,23 @@
 			},
 			{
 				"type": "genre",
+				"name": "Incest",
+				"id": "incest"
+			},
+			{
+				"type": "genre",
+				"name": "Isekai",
+				"id": "isekai"
+			},
+			{
+				"type": "genre",
 				"name": "Josei",
 				"id": "josei"
 			},
 			{
 				"type": "genre",
-				"name": "Live action",
-				"id": "live-action"
-			},
-			{
-				"type": "genre",
-				"name": "Manga",
-				"id": "manga"
-			},
-			{
-				"type": "genre",
-				"name": "Manhua",
-				"id": "manhua"
-			},
-			{
-				"type": "genre",
-				"name": "Manhwa",
-				"id": "manhwa"
+				"name": "Magic",
+				"id": "magic"
 			},
 			{
 				"type": "genre",
@@ -167,23 +172,48 @@
 			},
 			{
 				"type": "genre",
-				"name": "Mecha",
-				"id": "mecha"
-			},
-			{
-				"type": "genre",
 				"name": "Mystery",
 				"id": "mystery"
 			},
 			{
 				"type": "genre",
-				"name": "One shot",
-				"id": "one-shot"
+				"name": "Neighbour",
+				"id": "neighbour"
+			},
+			{
+				"type": "genre",
+				"name": "NTR",
+				"id": "netorare"
+			},
+			{
+				"type": "genre",
+				"name": "Office",
+				"id": "office"
 			},
 			{
 				"type": "genre",
 				"name": "Psychological",
 				"id": "psychological"
+			},
+			{
+				"type": "genre",
+				"name": "Rape",
+				"id": "rape"
+			},
+			{
+				"type": "genre",
+				"name": "Reincarnation",
+				"id": "reincarnation"
+			},
+			{
+				"type": "genre",
+				"name": "Revenge",
+				"id": "revenge"
+			},
+			{
+				"type": "genre",
+				"name": "Reverse Harem",
+				"id": "reverse-harem"
 			},
 			{
 				"type": "genre",
@@ -197,8 +227,13 @@
 			},
 			{
 				"type": "genre",
-				"name": "Sci-fi",
-				"id": "sci-fi"
+				"name": "Sci-Fi",
+				"id": "scifi-webtoon"
+			},
+			{
+				"type": "genre",
+				"name": "Secret Relationship",
+				"id": "secret-relationship"
 			},
 			{
 				"type": "genre",
@@ -207,13 +242,13 @@
 			},
 			{
 				"type": "genre",
-				"name": "Shoujo",
-				"id": "shoujo"
+				"name": "Senior/Junior",
+				"id": "senior-junior"
 			},
 			{
 				"type": "genre",
-				"name": "Shoujo Ai",
-				"id": "shoujo-ai"
+				"name": "Shoujo",
+				"id": "shoujo"
 			},
 			{
 				"type": "genre",
@@ -222,28 +257,8 @@
 			},
 			{
 				"type": "genre",
-				"name": "Shounen Ai",
-				"id": "shounen-ai"
-			},
-			{
-				"type": "genre",
 				"name": "Slice of Life",
 				"id": "slice-of-life"
-			},
-			{
-				"type": "genre",
-				"name": "Smut",
-				"id": "smut"
-			},
-			{
-				"type": "genre",
-				"name": "Soft Yaoi",
-				"id": "soft-yaoi"
-			},
-			{
-				"type": "genre",
-				"name": "Soft Yuri",
-				"id": "soft-yuri"
 			},
 			{
 				"type": "genre",
@@ -257,13 +272,23 @@
 			},
 			{
 				"type": "genre",
+				"name": "Thriller",
+				"id": "thriller"
+			},
+			{
+				"type": "genre",
 				"name": "Tragedy",
 				"id": "tragedy"
 			},
 			{
 				"type": "genre",
-				"name": "Webtoon",
-				"id": "webtoon"
+				"name": "Uncensored",
+				"id": "uncensored"
+			},
+			{
+				"type": "genre",
+				"name": "Work Life",
+				"id": "work-life"
 			},
 			{
 				"type": "genre",

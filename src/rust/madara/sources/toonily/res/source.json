@@ -1,11 +1,11 @@
 {
 	"info": {
-		"id": "en.coloredmanga",
+		"id": "en.toonily",
 		"lang": "en",
-		"name": "Colored Manga",
+		"name": "Toonily",
 		"version": 1,
 		"urls": [
-			"https://coloredmanga.com"
+			"https://toonily.com"
 		],
 		"nsfw": 0
 	},

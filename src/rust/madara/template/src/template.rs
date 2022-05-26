@@ -51,8 +51,6 @@ pub fn get_manga_list(
 }
 
 pub fn get_search_result(data: MadaraSiteData, url: String) -> Result<MangaPageResult> {
-	println!("get_search_result: {}", url);
-
 	let html = Request::new(url.as_str(), HttpMethod::Get).html();
 	let mut manga: Vec<Manga> = Vec::new();
 	let mut has_more = false;
@@ -147,13 +145,13 @@ pub fn get_series_page(data: MadaraSiteData, listing: &str, page: i32) -> Result
 
 pub fn get_manga_listing(
 	data: MadaraSiteData,
-	_listing: Listing,
+	listing: Listing,
 	page: i32,
 ) -> Result<MangaPageResult> {
-	if _listing.name == "Popular" {
+	if listing.name == "Popular" {
 		return get_series_page(data, "_wp_manga_views", page);
 	}
-	if _listing.name == "Trending" {
+	if listing.name == "Trending" {
 		return get_series_page(data, "_wp_manga_week_views_value", page);
 	}
 	return get_series_page(data, "_latest_update", page);
@@ -337,8 +335,13 @@ pub fn modify_image_request(base_url: String, request: Request) {
 }
 
 pub fn handle_url(url: String, data: MadaraSiteData) -> Result<DeepLink> {
+	let mut manga_id = String::new();
+	let parse_url = url.as_str().split("/").collect::<Vec<&str>>();
+	if parse_url.len() >= 4 {
+		manga_id.push_str(parse_url[4]);
+	}
 	Ok(DeepLink {
-		manga: Some(get_manga_details(url.clone(), data)?),
+		manga: Some(get_manga_details(manga_id, data)?),
 		chapter: None,
 	})
 }
