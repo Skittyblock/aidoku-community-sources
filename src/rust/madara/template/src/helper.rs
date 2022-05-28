@@ -1,6 +1,6 @@
 use aidoku::{
-	std::html::Node, std::net::HttpMethod, std::net::Request, std::String, std::Vec, Filter,
-	FilterType,
+	std::defaults::defaults_get, std::html::Node, std::net::HttpMethod, std::net::Request,
+	std::String, std::Vec, Filter, FilterType,
 };
 
 pub fn urlencode(string: String) -> String {
@@ -68,6 +68,13 @@ pub fn get_image_url(obj: Node) -> String {
 		img = obj.attr("srcset").read();
 	}
 	img = String::from(img.trim());
+
+	if defaults_get("highres").as_bool().unwrap_or(false) {
+		img = img
+			.replace("-350x476", "")
+			.replace("-110x150", "")
+			.replace("-175x238", "");
+	}
 	return img;
 }
 

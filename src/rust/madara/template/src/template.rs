@@ -15,7 +15,6 @@ pub struct MadaraSiteData {
 	pub image_selector: String,
 	pub alt_ajax: bool,
 	pub viewer: MangaViewer,
-	pub high_res_home: bool,
 }
 
 impl Default for MadaraSiteData {
@@ -35,8 +34,6 @@ impl Default for MadaraSiteData {
 			alt_ajax: false,
 			// default viewer
 			viewer: MangaViewer::Scroll,
-			// showing high resoltion images on home page (not supported by some sources)
-			high_res_home: true,
 		}
 	}
 }
@@ -73,13 +70,7 @@ pub fn get_search_result(data: MadaraSiteData, url: String) -> Result<MangaPageR
 			.replace("/", "");
 		let title = obj.select("a").attr("title").read();
 
-		let mut cover = get_image_url(obj.select("img"));
-		if data.high_res_home {
-			cover = cover
-				.replace("-350x476", "")
-				.replace("-110x150", "")
-				.replace("-175x238", "");
-		}
+		let cover = get_image_url(obj.select("img"));
 
 		let genres = obj.select("div.post-content_item div.summary-content a");
 		if genres.text().read().to_lowercase().contains("novel") {
@@ -142,13 +133,7 @@ pub fn get_series_page(data: MadaraSiteData, listing: &str, page: i32) -> Result
 
 		let title = obj.select("h3.h5 > a").text().read();
 
-		let mut cover = get_image_url(obj.select("img"));
-		if data.high_res_home {
-			cover = cover
-				.replace("-110x150", "")
-				.replace("-175x238", "")
-				.replace("-350x476", "");
-		}
+		let cover = get_image_url(obj.select("img"));
 
 		manga.push(Manga {
 			id,
