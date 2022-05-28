@@ -14,6 +14,8 @@ pub struct MadaraSiteData {
 	pub search_selector: String,
 	pub image_selector: String,
 	pub alt_ajax: bool,
+	pub viewer: MangaViewer,
+	pub high_res_home: bool,
 }
 
 impl Default for MadaraSiteData {
@@ -31,6 +33,10 @@ impl Default for MadaraSiteData {
 			image_selector: String::from("div.page-break > img"),
 			// choose between two options for chapter list POST request
 			alt_ajax: false,
+			// default viewer
+			viewer: MangaViewer::Scroll,
+			// showing high resoltion images on home page (not supported by some sources)
+			high_res_home: true,
 		}
 	}
 }
@@ -66,7 +72,14 @@ pub fn get_search_result(data: MadaraSiteData, url: String) -> Result<MangaPageR
 			.replace(&data.source_path.clone(), "")
 			.replace("/", "");
 		let title = obj.select("a").attr("title").read();
-		let cover = get_image_url(obj.select("img"));
+
+		let mut cover = get_image_url(obj.select("img"));
+		if data.high_res_home {
+			cover = cover
+				.replace("-350x476", "")
+				.replace("-110x150", "")
+				.replace("-175x238", "");
+		}
 
 		let genres = obj.select("div.post-content_item div.summary-content a");
 		if genres.text().read().to_lowercase().contains("novel") {
@@ -84,7 +97,13 @@ pub fn get_search_result(data: MadaraSiteData, url: String) -> Result<MangaPageR
 			categories: Vec::new(),
 			status: MangaStatus::Unknown,
 			nsfw: MangaContentRating::Safe,
-			viewer: MangaViewer::Default,
+			viewer: match data.viewer {
+				MangaViewer::Rtl => MangaViewer::Rtl,
+				MangaViewer::Ltr => MangaViewer::Ltr,
+				MangaViewer::Vertical => MangaViewer::Vertical,
+				MangaViewer::Scroll => MangaViewer::Scroll,
+				_ => MangaViewer::Scroll,
+			},
 		});
 		has_more = true;
 	}
@@ -122,11 +141,18 @@ pub fn get_series_page(data: MadaraSiteData, listing: &str, page: i32) -> Result
 			.replace("/", "");
 
 		let title = obj.select("h3.h5 > a").text().read();
-		let img = get_image_url(obj.select("img"));
+
+		let mut cover = get_image_url(obj.select("img"));
+		if data.high_res_home {
+			cover = cover
+				.replace("-110x150", "")
+				.replace("-175x238", "")
+				.replace("-350x476", "");
+		}
 
 		manga.push(Manga {
 			id,
-			cover: img,
+			cover,
 			title,
 			author: String::new(),
 			artist: String::new(),
@@ -135,7 +161,13 @@ pub fn get_series_page(data: MadaraSiteData, listing: &str, page: i32) -> Result
 			categories: Vec::new(),
 			status: MangaStatus::Unknown,
 			nsfw: MangaContentRating::Safe,
-			viewer: MangaViewer::Default,
+			viewer: match data.viewer {
+				MangaViewer::Rtl => MangaViewer::Rtl,
+				MangaViewer::Ltr => MangaViewer::Ltr,
+				MangaViewer::Vertical => MangaViewer::Vertical,
+				MangaViewer::Scroll => MangaViewer::Scroll,
+				_ => MangaViewer::Scroll,
+			},
 		});
 		has_more = true;
 	}
@@ -175,7 +207,6 @@ pub fn get_manga_details(manga_id: String, data: MadaraSiteData) -> Result<Manga
 	}
 
 	let mut status = MangaStatus::Unknown;
-	let mut viewer = MangaViewer::Default;
 	html.select("div.post-content_item")
 		.array()
 		.for_each(|item| {
@@ -195,16 +226,6 @@ pub fn get_manga_details(manga_id: String, data: MadaraSiteData) -> Result<Manga
 			} else {
 				status = MangaStatus::Unknown;
 			}
-			if obj_type == "Type" {
-				let item_str = obj
-					.select("div.summary-content")
-					.text()
-					.read()
-					.to_lowercase();
-				if item_str.contains("manhwa") {
-					viewer = MangaViewer::Scroll;
-				}
-			}
 		});
 
 	let mut nsfw = MangaContentRating::Safe;
@@ -223,7 +244,13 @@ pub fn get_manga_details(manga_id: String, data: MadaraSiteData) -> Result<Manga
 		categories,
 		status,
 		nsfw,
-		viewer,
+		viewer: match data.viewer {
+			MangaViewer::Rtl => MangaViewer::Rtl,
+			MangaViewer::Ltr => MangaViewer::Ltr,
+			MangaViewer::Vertical => MangaViewer::Vertical,
+			MangaViewer::Scroll => MangaViewer::Scroll,
+			_ => MangaViewer::Scroll,
+		},
 	})
 }
 
