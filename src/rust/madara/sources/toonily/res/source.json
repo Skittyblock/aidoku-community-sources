@@ -4,9 +4,7 @@
 		"lang": "en",
 		"name": "Toonily",
 		"version": 1,
-		"urls": [
-			"https://toonily.com"
-		],
+		"url": "https://toonily.com",
 		"nsfw": 2
 	},
 	"listings": [

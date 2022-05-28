@@ -4,9 +4,7 @@
 		"lang": "en",
 		"name": "Colored Manga",
 		"version": 1,
-		"urls": [
-			"https://coloredmanga.com"
-		],
+		"url": "https://coloredmanga.com",
 		"nsfw": 0
 	},
 	"listings": [

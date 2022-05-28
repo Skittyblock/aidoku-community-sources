@@ -4,9 +4,7 @@
 		"lang": "en",
 		"name": "ManhuaPlus",
 		"version": 1,
-		"urls": [
-			"https://manhuaplus.com"
-		],
+		"url": "https://manhuaplus.com",
 		"nsfw": 0
 	},
 	"listings": [

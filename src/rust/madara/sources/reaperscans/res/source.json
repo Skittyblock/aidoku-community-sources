@@ -4,9 +4,7 @@
 		"lang": "en",
 		"name": "Reaper Scans",
 		"version": 1,
-		"urls": [
-			"https://reaperscans.com"
-		],
+		"url": "https://reaperscans.com",
 		"nsfw": 0
 	},
 	"listings": [

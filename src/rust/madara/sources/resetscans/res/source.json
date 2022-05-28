@@ -4,9 +4,7 @@
 		"lang": "en",
 		"name": "Reset Scans",
 		"version": 1,
-		"urls": [
-			"https://reset-scans.com"
-		],
+		"url": "https://reset-scans.com",
 		"nsfw": 0
 	},
 	"listings": [
