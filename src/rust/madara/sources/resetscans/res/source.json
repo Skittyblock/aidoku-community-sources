@@ -1,0 +1,18 @@
+{
+	"info": {
+		"id": "en.resetscans",
+		"lang": "en",
+		"name": "Reset Scans",
+		"version": 1,
+		"url": "https://reset-scans.com",
+		"nsfw": 0
+	},
+	"listings": [
+		{
+			"name": "Trending"
+		},
+		{
+			"name": "Popular"
+		}
+	]
+}
