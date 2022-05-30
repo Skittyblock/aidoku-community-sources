@@ -1,0 +1,11 @@
+[
+  {
+    "id": "en.koushoku",
+    "name": "Koushoku",
+    "file": "en.koushoku-v1.aix",
+    "icon": "en.koushoku-v1.png",
+    "lang": "en",
+    "version": 1,
+    "nsfw": 2
+  }
+]
