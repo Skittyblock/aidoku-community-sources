@@ -25,16 +25,16 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 		match filter.kind {
 			FilterType::Title => {
 				query = helper::urlencode(filter.value.as_string()?.read());
-			},
+			}
 			FilterType::Select => {
 				if filter.name.as_str() == "Tags" {
 					let index = filter.value.as_int()? as usize;
 					match index {
 						0 => continue,
-						_ => tags.push(String::from(tag_list[index]))
+						_ => tags.push(String::from(tag_list[index])),
 					}
 				}
-			},
+			}
 			FilterType::Sort => {
 				let value = match filter.value.as_object() {
 					Ok(value) => value,
@@ -48,7 +48,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 					_ => "",
 				};
 				sort = String::from(option)
-			},
+			}
 			_ => continue,
 		}
 	}
@@ -153,18 +153,16 @@ fn get_manga_details(id: String) -> Result<Manga> {
 fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 	let url = format!("https://hentaifox.com/gallery/{}", id.clone());
 
-	Ok(Vec::from([
-		Chapter {
-			id,
-			title: String::from("Chapter 1"),
-			volume: -1.0,
-			chapter: 1.0,
-			url,
-			date_updated: 0.0,
-			scanlator: String::new(),
-			lang: String::from("en"),
-		}
-	]))
+	Ok(Vec::from([Chapter {
+		id,
+		title: String::from("Chapter 1"),
+		volume: -1.0,
+		chapter: 1.0,
+		url,
+		date_updated: 0.0,
+		scanlator: String::new(),
+		lang: String::from("en"),
+	}]))
 }
 
 #[get_page_list]

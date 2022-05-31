@@ -82,8 +82,12 @@ pub fn get_tag_slug(path: String) -> String {
 	return String::from(parts);
 }
 
-pub fn build_search_url(query: String, mut tags: Vec<String>, sort_type: String, page: i32) -> String {
-	
+pub fn build_search_url(
+	query: String,
+	mut tags: Vec<String>,
+	sort_type: String,
+	page: i32,
+) -> String {
 	let base_url = String::from("https://hentaifox.com");
 	let mut path = String::new();
 	if query.len() > 0 {
@@ -119,7 +123,6 @@ pub fn build_search_url(query: String, mut tags: Vec<String>, sort_type: String,
 	}
 
 	let url = format!("{}{}", base_url, path);
-	
 
 	return url;
 }
@@ -188,6 +191,6 @@ pub fn tag_list() -> [&'static str; 51] {
 		"collar",
 		"schoolboy-uniform",
 		"twintails",
-		"ponytail"
-	  ]
+		"ponytail",
+	]
 }
