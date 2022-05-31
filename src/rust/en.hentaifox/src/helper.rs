@@ -137,8 +137,7 @@ pub fn only_chars_from_string(str: String) -> String {
 }
 
 pub fn tag_list() -> [&'static str; 51] {
-
-	let tags = [
+	[
 		"none",
 		"big-breasts",
 		"sole-female",
@@ -190,8 +189,5 @@ pub fn tag_list() -> [&'static str; 51] {
 		"schoolboy-uniform",
 		"twintails",
 		"ponytail"
-	  ];
-
-	  tags
-
+	  ]
 }

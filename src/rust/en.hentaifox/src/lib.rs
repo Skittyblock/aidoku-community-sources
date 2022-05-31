@@ -153,20 +153,18 @@ fn get_manga_details(id: String) -> Result<Manga> {
 fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 	let url = format!("https://hentaifox.com/gallery/{}", id.clone());
 
-	let chapters: Vec<Chapter> = Vec::from([
+	Ok(Vec::from([
 		Chapter {
 			id,
-		title: String::from("Chapter 1"),
-		volume: -1.0,
-		chapter: 1.0,
-		url,
-		date_updated: 0.0,
-		scanlator: String::new(),
-		lang: String::from("en"),
+			title: String::from("Chapter 1"),
+			volume: -1.0,
+			chapter: 1.0,
+			url,
+			date_updated: 0.0,
+			scanlator: String::new(),
+			lang: String::from("en"),
 		}
-	]);
-
-	Ok(chapters)
+	]))
 }
 
 #[get_page_list]
