@@ -8,9 +8,9 @@ use aidoku::{
     std::net::Request,
     std::String,
     std::Vec,
-    std::{net::HttpMethod, ObjectRef},
-    Chapter, Filter, FilterType, Listing, Manga, MangaContentRating, MangaPageResult, MangaStatus,
-    MangaViewer, Page,
+    std::{net::HttpMethod},
+    Chapter, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
+    MangaViewer, Page, DeepLink,
 };
 
 #[get_manga_list]
@@ -20,6 +20,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 
     let mut query = String::new();
     let mut sort = String::new();
+    let mut ascending = false;
 
     let mut included_tags: Vec<String> = Vec::new();
     let mut excluded_tags: Vec<String> = Vec::new();
@@ -43,6 +44,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
                     Ok(value) => value,
                     Err(_) => continue,
                 };
+                ascending = value.get("ascending").as_bool().unwrap_or(false);
                 let index = value.get("index").as_int().unwrap_or(0);
                 let option = match index {
                     0 => "id",
@@ -58,24 +60,11 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
         }
     }
 
-    let mut url = format!(
-        "https://koushoku.org/search?sort={}&page={}&q={}",
-        sort,
-        helper::i32_to_string(page),
-        query
-    );
-    let mut query_params = String::new();
-    if !included_tags.is_empty() {
-        query_params.push_str("tag&:");
-        query_params.push_str(&included_tags.join(","));
-    }
-    if !excluded_tags.is_empty() {
-        query_params.push_str("-tag:");
-        query_params.push_str(&excluded_tags.join(","));
-    }
-    url.push_str(helper::urlencode(query_params).as_str());
+    let url = helper::build_search_url(query, sort, included_tags, excluded_tags, ascending, page.clone());
+   
 
     let html = Request::new(url.as_str(), HttpMethod::Get).html();
+
 
     for result in html.select(".entries .entry a").array() {
         let result_node = result.as_node();
@@ -85,20 +74,17 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
         }
 
         let title = result_node.select(".metadata h3.title span").text().read();
+      
         let cover = result_node
             .select("figure.thumbnail img")
             .attr("src")
             .read();
 
-        // after second slash in url, get integer
-        let manga_id = manga_url
-            .split("/")
-            .nth(2)
-            .unwrap_or("")
-            .parse::<i32>()
-            .unwrap_or(0);
+        let manga_id = helper::get_manga_id_from_path(manga_url);
+     
+        
         manga_arr.push(Manga {
-            id: helper::i32_to_string(manga_id),
+            id: manga_id,
             cover,
             title,
             author: String::new(),
@@ -110,17 +96,19 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
             nsfw: MangaContentRating::Nsfw,
             viewer: MangaViewer::Rtl,
         });
-
-        for pagination in html.select("nav.pagination ul li.last a").array() {
-            let paging_node = pagination.as_node();
-            let last_page_link = paging_node.attr("href").read();
-            let last_page = helper::get_page(last_page_link);
-
+    }
+    // check if paging node exists
+        
+        let paging = html.select("nav.pagination ul li.last a");
+        if !paging.html().read().is_empty() {
+            let last_page = helper::get_page(paging.last().attr("href").read());
+            
             if last_page > total {
                 total = last_page
             }
         }
-    }
+
+
 
     Ok(MangaPageResult {
         manga: manga_arr,
@@ -128,29 +116,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
     })
 }
 
-#[get_manga_listing]
-fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
-    let mut filters: Vec<Filter> = Vec::new();
 
-    let mut or = ObjectRef::new();
-
-    or.set("ascending", false.into());
-
-    or.set(
-        "index",
-        3i32.into(),
-    );
-
-    filters.push(Filter {
-        name: String::from("sort"),
-        kind: FilterType::Sort,
-        value: or.0,
-        object: ObjectRef::new(),
-    });
-
-    // call get manga list after doing some filters here
-    get_manga_list(filters, page)
-}
 
 #[get_manga_details]
 fn get_manga_details(id: String) -> Result<Manga> {
@@ -241,4 +207,14 @@ fn get_page_list(id: String) -> Result<Vec<Page>> {
     }
 
     Ok(pages)
+}
+
+#[handle_url]
+pub fn handle_url(url: String) -> Result<DeepLink> {
+    let id = helper::get_manga_id(url);
+    let manga = get_manga_details(id.clone())?;
+    return Ok(DeepLink {
+        manga: Some(manga),
+        chapter: None,
+    });
 }

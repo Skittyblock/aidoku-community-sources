@@ -6,11 +6,10 @@ use aidoku::{
 	error::Result,
 	prelude::*,
 	std::net::Request,
-	std::{net::HttpMethod, ObjectRef, String, Vec},
-	Chapter, Filter, FilterType, Listing, Manga, MangaContentRating, MangaPageResult, MangaStatus,
+	std::{net::HttpMethod, String, Vec},
+	Chapter, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
 	MangaViewer, Page,
 };
-use helper::tag_list;
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
@@ -19,7 +18,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 
 	let mut query: String = String::new();
 	let mut sort: String = String::new();
-
+	let tag_list = helper::tag_list();
 	let mut tags: Vec<String> = Vec::new();
 
 	for filter in filters {
@@ -32,7 +31,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 					let index = filter.value.as_int()? as usize;
 					match index {
 						0 => continue,
-						_ => tags.push(tag_list()[index].slug.clone())
+						_ => tags.push(String::from(tag_list[index]))
 					}
 				}
 			},
@@ -154,9 +153,9 @@ fn get_manga_details(id: String) -> Result<Manga> {
 fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 	let url = format!("https://hentaifox.com/gallery/{}", id.clone());
 
-	let mut chapters: Vec<Chapter> = Vec::new();
-	chapters.push(Chapter {
-		id,
+	let chapters: Vec<Chapter> = Vec::from([
+		Chapter {
+			id,
 		title: String::from("Chapter 1"),
 		volume: -1.0,
 		chapter: 1.0,
@@ -164,7 +163,8 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 		date_updated: 0.0,
 		scanlator: String::new(),
 		lang: String::from("en"),
-	});
+		}
+	]);
 
 	Ok(chapters)
 }

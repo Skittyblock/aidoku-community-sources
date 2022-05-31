@@ -136,269 +136,62 @@ pub fn only_chars_from_string(str: String) -> String {
 	return result;
 }
 
-pub struct Tag {
-	pub name: String,
-	pub slug: String,
-}
+pub fn tag_list() -> [&'static str; 51] {
 
-pub fn tag_list() -> Vec<Tag> {
-	let mut tags: Vec<Tag> = Vec::new();
-	tags.push(Tag {
-		name: String::from("None"),
-		slug: String::from("none"),
-	});
-	tags.push(Tag {
-		name: String::from("big breasts"),
-		slug: String::from("big-breasts"),
-	});
+	let tags = [
+		"none",
+		"big-breasts",
+		"sole-female",
+		"sole-male",
+		"nakadashi",
+		"anal",
+		"group",
+		"stockings",
+		"blowjob",
+		"rape",
+		"lolicon",
+		"schoolgirl-uniform",
+		"glasses",
+		"ahegao",
+		"shotacon",
+		"incest",
+		"full-color",
+		"defloration",
+		"x-ray",
+		"multi-work-series",
+		"bondage",
+		"milf",
+		"yaoi",
+		"mosaic-censorship",
+		"double-penetration",
+		"femdom",
+		"paizuri",
+		"males-only",
+		"impregnation",
+		"mind-break",
+		"sex-toys",
+		"dark-skin",
+		"hairy",
+		"netorare",
+		"big-penis",
+		"cheating",
+		"uncensored",
+		"ffm-threesome",
+		"sweating",
+		"sister",
+		"schoolgirl",
+		"futanari",
+		"yuri",
+		"dilf",
+		"big-ass",
+		"swimsuit",
+		"full-censorship",
+		"collar",
+		"schoolboy-uniform",
+		"twintails",
+		"ponytail"
+	  ];
 
-	tags.push(Tag {
-		name: String::from("sole female"),
-		slug: String::from("sole-female")
-	});
+	  tags
 
-	tags.push(Tag {
-		name: String::from("sole male"),
-		slug: String::from("sole-male")
-	});
-
-	tags.push(Tag {
-		name: String::from("nakadashi"),
-		slug: String::from("nakadashi"),
-	});
-	tags.push(Tag {
-		name: String::from("anal"),
-		slug: String::from("anal"),
-	});
-	tags.push(Tag {
-		name: String::from("group"),
-		slug: String::from("group"),
-	});
-	tags.push(Tag {
-		name: String::from("stockings"),
-		slug: String::from("stockings"),
-	});
-	tags.push(Tag {
-		name: String::from("blowjob"),
-		slug: String::from("blowjob"),
-	});
-
-	tags.push(Tag {
-		name: String::from("rape"),
-		slug: String::from("rape")
-	});
-
-	tags.push(Tag {
-		name: String::from("lolicon"),
-		slug: String::from("lolicon"),
-	});
-
-	tags.push(Tag {
-		name: String::from("schoolgirl uniform"),
-		slug: String::from("schoolgirl-uniform"),
-	});
-
-	tags.push(Tag {
-		name: String::from("glasses"),
-		slug: String::from("glasses"),
-	});
-	
-	tags.push(Tag {
-		name: String::from("ahegao"),
-		slug: String::from("ahegao"),
-	});
-
-	tags.push(Tag {
-		name: String::from("shotacon"),
-		slug: String::from("shotacon"),
-	});
-
-	tags.push(Tag {
-		name: String::from("incest"),
-		slug: String::from("incest"),
-	});
-
-	tags.push(Tag {
-		name: String::from("full color"),
-		slug: String::from("full-color"),
-	});
-
-	tags.push(Tag {
-		name: String::from("defloration"),
-		slug: String::from("defloration"),
-	});
-
-	tags.push(Tag {
-		name: String::from("x-ray"),
-		slug: String::from("x-ray"),
-	});
-
-	tags.push(Tag {
-		name: String::from("multi-work series"),
-		slug: String::from("multi-work-series"),
-	});
-
-	tags.push(Tag {
-		name: String::from("bondage"),
-		slug: String::from("bondage"),
-	});
-
-	tags.push(Tag {
-		name: String::from("milf"),
-		slug: String::from("milf")
-	});
-
-	tags.push(Tag {
-		name: String::from("yaoi"),
-		slug: String::from("yaoi"),
-	});
-
-	tags.push(Tag {
-		name: String::from("mosaic censorship"),
-		slug: String::from("mosaic-censorship"),
-	});
-
-	tags.push(Tag {
-		name: String::from("double penetration"),
-		slug: String::from("double-penetration"),
-	});
-
-	tags.push(Tag {
-		name: String::from("femdom"),
-		slug: String::from("femdom"),
-	});
-
-	tags.push(Tag {
-		name: String::from("paizuri"),
-		slug: String::from("paizuri"),
-	});
-
-	tags.push(Tag {
-		name: String::from("males only"),
-		slug: String::from("males-only")
-	});
-
-	tags.push(Tag {
-		name: String::from("impregnation"),
-		slug: String::from("impregnation"),
-	});
-
-	tags.push(Tag {
-		name: String::from("mind break"),
-		slug: String::from("mind-break"),
-	});
-
-	tags.push(Tag {
-		name: String::from("sex toys"),
-		slug: String::from("sex-toys")
-	});
-
-	tags.push(Tag {
-		name: String::from("dark skin"),
-		slug: String::from("dark-skin"),
-	});
-
-	tags.push(Tag {
-		name: String::from("hairy"),
-		slug: String::from("hairy"),
-	});
-
-	tags.push(Tag {
-		name: String::from("netorare"),
-		slug: String::from("netorare"),
-	});
-	
-	tags.push(Tag {
-		name: String::from("big penis"),
-		slug: String::from("big-penis")
-	});
-
-	tags.push(Tag {
-		name: String::from("cheating"),
-		slug: String::from("cheating"),
-	});
-
-	tags.push(Tag {
-		name: String::from("uncensored"),
-		slug: String::from("uncensored"),
-	});
-
-	tags.push(Tag {
-		name: String::from("ffm threesome"),
-		slug: String::from("ffm-threesome"),
-	});
-
-	tags.push(Tag {
-		name: String::from("sweating"),
-		slug: String::from("sweating"),
-	});
-
-	tags.push(Tag {
-		name: String::from("sister"),
-		slug: String::from("sister"),
-	});
-
-	tags.push(Tag {
-		name: String::from("schoolgirl"),
-		slug: String::from("schoolgirl"),
-	});
-
-	tags.push(Tag {
-		name: String::from("futanari"),
-		slug: String::from("futanari"),
-	});
-
-	tags.push(Tag {
-		name: String::from("yuri"),
-		slug: String::from("yuri"),
-	});
-
-	tags.push(Tag {
-		name: String::from("dilf"),
-		slug: String::from("dilf"),
-	});
-
-	tags.push(Tag {
-		name: String::from("big ass"),
-		slug: String::from("big-ass"),
-	});
-
-	tags.push(Tag {
-		name: String::from("swimsuit"),
-		slug: String::from("swimsuit"),
-	});
-	
-	tags.push(Tag {
-		name: String::from("full censorship"),
-		slug: String::from("full-censorship"),
-	});
-
-	tags.push(Tag {
-		name: String::from("collar"),
-		slug: String::from("collar"),
-	});
-
-	tags.push(Tag {
-		name: String::from("schoolboy uniform"),
-		slug: String::from("schoolboy-uniform"),
-	});
-
-
-	tags.push(Tag {
-		name: String::from("twintails"),
-		slug: String::from("twintails"),
-	});
-
-	tags.push(Tag {
-		name: String::from("ponytail"),
-		slug: String::from("ponytail"),
-	});
-
-
-	
-
-	
-	tags
-
-	
 }

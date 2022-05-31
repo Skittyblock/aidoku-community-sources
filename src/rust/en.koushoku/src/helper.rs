@@ -49,18 +49,59 @@ pub fn get_cover_url(id: String) -> String {
     return format!("https://cdn.koushoku.org/data/{}/1/512.png", id);
 }
 
-// get parameter page from url as i32
+pub fn get_manga_id(link: String) -> String {
+    // https://koushoku.org/archive/8918
+    let str = link.split("/").nth(4).unwrap_or("");  
+    return String::from(str);
+}
+
+pub fn get_manga_id_from_path(path: String) -> String {
+    // /archive/8918
+    let str = path.split("/").nth(2).unwrap_or("");
+    return String::from(str);
+}
+
+pub fn build_search_url(query: String, sort_type: String, included_tags: Vec<String>, excluded_tags: Vec<String>, ascending: bool, page: i32) -> String {
+    
+    let mut url = String::new();
+
+    if query.len() > 0 || included_tags.len() > 0 || excluded_tags.len() > 0 {
+        // search page
+        url.push_str(format!("https://koushoku.org/search").as_str());
+        url.push_str("?");
+    } else {
+        url.push_str(format!("https://koushoku.org/").as_str());
+        url.push_str("?");
+    }
+    url.push_str(format!("page={}&sort={}&order={}&q={}",
+    i32_to_string(page),
+    sort_type,
+    if ascending { "asc" } else { "desc" },
+    urlencode(query).as_str()
+    ).as_str());
+    let mut query_params = String::new();
+    if !included_tags.is_empty() {
+        query_params.push_str("tag&:");
+        query_params.push_str(&included_tags.join(","));
+    }
+    if !excluded_tags.is_empty() {
+        query_params.push_str("-tag:");
+        query_params.push_str(&excluded_tags.join(","));
+    }
+    
+    url.push_str(urlencode(query_params).as_str());
+
+    url
+}
+
 pub fn get_page(url: String) -> i32 {
+    let mut params = url.split("&");
     let mut page = 1;
-    let mut index = url.find("page=").unwrap_or(0);
-    if index == 0 {
-        return page;
+    while let Some(param) = params.next() {
+        if param.starts_with("page=") {
+            page = param[5..].parse::<i32>().unwrap_or(1);
+            break;
+        }
     }
-    index += 5;
-    let end = url.find('&').unwrap_or(url.len());
-    if end == index {
-        return page;
-    }
-    page = url[index..end].parse().unwrap_or(page);
     return page;
 }

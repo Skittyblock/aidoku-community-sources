@@ -6,10 +6,5 @@
     "version": 1,
     "url": "https://koushoku.org",
     "nsfw": 2
-  },
-  "listings": [
-    {
-      "name": "Recently Added"
-    }
-  ]
+  }
 }
