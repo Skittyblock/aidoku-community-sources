@@ -23,13 +23,12 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 
     let mut included_tags: Vec<String> = Vec::new();
     let mut excluded_tags: Vec<String> = Vec::new();
-    let mut types: Vec<String> = Vec::new();
 
     for filter in filters {
         match filter.kind {
             FilterType::Title => {
                 query = helper::urlencode(filter.value.as_string()?.read());
-            }
+            },
             FilterType::Genre => {
                 if let Ok(tag_id) = filter.object.get("id").as_string() {
                     match filter.value.as_int().unwrap_or(-1) {
@@ -38,13 +37,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
                         _ => continue,
                     }
                 }
-            }
-            FilterType::Check => {
-                if filter.value.as_int().unwrap_or(-1) <= 0 {
-                    continue;
-                }
-                types.push(filter.name);
-            }
+            },
             FilterType::Sort => {
                 let value = match filter.value.as_object() {
                     Ok(value) => value,
@@ -60,7 +53,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
                     _ => "",
                 };
                 sort = String::from(option)
-            }
+            },
             _ => continue,
         }
     }
@@ -145,14 +138,7 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 
     or.set(
         "index",
-        match listing.name.as_str() {
-            "ID" => 0i32.into(),
-            "Title" => 1i32.into(),
-            "Created Date" => 2i32.into(),
-            "Uploaded Date" => 3i32.into(),
-            "Pages" => 4i32.into(),
-            &_ => 0i32.into(),
-        },
+        3i32.into(),
     );
 
     filters.push(Filter {
@@ -219,13 +205,13 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
     let mut chapters: Vec<Chapter> = Vec::new();
     chapters.push(Chapter {
         id,
-        title: String::from("Chapter 1"),
+        title: String::new(),
         volume: -1.0,
         chapter: 1.0,
         url,
         date_updated,
         scanlator: String::new(),
-        lang: String::from("English"),
+        lang: String::from("en"),
     });
 
     Ok(chapters)

@@ -21,13 +21,12 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	let mut sort: String = String::new();
 
 	let mut tags: Vec<String> = Vec::new();
-	// let mut types: Vec<String> = Vec::new();
 
 	for filter in filters {
 		match filter.kind {
 			FilterType::Title => {
 				query = helper::urlencode(filter.value.as_string()?.read());
-			}
+			},
 			FilterType::Select => {
 				if filter.name.as_str() == "Tags" {
 					let index = filter.value.as_int()? as usize;
@@ -36,8 +35,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 						_ => tags.push(tag_list()[index].slug.clone())
 					}
 				}
-			}
-		
+			},
 			FilterType::Sort => {
 				let value = match filter.value.as_object() {
 					Ok(value) => value,
@@ -51,7 +49,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 					_ => "",
 				};
 				sort = String::from(option)
-			}
+			},
 			_ => continue,
 		}
 	}
@@ -106,32 +104,6 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	})
 }
 
-#[get_manga_listing]
-fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
-	let mut filters: Vec<Filter> = Vec::new();
-
-	let mut sort_list = ObjectRef::new();
-
-	sort_list.set("ascending", false.into());
-
-	sort_list.set(
-		"index",
-		match listing.name.as_str() {
-			&_ => 0i32.into(),
-		},
-	);
-
-	filters.push(Filter {
-		name: String::from("sort"),
-		kind: FilterType::Sort,
-		value: sort_list.0,
-		object: ObjectRef::new(),
-	});
-
-	// call get manga list after doing some filters here
-	get_manga_list(filters, page)
-}
-
 #[get_manga_details]
 fn get_manga_details(id: String) -> Result<Manga> {
 	let url = format!("https://hentaifox.com/gallery/{}", id);
@@ -181,7 +153,6 @@ fn get_manga_details(id: String) -> Result<Manga> {
 #[get_chapter_list]
 fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 	let url = format!("https://hentaifox.com/gallery/{}", id.clone());
-	// let html = Request::new(url.as_str(), HttpMethod::Get).html();
 
 	let mut chapters: Vec<Chapter> = Vec::new();
 	chapters.push(Chapter {
@@ -192,7 +163,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 		url,
 		date_updated: 0.0,
 		scanlator: String::new(),
-		lang: String::from("English"),
+		lang: String::from("en"),
 	});
 
 	Ok(chapters)
