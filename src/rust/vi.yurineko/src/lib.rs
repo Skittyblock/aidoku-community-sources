@@ -94,9 +94,9 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 	let scanlators_string = scanlators
 		.map(|a| {
 			let scanlator_object = a.as_object()?;
-			return Ok(scanlator_object.get("name").as_string()?.read());
+			Ok(scanlator_object.get("name").as_string()?.read())
 		})
-		.map(|a: Result<String>| a.unwrap_or(String::from("")))
+		.map(|a: Result<String>| a.unwrap_or_default())
 		.collect::<Vec<String>>()
 		.join(", ");
 
@@ -159,7 +159,7 @@ pub fn handle_url(url: String) -> Result<DeepLink> {
 	} else if url.starts_with("read") {
 		// https://yurineko.net/read/419/5473
 		let id = &url[5..]; // remove read/
-		let end = match id.find("/") {
+		let end = match id.find('/') {
 			Some(end) => end,
 			None => id.len(),
 		};

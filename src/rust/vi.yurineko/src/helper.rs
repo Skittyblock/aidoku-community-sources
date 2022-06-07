@@ -1,21 +1,21 @@
 use aidoku::{
 	prelude::format,
-	std::{String, Vec},
+	std::{html::Node, String, Vec},
 	MangaStatus,
 };
 
 // MARK: Mappings
 pub fn get_tag_id(genre: i64) -> String {
 	String::from(match genre {
-		1 => "1",	  // R18
-		2 => "113",	  // Action
-		3 => "114",	  // Adventure
-		4 => "115",	  // Comedy
-		5 => "116",	  // Demon
-		6 => "117",	  // Drama
-		7 => "118",	  // Ecchi
-		8 => "119",	  // Fantasy
-		9 => "120",	  // Game
+		1 => "1",     // R18
+		2 => "113",   // Action
+		3 => "114",   // Adventure
+		4 => "115",   // Comedy
+		5 => "116",   // Demon
+		6 => "117",   // Drama
+		7 => "118",   // Ecchi
+		8 => "119",   // Fantasy
+		9 => "120",   // Game
 		10 => "121",  // Gender Bender
 		11 => "122",  // Harem
 		12 => "123",  // Historical
@@ -225,7 +225,7 @@ pub fn i32_to_string(mut integer: i32) -> String {
 		string.insert(pos, char::from_u32((digit as u32) + ('0' as u32)).unwrap());
 		integer /= 10;
 	}
-	return string;
+	string
 }
 
 pub fn urlencode(string: String) -> String {
@@ -235,9 +235,9 @@ pub fn urlencode(string: String) -> String {
 
 	for byte in bytes {
 		let curr = *byte;
-		if (b'a' <= curr && curr <= b'z')
-			|| (b'A' <= curr && curr <= b'Z')
-			|| (b'0' <= curr && curr <= b'9')
+		if (b'a'..=b'z').contains(&curr)
+			|| (b'A'..=b'Z').contains(&curr)
+			|| (b'0'..=b'9').contains(&curr)
 		{
 			result.push(curr);
 		} else {
@@ -247,7 +247,7 @@ pub fn urlencode(string: String) -> String {
 		}
 	}
 
-	String::from_utf8(result).unwrap_or(String::new())
+	String::from_utf8(result).unwrap_or_default()
 }
 
 pub fn extract_f32_from_string(title: String, text: String) -> f32 {
@@ -255,7 +255,7 @@ pub fn extract_f32_from_string(title: String, text: String) -> f32 {
 		.chars()
 		.filter(|a| (*a >= '0' && *a <= '9') || *a == ' ' || *a == '.')
 		.collect::<String>()
-		.split(" ")
+		.split(' ')
 		.collect::<Vec<&str>>()
 		.into_iter()
 		.map(|a| a.parse::<f32>().unwrap_or(0.0))
@@ -264,11 +264,28 @@ pub fn extract_f32_from_string(title: String, text: String) -> f32 {
 }
 
 pub fn get_search_url(base_url: String, query: String, tag: String, page: i32) -> String {
-	if query.len() > 0 {
+	if !query.is_empty() {
 		return format!("{base_url}/search?query={query}&page={page}");
-	} else if tag.len() > 0 {
+	} else if !tag.is_empty() {
 		return format!("{base_url}/searchType?type=tag&id={tag}&page={page}");
 	} else {
 		return format!("{base_url}/lastest2?page={page}");
+	}
+}
+
+pub fn text_with_newlines(html: String) -> Option<String> {
+	if !String::from(html.trim()).is_empty() {
+		Some(
+			Node::new_fragment(
+				html.replace("<br>", "{{ .LINEBREAK }}")
+					.replace("</p><p>", "{{ .LINEBREAK }}")
+					.as_bytes(),
+			)
+			.text()
+			.read()
+			.replace("{{ .LINEBREAK }}", "\n"),
+		)
+	} else {
+		None
 	}
 }
