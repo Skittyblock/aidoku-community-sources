@@ -81,7 +81,17 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 			.header("Origin", "https://otakusan.net")
 			.html()
 	};
-	let (manga, has_more) = parse_manga_list!(resp.select("div.mdl-card").array());
+	let (manga, has_more) = if search_request {
+		parse_manga_list!(resp
+			.select("div.collection")
+			.array()
+			.get(1)
+			.as_node()
+			.select("div.mdl-card")
+			.array())
+	} else {
+		parse_manga_list!(resp.select("div.mdl-card").array())
+	};
 	Ok(MangaPageResult {
 		manga,
 		has_more: if search_request { false } else { has_more },
