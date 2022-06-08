@@ -1,0 +1,48 @@
+{
+	"info": {
+		"id": "multi.otakusan",
+		"lang": "multi",
+		"name": "Otaku Sanctuary",
+		"version": 1,
+		"url": "https://otakusan.net",
+		"nsfw": 2
+	},
+	"listings": [
+		{
+			"name": "Completed"
+		},
+		{
+			"name": "New Titles"
+		},
+		{
+			"name": "For Boys"
+		},
+		{
+			"name": "For Girls"
+		}
+	],
+	"languages": [
+		{
+			"code": "vi", 
+			"value": "vn",
+			"default": true
+		},
+		{
+			"code": "en",
+			"value": "us"
+		},
+		{
+			"code": "fr"
+		},
+		{
+			"code": "es"
+		},
+		{
+			"code": "it"
+		},
+		{
+			"code": "All"
+		}
+	],
+	"languageSelectType": "single"
+}
