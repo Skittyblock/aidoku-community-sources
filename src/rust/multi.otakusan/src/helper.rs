@@ -91,7 +91,7 @@ pub fn capitalize_first_letter(name: String) -> String {
 	ret.push_str(&preprocess[0].to_uppercase().to_string());
 	let mut i: usize = 1;
 	while i < preprocess.len() {
-		if char::is_ascii_whitespace(&preprocess[i]) {
+		if preprocess[i].is_whitespace() {
 			ret.push(preprocess[i]);
 			ret.push_str(&preprocess[i + 1].to_uppercase().to_string());
 			i += 1;
