@@ -270,6 +270,30 @@ fn get_manga_details(id: String) -> Result<Manga> {
 		} else {
 			String::new()
 		};
+		let description = if id.contains("wallpaper") {
+			let mut ret: Vec<String> = Vec::with_capacity(2);
+			let original_source = String::from(
+				html.select("tr:contains(Nguồn) td span:not(.nav)")
+					.text()
+					.read()
+					.trim(),
+			);
+			let anime_manga = String::from(
+				html.select("tr:contains(Manga/Anime) td span:not(.nav)")
+					.text()
+					.read()
+					.trim(),
+			);
+			if !anime_manga.is_empty() {
+				ret.push(format!("Manga/Anime: {anime_manga}"));
+			}
+			if !original_source.is_empty() {
+				ret.push(format!("Source: {original_source}"));
+			}
+			ret.join("\n")
+		} else {
+			String::new()
+		};
 		let cover = html.select("div#image_content img").attr("src").read();
 		let title = String::from(
 			html.select("h4.group-header")
@@ -288,7 +312,7 @@ fn get_manga_details(id: String) -> Result<Manga> {
 			title,
 			author,
 			artist: String::new(),
-			description: String::new(),
+			description,
 			url,
 			categories: Vec::new(),
 			status: MangaStatus::Unknown,
