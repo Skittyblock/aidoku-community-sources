@@ -9,10 +9,7 @@
 	},
 	"listings": [
 		{
-			"name": "Completed"
-		},
-		{
-			"name": "New Titles"
+			"name": "Ecchi Land"
 		},
 		{
 			"name": "For Boys"
@@ -21,7 +18,10 @@
 			"name": "For Girls"
 		},
 		{
-			"name": "Ecchi Land"
+			"name": "New Titles"
+		},
+		{
+			"name": "Completed"
 		}
 	],
 	"languages": [
