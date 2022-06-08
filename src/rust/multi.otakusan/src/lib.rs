@@ -10,7 +10,7 @@ use aidoku::{
 		html::Node,
 		json,
 		net::{HttpMethod, Request},
-		String, Vec
+		String, Vec,
 	},
 	Chapter, DeepLink, Filter, FilterType, Listing, Manga, MangaContentRating, MangaPageResult,
 	MangaStatus, MangaViewer, Page,
