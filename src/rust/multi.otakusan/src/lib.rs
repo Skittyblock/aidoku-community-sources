@@ -19,7 +19,7 @@ use helper::{
 	capitalize_first_letter, category_parser, extract_f32_from_string, get_lang_code,
 	text_with_newlines, urlencode,
 };
-use parser::{convert_time, parse_manga_list, parse_image_list};
+use parser::{convert_time, parse_image_list, parse_manga_list};
 
 static mut CACHED_MANGA_ID: Option<String> = None;
 static mut CACHED_MANGA: Option<Vec<u8>> = None;
@@ -76,9 +76,6 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 				"Content-Type",
 				"application/x-www-form-urlencoded; charset=UTF-8",
 			)
-			.header("X-Requested-With", "XMLHttpRequest")
-			.header("Referer", "https://otakusan.net/")
-			.header("Origin", "https://otakusan.net")
 			.html()
 	};
 	let (manga, has_more) = if search_request {
@@ -96,30 +93,19 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	} else {
 		parse_manga_list(resp.select("div.mdl-card").array())
 	};
-	Ok(MangaPageResult {
-		manga,
-		has_more,
-	})
+	Ok(MangaPageResult { manga, has_more })
 }
 
 #[get_manga_listing]
 fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
-	let wallpaper_url = format!(
-		"https://otakusan.net/WallPaper/Newest?type=Newest&offset={}",
-		(page - 1) * 18
-	);
-	let cosplay_url = format!(
-		"https://otakusan.net/Cosplay/Newest?type=Newest&offset={}",
-		(page - 1) * 18
-	);
 	let url = match listing.name.as_str() {
 		"Completed" => "https://otakusan.net/Manga/CompletedNewest",
 		"New Titles" => "https://otakusan.net/Manga/NewTitleNewest",
 		"For Boys" => "https://otakusan.net/Manga/ForBoyNewest",
 		"For Girls" => "https://otakusan.net/Manga/ForGirlNewest",
 		"Ecchi Land" => "https://otakusan.net/Manga/EcchiNewest",
-		"Wallpaper" => wallpaper_url.as_str(),
-		"Cosplay" => cosplay_url.as_str(),
+		"Wallpaper" => "https://otakusan.net/WallPaper/Newest?type=Newest&offset=",
+		"Cosplay" => "https://otakusan.net/Cosplay/Newest?type=Newest&offset=",
 		_ => {
 			return Err(AidokuError {
 				reason: AidokuErrorKind::Unimplemented,
@@ -138,23 +124,16 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 					"Content-Type",
 					"application/x-www-form-urlencoded; charset=UTF-8",
 				)
-				.header("X-Requested-With", "XMLHttpRequest")
-				.header("Referer", "https://otakusan.net/")
-				.header("Origin", "https://otakusan.net")
 				.html();
 			let (manga, has_more) = parse_manga_list(resp.select("div.mdl-card").array());
 			Ok(MangaPageResult { manga, has_more })
 		}
 		"Wallpaper" | "Cosplay" => {
-			let resp = &Request::new(url, HttpMethod::Get)
-				.header(
-					"Content-Type",
-					"application/x-www-form-urlencoded; charset=UTF-8",
-				)
-				.header("X-Requested-With", "XMLHttpRequest")
-				.header("Referer", "https://otakusan.net/")
-				.header("Origin", "https://otakusan.net")
-				.html();
+			let resp = &Request::new(
+				format!("{}{}", url, (page - 1) * 18).as_str(),
+				HttpMethod::Get,
+			)
+			.html();
 			let node = resp.select("div.picture-mason");
 			let elems = node.array();
 			let (manga, has_more) = parse_image_list(elems);
@@ -416,9 +395,6 @@ fn get_page_list(id: String) -> Result<Vec<Page>> {
 			"Content-Type",
 			"application/x-www-form-urlencoded; charset=UTF-8",
 		)
-		.header("X-Requested-With", "XMLHttpRequest")
-		.header("Referer", format!("https://otakusan.net{id}").as_str())
-		.header("Origin", "https://otakusan.net")
 		.json();
 		let json_object = json.as_object()?;
 		let raw_pages_arr_value = json_object.get("Content");
@@ -429,9 +405,6 @@ fn get_page_list(id: String) -> Result<Vec<Page>> {
 					"Content-Type",
 					"application/x-www-form-urlencoded; charset=UTF-8",
 				)
-				.header("X-Requested-With", "XMLHttpRequest")
-				.header("Referer", format!("https://otakusan.net{id}").as_str())
-				.header("Origin", "https://otakusan.net")
 				.json();
 			let json_object = json.as_object()?;
 			let raw_pages_arr_value = json_object.get("view");
@@ -475,9 +448,7 @@ fn get_page_list(id: String) -> Result<Vec<Page>> {
 
 #[modify_image_request]
 fn modify_image_request(request: Request) {
-	request
-		.header("Referer", "https://otakusan.net/")
-		.header("Origin", "https://otakusan.net");
+	request.header("Referer", "https://otakusan.net/");
 }
 
 #[handle_url]
