@@ -105,6 +105,7 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 		"New Titles" => "https://otakusan.net/Manga/NewTitleNewest",
 		"For Boys" => "https://otakusan.net/Manga/ForBoyNewest",
 		"For Girls" => "https://otakusan.net/Manga/ForGirlNewest",
+		"Ecchi Land" => "https://otakusan.net/Manga/EcchiNewest",
 		_ => {
 			return Err(AidokuError {
 				reason: AidokuErrorKind::Unimplemented,
