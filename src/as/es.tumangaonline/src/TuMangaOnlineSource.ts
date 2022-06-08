@@ -14,7 +14,7 @@ import {
 	Html,
 	console,
 	ValueRef
-} from "aidoku-as";
+} from "aidoku-as/src";
 
 let genreValues = new Map<string, string>();
 genreValues.set("Acción", "1");

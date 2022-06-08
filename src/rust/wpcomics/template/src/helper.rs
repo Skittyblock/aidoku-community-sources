@@ -1,239 +1,135 @@
-use aidoku::{
-    std::String, std::ArrayRef, std::Vec, MangaStatus, prelude::format,
-};
+use aidoku::{prelude::format, std::String, std::Vec, std::html::Node};
 
-#[macro_export]
-macro_rules! scan {
-    ( $string:expr, $sep:expr, $( $x:ty ),+ ) => {{
-        let mut iter = $string.split($sep);
-        ($(iter.next().and_then(|word| word.parse::<$x>().ok()),)*)
-    }}
+pub fn trunc_trailing_comic(title: String) -> String {
+	let temp = title.chars().rev().collect::<String>();
+	if temp.find("cimoC") == Some(0) {
+		return temp
+			.replacen("cimoC", "", 1)
+			.chars()
+			.rev()
+			.collect::<String>();
+	} else {
+		return temp.chars().rev().collect::<String>();
+	}
 }
 
-pub fn extract_f32_from_string(title: String, text: String) -> f32 {  
-    text.replace(&title, "")
-        .chars()
-        .filter(|a| (*a >= '0' && *a <= '9') || *a == ' ' || *a == '.')
-        .collect::<String>()
-        .split(" ")
-        .collect::<Vec<&str>>().into_iter()
-        .map(|a| a.parse::<f32>().unwrap_or(0.0))
-        .find(|a| *a > 0.0)
-        .unwrap_or(0.0)
+pub fn extract_f32_from_string(title: String, text: String) -> Vec<f32> {
+	text.replace(&title, "")
+		.chars()
+		.filter(|a| (*a >= '0' && *a <= '9') || *a == ' ' || *a == '.' || *a == '+')
+		.collect::<String>()
+		.split(' ')
+		.collect::<Vec<&str>>()
+		.into_iter()
+		.map(|a| a.parse::<f32>().unwrap_or(-1.0))
+		.filter(|a| *a >= 0.0)
+		.collect::<Vec<f32>>()
 }
 
 pub fn append_protocol(url: String) -> String {
-    if !url.starts_with("http") {
-        return format!("{}{}", "https:", url);
-    } else {
-        return url;
-    }
+	if !url.starts_with("http") {
+		format!("{}{}", "https:", url)
+	} else {
+		url
+	}
 }
 
 pub fn https_upgrade(url: String) -> String {
-    return url.replacen("http://", "https://", 1);
+	url.replacen("http://", "https://", 1)
 }
 
 pub fn urlencode(string: String) -> String {
-    let mut result: Vec<u8> = Vec::with_capacity(string.len() * 3);
-    let hex = "0123456789abcdef".as_bytes();
-    let bytes = string.as_bytes();
-    
-    for byte in bytes {
-        let curr = *byte;
-        if (b'a' <= curr && curr <= b'z')
-            || (b'A' <= curr && curr <= b'Z')
-            || (b'0' <= curr && curr <= b'9') {
-                result.push(curr);
-        } else {
-            result.push(b'%');
-            result.push(hex[curr as usize >> 4]);
-            result.push(hex[curr as usize & 15]);
-        }
-    }
+	let mut result: Vec<u8> = Vec::with_capacity(string.len() * 3);
+	let hex = "0123456789abcdef".as_bytes();
+	let bytes = string.as_bytes();
 
-    String::from_utf8(result).unwrap_or(String::new())
+	for byte in bytes {
+		let curr = *byte;
+		if curr.is_ascii_alphanumeric() {
+			result.push(curr);
+		} else {
+			result.push(b'%');
+			result.push(hex[curr as usize >> 4]);
+			result.push(hex[curr as usize & 15]);
+		}
+	}
+
+	String::from_utf8(result).unwrap_or_default()
 }
 
-pub fn i32_to_string(mut integer: i32) -> String {
-    if integer == 0 {
-        return String::from("0");
-    }
-    let mut string = String::with_capacity(11);
-    let pos = if integer < 0 {
-        string.insert(0, '-');
-        1
-    } else {
-        0
-    };
-    while integer != 0 {
-        let mut digit = integer % 10;
-        if pos == 1 {
-            digit *= -1;
-        }
-        string.insert(pos, char::from_u32((digit as u32) + ('0' as u32)).unwrap());
-        integer /= 10;
-    }
-    return string;
+pub fn get_tag_id(genre: i64) -> String {
+	String::from(match genre {
+		1 => "marvel",
+		2 => "dc-comics",
+		3 => "action",
+		4 => "adventure",
+		5 => "anthology",
+		6 => "anthropomorphic",
+		7 => "biography",
+		8 => "children",
+		9 => "comedy",
+		10 => "crime",
+		11 => "cyborgs",
+		12 => "dark-horse",
+		13 => "demons",
+		14 => "drama",
+		15 => "fantasy",
+		16 => "family",
+		17 => "fighting",
+		18 => "gore",
+		19 => "graphic-novels",
+		20 => "historical",
+		21 => "horror",
+		22 => "leading-ladies",
+		23 => "literature",
+		24 => "magic",
+		25 => "manga",
+		26 => "martial-arts",
+		27 => "mature",
+		28 => "mecha",
+		29 => "military",
+		30 => "movie-cinematic-link",
+		31 => "mystery",
+		32 => "mythology",
+		33 => "psychological",
+		34 => "personal",
+		35 => "political",
+		36 => "post-apocalyptic",
+		37 => "pulp",
+		38 => "robots",
+		39 => "romance",
+		40 => "sci-fi",
+		41 => "slice-of-life",
+		42 => "science-fiction",
+		43 => "sport",
+		44 => "spy",
+		45 => "superhero",
+		46 => "supernatural",
+		47 => "suspense",
+		48 => "thriller",
+		49 => "vampires",
+		50 => "vertigo",
+		51 => "video-games",
+		52 => "war",
+		53 => "western",
+		54 => "zombies",
+		_ => "",
+	})
 }
 
-pub fn join_string_array(array: ArrayRef, delimeter: String) -> String {
-    let mut string = String::new();
-    let mut at = 0;
-    for item in array {
-        if at != 0 {
-            string.push_str(&delimeter);
-        }
-        string.push_str(item.as_node().text().read().as_str());
-        at += 1;
-    }
-    return string;
-}
-
-pub fn status_from_string(status: String) -> MangaStatus {
-    if status == "Ongoing" {
-        return MangaStatus::Ongoing;
-    } else if status == "Completed" {
-        return MangaStatus::Completed;
-    } else if status == "Hiatus" {
-        return MangaStatus::Hiatus;
-    } else if status == "Cancelled" {
-        return MangaStatus::Cancelled;
-    } else {
-        return MangaStatus::Unknown;
-    }
-}
-
-pub fn is_numeric_char(c: char) -> bool {
-    return (c >= '0' && c <= '9') || c == '.';
-}
-
-pub fn get_chapter_number(id: String) -> f32 {
-    let mut number_string = String::new();
-    let mut i = id.len() - 1;
-    for c in id.chars().rev() {
-        if !is_numeric_char(c) {
-            number_string = String::from(&id[i + 1..]);
-            break;
-        }
-        i -= 1;
-    }
-    if number_string.len() == 0 {
-        return 0.0;
-    }
-    return number_string.parse::<f32>().unwrap_or(0.0);
-}
-
-pub fn get_search_url(base_url: String, query: String, page: i32, include: Vec<String>, exclude: Vec<String>, sort: String) -> String {
-    let mut url = String::new();
-    url.push_str(&base_url);
-    url.push_str("/advanced_search/?page=");
-    url.push_str(&i32_to_string(page));
-    if query.len() > 0 {
-        url.push_str("&keyw=");
-        url.push_str(&stupidencode(query));
-    }
-    if include.len() > 0 {
-        url.push_str("&g_i=");
-        for (i, tag) in include.iter().enumerate() {
-            if i == 0 {
-                url.push_str("_");
-            }
-            url.push_str(tag.as_str());
-            url.push_str("_");
-        }
-    }
-    if exclude.len() > 0 {
-        url.push_str("&g_e=");
-        for (i, tag) in exclude.iter().enumerate() {
-            if i == 0 {
-                url.push_str("_");
-            }
-            url.push_str(tag.as_str());
-            url.push_str("_");
-        }
-    }
-    if sort.len() > 0 {
-        url.push_str("&orby=");
-        url.push_str(sort.as_str());
-    }
-    return url;
-}
-
-pub fn string_replace(string: String, search: String, replace: String) -> String {
-    let mut result = String::new();
-    let mut at = 0;
-    for c in string.chars() {
-        if c == search.chars().next().unwrap() {
-            if string[at..].starts_with(&search) {
-                result.push_str(&replace);
-                at += search.len();
-            } else {
-                result.push(c);
-            }
-        } else {
-            result.push(c);
-        }
-        at += 1;
-    }
-    return result;
-}
-
-pub fn get_tag_id(tag: String) -> String {
-    let id = match tag.as_str() {
-        "Action" => 2,
-        "Adult" => 3,
-        "Adventure" => 4,
-        "Comedy" => 6,
-        "Cooking" => 7,
-        "Doujinshi" => 9,
-        "Drama" => 10,
-        "Ecchi" => 11,
-        "Fantasy" => 12,
-        "Gender bender" => 13,
-        "Harem" => 14,
-        "Historical" => 15,
-        "Horror" => 16,
-        "Isekai" => 45,
-        "Josei" => 17,
-        "Manhua" => 44,
-        "Manhwa" => 43,
-        "Martial arts" => 19,
-        "Mature" => 20,
-        "Mecha" => 21,
-        "Medical" => 22,
-        "Mystery" => 24,
-        "One shot" => 25,
-        "Psychological" => 26,
-        "Romance" => 27,
-        "School life" => 28,
-        "Sci fi" => 29,
-        "Seinen" => 30,
-        "Shoujo" => 31,
-        "Shoujo ai" => 32,
-        "Shounen" => 33,
-        "Shounen ai" => 34,
-        "Slice of life" => 35,
-        "Smut" => 36,
-        "Sports" => 37,
-        "Supernatural" => 38,
-        "Tragedy" => 39,
-        "Webtoons" => 40,
-        "Yaoi" => 41,
-        "Yuri" => 42,
-        _ => -1,
-    };
-    return i32_to_string(id);
-}
-
-pub fn stupidencode(string: String) -> String {
-    let mut result = String::new();
-    for c in string.chars() {
-        if c.is_alphanumeric() {
-            result.push(c);
-        } else if c == ' ' {
-            result.push('_');
-        }
-    }
-    return result;
+pub fn text_with_newlines(node: Node) -> String {
+	let html = node.html().read();
+	if !String::from(html.trim()).is_empty() {
+		Node::new_fragment(
+			node.html()
+				.read()
+				.replace("<br>", "{{ .LINEBREAK }}")
+				.as_bytes(),
+		)
+		.text()
+		.read()
+		.replace("{{ .LINEBREAK }}", "\n")
+	} else {
+		String::new()
+	}
 }

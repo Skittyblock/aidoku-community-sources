@@ -1,0 +1,18 @@
+{
+	"info": {
+		"id": "en.reaperscans",
+		"lang": "en",
+		"name": "Reaper Scans",
+		"version": 1,
+		"url": "https://reaperscans.com",
+		"nsfw": 0
+	},
+	"listings": [
+		{
+			"name": "Trending"
+		},
+		{
+			"name": "Popular"
+		}
+	]
+}

@@ -1,0 +1,13 @@
+{
+	"info": {
+		"id": "en.dynastyscans",
+		"lang": "en",
+		"name": "Dynasty Scans",
+		"version": 1,
+		"url": "https://dynasty-scans.com/",
+		"nsfw": 2
+	},
+	"listings": [
+		{ "name": "Recently Added" }
+	]
+}

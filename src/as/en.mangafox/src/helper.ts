@@ -10,7 +10,7 @@ import {
     Filter,
     FilterType,
     ValueRef,
-} from 'aidoku-as';
+} from 'aidoku-as/src';
 
 export class Parser {
     parseHomePage(document: Html, listType: boolean): MangaPageResult {

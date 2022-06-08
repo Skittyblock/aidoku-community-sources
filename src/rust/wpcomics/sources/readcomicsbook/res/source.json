@@ -1,0 +1,21 @@
+{
+	"info": {
+		"id": "en.readcomicsbook",
+		"lang": "en",
+		"name": "ReadComicsBook",
+		"version": 1,
+		"url": "https://readcomicsbook.com",
+		"nsfw": 1
+	},
+	"listings": [
+		{
+			"name": "Ongoing"
+		},
+		{
+			"name": "New"
+		},
+		{
+			"name": "Popular"
+		}
+	]
+}
