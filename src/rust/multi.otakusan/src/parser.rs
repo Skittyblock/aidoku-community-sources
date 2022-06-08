@@ -4,12 +4,12 @@ use crate::helper::{extract_f32_from_string, get_lang_code, urlencode};
 
 macro_rules! parse_manga_list {
 	($elems:expr) => {{
+		use crate::helper::capitalize_first_letter;
 		use aidoku::{
 			prelude::format,
 			std::{String, Vec},
 			Manga, MangaContentRating, MangaStatus, MangaViewer,
 		};
-        use crate::helper::capitalize_first_letter;
 		let mut manga: Vec<Manga> = Vec::with_capacity($elems.len());
 		let has_more = $elems.len() > 0;
 		for elem in $elems {
@@ -19,19 +19,19 @@ macro_rules! parse_manga_list {
 				.select("div.container-3-4.background-contain img")
 				.attr("src")
 				.read()
-                .replace("http:", "https:");
+				.replace("http:", "https:");
 			let title = capitalize_first_letter(
-                node
-			    	.select("div.mdl-card__supporting-text a[target=_blank]")
-				    .text()
-				    .read()
-            );
-			let comic_variant_node = node.select("div.mdl-card__supporting-text a:matchesOwn(Manga|Manhwa|Manhua|.*Novel)");
+				node.select("div.mdl-card__supporting-text a[target=_blank]")
+					.text()
+					.read(),
+			);
+			let comic_variant_node = node
+				.select("div.mdl-card__supporting-text a:matchesOwn(Manga|Manhwa|Manhua|.*Novel)");
 			let viewer = match comic_variant_node.text().read().trim() {
 				"Manhua" | "Manhwa" => MangaViewer::Scroll,
 				"Manga" => MangaViewer::Rtl,
 				"Light Novel" | "Web Novel" => continue,
-                _ => continue,
+				_ => continue,
 			};
 
 			manga.push(Manga {

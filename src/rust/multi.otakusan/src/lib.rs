@@ -13,10 +13,11 @@ use aidoku::{
 		String, Vec,
 	},
 	Chapter, DeepLink, Filter, FilterType, Listing, Manga, MangaContentRating, MangaPageResult,
-	MangaStatus, Page,
+	MangaStatus, MangaViewer, Page,
 };
 use helper::{
-	category_parser, extract_f32_from_string, get_lang_code, text_with_newlines, urlencode, capitalize_first_letter,
+	capitalize_first_letter, category_parser, extract_f32_from_string, get_lang_code,
+	text_with_newlines, urlencode,
 };
 use parser::{convert_time, parse_manga_list};
 
@@ -43,7 +44,7 @@ fn cache_manga_page(id: &str) {
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	let mut title = String::new();
-	let mut tags: Vec<String> = Vec::with_capacity(49);  // Number of filters available
+	let mut tags: Vec<String> = Vec::with_capacity(49); // Number of filters available
 	let mut search_request = false;
 	for filter in filters {
 		match filter.kind {
@@ -148,15 +149,31 @@ fn get_manga_details(id: String) -> Result<Manga> {
 		.collect::<Vec<String>>();
 	let status = match html
 		.select("tr:contains(Tình Trạng) td")
+		.array()
+		.get(0)
+		.as_node()
 		.text()
 		.read()
 		.trim()
 	{
-		"Ongoing Ongoing" => MangaStatus::Ongoing,
-		"Done Done" => MangaStatus::Completed,
+		"Ongoing" => MangaStatus::Ongoing,
+		"Done" => MangaStatus::Completed,
 		_ => MangaStatus::Unknown,
 	};
-	let (mut nsfw, viewer) = category_parser(&categories);
+	let viewer = match html
+		.select("tr:contains(Loại Truyện) td")
+		.array()
+		.get(0)
+		.as_node()
+		.text()
+		.read()
+		.trim()
+	{
+		"Manhua" | "Manhwa" => MangaViewer::Scroll,
+		"VnComic" => MangaViewer::Ltr,
+		_ => MangaViewer::Rtl,
+	};
+	let (mut nsfw, _) = category_parser(&categories);
 	if html.select("div.alert:contains(18 tuổi)").array().len() > 0 {
 		nsfw = MangaContentRating::Nsfw;
 	}
@@ -249,19 +266,38 @@ fn get_page_list(id: String) -> Result<Vec<Page>> {
 	.html();
 	let vi = resp.select("#dataip").attr("value").read();
 	let numeric_id = resp.select("#inpit-c").attr("data-chapter-id").read();
-	let json = Request::new("https://otakusan.net/Manga/CheckingAlternate", HttpMethod::Post)
-		.body(format!("chapId={numeric_id}").as_bytes())
-		.header(
-			"Content-Type",
-			"application/x-www-form-urlencoded; charset=UTF-8",
-		)
-		.header("X-Requested-With", "XMLHttpRequest")
-		.header("Referer", format!("https://otakusan.net{id}").as_str())
-		.header("Origin", "https://otakusan.net")
-		.json();
+	let json = Request::new(
+		"https://otakusan.net/Manga/CheckingAlternate",
+		HttpMethod::Post,
+	)
+	.body(format!("chapId={numeric_id}").as_bytes())
+	.header(
+		"Content-Type",
+		"application/x-www-form-urlencoded; charset=UTF-8",
+	)
+	.header("X-Requested-With", "XMLHttpRequest")
+	.header("Referer", format!("https://otakusan.net{id}").as_str())
+	.header("Origin", "https://otakusan.net")
+	.json();
 	let json_object = json.as_object()?;
 	let raw_pages_arr_value = json_object.get("Content");
-	let raw_pages_arr = raw_pages_arr_value.as_string()?.read();
+	let raw_pages_arr = if raw_pages_arr_value.is_none() {
+		let json = Request::new("https://otakusan.net/Manga/UpdateView", HttpMethod::Post)
+			.body(format!("chapId={numeric_id}").as_bytes())
+			.header(
+				"Content-Type",
+				"application/x-www-form-urlencoded; charset=UTF-8",
+			)
+			.header("X-Requested-With", "XMLHttpRequest")
+			.header("Referer", format!("https://otakusan.net{id}").as_str())
+			.header("Origin", "https://otakusan.net")
+			.json();
+		let json_object = json.as_object()?;
+		let raw_pages_arr_value = json_object.get("view");
+		raw_pages_arr_value.as_string()?.read()
+	} else {
+		raw_pages_arr_value.as_string()?.read()
+	};
 	let pages = json::parse(raw_pages_arr.as_bytes()).as_array()?;
 	let mut page_arr: Vec<Page> = Vec::with_capacity(pages.len());
 	for (index, page) in pages.enumerate() {
