@@ -19,7 +19,7 @@ use helper::{
 	capitalize_first_letter, category_parser, extract_f32_from_string, get_lang_code,
 	text_with_newlines, urlencode,
 };
-use parser::{convert_time, parse_manga_list};
+use parser::{convert_time, parse_manga_list, parse_image_list};
 
 static mut CACHED_MANGA_ID: Option<String> = None;
 static mut CACHED_MANGA: Option<Vec<u8>> = None;
@@ -82,19 +82,23 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 			.html()
 	};
 	let (manga, has_more) = if search_request {
-		parse_manga_list!(resp
-			.select("div.collection")
-			.array()
-			.get(1)
-			.as_node()
-			.select("div.mdl-card")
-			.array())
+		let collections_node = resp.select("div.collection");
+		let collections = collections_node.array();
+		let manga_section = collections.get(collections.len() - 3);
+		let node = manga_section.as_node();
+		let (mut manga_list, _) = parse_manga_list(node.select("div.mdl-card").array());
+
+		let wallpaper_elems = resp.select("div.picture-mason");
+		let (mut wallpaper_list, _) = parse_image_list(wallpaper_elems.array());
+
+		manga_list.append(&mut wallpaper_list);
+		(manga_list, false)
 	} else {
-		parse_manga_list!(resp.select("div.mdl-card").array())
+		parse_manga_list(resp.select("div.mdl-card").array())
 	};
 	Ok(MangaPageResult {
 		manga,
-		has_more: if search_request { false } else { has_more },
+		has_more,
 	})
 }
 
@@ -138,7 +142,7 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 				.header("Referer", "https://otakusan.net/")
 				.header("Origin", "https://otakusan.net")
 				.html();
-			let (manga, has_more) = parse_manga_list!(resp.select("div.mdl-card").array());
+			let (manga, has_more) = parse_manga_list(resp.select("div.mdl-card").array());
 			Ok(MangaPageResult { manga, has_more })
 		}
 		"Wallpaper" | "Cosplay" => {
@@ -153,32 +157,7 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 				.html();
 			let node = resp.select("div.picture-mason");
 			let elems = node.array();
-			let has_more = elems.len() > 0;
-			let mut manga: Vec<Manga> = Vec::with_capacity(elems.len());
-			for elem in elems {
-				let node = elem.as_node();
-				let id = node.select("a").attr("href").read();
-				let url = format!("https://otakusan.net{id}");
-				let cover = node
-					.select("img")
-					.attr("data-src")
-					.read()
-					.replace("http:", "https:");
-				let title = node.select("a").attr("title").read();
-				manga.push(Manga {
-					id,
-					cover,
-					title,
-					author: String::new(),
-					artist: String::new(),
-					description: String::new(),
-					url,
-					categories: Vec::new(),
-					status: MangaStatus::Unknown,
-					nsfw: MangaContentRating::Nsfw,
-					viewer: MangaViewer::Ltr,
-				})
-			}
+			let (manga, has_more) = parse_image_list(elems);
 			Ok(MangaPageResult { manga, has_more })
 		}
 		_ => Err(AidokuError {

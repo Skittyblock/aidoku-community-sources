@@ -1,57 +1,82 @@
-use aidoku::std::{current_date, String, StringRef, Vec};
+use aidoku::{
+	prelude::format,
+	std::{current_date, ArrayRef, String, StringRef, Vec},
+	Manga, MangaContentRating, MangaStatus, MangaViewer,
+};
 
-use crate::helper::{extract_f32_from_string, get_lang_code, urlencode};
+use crate::helper::{capitalize_first_letter, extract_f32_from_string, get_lang_code, urlencode};
 
-macro_rules! parse_manga_list {
-	($elems:expr) => {{
-		use crate::helper::capitalize_first_letter;
-		use aidoku::{
-			prelude::format,
-			std::{String, Vec},
-			Manga, MangaContentRating, MangaStatus, MangaViewer,
+pub fn parse_manga_list(elems: ArrayRef) -> (Vec<Manga>, bool) {
+	let mut manga: Vec<Manga> = Vec::with_capacity(elems.len());
+	let has_more = elems.len() > 0;
+	for elem in elems {
+		let node = elem.as_node();
+		let id = node.select("div.mdl-card__title a").attr("href").read();
+		let cover = node
+			.select("div.container-3-4.background-contain img")
+			.attr("src")
+			.read()
+			.replace("http:", "https:");
+		let title = capitalize_first_letter(
+			node.select("div.mdl-card__supporting-text a[target=_blank]")
+				.text()
+				.read(),
+		);
+		let comic_variant_node =
+			node.select("div.mdl-card__supporting-text a:matchesOwn(Manga|Manhwa|Manhua|.*Novel)");
+		let viewer = match comic_variant_node.text().read().trim() {
+			"Manhua" | "Manhwa" => MangaViewer::Scroll,
+			"Manga" => MangaViewer::Rtl,
+			"Light Novel" | "Web Novel" => continue,
+			_ => continue,
 		};
-		let mut manga: Vec<Manga> = Vec::with_capacity($elems.len());
-		let has_more = $elems.len() > 0;
-		for elem in $elems {
-			let node = elem.as_node();
-			let id = node.select("div.mdl-card__title a").attr("href").read();
-			let cover = node
-				.select("div.container-3-4.background-contain img")
-				.attr("src")
-				.read()
-				.replace("http:", "https:");
-			let title = capitalize_first_letter(
-				node.select("div.mdl-card__supporting-text a[target=_blank]")
-					.text()
-					.read(),
-			);
-			let comic_variant_node = node
-				.select("div.mdl-card__supporting-text a:matchesOwn(Manga|Manhwa|Manhua|.*Novel)");
-			let viewer = match comic_variant_node.text().read().trim() {
-				"Manhua" | "Manhwa" => MangaViewer::Scroll,
-				"Manga" => MangaViewer::Rtl,
-				"Light Novel" | "Web Novel" => continue,
-				_ => continue,
-			};
 
-			manga.push(Manga {
-				id: id.clone(),
-				cover,
-				title: String::from(title.trim()),
-				author: String::new(),
-				artist: String::new(),
-				description: String::new(),
-				url: format!("https://otakusan.net{id}"),
-				categories: Vec::new(),
-				status: MangaStatus::Unknown,
-				nsfw: MangaContentRating::Safe,
-				viewer,
-			})
-		}
-		(manga, has_more)
-	}};
+		manga.push(Manga {
+			id: id.clone(),
+			cover,
+			title: String::from(title.trim()),
+			author: String::new(),
+			artist: String::new(),
+			description: String::new(),
+			url: format!("https://otakusan.net{id}"),
+			categories: Vec::new(),
+			status: MangaStatus::Unknown,
+			nsfw: MangaContentRating::Safe,
+			viewer,
+		})
+	}
+	(manga, has_more)
 }
-pub(crate) use parse_manga_list;
+
+pub fn parse_image_list(elems: ArrayRef) -> (Vec<Manga>, bool) {
+	let has_more = elems.len() > 0;
+	let mut manga: Vec<Manga> = Vec::with_capacity(elems.len());
+	for elem in elems {
+		let node = elem.as_node();
+		let id = node.select("a").attr("href").read();
+		let url = format!("https://otakusan.net{id}");
+		let cover = node
+			.select("img")
+			.attr("data-src")
+			.read()
+			.replace("http:", "https:");
+		let title = node.select("a").attr("title").read();
+		manga.push(Manga {
+			id,
+			cover,
+			title,
+			author: String::new(),
+			artist: String::new(),
+			description: String::new(),
+			url,
+			categories: Vec::new(),
+			status: MangaStatus::Unknown,
+			nsfw: MangaContentRating::Nsfw,
+			viewer: MangaViewer::Ltr,
+		})
+	}
+	(manga, has_more)
+}
 
 pub fn convert_time(ago: String) -> f64 {
 	if ago.contains("cách đây") {
