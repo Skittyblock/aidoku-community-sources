@@ -9,19 +9,19 @@
     "nsfw": 1
   },
   {
-    "id": "vi.phemanga",
-    "name": "Phê Manga",
-    "file": "vi.phemanga-v1.aix",
-    "icon": "vi.phemanga-v1.png",
+    "id": "vi.lkdtt",
+    "name": "LKDTT",
+    "file": "vi.lkdtt-v1.aix",
+    "icon": "vi.lkdtt-v1.png",
     "lang": "vi",
     "version": 1,
     "nsfw": 1
   },
   {
-    "id": "vi.lkdtt",
-    "name": "LKDTT",
-    "file": "vi.lkdtt-v1.aix",
-    "icon": "vi.lkdtt-v1.png",
+    "id": "vi.phemanga",
+    "name": "Phê Manga",
+    "file": "vi.phemanga-v1.aix",
+    "icon": "vi.phemanga-v1.png",
     "lang": "vi",
     "version": 1,
     "nsfw": 1

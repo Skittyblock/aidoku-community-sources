@@ -1,4 +1,4 @@
-use crate::helper::*;
+use crate::{helper::*, html_entity_decoder::decode_html_entities};
 use aidoku::{
 	error::{AidokuError, AidokuErrorKind, Result},
 	prelude::*,
@@ -206,11 +206,12 @@ impl MyMangaSource {
 		cache_manga_page(&url);
 		let html = unsafe { Node::new(&CACHED_MANGA.clone().unwrap()) };
 		let scanlator = {
-			let temp = String::from(html.select("div.fantrans-value a").text().read().trim());
-			if temp.as_str() == "Đang cập nhật" {
+			let original = String::from(html.select("div.fantrans-value a").text().read().trim());
+			let temp = decode_html_entities(&original);
+			if temp == "Đang cập nhật" {
 				String::new()
 			} else {
-				temp
+				String::from(temp)
 			}
 		};
 		let node = html.select("ul.list-chapters > a");
