@@ -234,7 +234,9 @@ impl MyMangaSource {
 				)
 			}
 			.unwrap_or(-1.0);
-			let mut title = chapter_node.select("div.chapter-name").text().read();
+			let mut title = String::from(decode_html_entities(
+				&chapter_node.select("div.chapter-name").text().read(),
+			));
 			let numbers = extract_f32_from_string(String::new(), String::from(&title));
 			let (volume, chapter) =
 				if numbers.len() > 1 && title.to_ascii_lowercase().contains("vol") {
