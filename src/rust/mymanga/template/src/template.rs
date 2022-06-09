@@ -288,7 +288,9 @@ impl MyMangaSource {
 	}
 
 	pub fn modify_image_request(&self, request: Request) {
-		request.header("Referer", self.base_url);
+		let mut referer_url = String::from(self.base_url);
+		referer_url.push('/');
+		request.header("Referer", &referer_url);
 	}
 
 	pub fn handle_url(&self, url: String) -> Result<DeepLink> {
