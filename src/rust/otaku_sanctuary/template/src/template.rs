@@ -1,5 +1,5 @@
 use aidoku::{
-	error::{AidokuError, AidokuErrorKind, Result},
+	error::Result,
 	prelude::*,
 	std::{
 		html::Node,
@@ -170,11 +170,7 @@ impl OtakuSanctuarySource {
 			"Ecchi Land" => format!("{}/Manga/EcchiNewest", self.base_url),
 			"Wallpaper" => format!("{}/WallPaper/Newest?type=Newest&offset=", self.base_url),
 			"Cosplay" => format!("{}/Cosplay/Newest?type=Newest&offset=", self.base_url),
-			_ => {
-				return Err(AidokuError {
-					reason: AidokuErrorKind::Unimplemented,
-				})
-			}
+			_ => unreachable!()
 		};
 		match listing.name.as_str() {
 			"Completed" | "New Titles" | "For Boys" | "For Girls" | "Ecchi Land" => {
@@ -203,9 +199,7 @@ impl OtakuSanctuarySource {
 				let (manga, has_more) = self.parse_image_list(elems);
 				Ok(MangaPageResult { manga, has_more })
 			}
-			_ => Err(AidokuError {
-				reason: AidokuErrorKind::Unimplemented,
-			}),
+			_ => unreachable!(),
 		}
 	}
 
@@ -341,9 +335,7 @@ impl OtakuSanctuarySource {
 				viewer: MangaViewer::Ltr,
 			})
 		} else {
-			Err(AidokuError {
-				reason: AidokuErrorKind::Unimplemented,
-			})
+			unreachable!()
 		}
 	}
 
@@ -432,9 +424,7 @@ impl OtakuSanctuarySource {
 			});
 			Ok(chapters)
 		} else {
-			Err(AidokuError {
-				reason: AidokuErrorKind::Unimplemented,
-			})
+			unreachable!()
 		}
 	}
 
@@ -501,9 +491,7 @@ impl OtakuSanctuarySource {
 			});
 			Ok(page_arr)
 		} else {
-			Err(AidokuError {
-				reason: AidokuErrorKind::Unimplemented,
-			})
+			unreachable!()
 		}
 	}
 
@@ -535,9 +523,7 @@ impl OtakuSanctuarySource {
 			});
 			Ok(DeepLink { manga, chapter })
 		} else {
-			Err(AidokuError {
-				reason: AidokuErrorKind::Unimplemented,
-			})
+			unreachable!()
 		}
 	}
 }
