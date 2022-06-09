@@ -1,6 +1,6 @@
 use crate::{helper::*, html_entity_decoder::decode_html_entities};
 use aidoku::{
-	error::{AidokuError, AidokuErrorKind, Result},
+	error::Result,
 	prelude::*,
 	std::{
 		html::Node,
@@ -313,9 +313,7 @@ impl MyMangaSource {
 				chapter: None,
 			})
 		} else {
-			Err(AidokuError {
-				reason: AidokuErrorKind::Unimplemented,
-			})
+			unreachable!()
 		}
 	}
 }
