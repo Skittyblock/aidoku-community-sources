@@ -1,7 +1,14 @@
 use aidoku::{
-	error::Result, prelude::*, std::current_date, std::net::HttpMethod, std::net::Request,
-	std::String, std::StringRef, std::{Vec, html::Node}, Chapter, DeepLink, Filter, Listing, Manga,
-	MangaContentRating, MangaPageResult, MangaStatus, MangaViewer, Page,
+	error::Result,
+	prelude::*,
+	std::current_date,
+	std::net::HttpMethod,
+	std::net::Request,
+	std::String,
+	std::StringRef,
+	std::{html::Node, Vec},
+	Chapter, DeepLink, Filter, Listing, Manga, MangaContentRating, MangaPageResult, MangaStatus,
+	MangaViewer, Page,
 };
 
 use crate::helper::*;
@@ -53,7 +60,11 @@ impl Default for MadaraSiteData {
 			// default viewer
 			viewer: |_| MangaViewer::Scroll,
 			status: |html| {
-				let status_str = html.select("div.post-content_item:contains(Status) div.summary-content").text().read().to_lowercase();
+				let status_str = html
+					.select("div.post-content_item:contains(Status) div.summary-content")
+					.text()
+					.read()
+					.to_lowercase();
 				match status_str.as_str() {
 					"ongoing" => MangaStatus::Ongoing,
 					"completed" => MangaStatus::Completed,
@@ -70,7 +81,7 @@ impl Default for MadaraSiteData {
 				}
 			},
 			// Localization stuff
-			status_filter_ongoing: String::from("Ongoing"),			
+			status_filter_ongoing: String::from("Ongoing"),
 			status_filter_completed: String::from("Completed"),
 			status_filter_cancelled: String::from("Cancelled"),
 			status_filter_on_hold: String::from("On Hold"),
@@ -183,7 +194,7 @@ pub fn get_series_page(data: MadaraSiteData, listing: &str, page: i32) -> Result
 			categories: Vec::new(),
 			status: MangaStatus::Unknown,
 			nsfw: MangaContentRating::Safe,
-			viewer: (data.viewer)(&Vec::new())
+			viewer: (data.viewer)(&Vec::new()),
 		});
 		has_more = true;
 	}

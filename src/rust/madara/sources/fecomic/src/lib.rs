@@ -1,7 +1,7 @@
 #![no_std]
 use aidoku::{
 	error::Result, prelude::*, std::String, std::Vec, Chapter, DeepLink, Filter, Listing, Manga,
-	MangaPageResult, Page, MangaViewer, MangaStatus,
+	MangaContentRating, MangaPageResult, MangaStatus, MangaViewer, Page,
 };
 
 use madara_template::template;
@@ -38,15 +38,17 @@ fn get_data() -> template::MadaraSiteData {
 				let mut nsfw = MangaContentRating::Safe;
 				for category in categories {
 					match category.to_lowercase().as_str() {
-						"smut" | "mature" | "adult" | "truyện 18+" => return MangaContentRating::Nsfw,
-						"ecchi" | "16+" => nsfw = MangaContentRating::Suggestive, 
+						"smut" | "mature" | "adult" | "truyện 18+" => {
+							return MangaContentRating::Nsfw
+						}
+						"ecchi" | "16+" => nsfw = MangaContentRating::Suggestive,
 						_ => continue,
 					}
 				}
 				nsfw
 			}
 		},
-		status_filter_ongoing: String::from("Đang tiến hành"),			
+		status_filter_ongoing: String::from("Đang tiến hành"),
 		status_filter_completed: String::from("Đã hoàn thành"),
 		status_filter_cancelled: String::from("Đã bị huỷ/Ngừng dịch"),
 		status_filter_on_hold: String::from("Tạm ngưng/Ngang raw"),

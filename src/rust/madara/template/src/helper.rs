@@ -80,11 +80,7 @@ pub fn get_image_url(obj: Node) -> String {
 	return img;
 }
 
-pub fn get_filtered_url(
-	filters: Vec<Filter>,
-	page: i32,
-	data: &MadaraSiteData,
-) -> (String, bool) {
+pub fn get_filtered_url(filters: Vec<Filter>, page: i32, data: &MadaraSiteData) -> (String, bool) {
 	let mut is_searching = false;
 	let mut query = String::new();
 	let mut search_string = String::new();
@@ -111,7 +107,7 @@ pub fn get_filtered_url(
 				} else if filter.name == data.status_filter_ongoing {
 					query.push_str("&status[]=on-going");
 				}
-			
+
 				is_searching = true;
 			}
 			FilterType::Genre => {
