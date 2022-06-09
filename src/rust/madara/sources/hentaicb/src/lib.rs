@@ -1,6 +1,6 @@
 #![no_std]
 use aidoku::{
-	error::Result, prelude::*, std::String, std::Vec, Chapter, DeepLink, Filter, Listing, Manga,
+	error::Result, prelude::*, std::String, std::{Vec, net::Request}, Chapter, DeepLink, Filter, Listing, Manga,
 	MangaContentRating, MangaPageResult, MangaStatus, MangaViewer, Page,
 };
 
@@ -8,10 +8,9 @@ use madara_template::template;
 
 fn get_data() -> template::MadaraSiteData {
 	let data: template::MadaraSiteData = template::MadaraSiteData {
-		base_url: String::from("https://fecomic.com"),
+		base_url: String::from("https://hentaicb.top"),
 		lang: String::from("vi"),
-		source_path: String::from("comic"),
-		genre_selector: String::from("div.genres > a"),
+		image_selector: String::from("div.doc-truyen > img"),
 		alt_ajax: true,
 		viewer: |_, categories| {
 			for category in categories {
@@ -23,36 +22,20 @@ fn get_data() -> template::MadaraSiteData {
 			MangaViewer::Rtl
 		},
 		status: |html| {
-			let status = html.select("div.post-status").text().read();
-			match status.trim() {
-				"Hoàn" => MangaStatus::Completed,
-				"Đang dịch" => MangaStatus::Ongoing,
-				"Ngừng dịch" => MangaStatus::Cancelled,
-				"Ngang raw" => MangaStatus::Hiatus,
+			let status = html.select("div.post-content_item:contains(Tình trạng) div.summary-content").text().read();
+			match status.to_lowercase().trim() {
+				"hoàn thành" => MangaStatus::Completed,
+				"đang tiến hành" => MangaStatus::Ongoing,
+				"đã huỷ" => MangaStatus::Cancelled,
+				"tạm ngưng" => MangaStatus::Hiatus,
 				_ => MangaStatus::Unknown,
 			}
 		},
-		nsfw: |html, categories| {
-			if html.select(".manga-title-badges.adult").text().read().len() > 0 {
-				MangaContentRating::Nsfw
-			} else {
-				let mut nsfw = MangaContentRating::Safe;
-				for category in categories {
-					match category.to_lowercase().as_str() {
-						"smut" | "mature" | "adult" | "truyện 18+" => {
-							return MangaContentRating::Nsfw
-						}
-						"ecchi" | "16+" => nsfw = MangaContentRating::Suggestive,
-						_ => continue,
-					}
-				}
-				nsfw
-			}
-		},
+		nsfw: |_, _| MangaContentRating::Nsfw,
 		status_filter_ongoing: String::from("Đang tiến hành"),
-		status_filter_completed: String::from("Đã hoàn thành"),
-		status_filter_cancelled: String::from("Đã bị huỷ/Ngừng dịch"),
-		status_filter_on_hold: String::from("Tạm ngưng/Ngang raw"),
+		status_filter_completed: String::from("Hoàn thành"),
+		status_filter_cancelled: String::from("Đã huỷ"),
+		status_filter_on_hold: String::from("Tạm ngưng"),
 		adult_string: String::from("Truyện 18+"),
 		genre_condition: String::from("Điều kiện lọc thể loại"),
 		trending: String::from("Truyện hot"),
@@ -80,6 +63,11 @@ fn get_manga_details(id: String) -> Result<Manga> {
 #[get_chapter_list]
 fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 	template::get_chapter_list(id, get_data())
+}
+
+#[modify_image_request]
+fn modify_image_request(request: Request) {
+	request.header("Referer", "https://hentaicb.top/");
 }
 
 #[get_page_list]

@@ -16,7 +16,7 @@ fn get_data() -> template::MadaraSiteData {
 		viewer: |_, categories| {
 			for category in categories {
 				match category.as_str() {
-					"Manhwa" | "Manhua" => return MangaViewer::Scroll,
+					"Manhwa" | "Manhua" | "Webtoon" => return MangaViewer::Scroll,
 					_ => continue,
 				}
 			}

@@ -93,7 +93,13 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32, data: &MadaraSiteData) 
 					search_string.push_str(urlencode(filter_value.read().to_lowercase()).as_str());
 					is_searching = true;
 				}
-			}
+			},
+			FilterType::Author => {
+				if let Ok(filter_value) = filter.value.as_string() {
+					query.push_str("&author=");
+					query.push_str(&urlencode(filter_value.read()));
+				}
+			},
 			FilterType::Check => {
 				if filter.value.as_int().unwrap_or(-1) <= 0 {
 					continue;
@@ -109,14 +115,14 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32, data: &MadaraSiteData) 
 				}
 
 				is_searching = true;
-			}
+			},
 			FilterType::Genre => {
 				query.push_str("&genre[]=");
 				if let Ok(filter_id) = filter.object.get("id").as_string() {
 					query.push_str(filter_id.read().as_str());
 					is_searching = true;
 				}
-			}
+			},
 			FilterType::Select => {
 				if filter.name == data.genre_condition {
 					match filter.value.as_int().unwrap_or(-1) {
@@ -139,7 +145,7 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32, data: &MadaraSiteData) 
 						is_searching = true;
 					}
 				}
-			}
+			},
 			_ => continue,
 		}
 	}
