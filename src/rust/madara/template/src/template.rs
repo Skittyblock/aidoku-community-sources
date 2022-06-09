@@ -35,7 +35,7 @@ pub struct MadaraSiteData {
 
 	pub alt_ajax: bool,
 
-	pub viewer: fn(&Vec<String>) -> MangaViewer,
+	pub viewer: fn(&Node, &Vec<String>) -> MangaViewer,
 	pub status: fn(&Node) -> MangaStatus,
 	pub nsfw: fn(&Node, &Vec<String>) -> MangaContentRating,
 }
@@ -58,7 +58,7 @@ impl Default for MadaraSiteData {
 			// choose between two options for chapter list POST request
 			alt_ajax: false,
 			// default viewer
-			viewer: |_| MangaViewer::Scroll,
+			viewer: |_, _| MangaViewer::Scroll,
 			status: |html| {
 				let status_str = html
 					.select("div.post-content_item:contains(Status) div.summary-content")
@@ -85,7 +85,7 @@ impl Default for MadaraSiteData {
 			status_filter_completed: String::from("Completed"),
 			status_filter_cancelled: String::from("Cancelled"),
 			status_filter_on_hold: String::from("On Hold"),
-			adult_string: String::from("Adult"),
+			adult_string: String::from("Adult Content"),
 			genre_condition: String::from("Genre Condition"),
 			popular: String::from("Popular"),
 			trending: String::from("Trending"),
@@ -142,7 +142,7 @@ pub fn get_search_result(data: MadaraSiteData, url: String) -> Result<MangaPageR
 			categories: Vec::new(),
 			status: MangaStatus::Unknown,
 			nsfw: MangaContentRating::Safe,
-			viewer: (data.viewer)(&Vec::new()),
+			viewer: (data.viewer)(&Node::new("<p></p>".as_bytes()), &Vec::new()),
 		});
 		has_more = true;
 	}
@@ -194,7 +194,7 @@ pub fn get_series_page(data: MadaraSiteData, listing: &str, page: i32) -> Result
 			categories: Vec::new(),
 			status: MangaStatus::Unknown,
 			nsfw: MangaContentRating::Safe,
-			viewer: (data.viewer)(&Vec::new()),
+			viewer: (data.viewer)(&Node::new("<p></p>".as_bytes()), &Vec::new()),
 		});
 		has_more = true;
 	}
@@ -234,7 +234,7 @@ pub fn get_manga_details(manga_id: String, data: MadaraSiteData) -> Result<Manga
 	}
 
 	let status = (data.status)(&html);
-	let viewer = (data.viewer)(&categories);
+	let viewer = (data.viewer)(&html, &categories);
 	let nsfw = (data.nsfw)(&html, &categories);
 
 	Ok(Manga {

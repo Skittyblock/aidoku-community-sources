@@ -62,6 +62,14 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "349d5a591cd28b49e1d1037471617a32ddcda5731b99419008085f72d5a53836"
 
 [[package]]
+name = "lilymanga"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "madara_template",
+]
+
+[[package]]
 name = "madara_template"
 version = "0.1.0"
 dependencies = [
