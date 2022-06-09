@@ -3,6 +3,8 @@ use aidoku::{
 	std::String, std::Vec, Filter, FilterType,
 };
 
+use crate::template::MadaraSiteData;
+
 pub fn urlencode(string: String) -> String {
 	let mut result: Vec<u8> = Vec::with_capacity(string.len() * 3);
 	let hex = "0123456789abcdef".as_bytes();
@@ -81,12 +83,12 @@ pub fn get_image_url(obj: Node) -> String {
 pub fn get_filtered_url(
 	filters: Vec<Filter>,
 	page: i32,
-	url: &mut String,
-	search_path: String,
-) -> bool {
+	data: &MadaraSiteData,
+) -> (String, bool) {
 	let mut is_searching = false;
 	let mut query = String::new();
 	let mut search_string = String::new();
+	let mut url = data.base_url.clone();
 
 	for filter in filters {
 		match filter.kind {
@@ -100,13 +102,16 @@ pub fn get_filtered_url(
 				if filter.value.as_int().unwrap_or(-1) <= 0 {
 					continue;
 				}
-				match filter.name.as_str() {
-					"Ongoing" => query.push_str("&status[]=on-going"),
-					"On Hold" => query.push_str("&status[]=on-hold"),
-					"Cancelled" => query.push_str("&status[]=canceled"),
-					"Completed" => query.push_str("&status[]=end"),
-					_ => continue,
+				if filter.name == data.status_filter_cancelled {
+					query.push_str("&status[]=canceled");
+				} else if filter.name == data.status_filter_completed {
+					query.push_str("&status[]=end");
+				} else if filter.name == data.status_filter_on_hold {
+					query.push_str("&status[]=on-hold");
+				} else if filter.name == data.status_filter_ongoing {
+					query.push_str("&status[]=on-going");
 				}
+			
 				is_searching = true;
 			}
 			FilterType::Genre => {
@@ -117,7 +122,7 @@ pub fn get_filtered_url(
 				}
 			}
 			FilterType::Select => {
-				if filter.name.as_str() == "Condition" {
+				if filter.name == data.genre_condition {
 					match filter.value.as_int().unwrap_or(-1) {
 						0 => query.push_str("&op="),  // OR
 						1 => query.push_str("&op=1"), // AND
@@ -127,7 +132,7 @@ pub fn get_filtered_url(
 						is_searching = true;
 					}
 				}
-				if filter.name.as_str() == "Adult" {
+				if filter.name == data.adult_string {
 					match filter.value.as_int().unwrap_or(-1) {
 						0 => query.push_str(""),         // default
 						1 => query.push_str("&adult=0"), // None
@@ -145,7 +150,7 @@ pub fn get_filtered_url(
 
 	if is_searching {
 		url.push_str("/");
-		url.push_str(&search_path);
+		url.push_str(&data.search_path);
 		url.push_str("/");
 		url.push_str(&i32_to_string(page));
 		url.push_str("/?s=");
@@ -153,5 +158,5 @@ pub fn get_filtered_url(
 		url.push_str("&post_type=wp-manga");
 		url.push_str(&query);
 	}
-	return is_searching;
+	(url, is_searching)
 }

@@ -1,6 +1,6 @@
 use aidoku::{
 	error::Result, prelude::*, std::current_date, std::net::HttpMethod, std::net::Request,
-	std::String, std::StringRef, std::Vec, Chapter, DeepLink, Filter, Listing, Manga,
+	std::String, std::StringRef, std::{Vec, html::Node}, Chapter, DeepLink, Filter, Listing, Manga,
 	MangaContentRating, MangaPageResult, MangaStatus, MangaViewer, Page,
 };
 
@@ -9,12 +9,28 @@ use crate::helper::*;
 pub struct MadaraSiteData {
 	pub base_url: String,
 	pub lang: String,
+
 	pub source_path: String,
 	pub search_path: String,
+
 	pub search_selector: String,
 	pub image_selector: String,
+	pub genre_selector: String,
+
+	pub status_filter_ongoing: String,
+	pub status_filter_completed: String,
+	pub status_filter_cancelled: String,
+	pub status_filter_on_hold: String,
+	pub adult_string: String,
+	pub genre_condition: String,
+	pub popular: String,
+	pub trending: String,
+
 	pub alt_ajax: bool,
-	pub viewer: MangaViewer,
+
+	pub viewer: fn(&Vec<String>) -> MangaViewer,
+	pub status: fn(&Node) -> MangaStatus,
+	pub nsfw: fn(&Node, &Vec<String>) -> MangaContentRating,
 }
 
 impl Default for MadaraSiteData {
@@ -30,10 +46,38 @@ impl Default for MadaraSiteData {
 			search_selector: String::from("div.c-tabs-item__content"),
 			// div to select images from a chapter
 			image_selector: String::from("div.page-break > img"),
+			// div to select all the genres
+			genre_selector: String::from("div.genres-content > a"),
 			// choose between two options for chapter list POST request
 			alt_ajax: false,
 			// default viewer
-			viewer: MangaViewer::Scroll,
+			viewer: |_| MangaViewer::Scroll,
+			status: |html| {
+				let status_str = html.select("div.post-content_item:contains(Status) div.summary-content").text().read().to_lowercase();
+				match status_str.as_str() {
+					"ongoing" => MangaStatus::Ongoing,
+					"completed" => MangaStatus::Completed,
+					"canceled" => MangaStatus::Cancelled,
+					"hiatus" => MangaStatus::Hiatus,
+					_ => MangaStatus::Unknown,
+				}
+			},
+			nsfw: |html, _| {
+				if html.select(".manga-title-badges.adult").text().read().len() > 0 {
+					MangaContentRating::Nsfw
+				} else {
+					MangaContentRating::Safe
+				}
+			},
+			// Localization stuff
+			status_filter_ongoing: String::from("Ongoing"),			
+			status_filter_completed: String::from("Completed"),
+			status_filter_cancelled: String::from("Cancelled"),
+			status_filter_on_hold: String::from("On Hold"),
+			adult_string: String::from("Adult"),
+			genre_condition: String::from("Genre Condition"),
+			popular: String::from("Popular"),
+			trending: String::from("Trending"),
 		}
 	}
 }
@@ -43,8 +87,7 @@ pub fn get_manga_list(
 	page: i32,
 	data: MadaraSiteData,
 ) -> Result<MangaPageResult> {
-	let mut url = data.base_url.clone();
-	let did_search = get_filtered_url(filters, page, &mut url, data.search_path.clone());
+	let (url, did_search) = get_filtered_url(filters, page, &data);
 
 	if did_search {
 		get_search_result(data, url)
@@ -88,13 +131,7 @@ pub fn get_search_result(data: MadaraSiteData, url: String) -> Result<MangaPageR
 			categories: Vec::new(),
 			status: MangaStatus::Unknown,
 			nsfw: MangaContentRating::Safe,
-			viewer: match data.viewer {
-				MangaViewer::Rtl => MangaViewer::Rtl,
-				MangaViewer::Ltr => MangaViewer::Ltr,
-				MangaViewer::Vertical => MangaViewer::Vertical,
-				MangaViewer::Scroll => MangaViewer::Scroll,
-				_ => MangaViewer::Scroll,
-			},
+			viewer: (data.viewer)(&Vec::new()),
 		});
 		has_more = true;
 	}
@@ -146,13 +183,7 @@ pub fn get_series_page(data: MadaraSiteData, listing: &str, page: i32) -> Result
 			categories: Vec::new(),
 			status: MangaStatus::Unknown,
 			nsfw: MangaContentRating::Safe,
-			viewer: match data.viewer {
-				MangaViewer::Rtl => MangaViewer::Rtl,
-				MangaViewer::Ltr => MangaViewer::Ltr,
-				MangaViewer::Vertical => MangaViewer::Vertical,
-				MangaViewer::Scroll => MangaViewer::Scroll,
-				_ => MangaViewer::Scroll,
-			},
+			viewer: (data.viewer)(&Vec::new())
 		});
 		has_more = true;
 	}
@@ -165,10 +196,10 @@ pub fn get_manga_listing(
 	listing: Listing,
 	page: i32,
 ) -> Result<MangaPageResult> {
-	if listing.name == "Popular" {
+	if listing.name == data.popular {
 		return get_series_page(data, "_wp_manga_views", page);
 	}
-	if listing.name == "Trending" {
+	if listing.name == data.trending {
 		return get_series_page(data, "_wp_manga_week_views_value", page);
 	}
 	return get_series_page(data, "_latest_update", page);
@@ -187,36 +218,13 @@ pub fn get_manga_details(manga_id: String, data: MadaraSiteData) -> Result<Manga
 	let description = html.select("div.description-summary div p").text().read();
 
 	let mut categories: Vec<String> = Vec::new();
-	for item in html.select("div.genres-content a").array() {
+	for item in html.select(data.genre_selector.as_str()).array() {
 		categories.push(item.as_node().text().read());
 	}
 
-	let mut status = MangaStatus::Unknown;
-	html.select("div.post-content_item")
-		.array()
-		.for_each(|item| {
-			let obj = item.as_node();
-			let obj_type = obj.select("h5").text().read();
-			if obj_type == "Status" {
-				let item_str = obj
-					.select("div.summary-content")
-					.text()
-					.read()
-					.to_lowercase();
-				if item_str == "ongoing" {
-					status = MangaStatus::Ongoing;
-				} else {
-					status = MangaStatus::Completed;
-				}
-			} else {
-				status = MangaStatus::Unknown;
-			}
-		});
-
-	let mut nsfw = MangaContentRating::Safe;
-	if html.select(".manga-title-badges.adult").text().read().len() > 0 {
-		nsfw = MangaContentRating::Nsfw;
-	}
+	let status = (data.status)(&html);
+	let viewer = (data.viewer)(&categories);
+	let nsfw = (data.nsfw)(&html, &categories);
 
 	Ok(Manga {
 		id: manga_id,
@@ -229,13 +237,7 @@ pub fn get_manga_details(manga_id: String, data: MadaraSiteData) -> Result<Manga
 		categories,
 		status,
 		nsfw,
-		viewer: match data.viewer {
-			MangaViewer::Rtl => MangaViewer::Rtl,
-			MangaViewer::Ltr => MangaViewer::Ltr,
-			MangaViewer::Vertical => MangaViewer::Vertical,
-			MangaViewer::Scroll => MangaViewer::Scroll,
-			_ => MangaViewer::Scroll,
-		},
+		viewer,
 	})
 }
 
