@@ -1,81 +1,106 @@
 use aidoku::{
-	prelude::format,
-	std::{current_date, ArrayRef, String, StringRef, Vec},
-	Manga, MangaContentRating, MangaStatus, MangaViewer,
+	std::{defaults::defaults_get, html::Node, String, Vec, current_date, StringRef},
+	MangaContentRating, MangaViewer,
 };
+use alloc::string::ToString;
 
-use crate::helper::{capitalize_first_letter, extract_f32_from_string, get_lang_code, urlencode};
-
-pub fn parse_manga_list(elems: ArrayRef) -> (Vec<Manga>, bool) {
-	let mut manga: Vec<Manga> = Vec::with_capacity(elems.len());
-	let has_more = elems.len() > 0;
-	for elem in elems {
-		let node = elem.as_node();
-		let id = node.select("div.mdl-card__title a").attr("href").read();
-		let cover = node
-			.select("div.container-3-4.background-contain img")
-			.attr("src")
-			.read()
-			.replace("http:", "https:");
-		let title = capitalize_first_letter(
-			node.select("div.mdl-card__supporting-text a[target=_blank]")
-				.text()
-				.read(),
-		);
-		let comic_variant_node =
-			node.select("div.mdl-card__supporting-text a:matchesOwn(Manga|Manhwa|Manhua|.*Novel)");
-		let viewer = match comic_variant_node.text().read().trim() {
-			"Manhua" | "Manhwa" => MangaViewer::Scroll,
-			"Manga" => MangaViewer::Rtl,
-			"Light Novel" | "Web Novel" => continue,
-			_ => continue,
-		};
-
-		manga.push(Manga {
-			id: id.clone(),
-			cover,
-			title: String::from(title.trim()),
-			author: String::new(),
-			artist: String::new(),
-			description: String::new(),
-			url: format!("https://otakusan.net{id}"),
-			categories: Vec::new(),
-			status: MangaStatus::Unknown,
-			nsfw: MangaContentRating::Safe,
-			viewer,
-		})
-	}
-	(manga, has_more)
+pub fn extract_f32_from_string(title: String, text: String) -> f32 {
+	text.replace(&title, "")
+		.chars()
+		.filter(|a| (*a >= '0' && *a <= '9') || *a == ' ' || *a == '.')
+		.collect::<String>()
+		.split(' ')
+		.collect::<Vec<&str>>()
+		.into_iter()
+		.map(|a| a.parse::<f32>().unwrap_or(0.0))
+		.find(|a| *a > 0.0)
+		.unwrap_or(0.0)
 }
 
-pub fn parse_image_list(elems: ArrayRef) -> (Vec<Manga>, bool) {
-	let has_more = elems.len() > 0;
-	let mut manga: Vec<Manga> = Vec::with_capacity(elems.len());
-	for elem in elems {
-		let node = elem.as_node();
-		let id = node.select("a").attr("href").read();
-		let url = format!("https://otakusan.net{id}");
-		let cover = node
-			.select("img")
-			.attr("data-src")
-			.read()
-			.replace("http:", "https:");
-		let title = node.select("a").attr("title").read();
-		manga.push(Manga {
-			id,
-			cover,
-			title,
-			author: String::new(),
-			artist: String::new(),
-			description: String::new(),
-			url,
-			categories: Vec::new(),
-			status: MangaStatus::Unknown,
-			nsfw: MangaContentRating::Nsfw,
-			viewer: MangaViewer::Ltr,
-		})
+pub fn urlencode(string: String) -> String {
+	let mut result: Vec<u8> = Vec::with_capacity(string.len() * 3);
+	let hex = "0123456789ABCDEF".as_bytes();
+	let bytes = string.as_bytes();
+
+	for byte in bytes {
+		let curr = *byte;
+		if (b'a'..=b'z').contains(&curr)
+			|| (b'A'..=b'Z').contains(&curr)
+			|| (b'0'..=b'9').contains(&curr)
+		{
+			result.push(curr);
+		} else {
+			result.push(b'%');
+			result.push(hex[curr as usize >> 4]);
+			result.push(hex[curr as usize & 15]);
+		}
 	}
-	(manga, has_more)
+	String::from_utf8(result).unwrap_or_default()
+}
+
+pub fn get_lang_code() -> String {
+	let mut code = String::from("vn");
+	if let Ok(languages) = defaults_get("languages").as_array() {
+		if let Ok(language) = languages.get(0).as_string() {
+			code = language.read();
+		}
+	}
+	code
+}
+
+pub fn text_with_newlines(node: Node) -> String {
+	let html = node.html().read();
+	if !String::from(html.trim()).is_empty() {
+		Node::new_fragment(
+			node.html()
+				.read()
+				.replace("<br>", "{{ .LINEBREAK }}")
+				.as_bytes(),
+		)
+		.text()
+		.read()
+		.replace("{{ .LINEBREAK }}", "\n")
+	} else {
+		String::new()
+	}
+}
+
+pub fn category_parser(categories: &Vec<String>) -> (MangaContentRating, MangaViewer) {
+	let mut nsfw = MangaContentRating::Safe;
+	let mut viewer = MangaViewer::Rtl;
+	for category in categories {
+		match category.as_str() {
+			"Adult" | "Smut" | "Mature" | "18+" => nsfw = MangaContentRating::Nsfw,
+			"Ecchi" | "16+" => {
+				nsfw = match nsfw {
+					MangaContentRating::Nsfw => MangaContentRating::Nsfw,
+					_ => MangaContentRating::Suggestive,
+				}
+			}
+			"Webtoon" | "Manhwa" | "Manhua" => viewer = MangaViewer::Scroll,
+			"VnComic" => viewer = MangaViewer::Ltr,
+			_ => continue,
+		}
+	}
+	(nsfw, viewer)
+}
+
+pub fn capitalize_first_letter(name: String) -> String {
+	let preprocess = name.chars().collect::<Vec<_>>();
+	let mut ret = String::with_capacity(preprocess.len() * 2);
+	ret.push_str(&preprocess[0].to_uppercase().to_string());
+	let mut i: usize = 1;
+	while i < preprocess.len() {
+		if preprocess[i].is_whitespace() {
+			ret.push(preprocess[i]);
+			ret.push_str(&preprocess[i + 1].to_uppercase().to_string());
+			i += 1;
+		} else {
+			ret.push(preprocess[i]);
+		}
+		i += 1;
+	}
+	ret
 }
 
 pub fn convert_time(ago: String) -> f64 {
