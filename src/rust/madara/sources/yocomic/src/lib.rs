@@ -9,10 +9,11 @@ use madara_template::template;
 fn get_data() -> template::MadaraSiteData {
 	let data: template::MadaraSiteData = template::MadaraSiteData {
 		base_url: String::from("https://yocomic.com"),
+		lang: String::from("vi"),
 		source_path: String::from("truyen"),
 		genre_selector: String::from("div.genres > a"),
 		alt_ajax: true,
-		viewer: |categories| {
+		viewer: |_, categories| {
 			for category in categories {
 				match category.as_str() {
 					"Manhwa" | "Manhua" => return MangaViewer::Scroll,
