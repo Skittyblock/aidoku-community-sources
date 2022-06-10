@@ -21,7 +21,12 @@ fn get_data() -> template::MadaraSiteData {
 			}
 		},
 		nsfw: |html, categories| {
-			if html.select(".manga-title-badges.adult").text().read().len() > 0 {
+			if !html
+				.select(".manga-title-badges.adult")
+				.text()
+				.read()
+				.is_empty()
+			{
 				MangaContentRating::Nsfw
 			} else {
 				let mut nsfw = MangaContentRating::Safe;
@@ -38,7 +43,7 @@ fn get_data() -> template::MadaraSiteData {
 		alt_ajax: true,
 		..Default::default()
 	};
-	return data;
+	data
 }
 
 #[get_manga_list]

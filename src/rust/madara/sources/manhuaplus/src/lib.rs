@@ -13,7 +13,7 @@ fn get_data() -> template::MadaraSiteData {
 		image_selector: String::from("li.blocks-gallery-item > figure > img, div.page-break > img, div#chapter-video-frame > p > img, div.text-left > p > img"),
 		..Default::default()
 	};
-	return data;
+	data
 }
 
 #[get_manga_list]

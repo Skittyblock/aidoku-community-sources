@@ -1,7 +1,11 @@
 #![no_std]
 use aidoku::{
-	error::Result, prelude::*, std::String, std::{Vec, net::Request}, Chapter, DeepLink, Filter, Listing, Manga,
-	MangaContentRating, MangaPageResult, MangaStatus, MangaViewer, Page,
+	error::Result,
+	prelude::*,
+	std::String,
+	std::{net::Request, Vec},
+	Chapter, DeepLink, Filter, Listing, Manga, MangaContentRating, MangaPageResult, MangaStatus,
+	MangaViewer, Page,
 };
 
 use madara_template::template;
@@ -22,7 +26,10 @@ fn get_data() -> template::MadaraSiteData {
 			MangaViewer::Rtl
 		},
 		status: |html| {
-			let status = html.select("div.post-content_item:contains(Tình trạng) div.summary-content").text().read();
+			let status = html
+				.select("div.post-content_item:contains(Tình trạng) div.summary-content")
+				.text()
+				.read();
 			match status.to_lowercase().trim() {
 				"hoàn thành" => MangaStatus::Completed,
 				"đang tiến hành" => MangaStatus::Ongoing,
@@ -42,7 +49,7 @@ fn get_data() -> template::MadaraSiteData {
 		popular: String::from("Phổ biến"),
 		..Default::default()
 	};
-	return data;
+	data
 }
 
 #[get_manga_list]

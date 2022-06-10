@@ -12,7 +12,7 @@ fn get_data() -> template::MadaraSiteData {
 		alt_ajax: true,
 		..Default::default()
 	};
-	return data;
+	data
 }
 
 #[get_manga_list]

@@ -12,9 +12,9 @@ pub fn urlencode(string: String) -> String {
 
 	for byte in bytes {
 		let curr = *byte;
-		if (b'a' <= curr && curr <= b'z')
-			|| (b'A' <= curr && curr <= b'Z')
-			|| (b'0' <= curr && curr <= b'9')
+		if (b'a'..=b'z').contains(&curr)
+			|| (b'A'..=b'Z').contains(&curr)
+			|| (b'0'..=b'9').contains(&curr)
 		{
 			result.push(curr);
 		} else {
@@ -24,7 +24,7 @@ pub fn urlencode(string: String) -> String {
 		}
 	}
 
-	String::from_utf8(result).unwrap_or(String::new())
+	String::from_utf8(result).unwrap_or_default()
 }
 
 pub fn i32_to_string(mut integer: i32) -> String {
@@ -46,7 +46,7 @@ pub fn i32_to_string(mut integer: i32) -> String {
 		string.insert(pos, char::from_u32((digit as u32) + ('0' as u32)).unwrap());
 		integer /= 10;
 	}
-	return string;
+	string
 }
 
 pub fn get_int_manga_id(manga_id: String, base_url: String, path: String) -> String {
@@ -54,19 +54,19 @@ pub fn get_int_manga_id(manga_id: String, base_url: String, path: String) -> Str
 	let html = Request::new(url.as_str(), HttpMethod::Get).html();
 	let id_html = html.select("script#wp-manga-js-extra").html().read();
 	let id = &id_html[id_html.find("manga_id").unwrap() + 11..id_html.find("\"};").unwrap()];
-	return String::from(id);
+	String::from(id)
 }
 
 pub fn get_image_url(obj: Node) -> String {
 	let mut img;
 	img = obj.attr("data-src").read();
-	if img.len() == 0 {
+	if img.is_empty() {
 		img = obj.attr("data-lazy-src").read();
 	}
-	if img.len() == 0 {
+	if img.is_empty() {
 		img = obj.attr("src").read();
 	}
-	if img.len() == 0 {
+	if img.is_empty() {
 		img = obj.attr("srcset").read();
 	}
 	img = String::from(img.trim());
@@ -77,7 +77,7 @@ pub fn get_image_url(obj: Node) -> String {
 			.replace("-110x150", "")
 			.replace("-175x238", "");
 	}
-	return img;
+	img
 }
 
 pub fn get_filtered_url(filters: Vec<Filter>, page: i32, data: &MadaraSiteData) -> (String, bool) {
@@ -93,13 +93,13 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32, data: &MadaraSiteData) 
 					search_string.push_str(urlencode(filter_value.read().to_lowercase()).as_str());
 					is_searching = true;
 				}
-			},
+			}
 			FilterType::Author => {
 				if let Ok(filter_value) = filter.value.as_string() {
 					query.push_str("&author=");
 					query.push_str(&urlencode(filter_value.read()));
 				}
-			},
+			}
 			FilterType::Check => {
 				if filter.value.as_int().unwrap_or(-1) <= 0 {
 					continue;
@@ -115,14 +115,14 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32, data: &MadaraSiteData) 
 				}
 
 				is_searching = true;
-			},
+			}
 			FilterType::Genre => {
 				query.push_str("&genre[]=");
 				if let Ok(filter_id) = filter.object.get("id").as_string() {
 					query.push_str(filter_id.read().as_str());
 					is_searching = true;
 				}
-			},
+			}
 			FilterType::Select => {
 				if filter.name == data.genre_condition {
 					match filter.value.as_int().unwrap_or(-1) {
@@ -145,15 +145,15 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32, data: &MadaraSiteData) 
 						is_searching = true;
 					}
 				}
-			},
+			}
 			_ => continue,
 		}
 	}
 
 	if is_searching {
-		url.push_str("/");
+		url.push('/');
 		url.push_str(&data.search_path);
-		url.push_str("/");
+		url.push('/');
 		url.push_str(&i32_to_string(page));
 		url.push_str("/?s=");
 		url.push_str(&search_string);

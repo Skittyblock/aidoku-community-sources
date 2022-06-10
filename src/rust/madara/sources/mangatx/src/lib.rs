@@ -10,7 +10,7 @@ fn get_data() -> template::MadaraSiteData {
 		base_url: String::from("https://mangatx.com"),
 		..Default::default()
 	};
-	return data;
+	data
 }
 
 #[get_manga_list]
