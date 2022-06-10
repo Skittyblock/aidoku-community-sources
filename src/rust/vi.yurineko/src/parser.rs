@@ -1,8 +1,8 @@
-use crate::helper::{extract_f32_from_string, i32_to_string, status_map};
+use crate::helper::{extract_f32_from_string, i32_to_string, status_map, text_with_newlines};
 use aidoku::{
 	error::Result,
 	prelude::format,
-	std::{html::Node, ObjectRef, String, Vec},
+	std::{ObjectRef, String, Vec},
 	Chapter, Manga, MangaContentRating, MangaViewer,
 };
 
@@ -16,16 +16,14 @@ pub fn parse_manga(manga_object: ObjectRef) -> Result<Manga> {
 	let author = authors
 		.map(|author| {
 			let author_object = author.as_object()?;
-			return Ok(author_object.get("name").as_string()?.read());
+			Ok(author_object.get("name").as_string()?.read())
 		})
-		.map(|a: Result<String>| a.unwrap_or(String::from("")))
+		.map(|a: Result<String>| a.unwrap_or_default())
 		.collect::<Vec<String>>()
 		.join(", ");
 
 	let description_html = manga_object.get("description").as_string()?.read();
-	let description_node = Node::new_fragment(description_html.as_bytes());
-    // TODO: revert to `description_node.text().read()` when it doesn't crash the source anymore
-	let description = description_node.text().0.as_string()?.read();
+	let description = text_with_newlines(description_html).unwrap_or_default();
 
 	let tags = manga_object.get("tag").as_array()?;
 	let couples = manga_object.get("couple").as_array()?;
@@ -35,7 +33,7 @@ pub fn parse_manga(manga_object: ObjectRef) -> Result<Manga> {
 			let tag_object = tag.as_object()?;
 			Ok(tag_object.get("name").as_string()?.read())
 		})
-		.map(|a: Result<String>| a.unwrap_or(String::from("")))
+		.map(|a: Result<String>| a.unwrap_or_default())
 		.collect::<Vec<String>>();
 
 	let mut nsfw: MangaContentRating = MangaContentRating::Safe;
@@ -46,7 +44,7 @@ pub fn parse_manga(manga_object: ObjectRef) -> Result<Manga> {
 		} else if tag.contains("Ecchi") {
 			nsfw = MangaContentRating::Suggestive;
 		}
-		if tag.contains(">") || tag.contains("Manhua") || tag.contains("Manhwa") {
+		if tag.contains('>') || tag.contains("Manhua") || tag.contains("Manhwa") {
 			viewer = MangaViewer::Ltr;
 		}
 	}
