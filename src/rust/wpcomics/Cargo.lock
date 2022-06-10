@@ -113,6 +113,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "truyenqq"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "wpcomics_template",
+]
+
+[[package]]
+name = "truyentranhaudio"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "wpcomics_template",
+]
+
+[[package]]
 name = "unicode-xid"
 version = "0.2.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"

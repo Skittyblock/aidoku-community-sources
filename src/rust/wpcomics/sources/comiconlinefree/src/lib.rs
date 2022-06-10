@@ -4,7 +4,7 @@ use aidoku::{
 	error::Result,
 	prelude::*,
 	std::{net::Request, String, Vec},
-	Chapter, DeepLink, Filter, FilterType, Listing, Manga, MangaPageResult, MangaViewer, Page,
+	Chapter, DeepLink, Filter, FilterType, Listing, Manga, MangaPageResult, Page,
 };
 use helper::{convert_time, listing_mapping};
 use wpcomics_template::{
@@ -14,7 +14,7 @@ use wpcomics_template::{
 
 fn get_instance() -> WPComicsSource {
 	WPComicsSource {
-		base_url: "https://comiconlinefree.net",
+		base_url: String::from("https://comiconlinefree.net"),
 		listing_mapping,
 		time_converter: convert_time,
 
@@ -104,7 +104,7 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 
 #[get_manga_details]
 fn get_manga_details(id: String) -> Result<Manga> {
-	get_instance().get_manga_details(id, MangaViewer::Ltr)
+	get_instance().get_manga_details(id)
 }
 
 #[get_chapter_list]
@@ -128,5 +128,5 @@ fn modify_image_request(request: Request) {
 
 #[handle_url]
 fn handle_url(url: String) -> Result<DeepLink> {
-	get_instance().handle_url(url, MangaViewer::Ltr)
+	get_instance().handle_url(url)
 }

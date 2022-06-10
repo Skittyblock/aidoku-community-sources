@@ -1,0 +1,84 @@
+[
+	{
+		"type": "title"
+	},
+	{
+		"type": "select",
+		"name": "Tình trạng",
+		"options": [
+			"Tất cả",
+			"Hoàn thành",
+			"Đang tiến hành"
+		]
+	},
+	{
+		"type": "select",
+		"name": "Sắp xếp theo",
+		"options": [
+			"Ngày cập nhật",
+			"Truyện mới",
+			"Top all",
+			"Top tháng",
+			"Top tuần",
+			"Top ngày"
+		]
+	},
+	{
+		"type": "select",
+		"name": "Thể loại",
+		"options": [
+			"Tất cả",
+			"Action",
+			"Adult",
+			"Adventure",
+			"Anime",
+			"Chuyển Sinh",
+			"Comedy",
+			"Comic",
+			"Cooking",
+			"Cổ Đại",
+			"Doujinshi",
+			"Drama",
+			"Đam Mỹ",
+			"Đam Mỹ",
+			"Ecchi",
+			"Fantasy",
+			"Gender Bender",
+			"Harem",
+			"Historical",
+			"Horror",
+			"Josei",
+			"Live action",
+			"Manga",
+			"Manhua",
+			"Manhwa",
+			"Martial Arts",
+			"Martial Arts",
+			"Mature",
+			"Mecha",
+			"Mystery",
+			"Ngôn Tình",
+			"One shot",
+			"Psychological",
+			"Romance",
+			"School Life",
+			"Sci-fi",
+			"Seinen",
+			"Shoujo",
+			"Shoujo Ai",
+			"Shoujo Ai",
+			"Shounen",
+			"Shounen Ai",
+			"Slice of Life",
+			"Smut",
+			"Soft Yaoi",
+			"Soft Yuri",
+			"Sports",
+			"Supernatural",
+			"Tragedy",
+			"Xuyên Không",
+			"Webtoon",
+			"Truyện Màu"
+		]
+	}
+]

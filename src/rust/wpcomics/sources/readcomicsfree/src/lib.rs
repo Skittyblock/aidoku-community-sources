@@ -3,7 +3,7 @@ pub mod helper;
 use crate::helper::*;
 use aidoku::{
 	error::Result, prelude::*, std::net::Request, std::String, std::Vec, Chapter, DeepLink, Filter,
-	FilterType, Listing, Manga, MangaPageResult, MangaViewer, Page,
+	FilterType, Listing, Manga, MangaPageResult, Page,
 };
 use wpcomics_template::{
 	helper::{get_tag_id, urlencode},
@@ -12,7 +12,7 @@ use wpcomics_template::{
 
 fn get_instance() -> WPComicsSource {
 	WPComicsSource {
-		base_url: "https://readcomicsfree.com",
+		base_url: String::from("https://readcomicsfree.com"),
 		listing_mapping: listing_map,
 
 		manga_cell_image: "",
@@ -59,7 +59,7 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 
 #[get_manga_details]
 fn get_manga_details(id: String) -> Result<Manga> {
-	get_instance().get_manga_details(id, MangaViewer::Ltr)
+	get_instance().get_manga_details(id)
 }
 
 #[get_chapter_list]
@@ -77,5 +77,5 @@ fn modify_image_request(_request: Request) {}
 
 #[handle_url]
 pub fn handle_url(url: String) -> Result<DeepLink> {
-	get_instance().handle_url(url, MangaViewer::Ltr)
+	get_instance().handle_url(url)
 }

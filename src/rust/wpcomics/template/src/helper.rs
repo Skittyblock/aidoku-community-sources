@@ -1,4 +1,6 @@
-use aidoku::{prelude::format, std::String, std::Vec, std::html::Node};
+use aidoku::{
+	prelude::format, std::html::Node, std::String, std::Vec, MangaContentRating, MangaViewer,
+};
 
 pub fn trunc_trailing_comic(title: String) -> String {
 	let temp = title.chars().rev().collect::<String>();
@@ -32,10 +34,6 @@ pub fn append_protocol(url: String) -> String {
 	} else {
 		url
 	}
-}
-
-pub fn https_upgrade(url: String) -> String {
-	url.replacen("http://", "https://", 1)
 }
 
 pub fn urlencode(string: String) -> String {
@@ -132,4 +130,27 @@ pub fn text_with_newlines(node: Node) -> String {
 	} else {
 		String::new()
 	}
+}
+
+pub fn category_parser(
+	categories: &Vec<String>,
+	default_nsfw: MangaContentRating,
+	default_viewer: MangaViewer,
+) -> (MangaContentRating, MangaViewer) {
+	let mut nsfw = default_nsfw;
+	let mut viewer = default_viewer;
+	for category in categories {
+		match category.as_str() {
+			"Smut" | "Mature" | "18+" => nsfw = MangaContentRating::Nsfw,
+			"Ecchi" | "16+" => {
+				nsfw = match nsfw {
+					MangaContentRating::Nsfw => MangaContentRating::Nsfw,
+					_ => MangaContentRating::Suggestive,
+				}
+			}
+			"Webtoon" | "Manhwa" | "Manhua" => viewer = MangaViewer::Scroll,
+			_ => continue,
+		}
+	}
+	(nsfw, viewer)
 }
