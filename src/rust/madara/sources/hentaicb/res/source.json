@@ -1,0 +1,18 @@
+{
+	"info": {
+		"id": "vi.hentaicube",
+		"lang": "vi",
+		"name": "HentaiCB",
+		"version": 1,
+		"url": "https://hentaicb.top",
+		"nsfw": 2
+	},
+	"listings": [
+		{
+			"name": "Trending"
+		},
+		{
+			"name": "Popular"
+		}
+	]
+}

@@ -1,13 +1,46 @@
 #![no_std]
 use aidoku::{
 	error::Result, prelude::*, std::String, std::Vec, Chapter, DeepLink, Filter, Listing, Manga,
-	MangaPageResult, Page,
+	MangaContentRating, MangaPageResult, MangaViewer, Page,
 };
+
 use madara_template::template;
 
 fn get_data() -> template::MadaraSiteData {
 	let data: template::MadaraSiteData = template::MadaraSiteData {
-		base_url: String::from("https://mangatx.com"),
+		base_url: String::from("https://lilymanga.com"),
+		source_path: String::from("ys"),
+		viewer: |html, _| {
+			let temp = html
+				.select("div.post-content_item:contains(Type) div.summary-content")
+				.text()
+				.read();
+			match temp.as_str() {
+				"Manhwa" | "Manhua" => MangaViewer::Scroll,
+				_ => MangaViewer::Rtl,
+			}
+		},
+		nsfw: |html, categories| {
+			if !html
+				.select(".manga-title-badges.adult")
+				.text()
+				.read()
+				.is_empty()
+			{
+				MangaContentRating::Nsfw
+			} else {
+				let mut nsfw = MangaContentRating::Safe;
+				for category in categories {
+					match category.to_lowercase().as_str() {
+						"smut" | "mature" | "adult" | "hentai" => return MangaContentRating::Nsfw,
+						"ecchi" => nsfw = MangaContentRating::Suggestive,
+						_ => continue,
+					}
+				}
+				nsfw
+			}
+		},
+		alt_ajax: true,
 		..Default::default()
 	};
 	data

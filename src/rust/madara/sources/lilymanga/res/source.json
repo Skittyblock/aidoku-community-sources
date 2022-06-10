@@ -1,0 +1,18 @@
+{
+	"info": {
+		"id": "en.lilymanga",
+		"lang": "en",
+		"name": "Lily Manga",
+		"version": 1,
+		"url": "https://lilymanga.com",
+		"nsfw": 2
+	},
+	"listings": [
+		{
+			"name": "Trending"
+		},
+		{
+			"name": "Popular"
+		}
+	]
+}
