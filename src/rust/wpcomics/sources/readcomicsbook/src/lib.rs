@@ -5,7 +5,7 @@ use aidoku::{
 	error::Result,
 	prelude::*,
 	std::{net::HttpMethod, net::Request, String, Vec},
-	Chapter, DeepLink, Filter, FilterType, Listing, Manga, MangaPageResult, MangaViewer, Page,
+	Chapter, DeepLink, Filter, FilterType, Listing, Manga, MangaPageResult, Page,
 };
 use helper::{get_search_url, listing_mapping};
 use parser::parse_comic;
@@ -16,7 +16,7 @@ use wpcomics_template::{
 
 fn get_instance() -> WPComicsSource {
 	WPComicsSource {
-		base_url: "https://readcomicsbook.com",
+		base_url: String::from("https://readcomicsbook.com"),
 		listing_mapping,
 
 		manga_cell: "li[itemtype=\"https://schema.org/Book\"]",
@@ -61,7 +61,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 			},
 		}
 	}
-	if title != "" {
+	if !title.is_empty() {
 		let json = Request::new(
 			format!("https://readcomicsbook.com/ajax/search?q={title}").as_str(),
 			HttpMethod::Get,
@@ -76,10 +76,10 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 				manga_arr.push(manga);
 			}
 		}
-		return Ok(MangaPageResult {
+		Ok(MangaPageResult {
 			manga: manga_arr,
 			has_more: false,
-		});
+		})
 	} else {
 		get_instance().get_manga_list(get_search_url(
 			String::from("https://readcomicsbook.com"),
@@ -96,7 +96,7 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 
 #[get_manga_details]
 fn get_manga_details(id: String) -> Result<Manga> {
-	get_instance().get_manga_details(id, MangaViewer::Ltr)
+	get_instance().get_manga_details(id)
 }
 
 #[get_chapter_list]
@@ -120,5 +120,5 @@ fn modify_image_request(request: Request) {
 
 #[handle_url]
 fn handle_url(url: String) -> Result<DeepLink> {
-	get_instance().handle_url(url, MangaViewer::Ltr)
+	get_instance().handle_url(url)
 }

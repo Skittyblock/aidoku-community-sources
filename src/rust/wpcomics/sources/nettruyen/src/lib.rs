@@ -13,8 +13,9 @@ use wpcomics_template::{helper::urlencode, template, template::WPComicsSource};
 
 fn get_instance() -> WPComicsSource {
 	WPComicsSource {
-		base_url: "https://www.nettruyenco.com",
+		base_url: String::from("https://www.nettruyenco.com"),
 		next_page: "li.active + li > a[title*=\"kết quả\"]",
+		viewer: MangaViewer::Rtl,
 		listing_mapping: |listing| {
 			String::from(match listing.as_str() {
 				"Truyện con gái" => "truyen-con-gai",
@@ -27,18 +28,11 @@ fn get_instance() -> WPComicsSource {
 		time_converter: convert_time,
 		page_url_transformer: |url| {
 			let mut server_two = String::from("https://images2-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&resize_h=0&rewriteMime=image%2F*&url=");
-			if let Ok(server_selection) = defaults_get("serverSelection").as_int() {
-				match server_selection {
-					2 => {
-						server_two.push_str(&urlencode(url));
-						return server_two;
-					}
-					_ => {
-						return url;
-					}
-				}
+			if let Ok(2) = defaults_get("serverSelection").as_int() {
+				server_two.push_str(&urlencode(url));
+				server_two
 			} else {
-				return url;
+				url
 			}
 		},
 		..Default::default()
@@ -130,7 +124,7 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 
 #[get_manga_details]
 fn get_manga_details(id: String) -> Result<Manga> {
-	get_instance().get_manga_details(id, MangaViewer::Rtl)
+	get_instance().get_manga_details(id)
 }
 
 #[get_chapter_list]
@@ -154,5 +148,5 @@ fn modify_image_request(request: Request) {
 
 #[handle_url]
 pub fn handle_url(url: String) -> Result<DeepLink> {
-	get_instance().handle_url(url, MangaViewer::Rtl)
+	get_instance().handle_url(url)
 }

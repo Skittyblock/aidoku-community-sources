@@ -3,6 +3,7 @@
 *.aix
 
 src/**/out
+src/**/public
 
 src/as/*/build
 src/as/*/node_modules
