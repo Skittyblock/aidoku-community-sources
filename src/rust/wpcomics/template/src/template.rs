@@ -1,10 +1,12 @@
 use aidoku::{
-	error::Result, prelude::format, std::html::Node, std::net::HttpMethod, std::net::Request,
+	error::Result, prelude::*, std::html::Node, std::net::HttpMethod, std::net::Request,
 	std::String, std::StringRef, std::Vec, Chapter, DeepLink, Listing, Manga, MangaContentRating,
 	MangaPageResult, MangaStatus, MangaViewer, Page,
 };
 
-use crate::helper::{append_protocol, extract_f32_from_string, https_upgrade, text_with_newlines};
+use crate::helper::{
+	append_protocol, category_parser, extract_f32_from_string, text_with_newlines,
+};
 
 pub struct WPComicsSource {
 	pub base_url: &'static str,
@@ -17,6 +19,11 @@ pub struct WPComicsSource {
 	pub manga_cell_url: &'static str,
 	pub manga_cell_title: &'static str,
 	pub manga_cell_image: &'static str,
+	pub manga_cell_image_attr: &'static str,
+
+	// https://{base_url}/{listing}{manga_listing_pagination}{page}{manga_listing_extension}
+	pub manga_listing_pagination: &'static str,
+	pub manga_listing_extension: &'static str,
 
 	pub manga_details_title: &'static str,
 	pub manga_details_title_transformer: fn(String) -> String,
@@ -37,49 +44,81 @@ pub struct WPComicsSource {
 	pub manga_viewer_page: &'static str,
 	pub manga_viewer_page_url_suffix: &'static str,
 	pub page_url_transformer: fn(String) -> String,
+
+	pub vinahost_protection: bool,
 }
 
 static mut CACHED_MANGA_ID: Option<String> = None;
 static mut CACHED_MANGA: Option<Vec<u8>> = None;
+static mut VINAHOST_COOKIE: Option<String> = None;
 
-fn cache_manga_page(url: &str) {
+fn cache_manga_page(data: &WPComicsSource, url: &str) {
 	if unsafe { CACHED_MANGA_ID.is_some() } && unsafe { CACHED_MANGA_ID.clone().unwrap() } == url {
 		return;
 	}
 
 	unsafe {
-		CACHED_MANGA = Some(Request::new(url, HttpMethod::Get).data());
+		if data.vinahost_protection {
+			CACHED_MANGA = Some(data.request_vinahost(url).data());
+		} else {
+			CACHED_MANGA = Some(Request::new(url, HttpMethod::Get).data());
+		}
 		CACHED_MANGA_ID = Some(String::from(url));
 	};
 }
 
 impl WPComicsSource {
+	fn request_vinahost(&self, url: &str) -> Request {
+		if unsafe { VINAHOST_COOKIE.is_some() } {
+			Request::new(url, HttpMethod::Get).header(
+				"Cookie",
+				unsafe { VINAHOST_COOKIE.clone().unwrap() }.as_str(),
+			)
+		} else if self.vinahost_protection {
+			let blocked_html = Request::new(&url, HttpMethod::Get).html();
+			let script = blocked_html.select("script").html().read();
+			let cookie = script
+				.replace("document.cookie=\"", "")
+				.replace("\";window.location.reload(true);", "")
+				.replace("\"+\"", "");
+			unsafe {
+				VINAHOST_COOKIE = Some(cookie);
+			};
+			Request::new(url, HttpMethod::Get).header(
+				"Cookie",
+				unsafe { VINAHOST_COOKIE.clone().unwrap() }.as_str(),
+			)
+		} else {
+			Request::new(url, HttpMethod::Get)
+		}
+	}
+
 	pub fn get_manga_list(&self, search_url: String) -> Result<MangaPageResult> {
-		let mut mangas: Vec<Manga> = Vec::new();
 		let mut has_next_page = !self.next_page.is_empty();
-		let html = Request::new(&search_url, HttpMethod::Get).html();
-		for item in html.select(self.manga_cell).array() {
+		let html = self.request_vinahost(&search_url).html();
+		let node = html.select(self.manga_cell);
+		let elems = node.array();
+		let mut mangas: Vec<Manga> = Vec::with_capacity(elems.len());
+		for item in elems {
 			let item_node = item.as_node();
 			let title = item_node
 				.select(self.manga_cell_title)
 				.first()
 				.text()
 				.read();
-			let id = https_upgrade(
-				item_node
-					.select(self.manga_cell_url)
-					.first()
-					.attr("href")
-					.read(),
-			);
+			let id = item_node
+				.select(self.manga_cell_url)
+				.first()
+				.attr("href")
+				.read();
 			let cover = if !self.manga_cell_image.is_empty() {
-				https_upgrade(append_protocol(
+				append_protocol(
 					item_node
 						.select(self.manga_cell_image)
 						.first()
-						.attr("data-original")
+						.attr(self.manga_cell_image_attr)
 						.read(),
-				))
+				)
 			} else {
 				String::new()
 			};
@@ -108,15 +147,17 @@ impl WPComicsSource {
 
 	pub fn get_manga_listing(&self, listing: Listing, page: i32) -> Result<MangaPageResult> {
 		let url = format!(
-			"{}/{}?page={page}",
+			"{}/{}{}{page}{}",
 			self.base_url,
-			(self.listing_mapping)(listing.name)
+			(self.listing_mapping)(listing.name),
+			self.manga_listing_pagination,
+			self.manga_listing_extension
 		);
 		self.get_manga_list(url)
 	}
 
-	pub fn get_manga_details(&self, id: String, default_viewer: MangaViewer) -> Result<Manga> {
-		cache_manga_page(id.as_str());
+	pub fn get_manga_details(&self, id: String, _default_viewer: MangaViewer) -> Result<Manga> {
+		cache_manga_page(self, id.as_str());
 		let details = unsafe { Node::new(&CACHED_MANGA.clone().unwrap()) };
 		let title = details.select(self.manga_details_title).text().read();
 		let cover = append_protocol(details.select(self.manga_details_cover).attr("src").read());
@@ -125,30 +166,26 @@ impl WPComicsSource {
 		);
 		let description = text_with_newlines(details.select(self.manga_details_description));
 		let mut categories = Vec::new();
-		let mut nsfw = MangaContentRating::Safe;
-		let mut viewer = default_viewer;
 
 		if !self.manga_details_tags.is_empty() {
-			for node in details
-				.select(self.manga_details_tags)
-				.text()
-				.read()
-				.split(self.manga_details_tags_splitter)
-			{
-				categories.push(String::from(node));
-				match node {
-					"Smut" | "Mature" | "Adult" | "18+" => nsfw = MangaContentRating::Nsfw,
-					"Ecchi" | "16+" => {
-						nsfw = match nsfw {
-							MangaContentRating::Nsfw => MangaContentRating::Nsfw,
-							_ => MangaContentRating::Suggestive,
-						}
-					}
-					"Webtoon" | "Manhwa" | "Manhua" => viewer = MangaViewer::Scroll,
-					_ => continue,
+			if self.manga_details_tags_splitter.is_empty() {
+				categories = details
+					.select(self.manga_details_tags)
+					.array()
+					.map(|elem| elem.as_node().text().read())
+					.collect::<Vec<_>>();
+			} else {
+				for node in details
+					.select(self.manga_details_tags)
+					.text()
+					.read()
+					.split(self.manga_details_tags_splitter)
+				{
+					categories.push(String::from(node));
 				}
 			}
 		}
+		let (nsfw, viewer) = category_parser(&categories);
 		let status = (self.status_mapping)((self.manga_details_status_transformer)(
 			details.select(self.manga_details_status).text().read(),
 		));
@@ -170,7 +207,7 @@ impl WPComicsSource {
 	pub fn get_chapter_list(&self, id: String) -> Result<Vec<Chapter>> {
 		let mut skipped_first = false;
 		let mut chapters: Vec<Chapter> = Vec::new();
-		cache_manga_page(id.as_str());
+		cache_manga_page(self, id.as_str());
 		let html = unsafe { Node::new(&CACHED_MANGA.clone().unwrap()) };
 		let title_untrimmed = (self.manga_details_title_transformer)(
 			html.select(self.manga_details_title).text().read(),
@@ -182,12 +219,10 @@ impl WPComicsSource {
 				continue;
 			}
 			let chapter_node = chapter.as_node();
-			let chapter_url = https_upgrade(
-				chapter_node
-					.select(self.chapter_anchor_selector)
-					.attr("href")
-					.read(),
-			);
+			let chapter_url = chapter_node
+				.select(self.chapter_anchor_selector)
+				.attr("href")
+				.read();
 			let chapter_id = chapter_url.clone();
 			let mut chapter_title = chapter_node
 				.select(self.chapter_anchor_selector)
@@ -239,7 +274,7 @@ impl WPComicsSource {
 	pub fn get_page_list(&self, id: String) -> Result<Vec<Page>> {
 		let mut pages: Vec<Page> = Vec::new();
 		let url = format!("{}{}", &id, self.manga_viewer_page_url_suffix);
-		let html = Request::new(&url, HttpMethod::Get).html();
+		let html = self.request_vinahost(&url).html();
 		for (at, page) in html.select(self.manga_viewer_page).array().enumerate() {
 			let page_node = page.as_node();
 			let mut page_url = page_node.attr("data-original").read();
@@ -261,6 +296,10 @@ impl WPComicsSource {
 			manga: Some(self.get_manga_details(url, default_viewer)?),
 			chapter: None,
 		})
+	}
+
+	pub fn modify_image_request(&self, request: Request) {
+		request.header("Referer", format!("{}/", self.base_url).as_str());
 	}
 }
 
@@ -288,6 +327,10 @@ impl Default for WPComicsSource {
 			manga_cell_title: "figcaption > h3 > a",
 			manga_cell_url: "figcaption > h3 > a",
 			manga_cell_image: "div.image > a > img",
+			manga_cell_image_attr: "data-original",
+
+			manga_listing_pagination: "?page=",
+			manga_listing_extension: "",
 
 			manga_details_title: "h1.title-detail",
 			manga_details_title_transformer: |title| title,
@@ -308,6 +351,8 @@ impl Default for WPComicsSource {
 			manga_viewer_page: "div.page-chapter > img",
 			manga_viewer_page_url_suffix: "",
 			page_url_transformer: |url| url,
+
+			vinahost_protection: false,
 		}
 	}
 }
