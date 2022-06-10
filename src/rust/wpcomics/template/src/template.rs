@@ -140,7 +140,7 @@ impl WPComicsSource {
 				.first()
 				.attr("href")
 				.read();
-			if !id.contains("http://") || !id.contains("https://") {
+			if !id.contains("http://") && !id.contains("https://") {
 				id = String::from(&self.base_url) + "/" + &id;
 			}
 			let cover = if !self.manga_cell_image.is_empty() {
@@ -255,7 +255,7 @@ impl WPComicsSource {
 				.select(self.chapter_anchor_selector)
 				.attr("href")
 				.read();
-			if !chapter_url.contains("http://") || !chapter_url.contains("https://") {
+			if !chapter_url.contains("http://") && !chapter_url.contains("https://") {
 				chapter_url = format!("{}/{}", self.base_url, chapter_url);
 			}
 			let chapter_id = chapter_url.clone();
