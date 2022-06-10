@@ -10,7 +10,8 @@ use wpcomics_template::{helper::urlencode, template::WPComicsSource};
 
 fn get_instance() -> WPComicsSource {
 	WPComicsSource {
-		base_url: "http://truyenqqpro.com",
+		base_url: String::from("http://truyenqqpro.com"),
+		viewer: MangaViewer::Rtl,
 		listing_mapping: |listing| {
 			String::from(match listing.as_str() {
 				"Truyện con gái" => "truyen-con-gai",
@@ -168,7 +169,7 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 
 #[get_manga_details]
 fn get_manga_details(id: String) -> Result<Manga> {
-	get_instance().get_manga_details(id, MangaViewer::Rtl)
+	get_instance().get_manga_details(id)
 }
 
 #[get_chapter_list]
@@ -188,5 +189,5 @@ fn modify_image_request(request: Request) {
 
 #[handle_url]
 fn handle_url(url: String) -> Result<DeepLink> {
-	get_instance().handle_url(url, MangaViewer::Rtl)
+	get_instance().handle_url(url)
 }

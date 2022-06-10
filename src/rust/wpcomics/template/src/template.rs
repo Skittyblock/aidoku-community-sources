@@ -4,15 +4,15 @@ use aidoku::{
 	MangaPageResult, MangaStatus, MangaViewer, Page,
 };
 
-use crate::helper::{
-	append_protocol, category_parser, extract_f32_from_string, text_with_newlines,
-};
+use crate::helper::{append_protocol, extract_f32_from_string, text_with_newlines};
 
 pub struct WPComicsSource {
-	pub base_url: &'static str,
+	pub base_url: String,
 	pub listing_mapping: fn(String) -> String,
 	pub status_mapping: fn(String) -> MangaStatus,
 	pub time_converter: fn(String) -> f64,
+	pub nsfw: MangaContentRating,
+	pub viewer: MangaViewer,
 
 	pub next_page: &'static str,
 	pub manga_cell: &'static str,
@@ -93,6 +93,35 @@ impl WPComicsSource {
 		}
 	}
 
+	fn category_parser(&self, categories: &Vec<String>) -> (MangaContentRating, MangaViewer) {
+		let mut nsfw = match self.nsfw {
+			MangaContentRating::Safe => MangaContentRating::Safe,
+			MangaContentRating::Suggestive => MangaContentRating::Suggestive,
+			MangaContentRating::Nsfw => MangaContentRating::Nsfw,
+		};
+		let mut viewer = match self.viewer {
+			MangaViewer::Rtl => MangaViewer::Rtl,
+			MangaViewer::Default => MangaViewer::Default,
+			MangaViewer::Ltr => MangaViewer::Ltr,
+			MangaViewer::Scroll => MangaViewer::Scroll,
+			MangaViewer::Vertical => MangaViewer::Vertical,
+		};
+		for category in categories {
+			match category.as_str() {
+				"Smut" | "Mature" | "18+" => nsfw = MangaContentRating::Nsfw,
+				"Ecchi" | "16+" => {
+					nsfw = match nsfw {
+						MangaContentRating::Nsfw => MangaContentRating::Nsfw,
+						_ => MangaContentRating::Suggestive,
+					}
+				}
+				"Webtoon" | "Manhwa" | "Manhua" => viewer = MangaViewer::Scroll,
+				_ => continue,
+			}
+		}
+		(nsfw, viewer)
+	}
+
 	pub fn get_manga_list(&self, search_url: String) -> Result<MangaPageResult> {
 		let mut has_next_page = !self.next_page.is_empty();
 		let html = self.request_vinahost(&search_url).html();
@@ -106,11 +135,14 @@ impl WPComicsSource {
 				.first()
 				.text()
 				.read();
-			let id = item_node
+			let mut id = item_node
 				.select(self.manga_cell_url)
 				.first()
 				.attr("href")
 				.read();
+			if !id.contains("http://") || !id.contains("https://") {
+				id = String::from(&self.base_url) + "/" + &id;
+			}
 			let cover = if !self.manga_cell_image.is_empty() {
 				append_protocol(
 					item_node
@@ -156,7 +188,7 @@ impl WPComicsSource {
 		self.get_manga_list(url)
 	}
 
-	pub fn get_manga_details(&self, id: String, _default_viewer: MangaViewer) -> Result<Manga> {
+	pub fn get_manga_details(&self, id: String) -> Result<Manga> {
 		cache_manga_page(self, id.as_str());
 		let details = unsafe { Node::new(&CACHED_MANGA.clone().unwrap()) };
 		let title = details.select(self.manga_details_title).text().read();
@@ -185,7 +217,7 @@ impl WPComicsSource {
 				}
 			}
 		}
-		let (nsfw, viewer) = category_parser(&categories);
+		let (nsfw, viewer) = self.category_parser(&categories);
 		let status = (self.status_mapping)((self.manga_details_status_transformer)(
 			details.select(self.manga_details_status).text().read(),
 		));
@@ -291,9 +323,9 @@ impl WPComicsSource {
 		Ok(pages)
 	}
 
-	pub fn handle_url(&self, url: String, default_viewer: MangaViewer) -> Result<DeepLink> {
+	pub fn handle_url(&self, url: String) -> Result<DeepLink> {
 		Ok(DeepLink {
-			manga: Some(self.get_manga_details(url, default_viewer)?),
+			manga: Some(self.get_manga_details(url)?),
 			chapter: None,
 		})
 	}
@@ -306,7 +338,7 @@ impl WPComicsSource {
 impl Default for WPComicsSource {
 	fn default() -> WPComicsSource {
 		WPComicsSource {
-			base_url: "",
+			base_url: String::new(),
 			listing_mapping: |str| str,
 			status_mapping: |status| match status.as_str() {
 				"Ongoing" => MangaStatus::Ongoing,
@@ -321,6 +353,8 @@ impl Default for WPComicsSource {
 					.as_date("MM/dd/yyyy", Some("en_US"), None)
 					.unwrap_or(0.0)
 			},
+			nsfw: MangaContentRating::Safe,
+			viewer: MangaViewer::Ltr,
 
 			next_page: "li > a[rel=next]",
 			manga_cell: "div.items > div.row > div.item > figure.clearfix",

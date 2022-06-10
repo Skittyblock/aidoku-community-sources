@@ -132,9 +132,13 @@ pub fn text_with_newlines(node: Node) -> String {
 	}
 }
 
-pub fn category_parser(categories: &Vec<String>) -> (MangaContentRating, MangaViewer) {
-	let mut nsfw = MangaContentRating::Safe;
-	let mut viewer = MangaViewer::Rtl;
+pub fn category_parser(
+	categories: &Vec<String>,
+	default_nsfw: MangaContentRating,
+	default_viewer: MangaViewer,
+) -> (MangaContentRating, MangaViewer) {
+	let mut nsfw = default_nsfw;
+	let mut viewer = default_viewer;
 	for category in categories {
 		match category.as_str() {
 			"Smut" | "Mature" | "18+" => nsfw = MangaContentRating::Nsfw,
