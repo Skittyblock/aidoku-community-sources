@@ -64,7 +64,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 		}
 	}
 	let mut url = format!(
-		"{}/tim-truyen/&genre={}&keyword={}&page={}",
+		"{}/tim-truyen?genre={}&keyword={}&page={}",
 		defaults_get("sourceURL")
 			.as_string()
 			.unwrap_or(StringRef::from(""))
