@@ -251,10 +251,13 @@ impl WPComicsSource {
 				continue;
 			}
 			let chapter_node = chapter.as_node();
-			let chapter_url = chapter_node
+			let mut chapter_url = chapter_node
 				.select(self.chapter_anchor_selector)
 				.attr("href")
 				.read();
+			if !chapter_url.contains("http://") || !chapter_url.contains("https://") {
+				chapter_url = format!("{}/{}", self.base_url, chapter_url);
+			}
 			let chapter_id = chapter_url.clone();
 			let mut chapter_title = chapter_node
 				.select(self.chapter_anchor_selector)
