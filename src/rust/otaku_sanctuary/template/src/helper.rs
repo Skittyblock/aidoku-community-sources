@@ -1,5 +1,5 @@
 use aidoku::{
-	std::{defaults::defaults_get, html::Node, String, Vec, current_date, StringRef},
+	std::{current_date, defaults::defaults_get, html::Node, String, StringRef, Vec},
 	MangaContentRating, MangaViewer,
 };
 use alloc::string::ToString;

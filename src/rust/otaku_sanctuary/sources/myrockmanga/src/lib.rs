@@ -2,8 +2,8 @@
 use aidoku::{
 	error::Result,
 	prelude::*,
-	std::{String, Vec, net::Request},
-	Chapter, Filter, Listing, Manga, MangaPageResult, Page, DeepLink
+	std::{net::Request, String, Vec},
+	Chapter, DeepLink, Filter, Listing, Manga, MangaPageResult, Page,
 };
 
 use otaku_sanctuary_template::template::OtakuSanctuarySource;
@@ -11,7 +11,6 @@ use otaku_sanctuary_template::template::OtakuSanctuarySource;
 static INSTANCE: OtakuSanctuarySource = OtakuSanctuarySource {
 	base_url: "https://myrockmanga.com",
 };
-
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {

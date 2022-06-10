@@ -5,7 +5,7 @@ use aidoku::{
 		html::Node,
 		json,
 		net::{HttpMethod, Request},
-		String, Vec, ArrayRef,
+		ArrayRef, String, Vec,
 	},
 	Chapter, DeepLink, Filter, FilterType, Listing, Manga, MangaContentRating, MangaPageResult,
 	MangaStatus, MangaViewer, Page,
@@ -51,8 +51,8 @@ impl OtakuSanctuarySource {
 					.text()
 					.read(),
 			);
-			let comic_variant_node =
-				node.select("div.mdl-card__supporting-text a:matchesOwn(Manga|Manhwa|Manhua|.*Novel)");
+			let comic_variant_node = node
+				.select("div.mdl-card__supporting-text a:matchesOwn(Manga|Manhwa|Manhua|.*Novel)");
 			let viewer = match comic_variant_node.text().read().trim() {
 				"Manhua" | "Manhwa" => MangaViewer::Scroll,
 				"Manga" => MangaViewer::Rtl,
@@ -114,11 +114,13 @@ impl OtakuSanctuarySource {
 		for filter in filters {
 			match filter.kind {
 				FilterType::Title => title = urlencode(filter.value.as_string()?.read()),
-				FilterType::Genre | FilterType::Check => match filter.value.as_int().unwrap_or(-1) {
-					1 => tags.push(filter.object.get("id").as_string()?.read()),
-					_ => continue,
-				},
-	
+				FilterType::Genre | FilterType::Check => {
+					match filter.value.as_int().unwrap_or(-1) {
+						1 => tags.push(filter.object.get("id").as_string()?.read()),
+						_ => continue,
+					}
+				}
+
 				_ => continue,
 			}
 		}
@@ -135,13 +137,16 @@ impl OtakuSanctuarySource {
 			for (idx, tag) in tags.iter().enumerate() {
 				request.push_str(format!("&FilterCategory[{idx}]={tag}").as_str());
 			}
-			Request::new(format!("{}/Manga/Newest", self.base_url).as_str(), HttpMethod::Post)
-				.body(request.as_bytes())
-				.header(
-					"Content-Type",
-					"application/x-www-form-urlencoded; charset=UTF-8",
-				)
-				.html()
+			Request::new(
+				format!("{}/Manga/Newest", self.base_url).as_str(),
+				HttpMethod::Post,
+			)
+			.body(request.as_bytes())
+			.header(
+				"Content-Type",
+				"application/x-www-form-urlencoded; charset=UTF-8",
+			)
+			.html()
 		};
 		let (manga, has_more) = if search_request {
 			let collections_node = resp.select("div.collection");
@@ -149,10 +154,10 @@ impl OtakuSanctuarySource {
 			let manga_section = collections.get(collections.len() - 3);
 			let node = manga_section.as_node();
 			let (mut manga_list, _) = self.parse_manga_list(node.select("div.mdl-card").array());
-	
+
 			let wallpaper_elems = resp.select("div.picture-mason");
 			let (mut wallpaper_list, _) = self.parse_image_list(wallpaper_elems.array());
-	
+
 			manga_list.append(&mut wallpaper_list);
 			(manga_list, false)
 		} else {
@@ -170,7 +175,7 @@ impl OtakuSanctuarySource {
 			"Ecchi Land" => format!("{}/Manga/EcchiNewest", self.base_url),
 			"Wallpaper" => format!("{}/WallPaper/Newest?type=Newest&offset=", self.base_url),
 			"Cosplay" => format!("{}/Cosplay/Newest?type=Newest&offset=", self.base_url),
-			_ => unreachable!()
+			_ => unreachable!(),
 		};
 		match listing.name.as_str() {
 			"Completed" | "New Titles" | "For Boys" | "For Girls" | "Ecchi Land" => {
@@ -360,7 +365,7 @@ impl OtakuSanctuarySource {
 				"vn" => "vi",
 				_ => lang.as_str(),
 			});
-	
+
 			let node = html.select("tr.chapter");
 			let elems = node.array();
 			let mut chapters: Vec<Chapter> = Vec::with_capacity(elems.len());
@@ -430,11 +435,8 @@ impl OtakuSanctuarySource {
 
 	pub fn get_page_list(&self, id: String) -> Result<Vec<Page>> {
 		if id.contains("chapter") {
-			let resp = Request::new(
-				format!("{}{id}", self.base_url).as_str(),
-				HttpMethod::Get,
-			)
-			.html();
+			let resp =
+				Request::new(format!("{}{id}", self.base_url).as_str(), HttpMethod::Get).html();
 			let vi = resp.select("#dataip").attr("value").read();
 			let numeric_id = resp.select("#inpit-c").attr("data-chapter-id").read();
 			let json = Request::new(
@@ -450,13 +452,16 @@ impl OtakuSanctuarySource {
 			let json_object = json.as_object()?;
 			let raw_pages_arr_value = json_object.get("Content");
 			let raw_pages_arr = if raw_pages_arr_value.is_none() {
-				let json = Request::new(format!("{}/Manga/UpdateView", self.base_url).as_str(), HttpMethod::Post)
-					.body(format!("chapId={numeric_id}").as_bytes())
-					.header(
-						"Content-Type",
-						"application/x-www-form-urlencoded; charset=UTF-8",
-					)
-					.json();
+				let json = Request::new(
+					format!("{}/Manga/UpdateView", self.base_url).as_str(),
+					HttpMethod::Post,
+				)
+				.body(format!("chapId={numeric_id}").as_bytes())
+				.header(
+					"Content-Type",
+					"application/x-www-form-urlencoded; charset=UTF-8",
+				)
+				.json();
 				let json_object = json.as_object()?;
 				let raw_pages_arr_value = json_object.get("view");
 				raw_pages_arr_value.as_string()?.read()
