@@ -1,7 +1,7 @@
 # template source build script
 # usage: ./build.sh [source_name/-a]
 
-if [ "$1" != "-a" ]; then
+if [ "$1" != "-a" ] && [ "$1" != "" ]; then
 	# compile specified source
 	cargo +nightly build --release
 	
@@ -25,7 +25,6 @@ else
 		echo "packaging $dir";
 
 		mkdir -p target/wasm32-unknown-unknown/release/Payload
-		cp res/* target/wasm32-unknown-unknown/release/Payload
 		cp sources/$dir/res/* target/wasm32-unknown-unknown/release/Payload
 		cd target/wasm32-unknown-unknown/release
 		cp $dir.wasm Payload/main.wasm
