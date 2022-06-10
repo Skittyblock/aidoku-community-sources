@@ -12,7 +12,7 @@ use wpcomics_template::{helper::urlencode, template::WPComicsSource};
 fn get_instance() -> WPComicsSource {
 	let base_url = defaults_get("sourceURL")
 		.as_string()
-		.unwrap_or(StringRef::from(""))
+		.unwrap_or_else(|_| StringRef::from(""))
 		.read();
 	WPComicsSource {
 		base_url,
@@ -67,7 +67,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 		"{}/tim-truyen?genre={}&keyword={}&page={}",
 		defaults_get("sourceURL")
 			.as_string()
-			.unwrap_or(StringRef::from(""))
+			.unwrap_or_else(|_| StringRef::from(""))
 			.read(),
 		genre,
 		title,

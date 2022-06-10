@@ -56,18 +56,11 @@ fn get_instance() -> WPComicsSource {
 
 		page_url_transformer: |url| {
 			let mut server_two = String::from("https://images2-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&resize_h=0&rewriteMime=image%2F*&url=");
-			if let Ok(server_selection) = defaults_get("serverSelection").as_int() {
-				match server_selection {
-					2 => {
-						server_two.push_str(&urlencode(url));
-						return server_two;
-					}
-					_ => {
-						return url;
-					}
-				}
+			if let Ok(2) = defaults_get("serverSelection").as_int() {
+				server_two.push_str(&urlencode(url));
+				server_two
 			} else {
-				return url;
+				url
 			}
 		},
 		vinahost_protection: true,
@@ -87,7 +80,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 					let title = filter
 						.value
 						.as_string()
-						.unwrap_or(StringRef::from(""))
+						.unwrap_or_else(|_| StringRef::from(""))
 						.read();
 					if !title.is_empty() {
 						return format!(
@@ -100,7 +93,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 						.object
 						.get("id")
 						.as_string()
-						.unwrap_or(StringRef::from(""))
+						.unwrap_or_else(|_| StringRef::from(""))
 						.read();
 					if genre.is_empty() {
 						continue;

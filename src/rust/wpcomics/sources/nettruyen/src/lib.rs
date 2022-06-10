@@ -28,18 +28,11 @@ fn get_instance() -> WPComicsSource {
 		time_converter: convert_time,
 		page_url_transformer: |url| {
 			let mut server_two = String::from("https://images2-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&resize_h=0&rewriteMime=image%2F*&url=");
-			if let Ok(server_selection) = defaults_get("serverSelection").as_int() {
-				match server_selection {
-					2 => {
-						server_two.push_str(&urlencode(url));
-						return server_two;
-					}
-					_ => {
-						return url;
-					}
-				}
+			if let Ok(2) = defaults_get("serverSelection").as_int() {
+				server_two.push_str(&urlencode(url));
+				server_two
 			} else {
-				return url;
+				url
 			}
 		},
 		..Default::default()

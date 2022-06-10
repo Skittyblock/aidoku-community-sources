@@ -61,7 +61,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 			},
 		}
 	}
-	if title != "" {
+	if !title.is_empty() {
 		let json = Request::new(
 			format!("https://readcomicsbook.com/ajax/search?q={title}").as_str(),
 			HttpMethod::Get,
@@ -76,10 +76,10 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 				manga_arr.push(manga);
 			}
 		}
-		return Ok(MangaPageResult {
+		Ok(MangaPageResult {
 			manga: manga_arr,
 			has_more: false,
-		});
+		})
 	} else {
 		get_instance().get_manga_list(get_search_url(
 			String::from("https://readcomicsbook.com"),

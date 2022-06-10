@@ -10,7 +10,7 @@ pub fn listing_mapping(listing: String) -> String {
 }
 
 pub fn get_search_url(base_url: String, genre: String, page: i32) -> String {
-	if genre.len() > 0 {
+	if !genre.is_empty() {
 		return format!("{base_url}/genre/{genre}?page={page}");
 	}
 	return format!("{base_url}/comic-updates?page={page}");

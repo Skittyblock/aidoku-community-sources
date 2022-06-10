@@ -75,7 +75,7 @@ impl WPComicsSource {
 				unsafe { VINAHOST_COOKIE.clone().unwrap() }.as_str(),
 			)
 		} else if self.vinahost_protection {
-			let blocked_html = Request::new(&url, HttpMethod::Get).html();
+			let blocked_html = Request::new(url, HttpMethod::Get).html();
 			let script = blocked_html.select("script").html().read();
 			let cookie = script
 				.replace("document.cookie=\"", "")
@@ -94,11 +94,13 @@ impl WPComicsSource {
 	}
 
 	fn category_parser(&self, categories: &Vec<String>) -> (MangaContentRating, MangaViewer) {
+		#[allow(clippy::needless_match)]
 		let mut nsfw = match self.nsfw {
 			MangaContentRating::Safe => MangaContentRating::Safe,
 			MangaContentRating::Suggestive => MangaContentRating::Suggestive,
 			MangaContentRating::Nsfw => MangaContentRating::Nsfw,
 		};
+		#[allow(clippy::needless_match)]
 		let mut viewer = match self.viewer {
 			MangaViewer::Rtl => MangaViewer::Rtl,
 			MangaViewer::Default => MangaViewer::Default,
@@ -327,10 +329,39 @@ impl WPComicsSource {
 	}
 
 	pub fn handle_url(&self, url: String) -> Result<DeepLink> {
-		Ok(DeepLink {
-			manga: Some(self.get_manga_details(url)?),
-			chapter: None,
-		})
+		cache_manga_page(self, url.as_str());
+		let html = unsafe { Node::new(&CACHED_MANGA.clone().unwrap()) };
+		if html.select(self.manga_viewer_page).array().len() > 0 {
+			let node = html.select(".breadcrumb li");
+			let breadcrumbs = node.array();
+			let mut manga_id = breadcrumbs
+				.get(breadcrumbs.len() / 2 - 2)
+				.as_node()
+				.select("a")
+				.attr("href")
+				.read();
+			if !manga_id.contains("http://") && !manga_id.contains("https://") {
+				manga_id = format!("{}/{}", self.base_url, manga_id);
+			}
+			Ok(DeepLink {
+				manga: Some(self.get_manga_details(manga_id)?),
+				chapter: Some(Chapter {
+					id: url.clone(),
+					title: String::new(),
+					volume: -1.0,
+					chapter: -1.0,
+					date_updated: -1.0,
+					scanlator: String::new(),
+					url,
+					lang: String::new(),
+				}),
+			})
+		} else {
+			Ok(DeepLink {
+				manga: Some(self.get_manga_details(url)?),
+				chapter: None,
+			})
+		}
 	}
 
 	pub fn modify_image_request(&self, request: Request) {
