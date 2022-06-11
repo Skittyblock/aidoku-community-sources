@@ -8,9 +8,17 @@
 		"url": "https://readm.org"
 	},
 	"listings": [
-		{ "name": "Latest" },
-		{ "name": "Hot" },
-		{ "name": "Popular" },
-        { "name": "New"}
+		{
+			"name": "Latest"
+		},
+		{
+			"name": "Hot"
+		},
+		{
+			"name": "Popular"
+		},
+		{
+			"name": "New"
+		}
 	]
 }
