@@ -5,17 +5,16 @@ use aidoku::{
 };
 
 use crate::helper::*;
-use crate::BASE_URL;
 
 pub fn parse_manga_list(
 	base_url: String,
-	_filters: Vec<Filter>,
+	filters: Vec<Filter>,
 	page: i32,
 ) -> Result<MangaPageResult> {
 	let mut title: String = String::new();
 	let tag_list = genres();
 	let mut tag: String = String::new();
-	for filter in _filters {
+	for filter in filters {
 		match filter.kind {
 			FilterType::Title => {
 				title = filter.value.as_string()?.read();
@@ -75,12 +74,12 @@ pub fn parse_manga_list(
 	} else if title.is_empty() && tag.is_empty() {
 		parse_manga_listing(
 			base_url.clone(),
-			String::from(format!("{}/latest-releases/{}", BASE_URL, page)),
+			String::from(format!("{}/latest-releases/{}", base_url, page)),
 			String::from("Latest"),
 		)
 	} else {
 		let mut mangas: Vec<Manga> = Vec::new();
-		let url = format!("{}/category/{}/watch/{}", BASE_URL, tag, page);
+		let url = format!("{}/category/{}/watch/{}", base_url.clone(), tag, page);
 		let html = Request::new(url.clone().as_str(), HttpMethod::Get).html();
 		for manga in html.select(".filter-results .mb-lg").array() {
 			let manga_node = manga.as_node();
@@ -119,9 +118,9 @@ pub fn parse_manga_listing(
 	url: String,
 	list_type: String,
 ) -> Result<MangaPageResult> {
+	let mut mangas: Vec<Manga> = Vec::new();
+	let html = Request::new(url.clone().as_str(), HttpMethod::Get).html();
 	if list_type == "Hot" {
-		let mut mangas: Vec<Manga> = Vec::new();
-		let html = Request::new(url.clone().as_str(), HttpMethod::Get).html();
 		for manga in html.select("#manga-hot-updates .item").array() {
 			let manga_node = manga.as_node();
 			let title = manga_node.select("strong").text().read();
@@ -147,8 +146,6 @@ pub fn parse_manga_listing(
 			has_more: false,
 		})
 	} else if list_type == "Popular" {
-		let mut mangas: Vec<Manga> = Vec::new();
-		let html = Request::new(url.clone().as_str(), HttpMethod::Get).html();
 		for manga in html.select(".filter-results .mb-lg").array() {
 			let manga_node = manga.as_node();
 			let title = manga_node.select("h2").text().read();
@@ -180,8 +177,6 @@ pub fn parse_manga_listing(
 			has_more,
 		})
 	} else if list_type == "Latest" {
-		let mut mangas: Vec<Manga> = Vec::new();
-		let html = Request::new(url.clone().as_str(), HttpMethod::Get).html();
 		for manga in html.select(".latest-updates .poster.poster-xs").array() {
 			let manga_node = manga.as_node();
 			let title = manga_node.select("h2").text().read();
@@ -213,8 +208,6 @@ pub fn parse_manga_listing(
 			has_more,
 		})
 	} else {
-		let mut mangas: Vec<Manga> = Vec::new();
-		let html = Request::new(url.clone().as_str(), HttpMethod::Get).html();
 		for manga in html.select(".clearfix.mb-0 li").array() {
 			let manga_node = manga.as_node();
 			let title = manga_node.select("h2").text().read();
@@ -283,7 +276,7 @@ pub fn parse_manga_details(base_url: String, raw_id: String) -> Result<Manga> {
 	let viewer = match manga_type.as_str() {
 		"Japanese" => MangaViewer::Rtl,
 		"Korean" => MangaViewer::Scroll,
-		_ => MangaViewer::Default,
+		_ => MangaViewer::Rtl,
 	};
 	Ok(Manga {
 		id: id.clone(),
@@ -292,7 +285,7 @@ pub fn parse_manga_details(base_url: String, raw_id: String) -> Result<Manga> {
 		author,
 		artist,
 		description,
-		url: id.clone(),
+		url: id,
 		categories,
 		status,
 		nsfw,
@@ -300,11 +293,7 @@ pub fn parse_manga_details(base_url: String, raw_id: String) -> Result<Manga> {
 	})
 }
 
-pub fn parse_chapter_list(
-	_base_url: String,
-	_date_format: String,
-	id: String,
-) -> Result<Vec<Chapter>> {
+pub fn parse_chapter_list(id: String) -> Result<Vec<Chapter>> {
 	let mut chapters: Vec<Chapter> = Vec::new();
 	let html = Request::new(id.clone().as_str(), HttpMethod::Get).html();
 	for chapter in html.select(".season_start").array() {
@@ -325,14 +314,12 @@ pub fn parse_chapter_list(
 			lang: String::from("en"),
 		});
 	}
-
 	Ok(chapters)
 }
 
-pub fn parse_page_list(_base_url: String, _raw_id: String) -> Result<Vec<Page>> {
-	let id = _raw_id.clone();
+pub fn parse_page_list(id: String) -> Result<Vec<Page>> {
 	let mut pages: Vec<Page> = Vec::new();
-	let html = Request::new(id.clone().as_str(), HttpMethod::Get).html();
+	let html = Request::new(id.as_str(), HttpMethod::Get).html();
 	let mut at = 0;
 	for page in html.select("div.ch-images img").array() {
 		let page_node = page.as_node();
@@ -352,9 +339,9 @@ pub fn modify_image_request(base_url: String, request: Request) {
 	request.header("Referer", &base_url);
 }
 
-pub fn handle_url(_base_url: String, url: String) -> Result<DeepLink> {
+pub fn handle_url(base_url: String, url: String) -> Result<DeepLink> {
 	Ok(DeepLink {
-		manga: Some(parse_manga_details(String::from(BASE_URL), url.clone())?),
+		manga: Some(parse_manga_details(base_url, url)?),
 		chapter: None,
 	})
 }

@@ -4,7 +4,7 @@ use aidoku::{
 	prelude::*,
 	std::net::Request,
 	std::{String, Vec},
-	Chapter, Filter, Listing, Manga, MangaPageResult, Page,
+	Chapter, DeepLink, Filter, Listing, Manga, MangaPageResult, Page,
 };
 
 pub mod helper;
@@ -38,19 +38,20 @@ fn get_manga_details(id: String) -> Result<Manga> {
 
 #[get_chapter_list]
 fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
-	parser::parse_chapter_list(
-		String::from(BASE_URL),
-		String::from("MMM dd,yyyy HH:mm"),
-		id,
-	)
+	parser::parse_chapter_list(id)
 }
 
 #[get_page_list]
 fn get_page_list(id: String) -> Result<Vec<Page>> {
-	parser::parse_page_list(String::from(BASE_URL), id)
+	parser::parse_page_list(id)
 }
 
 #[modify_image_request]
 fn modify_image_request(request: Request) {
 	parser::modify_image_request(String::from(BASE_URL), request)
+}
+
+#[handle_url]
+pub fn handle_url(url: String) -> Result<DeepLink> {
+	parser::handle_url(String::from(BASE_URL), url)
 }

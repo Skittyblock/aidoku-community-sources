@@ -11,4 +11,3 @@ src/as/*/.wireit
 
 src/rust/*/target
 src/rust/node_modules
-src/rust/mangastream/sources/xcalibrscans
