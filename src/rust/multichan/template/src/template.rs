@@ -314,14 +314,12 @@ impl MangaChanSource {
 			(begin, end)
 		} else if let Some(begin_) = html.find("fullimg\": [") {
 			// hentai-chan
-			println!("hentaichan");
 			let begin = begin_ + 11;
 			let end = html[begin..].find(']').map(|i| i + begin).unwrap_or(0);
 			(begin, end)
 		} else {
 			(0, 2)
 		};
-		println!("{}", &html[begin..end]);
 		Ok(String::from(&html[begin..end])
 			.replace(|ch| ch == '"' || ch == '\'', "")
 			.split(',')
