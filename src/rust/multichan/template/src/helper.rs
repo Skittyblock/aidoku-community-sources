@@ -27,9 +27,7 @@ pub fn urlencode(string: String) -> String {
 
 	for byte in bytes {
 		let curr = *byte;
-		if (b'a'..=b'z').contains(&curr)
-			|| (b'A'..=b'Z').contains(&curr)
-			|| (b'0'..=b'9').contains(&curr)
+		if curr.is_ascii_alphanumeric()
 		{
 			result.push(curr);
 		} else {
@@ -73,10 +71,9 @@ pub fn category_parser(categories: &Vec<String>) -> (MangaContentRating, MangaVi
 					_ => MangaContentRating::Suggestive,
 				}
 			}
+			"Комикс" | "Руманга" => viewer = MangaViewer::Ltr,
 			// "Comic" | "Rumanga" | "Manhwa" | "Manhua"
-			"Комикс" | "Руманга" | "Манхва" | "Маньхуа" => {
-				viewer = MangaViewer::Scroll
-			}
+			"Манхва" | "Маньхуа" => viewer = MangaViewer::Scroll,
 			_ => continue,
 		}
 	}
