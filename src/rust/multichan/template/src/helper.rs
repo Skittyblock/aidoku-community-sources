@@ -1,4 +1,5 @@
 use aidoku::{std::html::Node, std::String, std::Vec, MangaContentRating, MangaViewer};
+
 pub fn extract_f32_from_string(title: String, text: String) -> Vec<f32> {
 	let mut last_char_was_digit: bool = false;
 	text.replace(&title, "")
