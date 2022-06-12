@@ -1,12 +1,13 @@
 #![no_std]
+extern crate alloc;
+use alloc::vec;
 use aidoku::{
 	error::Result,
 	prelude::*,
-	std::{net::Request, String, Vec, html::Node},
+	std::{html::Node, net::Request, String, Vec},
 	Chapter, DeepLink, Filter, Listing, Manga, MangaPageResult, Page,
 };
-
-use manga_chan_template::template::{MangaChanSource, CACHED_MANGA, cache_manga_page};
+use manga_chan_template::template::{cache_manga_page, MangaChanSource, CACHED_MANGA};
 
 static INSTANCE: MangaChanSource = MangaChanSource {
 	base_url: "https://y.hentaichan.live",
@@ -31,32 +32,26 @@ fn get_manga_details(id: String) -> Result<Manga> {
 
 #[get_chapter_list]
 fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
-	cache_manga_page(
-		format!("{}{id}", INSTANCE.base_url).as_str()
-	);
+	cache_manga_page(format!("{}{id}", INSTANCE.base_url).as_str());
 	let html = Node::new(unsafe { &CACHED_MANGA.clone().unwrap() });
 	let date_updated = html
 		.select("div.row4_right:contains(загружено) b")
 		.text()
 		.0
-		.as_date(
-			"dd MMMM yyyy",
-			Some("ru_RU"),
-			None
-		)
+		.as_date("dd MMMM yyyy", Some("ru_RU"), None)
 		.unwrap_or(-1.0);
-	let mut chapters = Vec::with_capacity(1);
-	chapters.push(Chapter { 
-		id: html.select("a:contains(Читать онлайн)").attr("href").read(), 
-		title: String::new(),
-		volume: -1.0, 
-		chapter: 1.0, 
-		date_updated, 
-		scanlator: String::new(), 
-		url: html.select("a:contains(Читать онлайн)").attr("href").read(), 
-		lang: String::from("ru"),
-	});
-	Ok(chapters)
+	Ok(vec![
+		Chapter {
+			id: html.select("a:contains(Читать онлайн)").attr("href").read(),
+			title: String::new(),
+			volume: -1.0,
+			chapter: 1.0,
+			date_updated,
+			scanlator: String::new(),
+			url: html.select("a:contains(Читать онлайн)").attr("href").read(),
+			lang: String::from("ru"),
+		}
+	])
 }
 
 #[get_page_list]

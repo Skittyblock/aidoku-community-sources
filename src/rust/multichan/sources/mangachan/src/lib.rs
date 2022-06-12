@@ -6,7 +6,7 @@ use aidoku::{
 	Chapter, DeepLink, Filter, Listing, Manga, MangaPageResult, Page,
 };
 
-use manga_chan_template::{template::MangaChanSource, helper::extract_f32_from_string};
+use manga_chan_template::{helper::extract_f32_from_string, template::MangaChanSource};
 
 static INSTANCE: MangaChanSource = MangaChanSource {
 	base_url: "https://manga-chan.me",

@@ -173,7 +173,11 @@ impl MangaChanSource {
 
 	pub fn get_manga_listing(&self, listing: Listing, _: i32) -> Result<MangaPageResult> {
 		if &listing.name == "Случайная" {
-			let html = Request::new("https://manga-chan.me/manga/random", HttpMethod::Get).html();
+			let html = Request::new(
+				format!("{}/manga/random", self.base_url).as_str(),
+				HttpMethod::Get,
+			)
+			.html();
 			self.parse_manga_list(html, 10)
 		} else {
 			Err(AidokuError {
@@ -302,10 +306,7 @@ impl MangaChanSource {
 		} else {
 			format!("{}{id}", self.base_url)
 		};
-		let html = Request::new(&url, HttpMethod::Get)
-			.html()
-			.html()
-			.read();
+		let html = Request::new(&url, HttpMethod::Get).html().html().read();
 		let (begin, end) = if let Some(begin_) = html.find("fullimg\":[") {
 			// manga-chan and yaoi-chan
 			let begin = begin_ + 10;
@@ -315,7 +316,7 @@ impl MangaChanSource {
 			// hentai-chan
 			println!("hentaichan");
 			let begin = begin_ + 11;
-			let end = html[begin..].find("]").map(|i| i + begin).unwrap_or(0);
+			let end = html[begin..].find(']').map(|i| i + begin).unwrap_or(0);
 			(begin, end)
 		} else {
 			(0, 2)
@@ -356,7 +357,7 @@ impl MangaChanSource {
 			} else {
 				return Err(AidokuError {
 					reason: aidoku::error::AidokuErrorKind::Unimplemented,
-				})
+				});
 			};
 			let end = html[begin..].find("},").map(|i| i + begin).unwrap_or(0);
 			let meta = json::parse(format!("{{{}}}", &html[begin..end - 1]).as_bytes());
@@ -368,7 +369,7 @@ impl MangaChanSource {
 			} else {
 				return Err(AidokuError {
 					reason: aidoku::error::AidokuErrorKind::Unimplemented,
-				})
+				});
 			};
 			let manga = Some(self.get_manga_details(manga_id)?);
 			let chapter = Some(Chapter {

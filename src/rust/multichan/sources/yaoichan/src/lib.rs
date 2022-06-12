@@ -6,13 +6,13 @@ use aidoku::{
 	Chapter, DeepLink, Filter, Listing, Manga, MangaPageResult, Page,
 };
 
-use manga_chan_template::{template::MangaChanSource, helper::extract_f32_from_string};
+use manga_chan_template::{helper::extract_f32_from_string, template::MangaChanSource};
 
 static INSTANCE: MangaChanSource = MangaChanSource {
 	base_url: "https://yaoi-chan.me",
 	vol_chap_parser: |manga_title, title| {
-		let numbers = extract_f32_from_string(manga_title.clone(), title.clone());
-		if numbers.len() > 1 && title.contains("v") {
+		let numbers = extract_f32_from_string(manga_title, title.clone());
+		if numbers.len() > 1 && title.contains('v') {
 			(numbers[0], numbers[1])
 		} else if !numbers.is_empty() {
 			(-1.0, numbers[0])
