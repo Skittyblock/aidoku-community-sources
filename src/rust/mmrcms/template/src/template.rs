@@ -37,7 +37,6 @@ pub struct MMRCMSSource {
 	pub category: &'static str,
 	pub tags: &'static str,
 
-	pub details_title_selector: &'static str,
 	pub detail_categories: &'static str,
 	pub detail_tags: &'static str,
 	pub detail_description: &'static str,
@@ -61,7 +60,6 @@ impl Default for MMRCMSSource {
 			category: "Category",
 			tags: "Tag",
 
-			details_title_selector: "div.col-sm-12 h2",
 			detail_categories: "Categories",
 			detail_tags: "Tags",
 			detail_description: "Summary",
@@ -249,10 +247,8 @@ impl MMRCMSSource {
 		}
 		let cover = append_protocol(cover_src);
 		let title = html
-			.select(self.details_title_selector)
-			.array()
-			.get(0)
-			.as_node()
+			.select("h2.widget-title, h1.widget-title, .listmanga-header, div.panel-heading")
+			.first()
 			.text()
 			.read();
 		let author = html
@@ -355,10 +351,8 @@ impl MMRCMSSource {
 		let node = html.select("li:has(.chapter-title-rtl)");
 		let elems = node.array();
 		let title = html
-			.select(self.details_title_selector)
-			.array()
-			.get(0)
-			.as_node()
+			.select("h2.widget-title, h1.widget-title, .listmanga-header, div.panel-heading")
+			.first()
 			.text()
 			.read();
 		Ok(elems
