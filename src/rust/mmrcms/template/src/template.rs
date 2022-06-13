@@ -194,15 +194,17 @@ impl MMRCMSSource {
 					format!("{}/{}/", self.base_url, self.manga_path).as_str(),
 					"",
 				);
-				let cover = append_protocol(
-					manga_node
-						.select(&format!(
-							"a[href*='{}/{}'] img",
-							self.base_url, self.manga_path
-						))
-						.attr("src")
-						.read(),
-				);
+				let mut cover_src = manga_node
+					.select(&format!(
+						"a[href*='{}/{}'] img",
+						self.base_url, self.manga_path
+					))
+					.attr("src")
+					.read();
+				if cover_src.starts_with('/') && !cover_src.starts_with("//") {
+					cover_src = format!("{}{}", self.base_url, cover_src);
+				}
+				let cover = append_protocol(cover_src);
 				let title = manga_node.select("a.chart-title strong").text().read();
 				manga.push(Manga {
 					id: id.clone(),
@@ -226,7 +228,11 @@ impl MMRCMSSource {
 		let url = format!("{}/{}/{}", self.base_url, self.manga_path, id);
 		cache_manga_page(&url);
 		let html = Node::new(unsafe { &CACHED_MANGA.clone().unwrap() });
-		let cover = append_protocol(html.select("img.img-responsive").attr("src").read());
+		let mut cover_src = html.select("img[class^=img-]").attr("src").read();
+		if cover_src.starts_with('/') && !cover_src.starts_with("//") {
+			cover_src = format!("{}{}", self.base_url, cover_src);
+		}
+		let cover = append_protocol(cover_src);
 		let title = html
 			.select(self.details_title_selector)
 			.array()
@@ -283,7 +289,9 @@ impl MMRCMSSource {
 		if categories.is_empty() {
 			// Fallback fetcher
 			categories = html
-				.select("a[href~=(?i)(tag|category)]:not([target=_blank])")
+				.select(
+					&format!("a[href*={}][href~=(?i)(tag|category)]:not([target=_blank])", self.base_url)
+				)
 				.array()
 				.filter_map(|elem| {
 					let text = elem.as_node().text().read();
