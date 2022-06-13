@@ -75,7 +75,9 @@ impl Default for MMRCMSSource {
 				let mut viewer = MangaViewer::Rtl;
 				for category in categories {
 					match category.as_str() {
-						"Adult" | "Smut" | "Mature" | "18+" | "Hentai" => nsfw = MangaContentRating::Nsfw,
+						"Adult" | "Smut" | "Mature" | "18+" | "Hentai" => {
+							nsfw = MangaContentRating::Nsfw
+						}
 						"Ecchi" | "16+" => {
 							nsfw = match nsfw {
 								MangaContentRating::Nsfw => MangaContentRating::Nsfw,
@@ -101,6 +103,13 @@ impl Default for MMRCMSSource {
 }
 
 impl MMRCMSSource {
+	fn get_default_cover(&self, id: &str) -> String {
+		format!(
+			"{}/uploads/manga/{}/cover/cover_250x350.jpg",
+			self.base_url, id
+		)
+	}
+
 	pub fn get_manga_list(&self, filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 		let mut query: Vec<String> = Vec::new();
 		let mut is_searching = false;
@@ -135,12 +144,14 @@ impl MMRCMSSource {
 				}
 				FilterType::Select => {
 					let value = filter.value.as_int().unwrap_or(-1);
-					if filter.name.as_str() == self.category {
-						query.push(format!("cat={}", (self.category_mapper)(value)))
-					} else if filter.name.as_str() == self.tags {
-						query.push(format!("tag={}", (self.tags_mapper)(value)))
-					} else {
-						continue;
+					match filter.name.as_str() {
+						x if x == self.category => {
+							query.push(format!("cat={}", (self.category_mapper)(value)))
+						}
+						x if x == self.tags => {
+							query.push(format!("tag={}", (self.tags_mapper)(value)))
+						}
+						_ => continue,
 					}
 				}
 				_ => continue,
@@ -156,10 +167,7 @@ impl MMRCMSSource {
 				let id = obj.get("data").as_string()?.read();
 				manga.push(Manga {
 					id: id.clone(),
-					cover: format!(
-						"{}/uploads/manga/{}/cover/cover_250x350.jpg",
-						self.base_url, id
-					),
+					cover: self.get_default_cover(&id),
 					title: obj.get("value").as_string()?.read(),
 					author: String::new(),
 					artist: String::new(),
@@ -207,13 +215,9 @@ impl MMRCMSSource {
 					.read();
 				if cover_src.starts_with('/') && !cover_src.starts_with("//") {
 					cover_src = format!("{}{}", self.base_url, cover_src);
-				} else if cover_src.contains("no-image.png") {
+				} else if cover_src.contains("no-image.png") || cover_src.is_empty() {
 					// Workaround for Mangazuki Raws
-					cover_src = format!(
-						"{}/uploads/manga/{}/cover/cover_250x350.jpg", 
-						self.base_url, 
-						id
-					);
+					cover_src = self.get_default_cover(&id);
 				}
 				let cover = append_protocol(cover_src);
 				let title = manga_node.select("a.chart-title strong").text().read();
@@ -300,9 +304,10 @@ impl MMRCMSSource {
 		if categories.is_empty() {
 			// Fallback fetcher
 			categories = html
-				.select(
-					&format!("a[href*={}][href~=(?i)(tag|category)]:not([target=_blank])", self.base_url)
-				)
+				.select(&format!(
+					"a[href*={}][href~=(?i)(tag|category)]:not([target=_blank])",
+					self.base_url
+				))
 				.array()
 				.filter_map(|elem| {
 					let text = elem.as_node().text().read();
@@ -321,16 +326,12 @@ impl MMRCMSSource {
 			nsfw = MangaContentRating::Nsfw;
 		}
 		let status_str = html.select("span[class^='label label-']").text().read();
-		let status = if status_str.trim() == self.detail_status_complete {
-			MangaStatus::Completed
-		} else if status_str.trim() == self.detail_status_ongoing {
-			MangaStatus::Ongoing
-		} else if status_str.trim() == self.detail_status_cancelled {
-			MangaStatus::Cancelled
-		} else if status_str.trim() == self.detail_status_hiatus {
-			MangaStatus::Hiatus
-		} else {
-			MangaStatus::Unknown
+		let status = match status_str.trim() {
+			x if x == self.detail_status_complete => MangaStatus::Completed,
+			x if x == self.detail_status_cancelled => MangaStatus::Cancelled,
+			x if x == self.detail_status_hiatus => MangaStatus::Hiatus,
+			x if x == self.detail_status_ongoing => MangaStatus::Ongoing,
+			_ => MangaStatus::Unknown,
 		};
 		Ok(Manga {
 			id,
@@ -370,10 +371,7 @@ impl MMRCMSSource {
 				let url = chapter_node.select("a").attr("href").read();
 				let chapter_title = chapter_node.select("a").text().read();
 
-				let chapter = extract_f32_from_string(
-					title.clone(),
-					chapter_title,
-				);
+				let chapter = extract_f32_from_string(title.clone(), chapter_title);
 				let title = chapter_node.select("em").text().read();
 				let chapter_id = format!("{}/{}", id, url.split('/').collect::<Vec<_>>()[5]);
 				let date_updated = StringRef::from(
