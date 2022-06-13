@@ -109,6 +109,24 @@ dependencies = [
 ]
 
 [[package]]
+name = "mangazuki"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "lazy_static",
+ "mmrcms_template",
+]
+
+[[package]]
+name = "mangazukiraws"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "lazy_static",
+ "mmrcms_template",
+]
+
+[[package]]
 name = "manhwasmen"
 version = "0.1.0"
 dependencies = [
@@ -133,6 +151,15 @@ dependencies = [
 
 [[package]]
 name = "onma"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "lazy_static",
+ "mmrcms_template",
+]
+
+[[package]]
+name = "phoenixscans"
 version = "0.1.0"
 dependencies = [
  "aidoku",
