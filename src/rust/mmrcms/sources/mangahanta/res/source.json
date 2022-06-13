@@ -1,0 +1,10 @@
+{
+	"info": {
+		"id": "tr.mangahanta",
+		"lang": "tr",
+		"name": "MangaHanta",
+		"version": 1,
+		"url": "http://mangahanta.com",
+		"nsfw": 1
+	}
+}
