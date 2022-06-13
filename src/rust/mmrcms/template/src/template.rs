@@ -43,6 +43,8 @@ pub struct MMRCMSSource {
 	pub detail_description: &'static str,
 	pub detail_status_ongoing: &'static str,
 	pub detail_status_complete: &'static str,
+	pub detail_status_hiatus: &'static str,
+	pub detail_status_cancelled: &'static str,
 
 	pub category_parser: fn(&Node, Vec<String>) -> (MangaContentRating, MangaViewer),
 	pub category_mapper: fn(i64) -> String,
@@ -65,6 +67,8 @@ impl Default for MMRCMSSource {
 			detail_description: "Summary",
 			detail_status_complete: "Complete",
 			detail_status_ongoing: "Ongoing",
+			detail_status_hiatus: "Hiatus",
+			detail_status_cancelled: "Cancelled",
 
 			category_parser: |_, categories| {
 				let mut nsfw = MangaContentRating::Safe;
@@ -203,6 +207,13 @@ impl MMRCMSSource {
 					.read();
 				if cover_src.starts_with('/') && !cover_src.starts_with("//") {
 					cover_src = format!("{}{}", self.base_url, cover_src);
+				} else if cover_src.contains("no-image.png") {
+					// Workaround for Mangazuki Raws
+					cover_src = format!(
+						"{}/uploads/manga/{}/cover/cover_250x350.jpg", 
+						self.base_url, 
+						id
+					);
 				}
 				let cover = append_protocol(cover_src);
 				let title = manga_node.select("a.chart-title strong").text().read();
@@ -314,6 +325,10 @@ impl MMRCMSSource {
 			MangaStatus::Completed
 		} else if status_str.trim() == self.detail_status_ongoing {
 			MangaStatus::Ongoing
+		} else if status_str.trim() == self.detail_status_cancelled {
+			MangaStatus::Cancelled
+		} else if status_str.trim() == self.detail_status_hiatus {
+			MangaStatus::Hiatus
 		} else {
 			MangaStatus::Unknown
 		};
@@ -336,7 +351,7 @@ impl MMRCMSSource {
 		let url = format!("{}/{}/{}", self.base_url, self.manga_path, id);
 		cache_manga_page(&url);
 		let html = Node::new(unsafe { &CACHED_MANGA.clone().unwrap() });
-		let node = html.select("li:has(h5.chapter-title-rtl)");
+		let node = html.select("li:has(.chapter-title-rtl)");
 		let elems = node.array();
 		let title = html
 			.select(self.details_title_selector)
