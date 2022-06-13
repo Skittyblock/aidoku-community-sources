@@ -10,7 +10,6 @@ mmrcms! {
 		category: "الفئة",
 		tags: "العلامات",
 
-		details_title_selector: "div.panel-heading",
 		detail_description: "نبذة عن المانجا",
 		detail_status_ongoing: "مستمرة",
 		detail_status_complete: "مكتملة",

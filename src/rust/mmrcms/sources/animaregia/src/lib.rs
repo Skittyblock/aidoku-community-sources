@@ -13,7 +13,6 @@ lazy_static! {
 		base_url: "http://animaregia.net",
 		lang: "pt-BR",
 		category: "Categoria",
-		details_title_selector: "h1.widget-title",
 		detail_description: "Sumário",
 		detail_status_ongoing: "Ativo",
 		detail_status_complete: "Concluído",
