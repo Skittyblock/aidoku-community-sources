@@ -5,6 +5,8 @@ use aidoku::{MangaContentRating, MangaViewer};
 mmrcms! {
 	MMRCMSSource {
 		base_url: "https://hentai.gekkouscans.com.br",
+		lang: "pt-BR",
+		category: "Categoria",
 		detail_categories: "Categorias",
 		category_parser: |_, categories| {
 			let mut viewer = MangaViewer::Rtl;
