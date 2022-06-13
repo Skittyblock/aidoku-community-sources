@@ -1,9 +1,28 @@
 #![no_std]
+use aidoku::{MangaContentRating, MangaViewer};
 use mmrcms_template::{mmrcms, template::MMRCMSSource};
 
 mmrcms! {
 	MMRCMSSource {
 		base_url: "https://zahard.xyz",
+		category_parser: |_, categories| {
+			let mut nsfw = MangaContentRating::Safe;
+			for category in categories {
+				match category.as_str() {
+					"Adult" | "Smut" | "Mature" | "18+" | "Hentai" => {
+						nsfw = MangaContentRating::Nsfw
+					}
+					"Ecchi" | "16+" => {
+						nsfw = match nsfw {
+							MangaContentRating::Nsfw => MangaContentRating::Nsfw,
+							_ => MangaContentRating::Suggestive,
+						}
+					}
+					_ => continue,
+				}
+			}
+			(nsfw, MangaViewer::Scroll)
+		},
 		tags_mapper: |idx| {
 			String::from(match idx {
 				1 => "(", // (
