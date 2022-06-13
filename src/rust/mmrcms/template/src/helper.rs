@@ -2,6 +2,7 @@ use aidoku::{prelude::format, std::html::Node, std::String, std::Vec};
 
 pub fn extract_f32_from_string(title: String, text: String) -> f32 {
 	text.replace(&title, "")
+		.replace(',', ".")
 		.chars()
 		.filter(|a| (*a >= '0' && *a <= '9') || *a == ' ' || *a == '.')
 		.collect::<String>()
