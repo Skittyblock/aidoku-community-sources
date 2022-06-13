@@ -71,7 +71,7 @@ impl Default for MMRCMSSource {
 				let mut viewer = MangaViewer::Rtl;
 				for category in categories {
 					match category.as_str() {
-						"Adult" | "Smut" | "Mature" | "18+" => nsfw = MangaContentRating::Nsfw,
+						"Adult" | "Smut" | "Mature" | "18+" | "Hentai" => nsfw = MangaContentRating::Nsfw,
 						"Ecchi" | "16+" => {
 							nsfw = match nsfw {
 								MangaContentRating::Nsfw => MangaContentRating::Nsfw,
@@ -338,6 +338,13 @@ impl MMRCMSSource {
 		let html = Node::new(unsafe { &CACHED_MANGA.clone().unwrap() });
 		let node = html.select("li:has(h5.chapter-title-rtl)");
 		let elems = node.array();
+		let title = html
+			.select(self.details_title_selector)
+			.array()
+			.get(0)
+			.as_node()
+			.text()
+			.read();
 		Ok(elems
 			.map(|elem| {
 				let chapter_node = elem.as_node();
@@ -346,9 +353,11 @@ impl MMRCMSSource {
 					chapter_node.attr("class").read(),
 				);
 				let url = chapter_node.select("a").attr("href").read();
+				let chapter_title = chapter_node.select("a").text().read();
+
 				let chapter = extract_f32_from_string(
-					String::new(),
-					String::from(url.split('/').collect::<Vec<_>>()[5]),
+					title.clone(),
+					chapter_title,
 				);
 				let title = chapter_node.select("em").text().read();
 				let chapter_id = format!("{}/{}", id, url.split('/').collect::<Vec<_>>()[5]);
