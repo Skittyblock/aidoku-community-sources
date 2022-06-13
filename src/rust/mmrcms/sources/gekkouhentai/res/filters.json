@@ -7,9 +7,9 @@
 	},
 	{
 		"type": "select",
-		"name": "Category",
+		"name": "Categoria",
 		"options": [
-			"None",
+			"Nenhum",
 			"Ação",
 			"Aventura",
 			"Comédia",
@@ -47,11 +47,11 @@
 	},
 	{
 		"type": "sort",
-		"name": "Sort by",
+		"name": "Ordenar por",
 		"canAscend": true,
 		"options": [
-			"Title",
-			"Views"
+			"Título",
+			"Visualizações"
 		],
 		"default": {
 			"index": 0,
