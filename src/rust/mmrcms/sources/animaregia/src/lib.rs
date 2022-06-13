@@ -2,9 +2,8 @@
 use aidoku::{
 	error::Result,
 	prelude::*,
-	std::{Vec, String, net::Request},
-	Filter, MangaPageResult, Manga, Chapter, Page, DeepLink
-
+	std::{net::Request, String, Vec},
+	Chapter, DeepLink, Filter, Manga, MangaPageResult, Page,
 };
 use lazy_static::lazy_static;
 use mmrcms_template::template::MMRCMSSource;
@@ -24,25 +23,32 @@ lazy_static! {
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
-	let result = INSTANCE.get_manga_list(filters, page)
-		.unwrap_or(MangaPageResult { manga: Vec::new(), has_more: false });
+	let result = INSTANCE
+		.get_manga_list(filters, page)
+		.unwrap_or(MangaPageResult {
+			manga: Vec::new(),
+			has_more: false,
+		});
 
 	Ok(MangaPageResult {
-		manga: result.manga.into_iter().map(|manga| Manga {
-			id: manga.id,
-			cover: manga.cover,
-			title: manga.title.replace(" (pt-br)", ""),
-			author: manga.author,
-			artist: manga.artist,
-			description: manga.description,
-			url: manga.url,
-			categories: manga.categories,
-			status: manga.status,
-			nsfw: manga.nsfw,
-			viewer: manga.viewer
-		})
-		.collect::<Vec<_>>(),
-		has_more: result.has_more
+		manga: result
+			.manga
+			.into_iter()
+			.map(|manga| Manga {
+				id: manga.id,
+				cover: manga.cover,
+				title: manga.title.replace(" (pt-br)", ""),
+				author: manga.author,
+				artist: manga.artist,
+				description: manga.description,
+				url: manga.url,
+				categories: manga.categories,
+				status: manga.status,
+				nsfw: manga.nsfw,
+				viewer: manga.viewer,
+			})
+			.collect::<Vec<_>>(),
+		has_more: result.has_more,
 	})
 }
 
@@ -53,7 +59,7 @@ fn get_manga_details(id: String) -> Result<Manga> {
 			result.title = result.title.replace(" (pt-br)", "");
 			Ok(result)
 		}
-		Err(error) => Err(error)
+		Err(error) => Err(error),
 	}
 }
 
@@ -76,5 +82,3 @@ fn modify_image_request(request: Request) {
 fn handle_url(url: String) -> Result<DeepLink> {
 	INSTANCE.handle_url(url)
 }
-
-

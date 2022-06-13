@@ -1,6 +1,6 @@
 #![no_std]
-use mmrcms_template::{mmrcms, template::MMRCMSSource};
 use aidoku::{MangaContentRating, MangaViewer};
+use mmrcms_template::{mmrcms, template::MMRCMSSource};
 
 mmrcms! {
 	MMRCMSSource {
