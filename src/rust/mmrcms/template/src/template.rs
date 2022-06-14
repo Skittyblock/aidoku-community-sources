@@ -209,11 +209,9 @@ impl MMRCMSSource {
 						"a[href*='{}/{}'] img",
 						self.base_url, self.manga_path
 					))
-					.attr("src")
+					.attr("abs:src")
 					.read();
-				if cover_src.starts_with('/') && !cover_src.starts_with("//") {
-					cover_src = format!("{}{}", self.base_url, cover_src);
-				} else if cover_src.contains("no-image.png") || cover_src.is_empty() {
+				if cover_src.contains("no-image.png") || cover_src.is_empty() {
 					// Workaround for Mangazuki Raws
 					cover_src = self.get_default_cover(&id);
 				}
