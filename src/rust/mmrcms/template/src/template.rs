@@ -13,10 +13,10 @@ use aidoku::{
 
 use crate::helper::{append_protocol, extract_f32_from_string, text_with_newlines, urlencode};
 
-static mut CACHED_MANGA: Option<Vec<u8>> = None;
+pub static mut CACHED_MANGA: Option<Vec<u8>> = None;
 static mut CACHED_MANGA_ID: Option<String> = None;
 
-fn cache_manga_page(url: &str) {
+pub fn cache_manga_page(url: &str) {
 	unsafe {
 		if CACHED_MANGA.is_some() && CACHED_MANGA_ID.clone().unwrap() == url {
 			return;
@@ -37,14 +37,6 @@ pub struct MMRCMSSource {
 	pub category: &'static str,
 	pub tags: &'static str,
 
-	pub detail_categories: &'static str,
-	pub detail_tags: &'static str,
-	pub detail_description: &'static str,
-	pub detail_status_ongoing: &'static str,
-	pub detail_status_complete: &'static str,
-	pub detail_status_hiatus: &'static str,
-	pub detail_status_cancelled: &'static str,
-
 	pub category_parser: fn(&Node, Vec<String>) -> (MangaContentRating, MangaViewer),
 	pub category_mapper: fn(i64) -> String,
 	pub tags_mapper: fn(i64) -> String,
@@ -59,14 +51,6 @@ impl Default for MMRCMSSource {
 
 			category: "Category",
 			tags: "Tag",
-
-			detail_categories: "Categories",
-			detail_tags: "Tags",
-			detail_description: "Summary",
-			detail_status_complete: "Complete",
-			detail_status_ongoing: "Ongoing",
-			detail_status_hiatus: "Hiatus",
-			detail_status_cancelled: "Cancelled",
 
 			category_parser: |_, categories| {
 				let mut nsfw = MangaContentRating::Safe;
@@ -198,7 +182,7 @@ impl MMRCMSSource {
 				let manga_node = elem.as_node();
 				let url = manga_node
 					.select(&format!("a[href*='{}/{}']", self.base_url, self.manga_path))
-					.attr("href")
+					.attr("abs:href")
 					.read();
 				let id = url.replace(
 					format!("{}/{}/", self.base_url, self.manga_path).as_str(),
@@ -238,108 +222,132 @@ impl MMRCMSSource {
 	pub fn get_manga_details(&self, id: String) -> Result<Manga> {
 		let url = format!("{}/{}/{}", self.base_url, self.manga_path, id);
 		cache_manga_page(&url);
-		let html = Node::new(unsafe { &CACHED_MANGA.clone().unwrap() });
-		let mut cover_src = html.select("img[class^=img-]").attr("src").read();
-		if cover_src.starts_with('/') && !cover_src.starts_with("//") {
-			cover_src = format!("{}{}", self.base_url, cover_src);
-		}
-		let cover = append_protocol(cover_src);
+		let html = Node::new_with_uri(unsafe { &CACHED_MANGA.clone().unwrap() }, &url);
+		let cover = append_protocol(html.select("img[class^=img-]").attr("abs:src").read());
 		let title = html
 			.select("h2.widget-title, h1.widget-title, .listmanga-header, div.panel-heading")
 			.first()
 			.text()
 			.read();
-		let author = html
-			.select("a[href*=author]")
-			.array()
-			.filter_map(|elem| {
-				let text = elem.as_node().text().read();
-				if text.trim().is_empty() {
-					None
-				} else {
-					Some(String::from(text.trim()))
-				}
-			})
-			.collect::<Vec<_>>()
-			.join(", ");
-		let artist = html
-			.select("a[href*=artist]")
-			.array()
-			.filter_map(|elem| {
-				let text = elem.as_node().text().read();
-				if text.trim().is_empty() {
-					None
-				} else {
-					Some(String::from(text.trim()))
-				}
-			})
-			.collect::<Vec<_>>()
-			.join(", ");
-		let description = text_with_newlines(
-			html.select(format!("div:contains({}) p", self.detail_description).as_str()),
-		);
-
-		let mut categories = html
-			.select(&format!("dt:contains({}) + dd a", self.detail_categories))
-			.array()
-			.chain(
-				html.select(&format!("dt:contains({}) + dd a", self.detail_tags))
-					.array(),
-			)
-			.filter_map(|elem| {
-				let text = elem.as_node().text().read();
-				if text.trim().is_empty() {
-					None
-				} else {
-					Some(String::from(text.trim()))
-				}
-			})
-			.collect::<Vec<_>>();
-		if categories.is_empty() {
-			// Fallback fetcher
-			categories = html
-				.select(&format!(
-					"a[href*={}][href~=(?i)(tag|category)]:not([target=_blank])",
-					self.base_url
-				))
-				.array()
-				.filter_map(|elem| {
-					let text = elem.as_node().text().read();
-					if text.trim().is_empty() {
-						None
-					} else {
-						Some(String::from(text.trim()))
-					}
-				})
-				.collect::<Vec<_>>();
-		}
-		categories.sort_unstable();
-		categories.dedup();
-		let (mut nsfw, viewer) = (self.category_parser)(&html, categories.clone());
-		if html.select("div.alert.alert-danger").array().len() > 0 {
-			nsfw = MangaContentRating::Nsfw;
-		}
-		let status_str = html.select("span[class^='label label-']").text().read();
-		let status = match status_str.trim() {
-			x if x == self.detail_status_complete => MangaStatus::Completed,
-			x if x == self.detail_status_cancelled => MangaStatus::Cancelled,
-			x if x == self.detail_status_hiatus => MangaStatus::Hiatus,
-			x if x == self.detail_status_ongoing => MangaStatus::Ongoing,
-			_ => MangaStatus::Unknown,
-		};
-		Ok(Manga {
+		let description = text_with_newlines(html.select(".row .well p"));
+		let mut manga = Manga {
 			id,
 			cover,
 			title,
-			author,
-			artist,
 			description,
 			url,
-			categories,
-			status,
-			nsfw,
-			viewer,
-		})
+			..Default::default()
+		};
+
+		let detail_type = ["type", "ttipo", "النوع", "tür"];
+		let detail_author = [
+			"author(s)",
+			"autor(es)",
+			"auteur(s)",
+			"著作",
+			"yazar(lar)",
+			"mangaka(lar)",
+			"pengarang/penulis",
+			"pengarang",
+			"penulis",
+			"autor",
+			"المؤلف",
+			"перевод",
+			"autor/autorzy",
+			"автор",
+		];
+		let detail_artist = [
+			"artist(s);",
+			"artiste(s);",
+			"sanatçi(lar);",
+			"artista(s);",
+			"artist(s);/ilustrator",
+			"الرسام",
+			"seniman",
+			"rysownik/rysownicy",
+		];
+		let detail_genre = [
+			"categories",
+			"categorías",
+			"catégories",
+			"ジャンル",
+			"kategoriler",
+			"categorias",
+			"kategorie",
+			"التصنيفات",
+			"жанр",
+			"kategori",
+			"tagi",
+			"tags",
+			"жанр",
+		];
+		let detail_status = [
+			"status",
+			"statut",
+			"estado",
+			"状態",
+			"durum",
+			"الحالة",
+			"статус",
+		];
+		let detail_status_complete = [
+			"complete",
+			"مكتملة",
+			"complet",
+			"completo",
+			"zakończone",
+			"concluído",
+		];
+		let detail_status_ongoing = [
+			"ongoing",
+			"مستمرة",
+			"en cours",
+			"em lançamento",
+			"prace w toku",
+			"ativo",
+			"em andamento",
+			"en curso",
+		];
+
+		for elem in html.select(".row .dl-horizontal dt").array() {
+			let node = elem.as_node();
+			match node.text().read().to_lowercase().trim_end_matches(':') {
+				x if detail_author.contains(&x) => {
+					manga.author = node.next().unwrap().text().read()
+				}
+				x if detail_artist.contains(&x) => {
+					manga.artist = node.next().unwrap().text().read()
+				}
+				x if detail_genre.contains(&x) => node
+					.next()
+					.unwrap()
+					.select("a")
+					.array()
+					.for_each(|elem| manga.categories.push(elem.as_node().text().read())),
+				x if detail_status.contains(&x) => {
+					match node.next().unwrap().text().read().to_lowercase().trim() {
+						x if detail_status_complete.contains(&x) => {
+							manga.status = MangaStatus::Completed
+						}
+						x if detail_status_ongoing.contains(&x) => {
+							manga.status = MangaStatus::Ongoing
+						}
+						_ => manga.status = MangaStatus::Unknown,
+					}
+				}
+				x if detail_type.contains(&x) => {
+					manga.categories.push(node.next().unwrap().text().read())
+				}
+				_ => continue,
+			}
+		}
+		manga.categories.sort_unstable();
+		manga.categories.dedup();
+		(manga.nsfw, manga.viewer) = (self.category_parser)(&html, manga.categories.clone());
+		if html.select("div.alert.alert-danger").array().len() > 0 {
+			manga.nsfw = MangaContentRating::Nsfw;
+		}
+		Ok(manga)
 	}
 
 	pub fn get_chapter_list(&self, id: String) -> Result<Vec<Chapter>> {
@@ -353,6 +361,7 @@ impl MMRCMSSource {
 			.first()
 			.text()
 			.read();
+		let should_extract_chapter_title = node.select("em").array().len() == 0;
 		Ok(elems
 			.map(|elem| {
 				let chapter_node = elem.as_node();
@@ -360,16 +369,19 @@ impl MMRCMSSource {
 					String::from("volume-"),
 					chapter_node.attr("class").read(),
 				);
-				let url = chapter_node.select("a").attr("href").read();
+				let url = chapter_node.select("a").attr("abs:href").read();
 				let chapter_title = chapter_node.select("a").text().read();
 
-				let chapter = extract_f32_from_string(title.clone(), chapter_title);
-				let title = chapter_node.select("em").text().read();
+				let chapter = extract_f32_from_string(title.clone(), chapter_title.clone());
+				let mut title = chapter_node.select("em").text().read();
+				if title.is_empty() && should_extract_chapter_title {
+					title = chapter_title;
+				}
 				let chapter_id = format!("{}/{}", id, url.split('/').collect::<Vec<_>>()[5]);
 				let date_updated = StringRef::from(
 					chapter_node
-						.select("div.date-chapter-title-rtl")
-						.text()
+						.select("div.date-chapter-title-rtl, div.col-md-4")
+						.text() // TODO: Switch to own_text()
 						.read()
 						.trim(),
 				)

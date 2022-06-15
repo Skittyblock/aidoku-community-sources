@@ -6,11 +6,6 @@ mmrcms! {
 	MMRCMSSource {
 		base_url: "http://mangadoor.com",
 		lang: "pt-BR",
-		category: "Categoria",
-		detail_categories: "Categorías",
-		detail_description: "Resumen",
-		detail_status_ongoing: "En curso",
-		detail_status_complete: "Concluído",
 		category_parser: |_, categories| {
 			let mut nsfw = MangaContentRating::Safe;
 			let mut viewer = MangaViewer::Rtl;

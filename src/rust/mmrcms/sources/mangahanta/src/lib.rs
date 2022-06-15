@@ -7,10 +7,6 @@ mmrcms! {
 		base_url: "http://mangahanta.com",
 		lang: "tr",
 		category: "Kategori",
-		detail_categories: "Kategoriler",
-		detail_description: "Özet",
-		detail_status_ongoing: "Devam Ediyor",
-		detail_status_complete: "Tamamlandı",
 		category_parser: |_, categories| {
 			let mut nsfw = MangaContentRating::Safe;
 			let mut viewer = MangaViewer::Rtl;

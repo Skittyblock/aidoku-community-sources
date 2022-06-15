@@ -2,7 +2,7 @@ use aidoku::{prelude::format, std::html::Node, std::String, std::Vec};
 
 pub fn extract_f32_from_string(title: String, text: String) -> f32 {
 	text.replace(&title, "")
-		.replace(',', ".")
+		.replace(|a: char| a == ',' || a == '_' || a == '-', ".")
 		.chars()
 		.filter(|a| (*a >= '0' && *a <= '9') || *a == ' ' || *a == '.')
 		.collect::<String>()
@@ -11,7 +11,7 @@ pub fn extract_f32_from_string(title: String, text: String) -> f32 {
 		.into_iter()
 		.map(|a| a.parse::<f32>().unwrap_or(0.0))
 		.find(|a| *a > 0.0)
-		.unwrap_or(-1.0)
+		.unwrap_or(-1.0)    
 }
 pub fn append_protocol(url: String) -> String {
 	if !url.starts_with("http") {
