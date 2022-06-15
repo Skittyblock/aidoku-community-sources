@@ -6,8 +6,6 @@ mmrcms! {
 		base_url: "https://manga.utsukushii-bg.com",
 		lang: "bg",
 		category: "Жанр",
-		detail_categories: "Жанр",
-		detail_description: "Резюме",
 		category_mapper: |idx| {
 			match idx {
 				0 => String::new(),

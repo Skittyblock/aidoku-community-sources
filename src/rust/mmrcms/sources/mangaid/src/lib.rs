@@ -11,7 +11,6 @@ use mmrcms_template::template::MMRCMSSource;
 lazy_static! {
 	static ref INSTANCE: MMRCMSSource = MMRCMSSource {
 		base_url: "https://mangaid.click",
-		detail_description: "Description",
 		category_mapper: |idx| {
 			if idx == 0 {
 				String::new()

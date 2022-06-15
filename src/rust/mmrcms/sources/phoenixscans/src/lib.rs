@@ -8,13 +8,6 @@ mmrcms! {
 		lang: "pl",
 		category: "Kategorii",
 		tags: "Tagów",
-		detail_categories: "Tagi",
-		detail_tags: "Tagi",
-		detail_description: "Opis",
-		detail_status_ongoing: "Prace w toku",
-		detail_status_complete: "Zakończone",
-		detail_status_hiatus: "Wstrzymane",
-		detail_status_cancelled: "Porzucone",
 		category_mapper: |idx| {
 			match idx {
 				0 => String::new(),
