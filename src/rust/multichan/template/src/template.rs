@@ -153,7 +153,7 @@ impl MangaChanSource {
 			format!(
 				"{url}/tags/{tags}?offset={offset}{sort}",
 				url = self.base_url,
-				tags = tags.join("+"),
+				tags = urlencode(tags.join("+")),
 				offset = (page - 1) * 20,
 				sort = sort,
 			)
