@@ -22,33 +22,17 @@ lazy_static! {
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
-	let result = INSTANCE
+	let mut result = INSTANCE
 		.get_manga_list(filters, page)
 		.unwrap_or(MangaPageResult {
 			manga: Vec::new(),
 			has_more: false,
 		});
+	result.manga.iter_mut().for_each(|manga| {
+		manga.title = manga.title.replace(" (pt-br)", "")
+	});
 
-	Ok(MangaPageResult {
-		manga: result
-			.manga
-			.into_iter()
-			.map(|manga| Manga {
-				id: manga.id,
-				cover: manga.cover,
-				title: manga.title.replace(" (pt-br)", ""),
-				author: manga.author,
-				artist: manga.artist,
-				description: manga.description,
-				url: manga.url,
-				categories: manga.categories,
-				status: manga.status,
-				nsfw: manga.nsfw,
-				viewer: manga.viewer,
-			})
-			.collect::<Vec<_>>(),
-		has_more: result.has_more,
-	})
+	Ok(result)
 }
 
 #[get_manga_details]
