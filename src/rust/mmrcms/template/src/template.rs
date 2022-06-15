@@ -378,16 +378,11 @@ impl MMRCMSSource {
 					title = chapter_title;
 				}
 				let chapter_id = format!("{}/{}", id, url.split('/').collect::<Vec<_>>()[5]);
-				let date_updated = StringRef::from(
+				let date_updated =
 					chapter_node
 						.select("div.date-chapter-title-rtl, div.col-md-4")
-						.text() // TODO: Switch to own_text()
-						.read()
-						.trim(),
-				)
-				.0
-				.as_date("dd MMM'.' yyyy", Some("en_US"), None)
-				.unwrap_or(-1.0);
+						.own_text()
+						.as_date("dd MMM'.' yyyy", Some("en_US"), None);
 				Chapter {
 					id: chapter_id,
 					title,
