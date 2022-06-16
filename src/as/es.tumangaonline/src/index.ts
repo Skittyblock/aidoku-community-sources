@@ -5,10 +5,10 @@ import { TuMangaOnlineSource as Source } from "./TuMangaOnlineSource";
 let source = new Source();
 
 @external("net", "set_rate_limit")
-export declare function set_rate_limit(rate_limit: i32): void;
+declare function set_rate_limit(rate_limit: i32): void;
 
 @external("net", "set_rate_limit_period")
-export declare function set_rate_limit_period(period: i32): void;
+declare function set_rate_limit_period(period: i32): void;
 
 export function initialize(): void {
 	const rateLimit = defaults.get("rateLimit").toInteger();
