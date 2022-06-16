@@ -87,11 +87,15 @@ impl Default for MMRCMSSource {
 }
 
 impl MMRCMSSource {
-	fn get_default_cover(&self, id: &str) -> String {
-		format!(
-			"{}/uploads/manga/{}/cover/cover_250x350.jpg",
-			self.base_url, id
-		)
+	fn guess_cover(&self, url: &str, id: &str) -> String {
+		if url.ends_with("no-image.png") || url.is_empty() {
+			format!(
+				"{}/uploads/manga/{}/cover/cover_250x350.jpg",
+				self.base_url, id
+			)
+		} else {
+			append_protocol(String::from(url))
+		}
 	}
 
 	pub fn get_manga_list(&self, filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
@@ -143,30 +147,62 @@ impl MMRCMSSource {
 		}
 		if is_searching {
 			let url = format!("{}/search?{}", self.base_url, query.join("&"));
-			let json = Request::new(&url, HttpMethod::Get).json().as_object()?;
-			let suggestions = json.get("suggestions").as_array()?;
-			let mut manga = Vec::with_capacity(suggestions.len());
-			for suggestion in suggestions {
-				let obj = suggestion.as_object()?;
-				let id = obj.get("data").as_string()?.read();
-				manga.push(Manga {
-					id: id.clone(),
-					cover: self.get_default_cover(&id),
-					title: obj.get("value").as_string()?.read(),
-					author: String::new(),
-					artist: String::new(),
-					description: String::new(),
-					url: format!("{}/{}/{}", self.base_url, self.manga_path, id),
-					categories: Vec::new(),
-					status: MangaStatus::Unknown,
-					nsfw: MangaContentRating::Safe,
-					viewer: MangaViewer::Rtl,
-				});
+			let rawjson = Request::new(&url, HttpMethod::Get).json();
+			match rawjson.as_object() {
+				Ok(json) => {
+					let suggestions = json.get("suggestions").as_array()?;
+					let mut manga = Vec::with_capacity(suggestions.len());
+					for suggestion in suggestions {
+						let obj = suggestion.as_object()?;
+						let id = obj.get("data").as_string()?.read();
+						manga.push(Manga {
+							id: id.clone(),
+							cover: self.guess_cover("", &id),
+							title: obj.get("value").as_string()?.read(),
+							url: format!("{}/{}/{}", self.base_url, self.manga_path, id),
+							..Default::default()
+						});
+					}
+					Ok(MangaPageResult {
+						manga,
+						has_more: false,
+					})
+				}
+				Err(_) => {
+					// Looks like we don't have the normal search engine available
+					let html =
+						Request::get(format!("{}/changeMangaList?type=text", self.base_url)).html();
+					let title = query[0].replace("query=", "");
+					let manga = html
+						.select("ul.manga-list a")
+						.array()
+						.filter_map(|elem| {
+							let node = elem.as_node();
+							let text = node.text().read();
+							if text.contains(&title) {
+								let url = node.attr("abs:href").read();
+								let id = url
+									.replace(&format!("{}/{}", self.base_url, self.manga_path), "");
+								let cover = self.guess_cover("", &id);
+								Some(Manga {
+									id,
+									cover,
+									title: text,
+									url,
+									..Default::default()
+								})
+							} else {
+								None
+							}
+						})
+						.collect::<Vec<_>>();
+
+					Ok(MangaPageResult {
+						manga,
+						has_more: false,
+					})
+				}
 			}
-			Ok(MangaPageResult {
-				manga,
-				has_more: false,
-			})
 		} else {
 			let url = format!(
 				"{}/filterList?page={}&{}",
@@ -178,7 +214,7 @@ impl MMRCMSSource {
 			let node = html.select("div[class^=col-sm-]");
 			let elems = node.array();
 			let mut manga = Vec::with_capacity(elems.len());
-			let has_more: bool = elems.len() > 0;
+			let has_more: bool = !elems.is_empty();
 
 			for elem in elems {
 				let manga_node = elem.as_node();
@@ -190,31 +226,23 @@ impl MMRCMSSource {
 					format!("{}/{}/", self.base_url, self.manga_path).as_str(),
 					"",
 				);
-				let mut cover_src = manga_node
-					.select(&format!(
-						"a[href*='{}/{}'] img",
-						self.base_url, self.manga_path
-					))
-					.attr("abs:src")
-					.read();
-				if cover_src.contains("no-image.png") || cover_src.is_empty() {
-					// Workaround for Mangazuki Raws
-					cover_src = self.get_default_cover(&id);
-				}
-				let cover = append_protocol(cover_src);
+				let cover = self.guess_cover(
+					&manga_node
+						.select(&format!(
+							"a[href*='{}/{}'] img",
+							self.base_url, self.manga_path
+						))
+						.attr("abs:src")
+						.read(),
+					&id,
+				);
 				let title = manga_node.select("a.chart-title strong").text().read();
 				manga.push(Manga {
 					id: id.clone(),
 					cover,
 					title,
-					author: String::new(),
-					artist: String::new(),
-					description: String::new(),
 					url,
-					categories: Vec::new(),
-					status: MangaStatus::Unknown,
-					nsfw: MangaContentRating::Safe,
-					viewer: MangaViewer::Rtl,
+					..Default::default()
 				});
 			}
 			Ok(MangaPageResult { manga, has_more })
@@ -279,7 +307,7 @@ impl MMRCMSSource {
 		manga.categories.sort_unstable();
 		manga.categories.dedup();
 		(manga.nsfw, manga.viewer) = (self.category_parser)(&html, manga.categories.clone());
-		if html.select("div.alert.alert-danger").array().len() > 0 {
+		if !html.select("div.alert.alert-danger").array().is_empty() {
 			manga.nsfw = MangaContentRating::Nsfw;
 		}
 		Ok(manga)
@@ -296,7 +324,7 @@ impl MMRCMSSource {
 			.first()
 			.text()
 			.read();
-		let should_extract_chapter_title = node.select("em").array().len() == 0;
+		let should_extract_chapter_title = node.select("em").array().is_empty();
 		Ok(elems
 			.map(|elem| {
 				let chapter_node = elem.as_node();
@@ -325,9 +353,9 @@ impl MMRCMSSource {
 					volume,
 					chapter,
 					date_updated,
-					scanlator: String::new(),
 					url,
 					lang: String::from(self.lang),
+					..Default::default()
 				}
 			})
 			.collect::<Vec<Chapter>>())
@@ -359,8 +387,7 @@ impl MMRCMSSource {
 			pages.push(Page {
 				index: idx as i32,
 				url,
-				base64: String::new(),
-				text: String::new(),
+				..Default::default()
 			});
 		}
 		Ok(pages)
@@ -381,13 +408,10 @@ impl MMRCMSSource {
 				let id = format!("{}/{}", split[4], split[5]);
 				Some(Chapter {
 					id: id.clone(),
-					title: String::new(),
-					volume: -1.0,
 					chapter: extract_f32_from_string(String::new(), String::from(split[5])),
-					date_updated: -1.0,
-					scanlator: String::new(),
 					url: format!("{}/{}/{}", self.base_url, self.manga_path, id),
 					lang: String::from(self.lang),
+					..Default::default()
 				})
 			} else {
 				None
