@@ -1,4 +1,4 @@
-use aidoku::{prelude::format, std::html::Node, std::String, std::Vec};
+use aidoku::{prelude::*, std::html::Node, std::String, std::Vec};
 
 pub fn extract_f32_from_string(title: String, text: String) -> f32 {
 	text.replace(&title, "")
@@ -11,7 +11,7 @@ pub fn extract_f32_from_string(title: String, text: String) -> f32 {
 		.into_iter()
 		.map(|a| a.parse::<f32>().unwrap_or(0.0))
 		.find(|a| *a > 0.0)
-		.unwrap_or(-1.0)    
+		.unwrap_or(-1.0)
 }
 pub fn append_protocol(url: String) -> String {
 	if !url.starts_with("http") {
@@ -54,4 +54,29 @@ pub fn text_with_newlines(node: Node) -> String {
 	} else {
 		String::new()
 	}
+}
+
+fn parse_email_protected(data: String) -> String {
+	let key = u32::from_str_radix(&data[0..2], 16).unwrap();
+	let mut email = String::with_capacity(data.len() / 2 - 1);
+	let mut n = 2;
+
+	while data.len() - n > 0 {
+		let chrcode = u32::from_str_radix(&data[n..n + 2], 16).unwrap() ^ key;
+		email.push(char::from_u32(chrcode).unwrap());
+		n += 2;
+	}
+	email
+}
+
+pub fn email_unprotected(node: Node) -> Node {
+	let mut html = node.html().read();
+	let base_uri = node.base_uri().read();
+	for elem in node.select(".__cf_email__").array() {
+		let cfnode = elem.as_node();
+		let email = parse_email_protected(cfnode.attr("data-cfemail").read());
+		html = html.replace(&cfnode.outer_html().read(), &email);
+	}
+	node.close();
+	Node::new_with_uri(html, base_uri)
 }
