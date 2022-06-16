@@ -170,8 +170,13 @@ impl MMRCMSSource {
 				}
 				Err(_) => {
 					// Looks like we don't have the normal search engine available
-					let html =
-						Request::get(format!("{}/changeMangaList?type=text", self.base_url)).html();
+					let html = email_unprotected(
+						Request::new(
+							format!("{}/changeMangaList?type=text", self.base_url),
+							HttpMethod::Get,
+						)
+						.html(),
+					);
 					let title = query[0].replace("query=", "");
 					let manga = html
 						.select("ul.manga-list a")
@@ -210,7 +215,7 @@ impl MMRCMSSource {
 				page,
 				query.join("&")
 			);
-			let html = Request::new(&url, HttpMethod::Get).html();
+			let html = email_unprotected(Request::new(&url, HttpMethod::Get).html());
 			let node = html.select("div[class^=col-sm-]");
 			let elems = node.array();
 			let mut manga = Vec::with_capacity(elems.len());
@@ -252,14 +257,14 @@ impl MMRCMSSource {
 	pub fn get_manga_details(&self, id: String) -> Result<Manga> {
 		let url = format!("{}/{}/{}", self.base_url, self.manga_path, id);
 		cache_manga_page(&url);
-		let html = unsafe { CACHED_MANGA.clone().unwrap() };
+		let html = email_unprotected(unsafe { CACHED_MANGA.clone().unwrap() });
 		let cover = append_protocol(html.select("img[class^=img-]").attr("abs:src").read());
 		let title = html
 			.select("h2.widget-title, h1.widget-title, .listmanga-header, div.panel-heading")
 			.first()
 			.text()
 			.read();
-		let description = text_with_newlines(email_unprotected(html.select(".row .well p")));
+		let description = text_with_newlines(html.select(".row .well p"));
 		let mut manga = Manga {
 			id,
 			cover,
@@ -316,7 +321,7 @@ impl MMRCMSSource {
 	pub fn get_chapter_list(&self, id: String) -> Result<Vec<Chapter>> {
 		let url = format!("{}/{}/{}", self.base_url, self.manga_path, id);
 		cache_manga_page(&url);
-		let html = unsafe { CACHED_MANGA.clone().unwrap() };
+		let html = email_unprotected(unsafe { CACHED_MANGA.clone().unwrap() });
 		let node = html.select("li:has(.chapter-title-rtl)");
 		let elems = node.array();
 		let title = html
