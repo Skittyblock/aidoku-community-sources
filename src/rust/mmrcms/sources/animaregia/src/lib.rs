@@ -2,8 +2,8 @@
 use aidoku::{
 	error::Result,
 	prelude::*,
-	std::{html::Node, net::Request, String, Vec},
-	Chapter, DeepLink, Filter, Manga, MangaPageResult, Page, MangaContentRating
+	std::{net::Request, String, Vec},
+	Chapter, DeepLink, Filter, Manga, MangaContentRating, MangaPageResult, Page,
 };
 use lazy_static::lazy_static;
 use mmrcms_template::{
@@ -40,7 +40,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 fn get_manga_details(id: String) -> Result<Manga> {
 	let url = format!("{}/{}/{}", INSTANCE.base_url, INSTANCE.manga_path, id);
 	cache_manga_page(&url);
-	let html = Node::new_with_uri(unsafe { &CACHED_MANGA.clone().unwrap() }, &url);
+	let html = unsafe { CACHED_MANGA.clone().unwrap() };
 
 	let title = html
 		.select("h1.widget-title")
@@ -105,11 +105,8 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 	let mut result = INSTANCE.get_chapter_list(id).unwrap_or_default();
 
 	result.iter_mut().for_each(|chapter| {
-		chapter.title = String::from(
-			chapter.title.split('-').collect::<Vec<_>>()[1]
-				.replace("Download", "")
-				.trim(),
-		)
+		let begin = chapter.title.find(" - ").unwrap_or(chapter.title.len() - 3) + 3;
+		chapter.title = String::from(&chapter.title[begin..]);
 	});
 	Ok(result)
 }

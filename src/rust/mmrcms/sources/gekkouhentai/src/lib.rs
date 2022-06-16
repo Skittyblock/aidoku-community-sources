@@ -3,7 +3,7 @@ use aidoku::{
 	error::Result,
 	prelude::*,
 	std::{net::Request, String, Vec},
-	Chapter, DeepLink, Filter, Manga, MangaPageResult, Page, MangaContentRating, MangaViewer
+	Chapter, DeepLink, Filter, Manga, MangaContentRating, MangaPageResult, MangaViewer, Page,
 };
 use lazy_static::lazy_static;
 use mmrcms_template::template::MMRCMSSource;
@@ -50,9 +50,9 @@ fn get_manga_details(id: String) -> Result<Manga> {
 fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 	let mut result = INSTANCE.get_chapter_list(id).unwrap_or_default();
 
-	result.iter_mut().for_each(|chapter| {
-		chapter.title = String::new()		
-	});
+	result
+		.iter_mut()
+		.for_each(|chapter| chapter.title = String::new());
 	Ok(result)
 }
 
