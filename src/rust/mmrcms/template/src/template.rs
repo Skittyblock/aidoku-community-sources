@@ -11,9 +11,7 @@ use aidoku::{
 	MangaViewer, Page,
 };
 
-use crate::helper::{
-	append_protocol, email_unprotected, extract_f32_from_string, text_with_newlines, urlencode,
-};
+use crate::helper::{append_protocol, email_unprotected, extract_f32_from_string, text_with_newlines, urlencode};
 
 pub static mut CACHED_MANGA: Option<Node> = None;
 static mut CACHED_MANGA_ID: Option<String> = None;
@@ -42,6 +40,8 @@ pub struct MMRCMSSource {
 	pub category_parser: fn(&Node, Vec<String>) -> (MangaContentRating, MangaViewer),
 	pub category_mapper: fn(i64) -> String,
 	pub tags_mapper: fn(i64) -> String,
+
+	pub use_search_engine: bool,
 }
 
 impl Default for MMRCMSSource {
@@ -82,6 +82,7 @@ impl Default for MMRCMSSource {
 				}
 			}, // 0 is reserved for None
 			tags_mapper: |_| String::new(),
+			use_search_engine: true,
 		}
 	}
 }
@@ -98,17 +99,49 @@ impl MMRCMSSource {
 		}
 	}
 
+	fn self_search<T: AsRef<str>>(&self, query: T) -> Result<MangaPageResult> {
+		let query = query.as_ref();
+		let html = Request::new(
+			format!("{}/changeMangaList?type=text", self.base_url),
+			HttpMethod::Get,
+		)
+		.html();
+		let manga = html
+			.select("ul.manga-list a")
+			.array()
+			.filter_map(|elem| {
+				let node = elem.as_node();
+				let title = node.text().read();
+				if title.to_lowercase().contains(query) {
+					let url = node.attr("abs:href").read();
+					let id = url.replace(&format!("{}/{}", self.base_url, self.manga_path), "");
+					let cover = self.guess_cover("", &id);
+					Some(Manga {
+						id,
+						cover,
+						title,
+						url,
+						..Default::default()
+					})
+				} else {
+					None
+				}
+			})
+			.collect::<Vec<_>>();
+
+		Ok(MangaPageResult {
+			manga,
+			has_more: false,
+		})
+	}
+
 	pub fn get_manga_list(&self, filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 		let mut query: Vec<String> = Vec::new();
-		let mut is_searching = false;
+		let mut title = String::new();
 		for filter in filters {
 			match filter.kind {
 				FilterType::Title => {
-					is_searching = true;
-					query.push(format!(
-						"query={}",
-						urlencode(filter.value.as_string()?.read())
-					));
+					title = urlencode(filter.value.as_string()?.read());
 					break;
 				}
 				FilterType::Author => {
@@ -145,11 +178,10 @@ impl MMRCMSSource {
 				_ => continue,
 			}
 		}
-		if is_searching {
-			let url = format!("{}/search?{}", self.base_url, query.join("&"));
-			let rawjson = Request::new(&url, HttpMethod::Get).json();
-			match rawjson.as_object() {
-				Ok(json) => {
+		if !title.is_empty() {
+			if self.use_search_engine {
+				let url = format!("{}/search?query={title}", self.base_url);
+				if let Ok(json) = Request::new(&url, HttpMethod::Get).json().as_object() {
 					let suggestions = json.get("suggestions").as_array()?;
 					let mut manga = Vec::with_capacity(suggestions.len());
 					for suggestion in suggestions {
@@ -167,46 +199,11 @@ impl MMRCMSSource {
 						manga,
 						has_more: false,
 					})
+				} else {
+					self.self_search(title)
 				}
-				Err(_) => {
-					// Looks like we don't have the normal search engine available
-					let html = email_unprotected(
-						Request::new(
-							format!("{}/changeMangaList?type=text", self.base_url),
-							HttpMethod::Get,
-						)
-						.html(),
-					);
-					let title = query[0].replace("query=", "");
-					let manga = html
-						.select("ul.manga-list a")
-						.array()
-						.filter_map(|elem| {
-							let node = elem.as_node();
-							let text = node.text().read();
-							if text.contains(&title) {
-								let url = node.attr("abs:href").read();
-								let id = url
-									.replace(&format!("{}/{}", self.base_url, self.manga_path), "");
-								let cover = self.guess_cover("", &id);
-								Some(Manga {
-									id,
-									cover,
-									title: text,
-									url,
-									..Default::default()
-								})
-							} else {
-								None
-							}
-						})
-						.collect::<Vec<_>>();
-
-					Ok(MangaPageResult {
-						manga,
-						has_more: false,
-					})
-				}
+			} else {
+				self.self_search(title)
 			}
 		} else {
 			let url = format!(
@@ -215,7 +212,7 @@ impl MMRCMSSource {
 				page,
 				query.join("&")
 			);
-			let html = email_unprotected(Request::new(&url, HttpMethod::Get).html());
+			let html = Request::new(&url, HttpMethod::Get).html();
 			let node = html.select("div[class^=col-sm-]");
 			let elems = node.array();
 			let mut manga = Vec::with_capacity(elems.len());
@@ -257,14 +254,14 @@ impl MMRCMSSource {
 	pub fn get_manga_details(&self, id: String) -> Result<Manga> {
 		let url = format!("{}/{}/{}", self.base_url, self.manga_path, id);
 		cache_manga_page(&url);
-		let html = email_unprotected(unsafe { CACHED_MANGA.clone().unwrap() });
+		let html = unsafe { CACHED_MANGA.clone().unwrap() };
 		let cover = append_protocol(html.select("img[class^=img-]").attr("abs:src").read());
 		let title = html
 			.select("h2.widget-title, h1.widget-title, .listmanga-header, div.panel-heading")
 			.first()
 			.text()
 			.read();
-		let description = text_with_newlines(html.select(".row .well p"));
+		let description = text_with_newlines(email_unprotected(html.select(".row .well p")));
 		let mut manga = Manga {
 			id,
 			cover,
@@ -321,7 +318,7 @@ impl MMRCMSSource {
 	pub fn get_chapter_list(&self, id: String) -> Result<Vec<Chapter>> {
 		let url = format!("{}/{}/{}", self.base_url, self.manga_path, id);
 		cache_manga_page(&url);
-		let html = email_unprotected(unsafe { CACHED_MANGA.clone().unwrap() });
+		let html = unsafe { CACHED_MANGA.clone().unwrap() };
 		let node = html.select("li:has(.chapter-title-rtl)");
 		let elems = node.array();
 		let title = html
@@ -410,7 +407,10 @@ impl MMRCMSSource {
 				Some(Chapter {
 					id: String::from(split[5]),
 					chapter: extract_f32_from_string(String::new(), String::from(&split[5][..end])),
-					url: format!("{}/{}/{}/{}", self.base_url, self.manga_path, split[4], split[5]),
+					url: format!(
+						"{}/{}/{}/{}",
+						self.base_url, self.manga_path, split[4], split[5]
+					),
 					lang: String::from(self.lang),
 					..Default::default()
 				})
