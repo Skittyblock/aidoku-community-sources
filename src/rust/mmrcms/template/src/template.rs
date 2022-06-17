@@ -346,7 +346,7 @@ impl MMRCMSSource {
 					title = chapter_title;
 				}
 
-				let chapter_id = format!("{}/{}", id, url.split('/').collect::<Vec<_>>()[5]);
+				let chapter_id = String::from(url.split('/').collect::<Vec<_>>()[5]);
 				let date_updated = chapter_node
 					.select("div.date-chapter-title-rtl, div.col-md-4")
 					.first()
@@ -366,25 +366,21 @@ impl MMRCMSSource {
 			.collect::<Vec<Chapter>>())
 	}
 
-	pub fn get_page_list(&self, id: String) -> Result<Vec<Page>> {
-		let url = format!("{}/{}/{}", self.base_url, self.manga_path, id);
+	pub fn get_page_list(&self, manga_id: String, id: String) -> Result<Vec<Page>> {
+		let url = format!("{}/{}/{}/{}", self.base_url, self.manga_path, manga_id, id);
 		let html = Request::new(&url, HttpMethod::Get).html().html().read();
 		let begin = html.find("var pages = ").unwrap_or(0) + 12;
 		let end = html[begin..].find(';').map(|i| i + begin).unwrap_or(0);
-		let array = json::parse(html[begin..end].as_bytes()).as_array()?;
+		let array = json::parse(&html[begin..end]).as_array()?;
 		let mut pages = Vec::with_capacity(array.len());
 
-		let (manga_id, chapter_id) = {
-			let split = id.split('/').collect::<Vec<_>>();
-			(split[0], split[1])
-		};
 		for (idx, page) in array.enumerate() {
 			let pageobj = page.as_object()?;
 			let url_ = pageobj.get("page_image").as_string()?.read();
 			let url = if pageobj.get("external").as_int().unwrap_or(-1) == 0 {
 				format!(
 					"{}/uploads/manga/{}/chapters/{}/{}",
-					self.base_url, manga_id, chapter_id, url_
+					self.base_url, manga_id, id, url_
 				)
 			} else {
 				url_

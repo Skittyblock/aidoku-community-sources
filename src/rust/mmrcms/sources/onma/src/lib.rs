@@ -100,8 +100,8 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 }
 
 #[get_page_list]
-fn get_page_list(id: String) -> Result<Vec<Page>> {
-	INSTANCE.get_page_list(id)
+fn get_page_list(manga_id: String, id: String) -> Result<Vec<Page>> {
+	INSTANCE.get_page_list(manga_id, id)
 }
 
 #[modify_image_request]
