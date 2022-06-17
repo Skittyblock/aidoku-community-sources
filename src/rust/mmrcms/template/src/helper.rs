@@ -59,7 +59,7 @@ pub fn text_with_newlines(node: Node) -> String {
 fn parse_email_protected<T: AsRef<str>>(data: T) -> String {
 	let data = data.as_ref();
 	let key = u32::from_str_radix(&data[0..2], 16).unwrap();
-	let mut email = String::with_capacity(data.len() / 2);
+	let mut email = String::with_capacity(data.len() / 2 - 1);
 	let mut n = 2;
 
 	while n < data.len() {

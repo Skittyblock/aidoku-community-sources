@@ -8,7 +8,7 @@ use aidoku::{
 };
 use lazy_static::lazy_static;
 use mmrcms_template::{
-	helper::{email_unprotected, text_with_newlines},
+	helper::text_with_newlines,
 	template::{cache_manga_page, MMRCMSSource, CACHED_MANGA},
 };
 
@@ -46,7 +46,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 fn get_manga_details(id: String) -> Result<Manga> {
 	let url = format!("{}/{}/{}", INSTANCE.base_url, INSTANCE.manga_path, id);
 	cache_manga_page(&url);
-	let html = email_unprotected(unsafe { CACHED_MANGA.clone().unwrap() });
+	let html = unsafe { CACHED_MANGA.clone().unwrap() };
 
 	let title = html.select("div.panel-heading").text().read();
 	let cover = html.select("img.img-thumbnail").attr("abs:src").read();
