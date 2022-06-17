@@ -1,0 +1,28 @@
+[package]
+name = "dmzj-aidoku"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+crate-type = ["cdylib"]
+
+[profile.dev]
+panic = "abort"
+
+[profile.release]
+panic = "abort"
+opt-level = "s"
+strip = true
+lto = true
+
+[dependencies]
+aidoku = { git = "https://github.com/Aidoku/aidoku-rs/" }
+base64ct = "*"
+rsa = {git = "https://github.com/RustCrypto/RSA", default-features = false}
+getrandom = { version = "*", features = ["js"] }
+prost = { version = "0.10.4", default-features = false, features = ["prost-derive"] }
+
+[build-dependencies]
+prost-build = { version = "0.10.4" }
