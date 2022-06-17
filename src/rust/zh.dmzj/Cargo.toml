@@ -19,9 +19,8 @@ lto = true
 
 [dependencies]
 aidoku = { git = "https://github.com/Aidoku/aidoku-rs/" }
-base64ct = "*"
-rsa = {git = "https://github.com/RustCrypto/RSA", default-features = false}
-getrandom = { version = "*", features = ["js"] }
+base64ct = "1.5.0"
+rsa = {version = "0.6.1", default-features = false}
 prost = { version = "0.10.4", default-features = false, features = ["prost-derive"] }
 
 [build-dependencies]
