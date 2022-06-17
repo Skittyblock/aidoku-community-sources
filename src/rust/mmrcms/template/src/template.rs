@@ -406,11 +406,11 @@ impl MMRCMSSource {
 		if split.len() > 4 {
 			let manga = Some(self.get_manga_details(String::from(split[4]))?);
 			let chapter = if split.len() > 5 {
-				let id = format!("{}/{}", split[4], split[5]);
+				let end = split[5].find('-').unwrap_or(split[5].len());
 				Some(Chapter {
-					id: id.clone(),
-					chapter: extract_f32_from_string(String::new(), String::from(split[5])),
-					url: format!("{}/{}/{}", self.base_url, self.manga_path, id),
+					id: String::from(split[5]),
+					chapter: extract_f32_from_string(String::new(), String::from(&split[5][..end])),
+					url: format!("{}/{}/{}/{}", self.base_url, self.manga_path, split[4], split[5]),
 					lang: String::from(self.lang),
 					..Default::default()
 				})
