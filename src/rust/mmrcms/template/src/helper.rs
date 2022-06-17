@@ -55,34 +55,3 @@ pub fn text_with_newlines(node: Node) -> String {
 		String::new()
 	}
 }
-
-fn parse_email_protected<T: AsRef<str>>(data: T) -> String {
-	let data = data.as_ref();
-	let key = u32::from_str_radix(&data[0..2], 16).unwrap();
-	let mut email = String::with_capacity(data.len() / 2 - 1);
-	let mut n = 2;
-
-	while n < data.len() {
-		let chrcode = u32::from_str_radix(&data[n..n + 2], 16).unwrap() ^ key;
-		email.push(char::from_u32(chrcode).unwrap_or_default());
-		n += 2;
-	}
-	email
-}
-
-pub fn email_unprotected(node: Node) -> Node {
-	let cfemail = node.select(".__cf_email__").array();
-	if cfemail.is_empty() {
-		node
-	} else {
-		let mut html = node.html().read();
-		let base_uri = node.base_uri().read();
-		for elem in cfemail {
-			let cfnode = elem.as_node();
-			let email = parse_email_protected(cfnode.attr("data-cfemail").read());
-			html = html.replace(&cfnode.outer_html().read(), &email);
-		}
-		node.close();
-		Node::new_with_uri(html, base_uri)
-	}
-}

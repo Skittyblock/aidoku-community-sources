@@ -11,7 +11,7 @@ use aidoku::{
 	MangaViewer, Page,
 };
 
-use crate::helper::{append_protocol, email_unprotected, extract_f32_from_string, text_with_newlines, urlencode};
+use crate::helper::{append_protocol, extract_f32_from_string, text_with_newlines, urlencode};
 
 pub static mut CACHED_MANGA: Option<Node> = None;
 static mut CACHED_MANGA_ID: Option<String> = None;
@@ -261,7 +261,7 @@ impl MMRCMSSource {
 			.first()
 			.text()
 			.read();
-		let description = text_with_newlines(email_unprotected(html.select(".row .well p")));
+		let description = text_with_newlines(html.select(".row .well p"));
 		let mut manga = Manga {
 			id,
 			cover,
