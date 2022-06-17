@@ -10,12 +10,10 @@ use aidoku::{
 	prelude::*,
 	std::net::HttpMethod,
 	std::net::Request,
-	std::ObjectRef,
-	std::{defaults::defaults_get, format},
 	std::{json, ArrayRef},
-	std::{String, StringRef, Vec},
-	Chapter, DeepLink, Filter, FilterType, Listing, Manga, MangaContentRating, MangaPageResult,
-	MangaStatus, MangaViewer, Page,
+	std::{String, Vec},
+	Chapter, DeepLink, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
+	MangaViewer, Page,
 };
 
 mod helper;
@@ -56,7 +54,7 @@ pub fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult
 				is_keyword = !title.is_empty();
 
 				if is_keyword {
-					keyword = title.clone();
+					keyword = title;
 					break;
 				}
 			}
@@ -100,7 +98,7 @@ pub fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult
 			let r = r
 				.strip_prefix("var g_search_data = ")
 				.unwrap()
-				.strip_suffix(";")
+				.strip_suffix(';')
 				.unwrap();
 
 			json::parse(r.as_bytes()).as_array()?
@@ -129,7 +127,7 @@ pub fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult
 		}
 	} else {
 		let mut filters_query: String = String::from("0");
-		if filters_list.len() != 0 {
+		if !filters_list.is_empty() {
 			for i in filters_list {
 				filters_query.push_str(&helper::i32_to_string(i));
 				filters_query.push('-');
@@ -167,7 +165,7 @@ pub fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult
 				description: String::new(),
 				url: String::new(),
 				categories: Vec::new(),
-				status: status,
+				status,
 				nsfw: MangaContentRating::Safe,
 				viewer: MangaViewer::Rtl,
 			});
@@ -201,11 +199,7 @@ fn get_manga_details(id: String) -> Result<Manga> {
 			artist: String::new(),
 			description: pbData.description,
 			url: format!("{}/info/{}.html", BASE_URL, id),
-			categories: pbData
-				.types
-				.iter()
-				.map(|s| String::from(s.tag_name.clone()))
-				.collect(),
+			categories: pbData.types.iter().map(|s| s.tag_name.clone()).collect(),
 			status: match pbData.status[0].tag_name.as_str() {
 				"连载中" => MangaStatus::Ongoing,
 				"已完结" => MangaStatus::Completed,
@@ -240,7 +234,7 @@ fn get_manga_details(id: String) -> Result<Manga> {
 				.get("types")
 				.as_string()?
 				.read()
-				.split("/")
+				.split('/')
 				.collect::<Vec<_>>()
 				.iter()
 				.map(|s| String::from(s.deref()))
@@ -269,12 +263,12 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 
 	let mut chapters = Vec::new();
 
-	if pb.errno == 0 && pb.data.as_ref().unwrap().chapters.len() != 0 {
+	if pb.errno == 0 && !pb.data.as_ref().unwrap().chapters.is_empty() {
 		let pbData = pb.data.unwrap();
 		let mut volume = 0;
 		let hasMultiChapter = pbData.chapters.len() >= 2;
 		for chapterList in pbData.chapters {
-			volume = volume + 1;
+			volume += 1;
 			for chapter in chapterList.data {
 				chapters.push(Chapter {
 					id: format!("{}/{}", pbData.id, chapter.chapter_id),
@@ -317,7 +311,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 			});
 		}
 	}
-	return Ok(chapters);
+	Ok(chapters)
 }
 
 #[get_page_list]
@@ -359,7 +353,7 @@ fn get_page_list(id: String) -> Result<Vec<Page>> {
 		};
 		match r {
 			Some(r) => break r,
-			_ => index = index + 1,
+			_ => index += 1,
 		};
 	};
 
@@ -371,8 +365,8 @@ fn get_page_list(id: String) -> Result<Vec<Page>> {
 			.replace("http:", "https:")
 			.replace("dmzj1.com", "dmzj.com");
 
-		let thumbUrl = {
-			if id != "" {
+		let _thumbUrl = {
+			if !id.is_empty() {
 				let initial = imageUrl
 					.strip_prefix("https://images.dmzj.com/")
 					.unwrap()
@@ -403,7 +397,7 @@ fn modify_image_request(request: Request) {
 }
 
 #[handle_url]
-pub fn handle_url(url: String) -> Result<DeepLink> {
+pub fn handle_url(_url: String) -> Result<DeepLink> {
 	Err(aidoku::error::AidokuError {
 		reason: aidoku::error::AidokuErrorKind::Unimplemented,
 	})

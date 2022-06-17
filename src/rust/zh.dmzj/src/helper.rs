@@ -1,13 +1,12 @@
 use aidoku::{
-	error::Result, prelude::*, std::net::HttpMethod, std::net::Request, std::ArrayRef, std::String,
-	std::ValueRef, std::Vec,
+	std::net::HttpMethod, std::net::Request, std::String, std::Vec,
 };
 
 use prost::bytes::Bytes;
-use prost::Message;
+
 
 use base64ct::{Base64, Encoding};
-use rsa::{pkcs8::DecodePrivateKey, RsaPrivateKey, RsaPublicKey};
+use rsa::{pkcs8::DecodePrivateKey};
 
 pub mod protobuf {
 	include!(concat!(env!("OUT_DIR"), "/dmzj.comic.rs"));
@@ -44,9 +43,9 @@ pub fn encodeURI(string: &String) -> String {
 
 	for byte in bytes {
 		let curr = *byte;
-		if (b'a' <= curr && curr <= b'z')
-			|| (b'A' <= curr && curr <= b'Z')
-			|| (b'0' <= curr && curr <= b'9')
+		if (b'a'..=b'z').contains(&curr)
+			|| (b'A'..=b'Z').contains(&curr)
+			|| (b'0'..=b'9').contains(&curr)
 			|| (curr == b';'
 				|| curr == b',' || curr == b'/'
 				|| curr == b'?' || curr == b':'
@@ -68,7 +67,7 @@ pub fn encodeURI(string: &String) -> String {
 		}
 	}
 
-	String::from_utf8(result).unwrap_or(String::new())
+	String::from_utf8(result).unwrap_or_default()
 }
 
 pub fn i32_to_string(mut integer: i32) -> String {
@@ -90,7 +89,7 @@ pub fn i32_to_string(mut integer: i32) -> String {
 		string.insert(pos, char::from_u32((digit as u32) + ('0' as u32)).unwrap());
 		integer /= 10;
 	}
-	return string;
+	string
 }
 
 pub fn GET(url: String) -> Request {
@@ -105,12 +104,12 @@ const KEY:&str = "MIICeAIBADANBgkqhkiG9w0BAQEFAASCAmIwggJeAgEAAoGBAK8nNR1lTnIfIe
 pub fn DECODE(base64: &String) -> protobuf::ComicDetailResponse {
 	let keyByte = Base64::decode_vec(KEY).unwrap();
 	let privateKey = rsa::RsaPrivateKey::from_pkcs8_der(&keyByte).unwrap();
-	let r = Base64::decode_vec(&base64).unwrap();
+	let r = Base64::decode_vec(base64).unwrap();
 	const BLOCK_SIZE: usize = 128;
 	let mut iter = r.chunks(BLOCK_SIZE);
 
 	let mut rr = Vec::new();
-	while let Some(ptr) = iter.next() {
+	for ptr in iter {
 		rr = [
 			rr,
 			privateKey
@@ -120,5 +119,5 @@ pub fn DECODE(base64: &String) -> protobuf::ComicDetailResponse {
 		.concat();
 	}
 
-	return prost::Message::decode(Bytes::from(rr)).unwrap();
+	prost::Message::decode(Bytes::from(rr)).unwrap()
 }
