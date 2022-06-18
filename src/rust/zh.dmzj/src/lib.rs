@@ -106,17 +106,13 @@ pub fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult
 
 		for it in data {
 			let it = it.as_object()?;
-			let id = helper::i32_to_string(it.get("id").as_int()? as i32);
-			let author = it.get("comic_author").as_string()?.read();
-			let title = it.get("comic_name").as_string()?.read();
-			let cover = it.get("comic_cover").as_string()?.read();
 
 			manga_arr.push(Manga {
-				id,
-				cover,
-				title,
-				author: String::new(),
-				artist: author,
+				id: helper::i32_to_string(it.get("id").as_int()? as i32),
+				cover: it.get("comic_cover").as_string()?.read(),
+				title: it.get("comic_name").as_string()?.read(),
+				author: it.get("comic_author").as_string()?.read(),
+				artist: String::new(),
 				description: String::new(),
 				url: String::new(),
 				categories: Vec::new(),
@@ -147,25 +143,28 @@ pub fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult
 
 		for it in data {
 			let it = it.as_object()?;
-			let id = helper::i32_to_string(it.get("id").as_int()? as i32);
-			let author = it.get("authors").as_string()?.read();
-			let title = it.get("title").as_string()?.read();
-			let cover = it.get("cover").as_string()?.read();
-			let status = match it.get("status").as_string()?.read().as_str() {
-				"连载中" => MangaStatus::Ongoing,
-				"已完结" => MangaStatus::Completed,
-				_ => MangaStatus::Unknown,
-			};
 			manga_arr.push(Manga {
-				id,
-				cover,
-				title,
-				author: String::new(),
-				artist: author,
+				id: helper::i32_to_string(it.get("id").as_int()? as i32),
+				cover: it.get("cover").as_string()?.read(),
+				title: it.get("title").as_string()?.read(),
+				author: it.get("authors").as_string()?.read(),
+				artist: String::new(),
 				description: String::new(),
 				url: String::new(),
-				categories: Vec::new(),
-				status,
+				categories: it
+					.get("types")
+					.as_string()?
+					.read()
+					.split('/')
+					.collect::<Vec<_>>()
+					.iter()
+					.map(|s| String::from(s.deref()))
+					.collect(),
+				status: match it.get("status").as_string()?.read().as_str() {
+					"连载中" => MangaStatus::Ongoing,
+					"已完结" => MangaStatus::Completed,
+					_ => MangaStatus::Unknown,
+				},
 				nsfw: MangaContentRating::Safe,
 				viewer: MangaViewer::Rtl,
 			});
@@ -191,12 +190,16 @@ fn get_manga_details(id: String) -> Result<Manga> {
 	let pb = helper::decode(&helper::get(url).string());
 	if pb.errno == 0 {
 		let pb_data = pb.data.unwrap();
-
 		return Ok(Manga {
 			id: id.clone(),
 			cover: pb_data.cover,
 			title: pb_data.title,
-			author: pb_data.authors.iter().map(|s| s.tag_name.clone()).collect(),
+			author: pb_data
+				.authors
+				.iter()
+				.map(|s| s.tag_name.clone())
+				.collect::<Vec<String>>()
+				.join("/"),
 			artist: String::new(),
 			description: pb_data.description,
 			url: format!("{}/info/{}.html", BASE_URL, id),
