@@ -13,6 +13,7 @@ pub fn extract_f32_from_string(title: String, text: String) -> f32 {
 		.find(|a| *a > 0.0)
 		.unwrap_or(-1.0)
 }
+
 pub fn append_protocol(url: String) -> String {
 	if !url.starts_with("http") {
 		return format!("{}{}", "https:", url);
@@ -54,4 +55,29 @@ pub fn text_with_newlines(node: Node) -> String {
 	} else {
 		String::new()
 	}
+}
+
+fn parse_email_protected<T: AsRef<str>>(data: T) -> String {
+	let data = data.as_ref();
+	let key = u32::from_str_radix(&data[0..2], 16).unwrap();
+	let mut email = String::with_capacity(data.len() / 2 - 1);
+	let mut n = 2;
+
+	while n < data.len() {
+		let chrcode = u32::from_str_radix(&data[n..n + 2], 16).unwrap() ^ key;
+		email.push(char::from_u32(chrcode).unwrap_or_default());
+		n += 2;
+	}
+	email
+}
+
+pub fn email_unprotected(html: &Node) {
+	html
+		.select(".__cf_email__")
+		.array()
+		.for_each(|elem| {
+			let mut node = elem.as_node();
+			let email = parse_email_protected(node.attr("data-cfemail").read());
+			node.set_text(email).ok();
+		})
 }
