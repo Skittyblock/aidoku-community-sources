@@ -1,0 +1,1121 @@
+[
+	{
+		"type": "title"
+	},
+	{
+		"type": "group",
+		"name": "Параметры поиска",
+		"filters": [
+			{
+				"type": "check",
+				"name": "Сортировка по дате"
+			}
+		]
+	},
+	{
+		"type": "group",
+		"name": "Тэги",
+		"filters": [
+			{
+				"type": "genre",
+				"name": "3D",
+				"id": "3D",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "action",
+				"id": "action",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "ahegao",
+				"id": "ahegao",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "bdsm",
+				"id": "bdsm",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "corruption",
+				"id": "corruption",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "foot fetish",
+				"id": "foot_fetish",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "footfuck",
+				"id": "footfuck",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "gender bender",
+				"id": "gender_bender",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "live",
+				"id": "live",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "lolcon",
+				"id": "lolcon",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "megane",
+				"id": "megane",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "mind break",
+				"id": "mind_break",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "monstergirl",
+				"id": "monstergirl",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "netorare",
+				"id": "netorare",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "netori",
+				"id": "netori",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "nipple penetration",
+				"id": "nipple_penetration",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "oyakodon",
+				"id": "oyakodon",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "paizuri (titsfuck)",
+				"id": "paizuri_(titsfuck)",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "rpg",
+				"id": "rpg",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "scat",
+				"id": "scat",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "shemale",
+				"id": "shemale",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "shooter",
+				"id": "shooter",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "simulation",
+				"id": "simulation",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "skinsuit",
+				"id": "skinsuit",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "tomboy",
+				"id": "tomboy",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "x-ray",
+				"id": "x-ray",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "алкоголь",
+				"id": "алкоголь",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "анал",
+				"id": "анал",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "андроид",
+				"id": "андроид",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "анилингус",
+				"id": "анилингус",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "анимация",
+				"id": "анимация",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "аркада",
+				"id": "аркада",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "арт",
+				"id": "арт",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "бабушка",
+				"id": "бабушка",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "без текста",
+				"id": "без_текста",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "без трусиков",
+				"id": "без_трусиков",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "без цензуры",
+				"id": "без_цензуры",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "беременность",
+				"id": "беременность",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "бикини",
+				"id": "бикини",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "близнецы",
+				"id": "близнецы",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "боди-арт",
+				"id": "боди-арт",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "больница",
+				"id": "больница",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "большая грудь",
+				"id": "большая_грудь",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "большие попки",
+				"id": "большие_попки",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "бондаж",
+				"id": "бондаж",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "буккаке",
+				"id": "буккаке",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "в ванной",
+				"id": "в_ванной",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "в общественном месте",
+				"id": "в_общественном_месте",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "в первый раз",
+				"id": "в_первый_раз",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "в цвете",
+				"id": "в_цвете",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "в школе",
+				"id": "в_школе",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "вампиры",
+				"id": "вампиры",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "веб",
+				"id": "веб",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "вебкам",
+				"id": "вебкам",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "вибратор",
+				"id": "вибратор",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "визуальная новелла",
+				"id": "визуальная_новелла",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "внучка",
+				"id": "внучка",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "волосатые женщины",
+				"id": "волосатые_женщины",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "гаремник",
+				"id": "гаремник",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "гг девушка",
+				"id": "гг_девушка",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "гг парень",
+				"id": "гг_парень",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "гипноз",
+				"id": "гипноз",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "глубокий минет",
+				"id": "глубокий_минет",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "горничные",
+				"id": "горничные",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "горячий источник",
+				"id": "горячий_источник",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "грудастая лоли",
+				"id": "грудастая_лоли",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "групповой секс",
+				"id": "групповой_секс",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "гяру и гангуро",
+				"id": "гяру_и_гангуро",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "двойное проникновение",
+				"id": "двойное_проникновение",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "девочки волшебницы",
+				"id": "девочки_волшебницы",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "девушка туалет",
+				"id": "девушка_туалет",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "демоны",
+				"id": "демоны",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "дилдо",
+				"id": "дилдо",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "дочь",
+				"id": "дочь",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "драма",
+				"id": "драма",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "дыра в стене",
+				"id": "дыра_в_стене",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "жестокость",
+				"id": "жестокость",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "за деньги",
+				"id": "за_деньги",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "зомби",
+				"id": "зомби",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "зрелые женщины",
+				"id": "зрелые_женщины",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "измена",
+				"id": "измена",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "изнасилование",
+				"id": "изнасилование",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "инопланетяне",
+				"id": "инопланетяне",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "инцест",
+				"id": "инцест",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "исполнение желаний",
+				"id": "исполнение_желаний",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "камера",
+				"id": "камера",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "квест",
+				"id": "квест",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "кимоно",
+				"id": "кимоно",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "колготки",
+				"id": "колготки",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "комиксы",
+				"id": "комиксы",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "косплей",
+				"id": "косплей",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "кремпай",
+				"id": "кремпай",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "кудере",
+				"id": "кудере",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "кузина",
+				"id": "кузина",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "куннилингус",
+				"id": "куннилингус",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "купальники",
+				"id": "купальники",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "латекс и кожа",
+				"id": "латекс_и_кожа",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "магия",
+				"id": "магия",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "маленькая грудь",
+				"id": "маленькая_грудь",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "мастурбация",
+				"id": "мастурбация",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "мать",
+				"id": "мать",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "мейдочки",
+				"id": "мейдочки",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "мерзкий дядька",
+				"id": "мерзкий_дядька",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "минет",
+				"id": "минет",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "много девушек",
+				"id": "много_девушек",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "молоко",
+				"id": "молоко",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "монашки",
+				"id": "монашки",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "монстры",
+				"id": "монстры",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "мочеиспускание",
+				"id": "мочеиспускание",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "мужская озвучка",
+				"id": "мужская_озвучка",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "мужчина крепкого телосложения",
+				"id": "мужчина_крепкого_телосложения",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "мускулистые женщины",
+				"id": "мускулистые_женщины",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "на природе",
+				"id": "на_природе",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "наблюдение",
+				"id": "наблюдение",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "непрямой инцест",
+				"id": "непрямой_инцест",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "новелла",
+				"id": "новелла",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "обмен партнерами",
+				"id": "обмен_партнерами",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "обмен телами",
+				"id": "обмен_телами",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "обычный секс",
+				"id": "обычный_секс",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "огромная грудь",
+				"id": "огромная_грудь",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "огромный член",
+				"id": "огромный_член",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "остановка времени",
+				"id": "остановка_времени",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "парень пассив",
+				"id": "парень_пассив",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "переодевание",
+				"id": "переодевание",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "песочница",
+				"id": "песочница",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "племянница",
+				"id": "племянница",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "пляж",
+				"id": "пляж",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "подглядывание",
+				"id": "подглядывание",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "подчинение",
+				"id": "подчинение",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "похищение",
+				"id": "похищение",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "презерватив",
+				"id": "презерватив",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "принуждение",
+				"id": "принуждение",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "прозрачная одежда",
+				"id": "прозрачная_одежда",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "проникновение в матку",
+				"id": "проникновение_в_матку",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "психические отклонения",
+				"id": "психические_отклонения",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "публично",
+				"id": "публично",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "рабыни",
+				"id": "рабыни",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "романтика",
+				"id": "романтика",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "сверхъестественное",
+				"id": "сверхъестественное",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "секс игрушки",
+				"id": "секс_игрушки",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "сестра",
+				"id": "сестра",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "сетакон",
+				"id": "сетакон",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "скрытный секс",
+				"id": "скрытный_секс",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "спортивная форма",
+				"id": "спортивная_форма",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "спящие",
+				"id": "спящие",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "страпон",
+				"id": "страпон",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "суккубы",
+				"id": "суккубы",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "темнокожие",
+				"id": "темнокожие",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "тентакли",
+				"id": "тентакли",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "толстушки",
+				"id": "толстушки",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "трап",
+				"id": "трап",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "тётя",
+				"id": "тётя",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "умеренная жестокость",
+				"id": "умеренная_жестокость",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "учитель и ученик",
+				"id": "учитель_и_ученик",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "ушастые",
+				"id": "ушастые",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "фантазии",
+				"id": "фантазии",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "фантастика",
+				"id": "фантастика",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "фемдом",
+				"id": "фемдом",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "фестиваль",
+				"id": "фестиваль",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "фистинг",
+				"id": "фистинг",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "фурри",
+				"id": "фурри",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "футанари",
+				"id": "футанари",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "футанари имеет парня",
+				"id": "футанари_имеет_парня",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "фэнтези",
+				"id": "фэнтези",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "хоррор",
+				"id": "хоррор",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "цундере",
+				"id": "цундере",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "чикан",
+				"id": "чикан",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "чирлидеры",
+				"id": "чирлидеры",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "чулки",
+				"id": "чулки",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "школьная форма",
+				"id": "школьная_форма",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "школьники",
+				"id": "школьники",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "школьницы",
+				"id": "школьницы",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "школьный купальник",
+				"id": "школьный_купальник",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "щекотка",
+				"id": "щекотка",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "эксгибиционизм",
+				"id": "эксгибиционизм",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "эльфы",
+				"id": "эльфы",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "эччи",
+				"id": "эччи",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "юмор",
+				"id": "юмор",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "юри",
+				"id": "юри",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "яндере",
+				"id": "яндере",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "яой",
+				"id": "яой",
+				"canExclude": true
+			}
+		]
+	},
+	{
+		"type": "sort",
+		"name": "Сортировать",
+		"canAscend": true,
+		"options": [
+			"Дата",
+			"Популярность",
+			"Имя"
+		],
+		"default": {
+			"index": 0,
+			"ascending": false
+		}
+	}
+]

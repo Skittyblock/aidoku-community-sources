@@ -1,0 +1,16 @@
+{
+	"info": {
+		"id": "ru.hentai-chan",
+		"lang": "ru",
+		"name": "Hentai-chan",
+		"version": 2,
+		"urls": [
+			"https://y.hentaichan.live",
+			"http://exhentai-dono.me"
+		],
+		"nsfw": 2
+	},
+	"listings": [
+		{ "name": "Случайная" }
+	]
+}
