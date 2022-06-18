@@ -86,7 +86,7 @@ jobs:
         for src in ./src/rust/*; do
           (
             cd "$src"
-            chmod +x ./build.sh -a
+            chmod +x ./build.sh
           )
         done
     -
