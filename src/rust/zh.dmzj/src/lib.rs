@@ -423,7 +423,7 @@ pub fn handle_url(url: String) -> Result<DeepLink> {
 	};
 
 	if !url.is_empty() && index <= 2 {
-		let manga = get_manga_details(String::from(manga_id))?;
+		let manga = get_manga_details(manga_id)?;
 
 		Ok(DeepLink {
 			manga: Some(manga),
