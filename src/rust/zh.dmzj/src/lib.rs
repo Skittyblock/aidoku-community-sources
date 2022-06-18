@@ -199,7 +199,7 @@ fn get_manga_details(id: String) -> Result<Manga> {
 				.iter()
 				.map(|s| s.tag_name.clone())
 				.collect::<Vec<String>>()
-				.join("/"),
+				.join(", "),
 			artist: String::new(),
 			description: pb_data.description,
 			url: format!("{}/info/{}.html", BASE_URL, id),
