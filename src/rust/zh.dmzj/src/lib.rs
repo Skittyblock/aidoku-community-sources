@@ -191,11 +191,12 @@ fn get_manga_details(id: String) -> Result<Manga> {
 	let pb = helper::decode(&helper::get(url).string());
 	if pb.errno == 0 {
 		let pb_data = pb.data.unwrap();
+
 		return Ok(Manga {
 			id: id.clone(),
 			cover: pb_data.cover,
 			title: pb_data.title,
-			author: String::new(),
+			author: pb_data.authors.iter().map(|s| s.tag_name.clone()).collect(),
 			artist: String::new(),
 			description: pb_data.description,
 			url: format!("{}/info/{}.html", BASE_URL, id),
@@ -206,7 +207,12 @@ fn get_manga_details(id: String) -> Result<Manga> {
 				_ => MangaStatus::Unknown,
 			},
 			nsfw: MangaContentRating::Safe,
-			viewer: MangaViewer::Ltr,
+			viewer: match pb_data.direction {
+				0 => MangaViewer::Rtl, // Maybe? Can't find evidence.
+				1 => MangaViewer::Ltr,
+				2 => MangaViewer::Scroll,
+				_ => MangaViewer::Default,
+			},
 		});
 	} else {
 		// Try old api
@@ -227,7 +233,7 @@ fn get_manga_details(id: String) -> Result<Manga> {
 			cover: info.get("cover").as_string()?.read(),
 			title: info.get("title").as_string()?.read(),
 			author: info.get("authors").as_string()?.read(),
-			artist: String::from(""),
+			artist: String::new(),
 			description: info.get("description").as_string()?.read(),
 			url: format!("{}/info/{}.html", BASE_URL, id),
 			categories: info
@@ -245,7 +251,12 @@ fn get_manga_details(id: String) -> Result<Manga> {
 				_ => MangaStatus::Unknown,
 			},
 			nsfw: MangaContentRating::Safe,
-			viewer: MangaViewer::Ltr,
+			viewer: match info.get("direction").as_int()? {
+				0 => MangaViewer::Rtl, // Maybe? Can't find evidence.
+				1 => MangaViewer::Ltr,
+				2 => MangaViewer::Scroll,
+				_ => MangaViewer::Default,
+			},
 		});
 	}
 }
@@ -299,6 +310,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 			.get("list")
 			.clone()
 			.as_array()?;
+
 		let len = list.len();
 		for (index, chapter) in list.enumerate() {
 			let data = chapter.as_object()?;
