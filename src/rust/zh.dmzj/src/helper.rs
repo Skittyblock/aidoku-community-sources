@@ -1,39 +1,12 @@
-use aidoku::{
-	std::net::HttpMethod, std::net::Request, std::String, std::Vec,
-};
+use aidoku::{std::net::HttpMethod, std::net::Request, std::String, std::Vec};
 
 use prost::bytes::Bytes;
 
-
 use base64ct::{Base64, Encoding};
-use rsa::{pkcs8::DecodePrivateKey};
+use rsa::pkcs8::DecodePrivateKey;
 
 pub mod protobuf {
 	include!(concat!(env!("OUT_DIR"), "/dmzj.comic.rs"));
-}
-
-// 地区
-pub fn type_list() -> [i32; 7] {
-	[0, 2304, 2305, 2306, 2307, 2308, 8453]
-}
-
-// 读者
-pub fn reader_list() -> [i32; 4] {
-	[0, 3262, 3263, 3264]
-}
-
-// 连载状态
-pub fn status_list() -> [i32; 3] {
-	[0, 2309, 2310]
-}
-
-// 分类
-pub fn genre_list() -> [i32; 42] {
-	[
-		0, 4, 3243, 3242, 17, 3244, 3245, 3249, 3248, 3246, 16, 14, 7, 6, 5, 8, 9, 13, 12, 11, 10,
-		3250, 3251, 5806, 5345, 5077, 5848, 6316, 7900, 7568, 6437, 4518, 4459, 3254, 3253, 3252,
-		3255, 6219, 3328, 3365, 3326, 3325,
-	]
 }
 
 pub fn encodeURI(string: &String) -> String {
@@ -106,7 +79,7 @@ pub fn DECODE(base64: &String) -> protobuf::ComicDetailResponse {
 	let privateKey = rsa::RsaPrivateKey::from_pkcs8_der(&keyByte).unwrap();
 	let r = Base64::decode_vec(base64).unwrap();
 	const BLOCK_SIZE: usize = 128;
-	let mut iter = r.chunks(BLOCK_SIZE);
+	let iter = r.chunks(BLOCK_SIZE);
 
 	let mut rr = Vec::new();
 	for ptr in iter {

@@ -393,12 +393,45 @@ fn get_page_list(id: String) -> Result<Vec<Page>> {
 // Doesn't work
 #[modify_image_request]
 fn modify_image_request(request: Request) {
-	request.header("Referer", "https://www.dmzj.com/");
+	request
+    .header("Referer", "https://www.dmzj.com/")
+    .header("User-Agent",
+    "Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.93 Mobile Safari/537.36 Aidoku/1.0");
 }
 
 #[handle_url]
-pub fn handle_url(_url: String) -> Result<DeepLink> {
-	Err(aidoku::error::AidokuError {
-		reason: aidoku::error::AidokuErrorKind::Unimplemented,
-	})
+pub fn handle_url(url: String) -> Result<DeepLink> {
+	println!("{}", url);
+
+	let prefix = [
+		"https://m.dmzj.com/info/",
+		"https://www.dmzj.com/info/",
+		"https://manhua.dmzj.com/",
+	];
+
+	let mut index = 0;
+	let manga_id = loop {
+		if index > 2 {
+			break String::new();
+		}
+
+		let r = url.strip_prefix(prefix[index]);
+		match r {
+			Some(str) => break String::from(str.strip_suffix(".html").unwrap_or_default()),
+			_ => index += 1,
+		}
+	};
+
+	if !url.is_empty() && index <= 2 {
+		let manga = get_manga_details(String::from(manga_id))?;
+
+		Ok(DeepLink {
+			manga: Some(manga),
+			chapter: None,
+		})
+	} else {
+		Err(aidoku::error::AidokuError {
+			reason: aidoku::error::AidokuErrorKind::Unimplemented,
+		})
+	}
 }
