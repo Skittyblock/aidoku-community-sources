@@ -11,7 +11,7 @@ use aidoku::{
 	MangaViewer, Page,
 };
 
-use crate::helper::{append_protocol, extract_f32_from_string, text_with_newlines, urlencode};
+use crate::helper::{append_protocol, extract_f32_from_string, email_unprotected, text_with_newlines, urlencode};
 
 pub static mut CACHED_MANGA: Option<Node> = None;
 static mut CACHED_MANGA_ID: Option<String> = None;
@@ -23,7 +23,10 @@ pub fn cache_manga_page(url: &str) {
 		}
 
 		CACHED_MANGA_ID = Some(String::from(url));
-		CACHED_MANGA = Some(Request::new(url, HttpMethod::Get).html());
+		
+		let html = Request::new(url, HttpMethod::Get).html();
+		email_unprotected(&html);
+		CACHED_MANGA = Some(html);
 	}
 }
 
@@ -106,6 +109,7 @@ impl MMRCMSSource {
 			HttpMethod::Get,
 		)
 		.html();
+		email_unprotected(&html);
 		let manga = html
 			.select("ul.manga-list a")
 			.array()
@@ -213,6 +217,7 @@ impl MMRCMSSource {
 				query.join("&")
 			);
 			let html = Request::new(&url, HttpMethod::Get).html();
+			email_unprotected(&html);
 			let node = html.select("div[class^=col-sm-]");
 			let elems = node.array();
 			let mut manga = Vec::with_capacity(elems.len());
@@ -255,6 +260,7 @@ impl MMRCMSSource {
 		let url = format!("{}/{}/{}", self.base_url, self.manga_path, id);
 		cache_manga_page(&url);
 		let html = unsafe { CACHED_MANGA.clone().unwrap() };
+		email_unprotected(&html);
 		let cover = append_protocol(html.select("img[class^=img-]").attr("abs:src").read());
 		let title = html
 			.select("h2.widget-title, h1.widget-title, .listmanga-header, div.panel-heading")
@@ -319,6 +325,7 @@ impl MMRCMSSource {
 		let url = format!("{}/{}/{}", self.base_url, self.manga_path, id);
 		cache_manga_page(&url);
 		let html = unsafe { CACHED_MANGA.clone().unwrap() };
+		email_unprotected(&html);
 		let node = html.select("li:has(.chapter-title-rtl)");
 		let elems = node.array();
 		let title = html
