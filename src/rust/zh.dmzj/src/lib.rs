@@ -349,10 +349,9 @@ fn get_page_list(id: String) -> Result<Vec<Page>> {
 		format!("{}/comic/chapter/{}.html", API_PAGELIST_OLD_URL, &id),
 	];
 	let mut index = 0;
-
-	let arr = loop {
+	let arr: Vec<String> = loop {
 		if index > 2 {
-			break ArrayRef::new();
+			break Vec::new();
 		}
 
 		let req = helper::get(url[index].clone());
@@ -371,15 +370,37 @@ fn get_page_list(id: String) -> Result<Vec<Page>> {
 			_ => None,
 		};
 		match r {
-			Some(r) => break r,
+			Some(r) => {
+				// Check if image url valid by having an extension.
+				let mut rr: Vec<String> = Vec::new();
+				for it in r {
+					let str = it.as_string()?.read();
+					let mat = str.rfind(".");
+
+					if mat.is_none() {
+						continue;
+					}
+
+					if !str
+						.chars()
+						.skip(mat.unwrap())
+						.take(str.len() - mat.unwrap())
+						.collect::<String>()
+						.contains("/")
+					{
+						rr.push(str);
+					}
+				}
+				break rr;
+			}
 			_ => index += 1,
 		};
 	};
 
 	let mut pages = Vec::new();
 
-	for (index, r) in arr.enumerate() {
-		let mut image_url = r.as_string()?.read();
+	for (index, r) in arr.iter().enumerate() {
+		let mut image_url = String::from(r.deref());
 		image_url = image_url
 			.replace("http:", "https:")
 			.replace("dmzj1.com", "dmzj.com");
