@@ -1,0 +1,25 @@
+{
+	"info": {
+		"id": "multi.xkcd",
+		"lang": "multi",
+		"name": "xkcd",
+		"version": 1,
+		"urls": [
+			"https://xkcd.com",
+			"https://es.xkcd.com",
+			"https://xkcd.lapin.org",
+			"https://xkcdko.com",
+			"https://xkcd.ru",
+			"https://xkcd.tw"
+		],
+		"nsfw": 0
+	},
+	"languages": [
+		{ "code": "en", "default": true },
+		{ "code": "es" },
+		{ "code": "fr" },
+		{ "code": "ko" },
+		{ "code": "ru" },
+		{ "code": "zh" }
+	]
+}
