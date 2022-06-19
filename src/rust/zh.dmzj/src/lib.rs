@@ -377,18 +377,11 @@ fn get_page_list(id: String) -> Result<Vec<Page>> {
 					let str = it.as_string()?.read();
 					let mat = str.rfind(".");
 
-					if mat.is_none() {
-						continue;
-					}
-
-					if !str
-						.chars()
-						.skip(mat.unwrap())
-						.take(str.len() - mat.unwrap())
-						.collect::<String>()
-						.contains("/")
-					{
-						rr.push(str);
+					if mat.is_some() {
+						match &str[mat.unwrap()..str.len()] {
+							".jpg" | ".png" => rr.push(str),
+							_ => {}
+						}
 					}
 				}
 				break rr;
