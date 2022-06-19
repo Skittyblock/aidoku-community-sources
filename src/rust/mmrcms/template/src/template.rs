@@ -11,10 +11,20 @@ use aidoku::{
 	MangaViewer, Page,
 };
 
-use crate::helper::{append_protocol, extract_f32_from_string, email_unprotected, text_with_newlines, urlencode};
+use crate::helper::{
+	append_protocol, email_unprotected, extract_f32_from_string, text_with_newlines, urlencode,
+};
 
 pub static mut CACHED_MANGA: Option<Node> = None;
 static mut CACHED_MANGA_ID: Option<String> = None;
+
+/// Internal attribute to control if the source should fall
+/// back to self searching after failing to use the search
+/// engine first time.
+///
+/// Strikes a balance between control and reliability (and also
+/// not spamming sources with useless requests)
+static mut INTERNAL_USE_SEARCH_ENGINE: bool = true;
 
 pub fn cache_manga_page(url: &str) {
 	unsafe {
@@ -23,7 +33,7 @@ pub fn cache_manga_page(url: &str) {
 		}
 
 		CACHED_MANGA_ID = Some(String::from(url));
-		
+
 		let html = Request::new(url, HttpMethod::Get).html();
 		email_unprotected(&html);
 		CACHED_MANGA = Some(html);
@@ -183,7 +193,7 @@ impl MMRCMSSource {
 			}
 		}
 		if !title.is_empty() {
-			if self.use_search_engine {
+			if self.use_search_engine && unsafe { INTERNAL_USE_SEARCH_ENGINE } {
 				let url = format!("{}/search?query={title}", self.base_url);
 				if let Ok(json) = Request::new(&url, HttpMethod::Get).json().as_object() {
 					let suggestions = json.get("suggestions").as_array()?;
@@ -204,6 +214,7 @@ impl MMRCMSSource {
 						has_more: false,
 					})
 				} else {
+					unsafe { INTERNAL_USE_SEARCH_ENGINE = false };
 					self.self_search(title)
 				}
 			} else {

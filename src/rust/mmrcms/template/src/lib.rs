@@ -9,13 +9,22 @@ macro_rules! mmrcms {
 		use aidoku::{
 			error::Result,
 			prelude::*,
-			std::{net::Request, String, Vec},
+			std::{
+				net::{Request, set_rate_limit, set_rate_limit_period},
+				String, Vec
+			},
 			Chapter, DeepLink, Filter, Manga, MangaPageResult, Page,
 		};
 		use lazy_static::lazy_static;
 
 		lazy_static! {
 			static ref INSTANCE: MMRCMSSource = $e;
+		}
+
+		#[initialize]
+		fn initialize() {
+			set_rate_limit(20);
+			set_rate_limit_period(60);
 		}
 
 		#[get_manga_list]
