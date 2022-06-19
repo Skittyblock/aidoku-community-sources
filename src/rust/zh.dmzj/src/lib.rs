@@ -9,7 +9,7 @@ use aidoku::{
 	error::Result,
 	prelude::*,
 	std::net::Request,
-	std::{json, ArrayRef},
+	std::{json},
 	std::{net::HttpMethod, StringRef},
 	std::{String, Vec},
 	Chapter, DeepLink, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
@@ -195,7 +195,6 @@ fn get_manga_details(id: String) -> Result<Manga> {
 
 	let pb = helper::decode(&helper::get(url).string());
 	if pb.errno == 0 {
-		println!("pb errno {} {}", pb.errno, pb.errmsg);
 		let pb_data = pb.data.unwrap();
 		return Ok(Manga {
 			id: id.clone(),
