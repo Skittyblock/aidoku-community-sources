@@ -92,7 +92,7 @@ pub fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult
 		);
 
 		let data = {
-			let req = helper::get(url);
+			let req = helper::get(&url);
 			let r = req.string();
 
 			let r = r
@@ -193,7 +193,7 @@ fn get_manga_details(id: String) -> Result<Manga> {
 		aidoku::std::current_date() as i64
 	);
 
-	let pb = helper::decode(&helper::get(url).string());
+	let pb = helper::decode(&helper::get(&url).string());
 	if pb.errno == 0 {
 		let pb_data = pb.data.unwrap();
 		return Ok(Manga {
@@ -228,7 +228,7 @@ fn get_manga_details(id: String) -> Result<Manga> {
 
 		let url = format!("{}/dynamic/comicinfo/{}.json", API_URL, id);
 
-		let req = helper::get(url);
+		let req = helper::get(&url);
 
 		let info = req
 			.json()
@@ -288,7 +288,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 		aidoku::std::current_date() as i64
 	);
 
-	let pb = helper::decode(&helper::get(url).string());
+	let pb = helper::decode(&helper::get(&url).string());
 
 	let mut chapters = Vec::new();
 
@@ -318,7 +318,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 		}
 	} else {
 		let url = format!("{}/dynamic/comicinfo/{}.json", API_URL, id);
-		let req = helper::get(url);
+		let req = helper::get(&url);
 
 		let list = req
 			.json()
@@ -369,7 +369,7 @@ fn get_page_list(id: String) -> Result<Vec<Page>> {
 			break Vec::new();
 		}
 
-		let req = helper::get(url[index].clone());
+		let req = helper::get(&url[index]);
 
 		let req = req.json();
 		let r = match index {
@@ -390,10 +390,9 @@ fn get_page_list(id: String) -> Result<Vec<Page>> {
 				let mut rr: Vec<String> = Vec::new();
 				for it in r {
 					let str = it.as_string()?.read();
-					let mat = str.rfind(".");
 
-					if mat.is_some() {
-						match &str[mat.unwrap()..str.len()] {
+					if let Some(mat) = str.rfind('.') {
+						match &str[mat..str.len()] {
 							".jpg" | ".png" => rr.push(str),
 							_ => {}
 						}
