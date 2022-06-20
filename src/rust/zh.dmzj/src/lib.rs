@@ -111,7 +111,7 @@ pub fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult
 				id: helper::i32_to_string(it.get("id").as_int()? as i32),
 				cover: it.get("comic_cover").as_string()?.read(),
 				title: it.get("comic_name").as_string()?.read(),
-				author: it.get("comic_author").as_string()?.read().replace('/', ","),
+				author: it.get("comic_author").as_string()?.read().replace('/', ", "),
 				artist: String::new(),
 				description: String::new(),
 				url: String::new(),
@@ -148,12 +148,10 @@ pub fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult
 				cover: it.get("cover").as_string()?.read(),
 				title: it.get("title").as_string()?.read(),
 				// Nullable?, Meet once. Maybe api buggy.
-				author: it
-					.get("authors")
-					.as_string()
-					.unwrap_or(StringRef::from(""))
-					.read()
-					.replace('/', ","),
+				author:match it.get("authors").as_string()  {
+					Ok(authors) => authors.read().replace('/', ", "),
+					Err(_) => String::new(),
+				},
 				artist: String::new(),
 				description: String::new(),
 				url: String::new(),
@@ -249,7 +247,7 @@ fn get_manga_details(id: String) -> Result<Manga> {
 			id: id.clone(),
 			cover: info.get("cover").as_string()?.read(),
 			title: info.get("title").as_string()?.read(),
-			author: info.get("authors").as_string()?.read().replace('/', ","),
+			author: info.get("authors").as_string()?.read().replace('/', ", "),
 			artist: String::new(),
 			description: info.get("description").as_string()?.read(),
 			url: format!("{}/info/{}.html", BASE_URL, id),
