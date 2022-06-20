@@ -39,6 +39,7 @@ pub fn get_chapter_list() -> Result<Vec<Chapter>> {
 	Ok(html
 		.select("#content a:not(:last-of-type)")
 		.array()
+        .rev()
 		.map(|elem| {
 			let node = elem.as_node();
 			let url = node.attr("abs:href").read();
