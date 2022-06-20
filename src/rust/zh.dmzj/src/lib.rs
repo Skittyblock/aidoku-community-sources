@@ -8,10 +8,8 @@ use core::ops::Deref;
 use aidoku::{
 	error::Result,
 	prelude::*,
-	std::net::HttpMethod,
-	std::net::Request,
-	std::{json, ArrayRef},
-	std::{String, Vec},
+	std::net::{HttpMethod, Request},
+	std::{json, String, Vec},
 	Chapter, DeepLink, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
 	MangaViewer, Page,
 };
@@ -92,7 +90,7 @@ pub fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult
 		);
 
 		let data = {
-			let req = helper::get(url);
+			let req = helper::get(&url);
 			let r = req.string();
 
 			let r = r
@@ -111,7 +109,11 @@ pub fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult
 				id: helper::i32_to_string(it.get("id").as_int()? as i32),
 				cover: it.get("comic_cover").as_string()?.read(),
 				title: it.get("comic_name").as_string()?.read(),
-				author: it.get("comic_author").as_string()?.read(),
+				author: it
+					.get("comic_author")
+					.as_string()?
+					.read()
+					.replace('/', ", "),
 				artist: String::new(),
 				description: String::new(),
 				url: String::new(),
@@ -128,6 +130,7 @@ pub fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult
 				filters_query.push_str(&helper::i32_to_string(i));
 				filters_query.push('-');
 			}
+			// Pop extra '-'
 			filters_query.pop();
 		}
 
@@ -138,7 +141,6 @@ pub fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult
 			helper::i32_to_string(sort),
 			helper::i32_to_string(page)
 		);
-
 		let data = Request::new(&url, HttpMethod::Get).json().as_array()?;
 
 		for it in data {
@@ -147,7 +149,11 @@ pub fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult
 				id: helper::i32_to_string(it.get("id").as_int()? as i32),
 				cover: it.get("cover").as_string()?.read(),
 				title: it.get("title").as_string()?.read(),
-				author: it.get("authors").as_string()?.read(),
+				// Nullable?, Meet once. Maybe api buggy.
+				author: match it.get("authors").as_string() {
+					Ok(authors) => authors.read().replace('/', ", "),
+					Err(_) => String::new(),
+				},
 				artist: String::new(),
 				description: String::new(),
 				url: String::new(),
@@ -187,7 +193,7 @@ fn get_manga_details(id: String) -> Result<Manga> {
 		aidoku::std::current_date() as i64
 	);
 
-	let pb = helper::decode(&helper::get(url).string());
+	let pb = helper::decode(&helper::get(&url).string());
 	if pb.errno == 0 {
 		let pb_data = pb.data.unwrap();
 		return Ok(Manga {
@@ -221,7 +227,8 @@ fn get_manga_details(id: String) -> Result<Manga> {
 		// Try old api
 
 		let url = format!("{}/dynamic/comicinfo/{}.json", API_URL, id);
-		let req = helper::get(url);
+
+		let req = helper::get(&url);
 
 		let info = req
 			.json()
@@ -229,18 +236,26 @@ fn get_manga_details(id: String) -> Result<Manga> {
 			.get("data")
 			.as_object()?
 			.get("info")
+			.clone() 
+			/* 
+			Notice here is a huge bug about ownership lose.
+			You have to clone ref especially after convert to object and before convert to other type.
+			Or you lose everything.
+			Ctrl F clone to search for evidence.
+			*/				
 			.as_object()?;
 
 		return Ok(Manga {
 			id: id.clone(),
 			cover: info.get("cover").as_string()?.read(),
 			title: info.get("title").as_string()?.read(),
-			author: info.get("authors").as_string()?.read(),
+			author: info.get("authors").as_string()?.read().replace('/', ", "),
 			artist: String::new(),
 			description: info.get("description").as_string()?.read(),
 			url: format!("{}/info/{}.html", BASE_URL, id),
 			categories: info
 				.get("types")
+				.clone()
 				.as_string()?
 				.read()
 				.split('/')
@@ -273,7 +288,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 		aidoku::std::current_date() as i64
 	);
 
-	let pb = helper::decode(&helper::get(url).string());
+	let pb = helper::decode(&helper::get(&url).string());
 
 	let mut chapters = Vec::new();
 
@@ -303,7 +318,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 		}
 	} else {
 		let url = format!("{}/dynamic/comicinfo/{}.json", API_URL, id);
-		let req = helper::get(url);
+		let req = helper::get(&url);
 
 		let list = req
 			.json()
@@ -319,7 +334,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 			let data = chapter.as_object()?;
 
 			chapters.push(Chapter {
-				id: format!("{}/{}", id.clone(), data.get("id").as_string()?.read()),
+				id: format!("{}/{}", id, data.get("id").as_string()?.read()),
 				title: data.get("chapter_name").as_string()?.read(),
 				volume: -1.0,
 				chapter: (len - index) as f32,
@@ -349,13 +364,12 @@ fn get_page_list(id: String) -> Result<Vec<Page>> {
 		format!("{}/comic/chapter/{}.html", API_PAGELIST_OLD_URL, &id),
 	];
 	let mut index = 0;
-
-	let arr = loop {
+	let arr: Vec<String> = loop {
 		if index > 2 {
-			break ArrayRef::new();
+			break Vec::new();
 		}
 
-		let req = helper::get(url[index].clone());
+		let req = helper::get(&url[index]);
 
 		let req = req.json();
 		let r = match index {
@@ -371,15 +385,29 @@ fn get_page_list(id: String) -> Result<Vec<Page>> {
 			_ => None,
 		};
 		match r {
-			Some(r) => break r,
+			Some(r) => {
+				// Check if image url valid by having an extension.
+				let mut rr: Vec<String> = Vec::new();
+				for it in r {
+					let str = it.as_string()?.read();
+
+					if let Some(mat) = str.rfind('.') {
+						match &str[mat..str.len()] {
+							".jpg" | ".png" | ".gif" => rr.push(str),
+							_ => {}
+						}
+					}
+				}
+				break rr;
+			}
 			_ => index += 1,
 		};
 	};
 
 	let mut pages = Vec::new();
 
-	for (index, r) in arr.enumerate() {
-		let mut image_url = r.as_string()?.read();
+	for (index, r) in arr.iter().enumerate() {
+		let mut image_url = String::from(r.deref());
 		image_url = image_url
 			.replace("http:", "https:")
 			.replace("dmzj1.com", "dmzj.com");
