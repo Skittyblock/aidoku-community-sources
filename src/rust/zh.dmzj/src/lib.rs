@@ -393,7 +393,7 @@ fn get_page_list(id: String) -> Result<Vec<Page>> {
 
 					if let Some(mat) = str.rfind('.') {
 						match &str[mat..str.len()] {
-							".jpg" | ".png" => rr.push(str),
+							".jpg" | ".png" | ".gif" => rr.push(str),
 							_ => {}
 						}
 					}
