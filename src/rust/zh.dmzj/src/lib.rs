@@ -8,10 +8,8 @@ use core::ops::Deref;
 use aidoku::{
 	error::Result,
 	prelude::*,
-	std::net::Request,
-	std::{json},
-	std::{net::HttpMethod, StringRef},
-	std::{String, Vec},
+	std::net::{HttpMethod,Request},
+	std::{json,String, Vec},
 	Chapter, DeepLink, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
 	MangaViewer, Page,
 };
