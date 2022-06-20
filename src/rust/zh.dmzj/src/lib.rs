@@ -8,8 +8,8 @@ use core::ops::Deref;
 use aidoku::{
 	error::Result,
 	prelude::*,
-	std::net::{HttpMethod,Request},
-	std::{json,String, Vec},
+	std::net::{HttpMethod, Request},
+	std::{json, String, Vec},
 	Chapter, DeepLink, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
 	MangaViewer, Page,
 };
@@ -109,7 +109,11 @@ pub fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult
 				id: helper::i32_to_string(it.get("id").as_int()? as i32),
 				cover: it.get("comic_cover").as_string()?.read(),
 				title: it.get("comic_name").as_string()?.read(),
-				author: it.get("comic_author").as_string()?.read().replace('/', ", "),
+				author: it
+					.get("comic_author")
+					.as_string()?
+					.read()
+					.replace('/', ", "),
 				artist: String::new(),
 				description: String::new(),
 				url: String::new(),
@@ -146,7 +150,7 @@ pub fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult
 				cover: it.get("cover").as_string()?.read(),
 				title: it.get("title").as_string()?.read(),
 				// Nullable?, Meet once. Maybe api buggy.
-				author:match it.get("authors").as_string()  {
+				author: match it.get("authors").as_string() {
 					Ok(authors) => authors.read().replace('/', ", "),
 					Err(_) => String::new(),
 				},
