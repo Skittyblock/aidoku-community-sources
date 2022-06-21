@@ -1,0 +1,296 @@
+[
+    {
+        "type": "title"
+    },
+    {
+        "type": "group",
+        "name": "Жанры",
+        "filters": [
+            {
+                "type": "genre",
+                "name": "арт",
+                "id": "90",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "боевик",
+                "id": "53",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "боевые искусства",
+                "id": "58",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "вампиры",
+                "id": "85",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "гарем",
+                "id": "73",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "гендерная интрига",
+                "id": "81",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "героическое фэнтези",
+                "id": "68",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "детектив",
+                "id": "72",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "дзёсэй",
+                "id": "64",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "додзинси",
+                "id": "62",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "драма",
+                "id": "51",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "игра",
+                "id": "76",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "история",
+                "id": "75",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "исэкай",
+                "id": "392",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "киберпанк",
+                "id": "91",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "кодомо",
+                "id": "89",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "комедия",
+                "id": "57",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "махо-сёдзё",
+                "id": "88",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "меха",
+                "id": "84",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "мистика",
+                "id": "71",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "научная фантастика",
+                "id": "79",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "омегаверс",
+                "id": "94",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "повседневность",
+                "id": "65",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "постапокалиптика",
+                "id": "87",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "приключения",
+                "id": "59",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "психология",
+                "id": "54",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "романтика",
+                "id": "61",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "самурайский боевик",
+                "id": "82",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "сверхъестественное",
+                "id": "55",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "сёдзё",
+                "id": "67",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "сёдзё-ай",
+                "id": "78",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "сёнэн",
+                "id": "52",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "сёнэн-ай",
+                "id": "63",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "спорт",
+                "id": "69",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "сэйнэн",
+                "id": "74",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "трагедия",
+                "id": "70",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "триллер",
+                "id": "83",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "ужасы",
+                "id": "86",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "фантастика",
+                "id": "77",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "фэнтези",
+                "id": "56",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "школа",
+                "id": "66",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Элементы юмора",
+                "id": "395",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "эротика",
+                "id": "93",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "этти",
+                "id": "60",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "юри",
+                "id": "80",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "яой",
+                "id": "92",
+                "canExclude": true
+            }
+        ]
+    },
+    {
+        "type": "select",
+        "name": "Завершена серия",
+        "options": [
+            "или",
+            "Да",
+            "Нет"
+        ]
+    }
+]

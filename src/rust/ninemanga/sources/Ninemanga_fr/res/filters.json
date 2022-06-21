@@ -1,0 +1,1214 @@
+[
+    {
+        "type": "title"
+    },
+    {
+        "type": "group",
+        "name": "Genres",
+        "filters": [
+            {
+                "type": "genre",
+                "name": "Action",
+                "id": "5",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Adaptation",
+                "id": "358",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Adulte",
+                "id": "52",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Adventure",
+                "id": "27",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Amitié",
+                "id": "13",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Amour",
+                "id": "146",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Anges",
+                "id": "98",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Animals",
+                "id": "357",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Animaux",
+                "id": "120",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Anthology",
+                "id": "366",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Apprentissage",
+                "id": "89",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Arts Martiaux",
+                "id": "24",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Assassinat",
+                "id": "84",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Autre Monde",
+                "id": "92",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Aventure",
+                "id": "11",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Award Winning",
+                "id": "351",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Baseball",
+                "id": "169",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Campagne",
+                "id": "172",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Chasseur",
+                "id": "23",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Chasseur De Prime",
+                "id": "309",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Club",
+                "id": "123",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "ComÉDie",
+                "id": "81",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Combats",
+                "id": "14",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "ComéDie",
+                "id": "6",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Comedy",
+                "id": "25",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Cooking",
+                "id": "322",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Cosmos",
+                "id": "270",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Crime",
+                "id": "66",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Crossdressing",
+                "id": "53",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Cyborgs",
+                "id": "119",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Danse",
+                "id": "302",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "DéLinquant",
+                "id": "222",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "DéLinquants",
+                "id": "148",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Delinquents",
+                "id": "371",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "DéMons",
+                "id": "18",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Dieux / DéEsses",
+                "id": "296",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Donjon",
+                "id": "304",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Doujin",
+                "id": "306",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Doujinshi",
+                "id": "278",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Dragons",
+                "id": "197",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Drama",
+                "id": "35",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Drame",
+                "id": "2",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Dystopie",
+                "id": "112",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Ecchi",
+                "id": "47",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "éChec",
+                "id": "164",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Ecole",
+                "id": "49",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Enfer",
+                "id": "237",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Erotique",
+                "id": "158",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Espace",
+                "id": "135",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Esprit",
+                "id": "22",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Famille",
+                "id": "54",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Fantastique",
+                "id": "1",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Fantasy",
+                "id": "28",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "FantôMes",
+                "id": "20",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Fruit",
+                "id": "7",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Full Color",
+                "id": "321",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Gang",
+                "id": "316",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Gangster",
+                "id": "317",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Gastronomie",
+                "id": "97",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Gay-Lesbien",
+                "id": "294",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Gender Bender",
+                "id": "51",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Genderswap",
+                "id": "171",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Ghosts",
+                "id": "365",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Global-Manga",
+                "id": "332",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Gore",
+                "id": "105",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Guerre",
+                "id": "15",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Gyaru",
+                "id": "377",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "HarcèLement",
+                "id": "161",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Harem",
+                "id": "50",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Histoire",
+                "id": "154",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Histoires Courtes",
+                "id": "160",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Historical",
+                "id": "41",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Historique",
+                "id": "76",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Homosexualité",
+                "id": "267",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Horreur",
+                "id": "19",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Horror",
+                "id": "63",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Humour",
+                "id": "79",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Idols",
+                "id": "191",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Incest",
+                "id": "376",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Inceste",
+                "id": "342",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Isekai",
+                "id": "36",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Jeu",
+                "id": "70",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Jeunesse",
+                "id": "232",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Jeux VidéO",
+                "id": "147",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Josei",
+                "id": "94",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Loli",
+                "id": "244",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Long Strip",
+                "id": "352",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "LycéE",
+                "id": "126",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Mafia",
+                "id": "142",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Magic",
+                "id": "360",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Magical Girls",
+                "id": "286",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Magie",
+                "id": "8",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Maladie",
+                "id": "340",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Manhua",
+                "id": "323",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Mariage",
+                "id": "330",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Martial Arts",
+                "id": "355",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Mature",
+                "id": "82",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Mecha",
+                "id": "68",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Mechas",
+                "id": "153",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "MéDecine",
+                "id": "137",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Medical",
+                "id": "65",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Militaire",
+                "id": "115",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Mondes Virtuels",
+                "id": "344",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Monsters",
+                "id": "356",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Monstres",
+                "id": "77",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Music",
+                "id": "375",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Musique",
+                "id": "151",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "MystÈRe",
+                "id": "85",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "MystèRe",
+                "id": "3",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Mystery",
+                "id": "40",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Nature",
+                "id": "227",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Ninja",
+                "id": "369",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Nostalgie",
+                "id": "242",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Nourriture",
+                "id": "33",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Office Workers",
+                "id": "368",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Official Colored",
+                "id": "362",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "One Shot",
+                "id": "173",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Oneshot",
+                "id": "299",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Otaku",
+                "id": "190",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Paranormal",
+                "id": "131",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Parodie",
+                "id": "96",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Philosophical",
+                "id": "64",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Pirates",
+                "id": "9",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Plaisir",
+                "id": "307",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Police",
+                "id": "236",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Policier",
+                "id": "150",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Politique",
+                "id": "91",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Post-Apocalypse",
+                "id": "234",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Post-Apocalyptic",
+                "id": "364",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Post-Apocalyptique",
+                "id": "113",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Pouvoirs",
+                "id": "10",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Psychological",
+                "id": "61",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Psychologie",
+                "id": "74",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Psychologique",
+                "id": "42",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Quotidien",
+                "id": "93",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "RéIncarnation",
+                "id": "107",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Reine",
+                "id": "343",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Reverse Harem",
+                "id": "315",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "RêVes",
+                "id": "149",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Robots",
+                "id": "233",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Roi",
+                "id": "12",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Romance",
+                "id": "26",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Sadique",
+                "id": "55",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Samurai",
+                "id": "155",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "School Life",
+                "id": "43",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Sci-Fi",
+                "id": "44",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Science-Fiction",
+                "id": "31",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Seinen",
+                "id": "88",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Serviteur",
+                "id": "331",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Sexual Violence",
+                "id": "361",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Shogi",
+                "id": "165",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Shojo",
+                "id": "101",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Shojo Ai",
+                "id": "87",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Shonen",
+                "id": "80",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Shonen Ai",
+                "id": "240",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Shota",
+                "id": "370",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Shoujo Ai",
+                "id": "45",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Shounen Ai",
+                "id": "39",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Slice Of Life",
+                "id": "29",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Smut",
+                "id": "56",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Social",
+                "id": "69",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "SociéTé",
+                "id": "118",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Sport",
+                "id": "102",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Sports",
+                "id": "67",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Suicide",
+                "id": "238",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Super Pouvoirs",
+                "id": "16",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Superhero",
+                "id": "62",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Supernatural",
+                "id": "354",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Surnaturel",
+                "id": "4",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Survivre",
+                "id": "213",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Suspense",
+                "id": "75",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Technologies",
+                "id": "347",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Tennis",
+                "id": "183",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Thriller",
+                "id": "128",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Time Travel",
+                "id": "301",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Tournois",
+                "id": "30",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Traditional Games",
+                "id": "378",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "TragéDie",
+                "id": "73",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Tragedy",
+                "id": "37",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Tragique",
+                "id": "111",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Tranche De Vie",
+                "id": "48",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Travestissement",
+                "id": "192",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Vampires",
+                "id": "100",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Vengeance",
+                "id": "83",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Video Games",
+                "id": "281",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Vie Scolaire",
+                "id": "86",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Villainess",
+                "id": "335",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Voyage",
+                "id": "17",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Voyage Temporel",
+                "id": "108",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Web Comic",
+                "id": "353",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Webcomic",
+                "id": "303",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Webtoon",
+                "id": "32",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Wuxia",
+                "id": "46",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Yakuza",
+                "id": "95",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Yaoi",
+                "id": "38",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Yokai",
+                "id": "241",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Yonkoma",
+                "id": "159",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Yuri",
+                "id": "60",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Zombies",
+                "id": "277",
+                "canExclude": true
+            }
+        ]
+    },
+    {
+        "type": "select",
+        "name": "Série complétée",
+        "options": [
+            "soit",
+            "Oui",
+            "No"
+        ]
+    }
+]
