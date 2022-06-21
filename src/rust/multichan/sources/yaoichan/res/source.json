@@ -1,0 +1,13 @@
+{
+	"info": {
+		"id": "ru.yaoi-chan",
+		"lang": "ru",
+		"name": "Yaoi-chan",
+		"version": 2,
+		"url": "https://yaoi-chan.me",
+		"nsfw": 2
+	},
+	"listings": [
+		{ "name": "Случайная" }
+	]
+}
