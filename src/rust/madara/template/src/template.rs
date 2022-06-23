@@ -281,21 +281,30 @@ pub fn get_chapter_list(manga_id: String, data: MadaraSiteData) -> Result<Vec<Ch
 			e.g.
 			one-piece-color-jk-english/volume-20-showdown-at-alubarna/chapter-177-30-million-vs-81-million/
 			will return 177
-			parasite-chromatique-french/volume-10/chapitre-062/
-			will return 62
+			parasite-chromatique-french/volume-10/chapitre-062-5/
+			will return 62.5
 		*/
-		let mut chapter = 0.0;
 
 		let slash_vec = id.as_str().split('/').collect::<Vec<&str>>();
 
 		let dash_split = slash_vec[slash_vec.len() - 2].split('-');
 		let dash_vec = dash_split.collect::<Vec<&str>>();
 
+		let mut is_decimal = false;
+        let mut chapter = 0.0;
 		for obj in dash_vec {
-			let item = obj.replace('/', "").parse::<f32>().unwrap_or(-1.0);
+			let mut item = obj.replace('/', "").parse::<f32>().unwrap_or(-1.0);
+			if item == -1.0 {
+				item = String::from(obj.chars().nth(0).unwrap()).parse::<f32>().unwrap_or(-1.0);
+			}
 			if item != -1.0 {
-				chapter = item;
-				break;
+				if is_decimal {
+					chapter += item / 10.0;
+					break;
+				} else {
+					chapter = item;
+					is_decimal = true;
+				}
 			}
 		}
 
