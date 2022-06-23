@@ -1,6 +1,5 @@
 use aidoku::{
-	std::defaults::defaults_get, std::html::Node, std::net::HttpMethod, std::net::Request,
-	std::String, std::Vec, Filter, FilterType,
+	std::defaults::defaults_get, std::html::Node, std::String, std::Vec, Filter, FilterType,
 };
 
 use crate::template::MadaraSiteData;
@@ -47,14 +46,6 @@ pub fn i32_to_string(mut integer: i32) -> String {
 		integer /= 10;
 	}
 	string
-}
-
-pub fn get_int_manga_id(manga_id: String, base_url: String, path: String) -> String {
-	let url = base_url + "/" + path.as_str() + "/" + manga_id.as_str();
-	let html = Request::new(url.as_str(), HttpMethod::Get).html();
-	let id_html = html.select("script#wp-manga-js-extra").html().read();
-	let id = &id_html[id_html.find("manga_id").unwrap() + 11..id_html.find("\"};").unwrap()];
-	String::from(id)
 }
 
 pub fn get_image_url(obj: Node) -> String {
