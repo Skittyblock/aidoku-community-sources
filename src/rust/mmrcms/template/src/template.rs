@@ -34,7 +34,7 @@ pub fn cache_manga_page(url: &str) {
 
 		CACHED_MANGA_ID = Some(String::from(url));
 
-		let html = Request::new(url, HttpMethod::Get).html();
+		let html = Request::new(url, HttpMethod::Get).html().unwrap();
 		email_unprotected(&html);
 		CACHED_MANGA = Some(html);
 	}
@@ -118,13 +118,13 @@ impl MMRCMSSource {
 			format!("{}/changeMangaList?type=text", self.base_url),
 			HttpMethod::Get,
 		)
-		.html();
+		.html()?;
 		email_unprotected(&html);
 		let manga = html
 			.select("ul.manga-list a")
 			.array()
 			.filter_map(|elem| {
-				let node = elem.as_node();
+				let node = elem.as_node().unwrap();
 				let title = node.text().read();
 				if title.to_lowercase().contains(query) {
 					let url = node.attr("abs:href").read();
@@ -195,7 +195,7 @@ impl MMRCMSSource {
 		if !title.is_empty() {
 			if self.use_search_engine && unsafe { INTERNAL_USE_SEARCH_ENGINE } {
 				let url = format!("{}/search?query={title}", self.base_url);
-				if let Ok(json) = Request::new(&url, HttpMethod::Get).json().as_object() {
+				if let Ok(json) = Request::new(&url, HttpMethod::Get).json()?.as_object() {
 					let suggestions = json.get("suggestions").as_array()?;
 					let mut manga = Vec::with_capacity(suggestions.len());
 					for suggestion in suggestions {
@@ -227,7 +227,7 @@ impl MMRCMSSource {
 				page,
 				query.join("&")
 			);
-			let html = Request::new(&url, HttpMethod::Get).html();
+			let html = Request::new(&url, HttpMethod::Get).html()?;
 			email_unprotected(&html);
 			let node = html.select("div[class^=col-sm-]");
 			let elems = node.array();
@@ -235,7 +235,7 @@ impl MMRCMSSource {
 			let has_more: bool = !elems.is_empty();
 
 			for elem in elems {
-				let manga_node = elem.as_node();
+				let manga_node = elem.as_node()?;
 				let url = manga_node
 					.select(&format!("a[href*='{}/{}']", self.base_url, self.manga_path))
 					.attr("abs:href")
@@ -289,7 +289,7 @@ impl MMRCMSSource {
 		};
 
 		for elem in html.select(".row .dl-horizontal dt").array() {
-			let node = elem.as_node();
+			let node = elem.as_node()?;
 			let text = node.text().read().to_lowercase();
 			let end = text.find(':').unwrap_or(text.len());
 			#[rustfmt::skip]
@@ -306,7 +306,7 @@ impl MMRCMSSource {
 						.unwrap()
 						.select("a")
 						.array()
-						.for_each(|elem| manga.categories.push(elem.as_node().text().read()))
+						.for_each(|elem| manga.categories.push(elem.as_node().unwrap().text().read()))
 				}
 				"status" | "statut" | "estado" | "状態" | "durum" | "الحالة" | "статус" => {
 					manga.status = match node.next().unwrap().text().read().to_lowercase().trim() {
@@ -347,7 +347,7 @@ impl MMRCMSSource {
 		let should_extract_chapter_title = node.select("em").array().is_empty();
 		Ok(elems
 			.map(|elem| {
-				let chapter_node = elem.as_node();
+				let chapter_node = elem.as_node().unwrap();
 				let volume = extract_f32_from_string(
 					String::from("volume-"),
 					chapter_node.attr("class").read(),
@@ -383,10 +383,10 @@ impl MMRCMSSource {
 
 	pub fn get_page_list(&self, manga_id: String, id: String) -> Result<Vec<Page>> {
 		let url = format!("{}/{}/{}/{}", self.base_url, self.manga_path, manga_id, id);
-		let html = Request::new(&url, HttpMethod::Get).html().html().read();
+		let html = Request::new(&url, HttpMethod::Get).html()?.html().read();
 		let begin = html.find("var pages = ").unwrap_or(0) + 12;
 		let end = html[begin..].find(';').map(|i| i + begin).unwrap_or(0);
-		let array = json::parse(&html[begin..end]).as_array()?;
+		let array = json::parse(&html[begin..end])?.as_array()?;
 		let mut pages = Vec::with_capacity(array.len());
 
 		for (idx, page) in array.enumerate() {
