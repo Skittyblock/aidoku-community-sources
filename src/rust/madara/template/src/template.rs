@@ -304,6 +304,12 @@ pub fn get_chapter_list(manga_id: String, data: MadaraSiteData) -> Result<Vec<Ch
 			.0
 			.as_date("MMM d, yyyy", Some("en"), None)
 			.unwrap_or(-1.0);
+		if date_updated < -1.0 {
+			date_updated = StringRef::from(&date_str)
+			.0
+			.as_date("MMM d, yy", Some("en"), None)
+			.unwrap_or(-1.0);
+        }
 		if date_updated == -1.0 {
 			date_updated = current_date();
 		}
