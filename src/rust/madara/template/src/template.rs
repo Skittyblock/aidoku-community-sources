@@ -291,11 +291,13 @@ pub fn get_chapter_list(manga_id: String, data: MadaraSiteData) -> Result<Vec<Ch
 		let dash_vec = dash_split.collect::<Vec<&str>>();
 
 		let mut is_decimal = false;
-        let mut chapter = 0.0;
+		let mut chapter = 0.0;
 		for obj in dash_vec {
 			let mut item = obj.replace('/', "").parse::<f32>().unwrap_or(-1.0);
 			if item == -1.0 {
-				item = String::from(obj.chars().nth(0).unwrap()).parse::<f32>().unwrap_or(-1.0);
+				item = String::from(obj.chars().nth(0).unwrap())
+					.parse::<f32>()
+					.unwrap_or(-1.0);
 			}
 			if item != -1.0 {
 				if is_decimal {
@@ -315,10 +317,10 @@ pub fn get_chapter_list(manga_id: String, data: MadaraSiteData) -> Result<Vec<Ch
 			.unwrap_or(-1.0);
 		if date_updated < -1.0 {
 			date_updated = StringRef::from(&date_str)
-			.0
-			.as_date("MMM d, yy", Some("en"), None)
-			.unwrap_or(-1.0);
-        }
+				.0
+				.as_date("MMM d, yy", Some("en"), None)
+				.unwrap_or(-1.0);
+		}
 		if date_updated == -1.0 {
 			date_updated = current_date();
 		}

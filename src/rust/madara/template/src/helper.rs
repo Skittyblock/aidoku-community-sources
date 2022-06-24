@@ -106,7 +106,8 @@ pub fn get_image_url(obj: Node) -> String {
 				.replace("-175x238", "");
 		}
 	}
-    // encoding last part of the url as some scanlations use non-alphanumerical chars which need to be encoded
+	// encoding last part of the url as some scanlations use non-alphanumerical
+	// chars which need to be encoded
 	let img_split = img.split("/").collect::<Vec<&str>>();
 	let last_encoded = img_url_encode(String::from(img_split[img_split.len() - 1]));
 
