@@ -26,6 +26,41 @@ pub fn urlencode(string: String) -> String {
 	String::from_utf8(result).unwrap_or_default()
 }
 
+pub fn img_url_encode(string: String) -> String {
+	let mut result: Vec<u8> = Vec::with_capacity(string.len() * 3);
+	let hex = "0123456789abcdef".as_bytes();
+	let bytes = string.as_bytes();
+
+	for byte in bytes {
+		let curr = *byte;
+		if curr == b'-' {
+			result.push(b'-');
+		} else if curr == b'.' {
+			result.push(b'.');
+		} else if curr == b'_' {
+			result.push(b'_');
+		} else if (b'a' <= curr && curr <= b'z')
+			|| (b'A' <= curr && curr <= b'Z')
+			|| (b'0' <= curr && curr <= b'9')
+		{
+			result.push(curr);
+		} else {
+			result.push(b'%');
+			if hex[curr as usize >> 4] >= 97 && hex[curr as usize >> 4] <= 122 {
+				result.push(hex[curr as usize >> 4] - 32);
+			} else {
+				result.push(hex[curr as usize >> 4]);
+			}
+			if hex[curr as usize & 15] >= 97 && hex[curr as usize & 15] <= 122 {
+				result.push(hex[curr as usize & 15] - 32);
+			} else {
+				result.push(hex[curr as usize & 15]);
+			}
+		}
+	}
+	String::from_utf8(result).unwrap_or(String::new())
+}
+
 pub fn i32_to_string(mut integer: i32) -> String {
 	if integer == 0 {
 		return String::from("0");
@@ -63,12 +98,26 @@ pub fn get_image_url(obj: Node) -> String {
 	img = String::from(img.trim());
 
 	if defaults_get("highres").as_bool().unwrap_or(false) {
-		img = img
-			.replace("-350x476", "")
-			.replace("-110x150", "")
-			.replace("-175x238", "");
+		if !img.contains("width") {
+			img = img
+				.replace("-350x476", "")
+				.replace("-193x278", "")
+				.replace("-110x150", "")
+				.replace("-175x238", "");
+		}
 	}
-	img
+    // encoding last part of the url as some scanlations use non-alphanumerical chars which need to be encoded
+	let img_split = img.split("/").collect::<Vec<&str>>();
+	let last_encoded = img_url_encode(String::from(img_split[img_split.len() - 1]));
+
+	let mut encoded_img = String::new();
+
+	for i in 0..img_split.len() - 1 {
+		encoded_img.push_str(img_split[i]);
+		encoded_img.push_str("/");
+	}
+	encoded_img.push_str(&last_encoded);
+	return encoded_img;
 }
 
 pub fn get_filtered_url(filters: Vec<Filter>, page: i32, data: &MadaraSiteData) -> (String, bool) {
