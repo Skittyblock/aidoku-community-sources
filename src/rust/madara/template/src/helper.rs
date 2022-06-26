@@ -58,7 +58,7 @@ pub fn img_url_encode(string: String) -> String {
 			}
 		}
 	}
-	String::from_utf8(result).unwrap_or(String::new())
+	String::from_utf8(result).unwrap_or_default()
 }
 
 pub fn i32_to_string(mut integer: i32) -> String {
