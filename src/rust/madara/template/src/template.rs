@@ -257,7 +257,7 @@ pub fn get_manga_details(manga_id: String, data: MadaraSiteData) -> Result<Manga
 }
 
 pub fn get_chapter_list(manga_id: String, data: MadaraSiteData) -> Result<Vec<Chapter>> {
-    let url = data.base_url.clone() + "/" + data.source_path.as_str() + "/" + manga_id.as_str();
+	let url = data.base_url.clone() + "/" + data.source_path.as_str() + "/" + manga_id.as_str();
 	let html = Request::new(url.as_str(), HttpMethod::Get).html();
 
 	let mut chapters: Vec<Chapter> = Vec::new();
