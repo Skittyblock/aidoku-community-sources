@@ -257,22 +257,8 @@ pub fn get_manga_details(manga_id: String, data: MadaraSiteData) -> Result<Manga
 }
 
 pub fn get_chapter_list(manga_id: String, data: MadaraSiteData) -> Result<Vec<Chapter>> {
-	let mut url = data.base_url.clone() + "/wp-admin/admin-ajax.php";
-	if data.alt_ajax {
-		url = data.base_url.clone()
-			+ "/" + data.source_path.as_str()
-			+ "/" + manga_id.as_str()
-			+ "/ajax/chapters";
-	}
-
-	let int_id = get_int_manga_id(manga_id, data.base_url.clone(), data.source_path.clone());
-	let body_content = format!("action=manga_get_chapters&manga={}", int_id);
-
-	let req = Request::new(url.as_str(), HttpMethod::Post)
-		.body(body_content.as_bytes())
-		.header("Content-Type", "application/x-www-form-urlencoded");
-
-	let html = req.html();
+	let url = data.base_url.clone() + "/" + data.source_path.as_str() + "/" + manga_id.as_str();
+	let html = Request::new(url.as_str(), HttpMethod::Get).html();
 
 	let mut chapters: Vec<Chapter> = Vec::new();
 	for item in html.select("li.wp-manga-chapter  ").array() {
@@ -296,21 +282,32 @@ pub fn get_chapter_list(manga_id: String, data: MadaraSiteData) -> Result<Vec<Ch
 			e.g.
 			one-piece-color-jk-english/volume-20-showdown-at-alubarna/chapter-177-30-million-vs-81-million/
 			will return 177
-			parasite-chromatique-french/volume-10/chapitre-062/
-			will return 62
+			parasite-chromatique-french/volume-10/chapitre-062-5/
+			will return 62.5
 		*/
-		let mut chapter = 0.0;
 
 		let slash_vec = id.as_str().split('/').collect::<Vec<&str>>();
 
 		let dash_split = slash_vec[slash_vec.len() - 2].split('-');
 		let dash_vec = dash_split.collect::<Vec<&str>>();
 
+		let mut is_decimal = false;
+		let mut chapter = 0.0;
 		for obj in dash_vec {
-			let item = obj.replace('/', "").parse::<f32>().unwrap_or(-1.0);
+			let mut item = obj.replace('/', "").parse::<f32>().unwrap_or(-1.0);
+			if item == -1.0 {
+				item = String::from(obj.chars().nth(0).unwrap())
+					.parse::<f32>()
+					.unwrap_or(-1.0);
+			}
 			if item != -1.0 {
-				chapter = item;
-				break;
+				if is_decimal {
+					chapter += item / 10.0;
+					break;
+				} else {
+					chapter = item;
+					is_decimal = true;
+				}
 			}
 		}
 
@@ -319,6 +316,12 @@ pub fn get_chapter_list(manga_id: String, data: MadaraSiteData) -> Result<Vec<Ch
 			.0
 			.as_date("MMM d, yyyy", Some("en"), None)
 			.unwrap_or(-1.0);
+		if date_updated < -1.0 {
+			date_updated = StringRef::from(&date_str)
+				.0
+				.as_date("MMM d, yy", Some("en"), None)
+				.unwrap_or(-1.0);
+		}
 		if date_updated == -1.0 {
 			date_updated = current_date();
 		}
