@@ -257,8 +257,22 @@ pub fn get_manga_details(manga_id: String, data: MadaraSiteData) -> Result<Manga
 }
 
 pub fn get_chapter_list(manga_id: String, data: MadaraSiteData) -> Result<Vec<Chapter>> {
-	let url = data.base_url.clone() + "/" + data.source_path.as_str() + "/" + manga_id.as_str();
-	let html = Request::new(url.as_str(), HttpMethod::Get).html();
+	let mut url = data.base_url.clone() + "/wp-admin/admin-ajax.php";
+	if data.alt_ajax {
+		url = data.base_url.clone()
+			+ "/" + data.source_path.clone().as_str()
+			+ "/" + manga_id.as_str()
+			+ "/ajax/chapters";
+	}
+
+	let int_id = get_int_manga_id(manga_id, data.base_url.clone(), data.source_path.clone());
+	let body_content = format!("action=manga_get_chapters&manga={}", int_id);
+
+	let req = Request::new(url.clone().as_str(), HttpMethod::Post)
+		.body(body_content.as_bytes())
+		.header("Content-Type", "application/x-www-form-urlencoded");
+
+	let html = req.html();
 
 	let mut chapters: Vec<Chapter> = Vec::new();
 	for item in html.select("li.wp-manga-chapter  ").array() {
