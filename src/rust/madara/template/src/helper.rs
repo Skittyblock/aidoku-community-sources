@@ -1,5 +1,6 @@
 use aidoku::{
-	std::defaults::defaults_get, std::html::Node, std::String, std::Vec, Filter, FilterType,
+	std::defaults::defaults_get, std::html::Node, std::net::HttpMethod, std::net::Request,
+	std::String, std::Vec, Filter, FilterType,
 };
 
 use crate::template::MadaraSiteData;
@@ -202,4 +203,12 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32, data: &MadaraSiteData) 
 		url.push_str(&query);
 	}
 	(url, is_searching)
+}
+
+pub fn get_int_manga_id(manga_id: String, base_url: String, path: String) -> String {
+	let url = base_url + "/" + path.as_str() + "/" + manga_id.as_str();
+	let html = Request::new(url.as_str(), HttpMethod::Get).html();
+	let id_html = html.select("script#wp-manga-js-extra").html().read();
+	let id = &id_html[id_html.find("manga_id").unwrap() + 11..id_html.find("\"};").unwrap()];
+	return String::from(id);
 }
