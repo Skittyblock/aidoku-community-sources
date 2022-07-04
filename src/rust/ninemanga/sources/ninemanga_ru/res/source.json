@@ -1,0 +1,15 @@
+{
+	"info": {
+		"id": "ru.ninemanga",
+		"lang": "ru",
+		"name": "NinemangaRU",
+		"version": 1,
+		"url": "https://ru.ninemanga.com",
+		"nsfw": 1
+	},
+	"listings": [
+		{ "name": "Последние" },
+		{ "name": "Топ"},
+        { "name": "новая" }
+	]
+}

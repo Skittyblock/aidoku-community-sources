@@ -1,0 +1,15 @@
+{
+	"info": {
+		"id": "pt-br.ninemanga",
+		"lang": "pt-br",
+		"name": "NinemangaBR",
+		"version": 1,
+		"url": "https://br.ninemanga.com",
+		"nsfw": 1
+	},
+	"listings": [
+		{ "name": "recente" },
+		{ "name": "TOP"},
+        { "name": "Nova" }
+	]
+}

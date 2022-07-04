@@ -1,0 +1,15 @@
+{
+	"info": {
+		"id": "de.ninemanga",
+		"lang": "de",
+		"name": "NinemangaDE",
+		"version": 1,
+		"url": "https://de.ninemanga.com",
+		"nsfw": 1
+	},
+	"listings": [
+		{ "name": "Neueste" },
+		{ "name": "Beliebte"},
+        { "name": "Neues" }
+	]
+}

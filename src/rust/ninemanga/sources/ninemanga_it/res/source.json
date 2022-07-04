@@ -1,0 +1,15 @@
+{
+	"info": {
+		"id": "it.ninemanga",
+		"lang": "it",
+		"name": "NinemangaIT",
+		"version": 1,
+		"url": "https://it.ninemanga.com",
+		"nsfw": 1
+	},
+	"listings": [
+		{ "name": "Ultime" },
+		{ "name": "Popolare"},
+        { "name": "Nuovo" }
+	]
+}

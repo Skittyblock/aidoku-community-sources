@@ -1,0 +1,272 @@
+[
+    {
+        "type": "title"
+    },
+    {
+        "type": "group",
+        "name": "Genres",
+        "filters": [
+            {
+                "type": "genre",
+                "name": "Abenteuer",
+                "id": "63",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Action",
+                "id": "64",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Alltagsdrama",
+                "id": "82",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Comedy",
+                "id": "110",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "DäMonen",
+                "id": "76",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Doujinshi",
+                "id": "97",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Drama",
+                "id": "65",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Ecchi",
+                "id": "79",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Erotik",
+                "id": "88",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Fantasy",
+                "id": "66",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Gender Bender",
+                "id": "91",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Harem",
+                "id": "73",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Historisch",
+                "id": "84",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Horror",
+                "id": "72",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Isekai",
+                "id": "109",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Josei",
+                "id": "95",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Kampfsport",
+                "id": "81",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Kartenspiel",
+                "id": "78",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "KomöDie",
+                "id": "67",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Magie",
+                "id": "68",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Mecha",
+                "id": "89",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "MilitäR",
+                "id": "90",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Musik",
+                "id": "83",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Mystery",
+                "id": "69",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Romance",
+                "id": "111",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Romanze",
+                "id": "74",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Schule",
+                "id": "70",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Sci-Fi",
+                "id": "86",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Seinen",
+                "id": "96",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Shoujo",
+                "id": "85",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Shounen",
+                "id": "75",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Slice Of Life",
+                "id": "112",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Spiel",
+                "id": "92",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Sport",
+                "id": "87",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Sports",
+                "id": "117",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Super KräFte",
+                "id": "80",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Thriller",
+                "id": "94",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Tragedy",
+                "id": "115",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Vampire",
+                "id": "71",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Videospiel",
+                "id": "77",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Yaoi",
+                "id": "93",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Yuri",
+                "id": "98",
+                "canExclude": true
+            }
+        ]
+    },
+    {
+        "type": "select",
+        "name": "Abgeschlossene Serie",
+        "options": [
+            "Entweder",
+            "Ja",
+            "Nein"
+        ]
+    }
+]
