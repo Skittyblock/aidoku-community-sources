@@ -10,9 +10,10 @@ use aidoku::{
 	Chapter, DeepLink, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
 	MangaViewer, Page,
 };
+use aidoku_helpers::substring::Substring;
 
 use crate::helper::{
-	append_protocol, email_unprotected, extract_f32_from_string, text_with_newlines, urlencode,
+	append_protocol, email_unprotected, extract_f32_from_string, urlencode,
 };
 
 pub static mut CACHED_MANGA: Option<Node> = None;
@@ -278,7 +279,7 @@ impl MMRCMSSource {
 			.first()
 			.text()
 			.read();
-		let description = text_with_newlines(html.select(".row .well p"));
+		let description = html.select(".row .well p").untrimmed_text().read();
 		let mut manga = Manga {
 			id,
 			cover,
@@ -291,9 +292,8 @@ impl MMRCMSSource {
 		for elem in html.select(".row .dl-horizontal dt").array() {
 			let node = elem.as_node()?;
 			let text = node.text().read().to_lowercase();
-			let end = text.find(':').unwrap_or(text.len());
 			#[rustfmt::skip]
-			match &text[..end] {
+			match text.substring_before(':').unwrap_or_default() {
 				"author(s)" | "autor(es)" | "auteur(s)" | "著作" | "yazar(lar)" | "mangaka(lar)" | "pengarang/penulis" | "pengarang" | "penulis" | "autor" | "المؤلف" | "перевод" | "autor/autorzy" | "автор" => {
 					manga.author = node.next().unwrap().text().read()
 				}
@@ -383,10 +383,15 @@ impl MMRCMSSource {
 
 	pub fn get_page_list(&self, manga_id: String, id: String) -> Result<Vec<Page>> {
 		let url = format!("{}/{}/{}/{}", self.base_url, self.manga_path, manga_id, id);
-		let html = Request::new(&url, HttpMethod::Get).html()?.html().read();
-		let begin = html.find("var pages = ").unwrap_or(0) + 12;
-		let end = html[begin..].find(';').map(|i| i + begin).unwrap_or(0);
-		let array = json::parse(&html[begin..end])?.as_array()?;
+		let html = Request::new(&url, HttpMethod::Get).string()?;
+		let array = json::parse(
+			html
+				.substring_after("var pages = ")
+				.unwrap_or_default()
+				.substring_before(";")
+				.unwrap_or_default()
+		)?
+		.as_array()?;
 		let mut pages = Vec::with_capacity(array.len());
 
 		for (idx, page) in array.enumerate() {
@@ -421,10 +426,10 @@ impl MMRCMSSource {
 		if split.len() > 4 {
 			let manga = Some(self.get_manga_details(String::from(split[4]))?);
 			let chapter = if split.len() > 5 {
-				let end = split[5].find('-').unwrap_or(split[5].len());
+				let chapnum = split[5].substring_before('-').unwrap_or(split[5]);
 				Some(Chapter {
 					id: String::from(split[5]),
-					chapter: extract_f32_from_string(String::new(), String::from(&split[5][..end])),
+					chapter: chapnum.parse().unwrap_or(-1.0),
 					url: format!(
 						"{}/{}/{}/{}",
 						self.base_url, self.manga_path, split[4], split[5]
