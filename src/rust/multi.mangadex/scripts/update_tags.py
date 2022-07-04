@@ -19,11 +19,12 @@ parsedTags = [
 ]
 
 filters_json = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "res", "filters.json")
-with open(filters_json, "r+") as f:
+with open(filters_json, "r") as f:
     filters = json.load(f)
     for filter in filters:
         if filter.get("name") == "Tags":
             filter["filters"] = parsedTags
-    f.seek(0)
-    json.dump(filters, f, indent=4)
+
+with open(filters_json, "w") as f:
+    json.dump(filters, f, indent="\t")
 
