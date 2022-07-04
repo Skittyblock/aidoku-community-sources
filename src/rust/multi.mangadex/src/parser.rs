@@ -1,7 +1,6 @@
 use aidoku::{
-	error::Result, std::String, std::Vec, std::ObjectRef,
-	Manga, MangaStatus, MangaContentRating, MangaViewer, Chapter,
-	std::defaults::defaults_get,
+	error::Result, std::defaults::defaults_get, std::ObjectRef, std::String, std::Vec, Chapter,
+	Manga, MangaContentRating, MangaStatus, MangaViewer,
 };
 
 // Parse manga with title and cover
@@ -11,11 +10,14 @@ pub fn parse_basic_manga(manga_object: ObjectRef) -> Result<Manga> {
 
 	// Title
 	let titles = attributes.get("title").as_object()?;
-	let title = match titles.get("en").as_string() { // try for english title
+	let title = match titles.get("en").as_string() {
+		// try for english title
 		Ok(title) => title.read(),
-		Err(_) => match titles.get("ja-ro").as_string() { // try for japanese (possibly romaji)
+		Err(_) => match titles.get("ja-ro").as_string() {
+			// try for japanese (possibly romaji)
 			Ok(title) => title.read(),
-			Err(_) => match titles.values().get(0).as_string() { // get first title instead
+			Err(_) => match titles.values().get(0).as_string() {
+				// get first title instead
 				Ok(title) => title.read(),
 				Err(_) => String::new(),
 			},
@@ -24,7 +26,7 @@ pub fn parse_basic_manga(manga_object: ObjectRef) -> Result<Manga> {
 
 	// Cover
 	let mut cover_file: String = String::new();
-	
+
 	if let Ok(relationships) = manga_object.get("relationships").as_array() {
 		for relationship in relationships {
 			if let Ok(relationship_obj) = relationship.as_object() {
@@ -43,7 +45,7 @@ pub fn parse_basic_manga(manga_object: ObjectRef) -> Result<Manga> {
 		cover = cover_file;
 	} else {
 		cover.push_str(&id);
-		cover.push_str("/");
+		cover.push('/');
 		cover.push_str(&cover_file);
 		cover.push_str(&defaults_get("coverQuality").as_string()?.read());
 	}
@@ -70,14 +72,17 @@ pub fn parse_full_manga(manga_object: ObjectRef) -> Result<Manga> {
 
 	// Title
 	let titles = attributes.get("title").as_object()?;
-	let title = match titles.get("en").as_string() { // try for english title
+	let title = match titles.get("en").as_string() {
+		// try for english title
 		Ok(title) => title.read(),
-		Err(_) => match titles.get("ja-ro").as_string() { // try for japanese (possibly romaji)
+		Err(_) => match titles.get("ja-ro").as_string() {
+			// try for japanese (possibly romaji)
 			Ok(title) => title.read(),
-			Err(_) => match titles.values().get(0).as_string() { // get first title instead
+			Err(_) => match titles.values().get(0).as_string() {
+				// get first title instead
 				Ok(title) => title.read(),
 				Err(_) => String::new(),
-			}
+			},
 		},
 	};
 
@@ -85,7 +90,7 @@ pub fn parse_full_manga(manga_object: ObjectRef) -> Result<Manga> {
 	let mut cover_file: String = String::new();
 	let mut author: String = String::new();
 	let mut artist: String = String::new();
-	
+
 	if let Ok(relationships) = manga_object.get("relationships").as_array() {
 		for relationship in relationships {
 			let relationship_obj = relationship.as_object()?;
@@ -104,18 +109,20 @@ pub fn parse_full_manga(manga_object: ObjectRef) -> Result<Manga> {
 
 	let mut cover = String::from("https://uploads.mangadex.org/covers/");
 	cover.push_str(&id);
-	cover.push_str("/");
+	cover.push('/');
 	cover.push_str(&cover_file);
 	cover.push_str(&defaults_get("coverQuality").as_string()?.read());
 
 	// Description
 	let description = match attributes.get("description").as_object() {
-		Ok(descriptions) => match descriptions.get("en").as_string() { // try for english desc
+		Ok(descriptions) => match descriptions.get("en").as_string() {
+			// try for english desc
 			Ok(desc) => desc.read(),
-			Err(_) => match descriptions.values().get(0).as_string() { // get first desc instead
+			Err(_) => match descriptions.values().get(0).as_string() {
+				// get first desc instead
 				Ok(desc) => desc.read(),
 				Err(_) => String::new(),
-			}
+			},
 		},
 		Err(_) => String::new(),
 	};
@@ -131,12 +138,12 @@ pub fn parse_full_manga(manga_object: ObjectRef) -> Result<Manga> {
 			let tag_obj = tag.as_object()?;
 			let tag_attributes = tag_obj.get("attributes").as_object()?;
 			let names = tag_attributes.get("name").as_object()?;
-			categories.push( match names.get("en").as_string() {
+			categories.push(match names.get("en").as_string() {
 				Ok(name) => name.read(),
 				Err(_) => match names.values().get(0).as_string() {
 					Ok(name) => name.read(),
 					Err(_) => String::new(),
-				}
+				},
 			});
 		}
 	}
@@ -198,8 +205,10 @@ pub fn parse_chapter(chapter_object: ObjectRef) -> Result<Chapter> {
 	let pages = attributes.get("pages").as_int()?;
 
 	// ignore external chapters
-	if pages <= 0 { 
-		return Err(aidoku::error::AidokuError { reason: aidoku::error::AidokuErrorKind::Unimplemented });
+	if pages <= 0 {
+		return Err(aidoku::error::AidokuError {
+			reason: aidoku::error::AidokuErrorKind::Unimplemented,
+		});
 	}
 
 	let id = chapter_object.get("id").as_string()?.read();
@@ -212,16 +221,16 @@ pub fn parse_chapter(chapter_object: ObjectRef) -> Result<Chapter> {
 		Ok(volume) => volume as f32,
 		Err(_) => -1.0,
 	};
-	
+
 	let chapter = match attributes.get("chapter").as_float() {
 		Ok(chapter) => chapter as f32,
 		Err(_) => -1.0,
 	};
 
-	let date_updated = match attributes.get("publishAt").as_date("yyyy-MM-dd'T'HH:mm:ss+ss:ss") {
-		Ok(date) => date,
-		Err(_) => -1.0,
-	};
+	let date_updated = attributes
+		.get("publishAt")
+		.as_date("yyyy-MM-dd'T'HH:mm:ss+ss:ss", None, None)
+		.unwrap_or(-1.0);
 
 	let mut scanlator = String::new();
 
@@ -230,7 +239,9 @@ pub fn parse_chapter(chapter_object: ObjectRef) -> Result<Chapter> {
 			let relationship_object = relationship.as_object()?;
 			let relationship_type = relationship_object.get("type").as_string()?.read();
 			if relationship_type == "scanlation_group" {
-				if let Ok(relationship_attributes) = relationship_object.get("attributes").as_object() {
+				if let Ok(relationship_attributes) =
+					relationship_object.get("attributes").as_object()
+				{
 					scanlator = relationship_attributes.get("name").as_string()?.read();
 				}
 				break;
