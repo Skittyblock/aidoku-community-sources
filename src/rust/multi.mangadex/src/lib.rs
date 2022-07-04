@@ -59,7 +59,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 				}
 			}
 			FilterType::Genre => {
-				// https://api.mangadex.org/manga/tag
+				// Run `python scripts/update_tags.py` to fetch tags from https://api.mangadex.org/manga/tag
 				let tag = filter.object.get("id").as_string()?.read();
 				match filter.value.as_int().unwrap_or(-1) {
 					0 => url.push_str("&excludedTags[]="),
@@ -75,7 +75,8 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 				};
 				let index = value.get("index").as_int().unwrap_or(0);
 				let ascending = value.get("ascending").as_bool().unwrap_or(false);
-				let option = match index {
+				url.push_str("&order[");
+				url.push_str(match index {
 					0 => "latestUploadedChapter",
 					1 => "relevance",
 					2 => "followedCount",
@@ -83,9 +84,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 					4 => "updatedAt",
 					5 => "title",
 					_ => continue,
-				};
-				url.push_str("&order[");
-				url.push_str(option);
+				});
 				url.push_str("]=");
 				url.push_str(if ascending { "asc" } else { "desc" });
 			}
@@ -234,7 +233,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 			}
 		}
 
-		let total = json.get("total").as_int().unwrap_or(0) as i32;
+		let total = json.get("total").as_int().unwrap_or(0);
 		if offset + 500 >= total {
 			break;
 		}
