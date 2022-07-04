@@ -40,24 +40,6 @@ pub fn urlencode(string: String) -> String {
 	String::from_utf8(result).unwrap_or_default()
 }
 
-pub fn text_with_newlines(node: Node) -> String {
-	let html = node.html().read();
-	if !String::from(html.trim()).is_empty() {
-		Node::new_fragment(
-			node.html()
-				.read()
-				.replace("<br>", "{{ .LINEBREAK }}")
-				.as_bytes(),
-		)
-		.unwrap()
-		.text()
-		.read()
-		.replace("{{ .LINEBREAK }}", "\n")
-	} else {
-		String::new()
-	}
-}
-
 fn parse_email_protected<T: AsRef<str>>(data: T) -> String {
 	let data = data.as_ref();
 	let key = u32::from_str_radix(&data[0..2], 16).unwrap();

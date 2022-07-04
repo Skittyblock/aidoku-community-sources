@@ -6,3 +6,4 @@ publish = false
 
 [dependencies]
 aidoku = { git = "https://github.com/Aidoku/aidoku-rs/" }
+aidoku_helpers = { git = "https://github.com/beerpiss/aidoku-rs", branch = "qol-improvements" } 
