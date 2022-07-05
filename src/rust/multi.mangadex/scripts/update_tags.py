@@ -34,3 +34,4 @@ with open(filters_json, "r") as f:
 
 with open(filters_json, "w") as f:
     json.dump(filters, f, indent="\t")
+    f.write("\n")

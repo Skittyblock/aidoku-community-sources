@@ -1,6 +1,7 @@
 use aidoku::{
-	error::Result, std::defaults::defaults_get, std::ObjectRef, std::String, std::Vec, Chapter,
-	Manga, MangaContentRating, MangaStatus, MangaViewer,
+	error::Result,
+	std::{defaults::defaults_get, ObjectRef, String, StringRef, Vec},
+	Chapter, Manga, MangaContentRating, MangaStatus, MangaViewer,
 };
 
 // Parse manga with title and cover
@@ -202,30 +203,23 @@ pub fn parse_full_manga(manga_object: ObjectRef) -> Result<Manga> {
 pub fn parse_chapter(chapter_object: ObjectRef) -> Result<Chapter> {
 	let attributes = chapter_object.get("attributes").as_object()?;
 
-	let pages = attributes.get("pages").as_int()?;
-
-	// ignore external chapters
-	if pages <= 0 {
+	// Fix for Skittyblock/aidoku-community-sources#25
+	let ext_url = attributes.get("externalUrl");
+	if ext_url.is_none() || ext_url.as_string().is_ok() {
 		return Err(aidoku::error::AidokuError {
 			reason: aidoku::error::AidokuErrorKind::Unimplemented,
 		});
 	}
 
 	let id = chapter_object.get("id").as_string()?.read();
-	let title = match attributes.get("title").as_string() {
-		Ok(title) => title.read(),
-		Err(_) => String::new(),
-	};
+	let title = attributes
+		.get("title")
+		.as_string()
+		.unwrap_or_else(|_| StringRef::from(""))
+		.read();
 
-	let volume = match attributes.get("volume").as_float() {
-		Ok(volume) => volume as f32,
-		Err(_) => -1.0,
-	};
-
-	let chapter = match attributes.get("chapter").as_float() {
-		Ok(chapter) => chapter as f32,
-		Err(_) => -1.0,
-	};
+	let volume = attributes.get("volume").as_float().unwrap_or(-1.0) as f32;
+	let chapter = attributes.get("chapter").as_float().unwrap_or(-1.0) as f32;
 
 	let date_updated = attributes
 		.get("publishAt")
@@ -252,10 +246,10 @@ pub fn parse_chapter(chapter_object: ObjectRef) -> Result<Chapter> {
 	let mut url = String::from("https://mangadex.org/chapter/");
 	url.push_str(&id);
 
-	let lang = match attributes.get("translatedLanguage").as_string() {
-		Ok(lang) => lang.read(),
-		Err(_) => String::from("en"),
-	};
+	let lang = attributes.get("translatedLanguage")
+		.as_string()
+		.unwrap_or_else(|_| StringRef::from("en"))
+		.read();
 
 	Ok(Chapter {
 		id,
