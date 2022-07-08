@@ -7,10 +7,7 @@ use aidoku::{
 	MangaViewer, Page,
 };
 use lazy_static::lazy_static;
-use mmrcms_template::{
-	helper::text_with_newlines,
-	template::{cache_manga_page, MMRCMSSource, CACHED_MANGA},
-};
+use mmrcms_template::template::{cache_manga_page, MMRCMSSource, CACHED_MANGA};
 
 lazy_static! {
 	static ref INSTANCE: MMRCMSSource = MMRCMSSource {
@@ -50,7 +47,7 @@ fn get_manga_details(id: String) -> Result<Manga> {
 
 	let title = html.select("div.panel-heading").text().read();
 	let cover = html.select("img.img-thumbnail").attr("abs:src").read();
-	let description = text_with_newlines(html.select("div.well > p"));
+	let description = html.select("div.well > p").untrimmed_text().read();
 	let mut manga = Manga {
 		id,
 		title,
@@ -60,7 +57,7 @@ fn get_manga_details(id: String) -> Result<Manga> {
 		..Default::default()
 	};
 	for elem in html.select("div.col-md-6 h3").array() {
-		let node = elem.as_node();
+		let node = elem.as_node()?;
 		let text = node.text().read().to_lowercase();
 		let end = text.find(" : ").unwrap_or(0);
 		match &text.as_str()[..end] {
@@ -77,7 +74,12 @@ fn get_manga_details(id: String) -> Result<Manga> {
 			"التصنيفات" => node
 				.select("a")
 				.array()
-				.for_each(|elem| manga.categories.push(elem.as_node().text().read())),
+				.for_each(|elem| {
+					match elem.as_node() {
+						Ok(node) => manga.categories.push(node.text().read()),
+						Err(_) => {},
+					}
+				}),
 			_ => continue,
 		}
 	}

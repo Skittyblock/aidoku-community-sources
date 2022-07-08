@@ -41,7 +41,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 
 #[get_page_list]
 fn get_page_list(manga_id: String, id: String) -> Result<Vec<Page>> {
-	let cdn = defaults_get("useCDN").as_string()?.read();
+	let cdn = defaults_get("useCDN")?.as_string()?.read();
 	INSTANCE.get_page_list(manga_id, format!("{id}{cdn}"))
 }
 

@@ -5,7 +5,7 @@ use aidoku::{
 		html::Node,
 		json,
 		net::{HttpMethod, Request},
-		String, Vec,
+		String, Vec, Deserializable
 	},
 	Chapter, DeepLink, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
 	MangaViewer, Page,
@@ -56,6 +56,12 @@ pub struct MMRCMSSource {
 	pub tags_mapper: fn(i64) -> String,
 
 	pub use_search_engine: bool,
+}
+
+#[derive(Default, Deserializable)]
+struct MMRCMSSearchResult {
+	pub data: String, 
+	pub value: String,
 }
 
 impl Default for MMRCMSSource {
@@ -200,13 +206,12 @@ impl MMRCMSSource {
 					let suggestions = json.get("suggestions").as_array()?;
 					let mut manga = Vec::with_capacity(suggestions.len());
 					for suggestion in suggestions {
-						let obj = suggestion.as_object()?;
-						let id = obj.get("data").as_string()?.read();
+						let obj = MMRCMSSearchResult::from_objectref(suggestion.as_object()?)?;
 						manga.push(Manga {
-							id: id.clone(),
-							cover: self.guess_cover("", &id),
-							title: obj.get("value").as_string()?.read(),
-							url: format!("{}/{}/{}", self.base_url, self.manga_path, id),
+							cover: self.guess_cover("", &obj.data),
+							url: format!("{}/{}/{}", self.base_url, self.manga_path, obj.data),
+							id: obj.data,							
+							title: obj.value,
 							..Default::default()
 						});
 					}
