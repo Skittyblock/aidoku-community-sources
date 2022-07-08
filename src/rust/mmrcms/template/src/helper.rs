@@ -1,4 +1,4 @@
-use aidoku::{prelude::*, std::html::Node, std::String, std::Vec};
+use aidoku::{error::Result, prelude::*, std::html::Node, std::String, std::Vec};
 
 pub fn extract_f32_from_string(title: String, text: String) -> f32 {
 	text.replace(&title, "")
@@ -55,9 +55,10 @@ fn parse_email_protected<T: AsRef<str>>(data: T) -> String {
 }
 
 pub fn email_unprotected(html: &Node) {
-	html.select(".__cf_email__").array().for_each(|elem| {
+	let elems = html.select(".__cf_email__");
+	for elem in elems.array() {
 		let mut node = elem.as_node().unwrap();
 		let email = parse_email_protected(node.attr("data-cfemail").read());
 		node.set_text(email).ok();
-	})
+	}
 }
