@@ -1,0 +1,14 @@
+{
+	"info": {
+		"id": "ar.mangasol",
+		"lang": "ar",
+		"name": "MangaSol",
+		"version": 1,
+		"url": "https://www.mangasol.com"
+	},
+	"listings": [
+		{ "name": "الرائج" },
+		{ "name": "آخر" },
+        { "name": "جَديد" }
+	]
+}
