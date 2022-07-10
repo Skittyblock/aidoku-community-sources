@@ -17,7 +17,6 @@ if [ "$1" != "-a" ] && [ "$1" != "" ]; then
 else
     # compile all sources
     cargo +nightly build --release
-    arg=()
     for dir in sources/*/
     do
         dir=${dir%*/}

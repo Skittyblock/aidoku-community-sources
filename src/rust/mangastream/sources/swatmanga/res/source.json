@@ -1,0 +1,14 @@
+{
+	"info": {
+		"id": "ar.swatmanga",
+		"lang": "ar",
+		"name": "SwatManga",
+		"version": 1,
+		"url": "https://swatmanga.co"
+	},
+	"listings": [
+		{ "name": "الرائج" },
+		{ "name": "آخر" },
+        { "name": "جَديد" }
+	]
+}
