@@ -7,18 +7,18 @@ This guide is not definitive by any means. If you find any issue, report it by [
 1. [Prerequisites](#prerequisites)
 2. [Getting help](#getting-help)
 3. [Writing a source](#writing-a-source)
-  1. [File structure](#file-structure)
-  2. [Dependencies](#dependencies)
-  3. [Exported functions](#exported-functions)
-  4. [Notes](#notes)
+    1. [File structure](#file-structure)
+    2. [Dependencies](#dependencies)
+    3. [Exported functions](#exported-functions)
+    4. [Notes](#notes)
 4. [Template sources](#template-sources)
-  1. [Directory structure](#directory-structure)
+    1. [Directory structure](#directory-structure)
 5. [Running](#running)
 6. [Debugging](#debugging)
-  1. [Good old print statements](#good-old-print-statements)
-  2. [Inspecting network calls](#inspecting-network-calls)
+    1. [Good old print statements](#good-old-print-statements)
+    2. [Inspecting network calls](#inspecting-network-calls)
 7. [Submitting the changes](#submitting-changes)
-  1. [Pull Request checklist](#pull-request-checklist)
+    1. [Pull Request checklist](#pull-request-checklist)
 
 ## Prerequisites
 Before you start, please note that basic knowledge in these technologies is **required**.
@@ -99,9 +99,7 @@ Read more on [partial clone](https://github.blog/2020-12-21-get-up-to-speed-with
 - Join [the Discord server](https://discord.com/invite/9U8cC5Zk3s) to ask questions while developing your source. Please do so in the `#source-dev` channel.
 
 ## Writing a source
-The fastest way to get started is to either copy an existing source and renaming as needed, or using [aidoku-cli](https://github.com/Aidoku/aidoku-cli). 
-
-Run `aidoku init` and there should be an interactive wizard for scaffolding a source. The `rust-template` template is for websites that share common code, while the `rust` template is for developing a single source.
+The fastest way to get started is to either copy an existing source and renaming as needed, or using `aidoku init` from [aidoku-cli](https://github.com/Aidoku/aidoku-cli). You should also reading through a few existing sources' code before you start.
 
 Each source should be in `src/<lang>/<source-language>.<source-name>`:
 - The `<lang>` part is the programming language your source is developed in, so `as` for AssemblyScript, `rust` for Rust, and so on. 
@@ -304,22 +302,3 @@ Checklist:
 - [ ] Set appropriate `nsfw` value
 - [ ] Did not change `id` even if a source's name or language were changed
 - [ ] Tested the modifications by running it on the simulator or a test device 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
