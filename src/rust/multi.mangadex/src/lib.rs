@@ -6,8 +6,13 @@ use aidoku::{
 	FilterType, Listing, Manga, MangaPageResult, Page,
 };
 use alloc::string::ToString;
-
 mod parser;
+
+#[link(wasm_import_module = "net")]
+extern "C" {
+	fn set_rate_limit(rate_limit: i32);
+	fn set_rate_limit_period(period: i32);
+}
 
 fn urlencode(string: String) -> String {
 	let mut result: Vec<u8> = Vec::with_capacity(string.len() * 3);
@@ -26,6 +31,13 @@ fn urlencode(string: String) -> String {
 	}
 
 	String::from_utf8(result).unwrap_or_default()
+}
+
+#[no_mangle]
+#[allow(clippy::missing_safety_doc)]
+pub unsafe extern "C" fn initialize() {
+	set_rate_limit(3);
+	set_rate_limit_period(1);
 }
 
 #[get_manga_list]
@@ -211,7 +223,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 	if let Ok(groups_string) = defaults_get("blockedGroups").as_string() {
 		groups_string.read().split(',').for_each(|group| {
 			url.push_str("&excludedGroups[]=");
-			url.push_str(group);
+			url.push_str(group.trim());
 		});
 	}
 	let mut offset = 0;
