@@ -99,7 +99,7 @@ Read more on [partial clone](https://github.blog/2020-12-21-get-up-to-speed-with
 - Join [the Discord server](https://discord.com/invite/9U8cC5Zk3s) to ask questions while developing your source. Please do so in the `#source-dev` channel.
 
 ## Writing a source
-The fastest way to get started is to either copy an existing source and renaming as needed, or using `aidoku init` from [aidoku-cli](https://github.com/Aidoku/aidoku-cli). You should also reading through a few existing sources' code before you start.
+The fastest way to get started is to either copy an existing source and renaming as needed, or using `aidoku init` from [aidoku-cli](https://github.com/Aidoku/aidoku-cli). You should also read through a few existing sources' code before you start.
 
 Each source should be in `src/<lang>/<source-language>.<source-name>`:
 - The `<lang>` part is the programming language your source is developed in, so `as` for AssemblyScript, `rust` for Rust, and so on. 
@@ -156,8 +156,8 @@ A minimal manifest which describes the source to Aidoku. Make sure it follows th
 | `info.lang`    | The source's language.                                                                                                             |
 | `info.name`    | The displayed name of the source.                                                                                                  |
 | `info.version` | The source's version number. It must be a positive integer and incremented with any notable changes.                               |
-| `info.url`     | The source's main URL, which can be used for [deep linking](#handleurl).                                                        |
-| `info.urls`    | Any additional URLs used for [deep linking](#deep-linking). If `info.url` isn't available, the first item is used as the main URL. |
+| `info.url`     | The source's main URL, which can be used for [deep linking](#handle_url).                                                        |
+| `info.urls`    | Any additional URLs used for [deep linking](#handle_url). If `info.url` isn't available, the first item is used as the main URL. |
 | `info.nsfw`    | The NSFW level of the source. `0` for sources with no NSFW content at all, `1` for some NSFW, and `2` for majority NSFW sources.   |
 | `languages`    | An array of languages that the source supports. Use on multi-language sources only.                                                |
 | `listings`     | An array of listings that the source supports outside of the default `All` listing. These extra listings are not filterable.       |
@@ -287,6 +287,8 @@ $ mitmweb
 After running, navigate to http://localhost:8081 from your browser.
 
 Then edit your device's network settings by navigating to Settings -> Wi-Fi -> `<your network name>` -> Proxy and set configuration to Manual. Set the address to your machine's address, and the port to 8081.
+    
+Afterwards, visit [mitm.it](http://mitm.it) to install the mitmproxy certificate, which is required when proxying HTTPS traffic. Refer to [this link](https://docs.mitmproxy.org/stable/concepts-certificates/) for more details.
 
 If all went well, you should see all requests and responses made by the source in the web interface of `mitmweb`.
 
