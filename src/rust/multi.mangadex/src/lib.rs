@@ -251,7 +251,8 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 			}
 		}
 
-		url = String::from("https://api.mangadex.org/manga\
+		url = String::from(
+			"https://api.mangadex.org/manga\
 			?includes[]=cover_art\
 			&order[updatedAt]=desc\
 			&contentRating[]=erotica\
