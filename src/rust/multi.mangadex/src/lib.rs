@@ -188,13 +188,13 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 		});
 	} else if listing.name == "Latest" {
 		// get recently published chapters
-		let offset = (page - 1) * 20;
+		let offset = (page - 1) * 40;
 		let mut url = String::from(
 			"https://api.mangadex.org/chapter\
 			?includes[]=manga\
 			&order[publishAt]=desc\
 			&includeFutureUpdates=0\
-			&limit=20\
+			&limit=40\
 			&offset=",
 		);
 		url.push_str(&offset.to_string());
@@ -205,6 +205,24 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 					url.push_str(&lang.read());
 				}
 			}
+		}
+		if let Ok(groups_string) = defaults_get("blockedGroups").as_string() {
+			groups_string.read().split(',').for_each(|group| {
+				let trimmed = group.trim();
+				if !trimmed.is_empty() {
+					url.push_str("&excludedGroups[]=");
+					url.push_str(trimmed);
+				}
+			});
+		}
+		if let Ok(groups_string) = defaults_get("blockedUploaders").as_string() {
+			groups_string.read().split(',').for_each(|group| {
+				let trimmed = group.trim();
+				if !trimmed.is_empty() {
+					url.push_str("&excludedUploaders[]=");
+					url.push_str(trimmed);
+				}
+			});
 		}
 
 		let mut json = Request::new(&url, HttpMethod::Get).json_rl().as_object()?;
