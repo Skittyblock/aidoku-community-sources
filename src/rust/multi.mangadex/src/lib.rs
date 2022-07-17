@@ -7,13 +7,13 @@ use aidoku::{
 	error::*,
 	prelude::*,
 	std::{
-		defaults::defaults_get,
+		defaults::{defaults_get, defaults_set},
 		net::{HttpMethod, Request},
-		ObjectRef, String, Vec,
+		ArrayRef, ObjectRef, String, StringRef, Vec,
 	},
 	Chapter, DeepLink, Filter, FilterType, Listing, Manga, MangaPageResult, Page,
 };
-use alloc::string::ToString;
+use alloc::{borrow::ToOwned, string::ToString};
 use helper::*;
 
 #[link(wasm_import_module = "net")]
@@ -27,6 +27,13 @@ extern "C" {
 pub unsafe extern "C" fn initialize() {
 	set_rate_limit(3);
 	set_rate_limit_period(1);
+
+	for key in ["blockedGroups", "blockedUploaders"] {
+		let arrkey = key.to_owned() + "Array";
+		if defaults_get(&arrkey).as_array().is_err() {
+			handle_notification(String::from(key));
+		}
+	}
 }
 
 #[get_manga_list]
@@ -36,8 +43,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 		"https://api.mangadex.org/manga/?includes[]=cover_art\
 		&limit=20\
 		&offset=",
-	);
-	url.push_str(&offset.to_string());
+	) + &offset.to_string();
 
 	for filter in filters {
 		match filter.kind {
@@ -70,12 +76,12 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 							if value == 1 {
 								url.push_str("&hasAvailableChapters=true");
 								if let Ok(languages) = defaults_get("languages").as_array() {
-									for lang in languages {
+									languages.for_each(|lang| {
 										if let Ok(lang) = lang.as_string() {
 											url.push_str("&availableTranslatedLanguage[]=");
 											url.push_str(&lang.read());
 										}
-									}
+									})
 								}
 							}
 						}
@@ -181,31 +187,28 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 			&includeFutureUpdates=0\
 			&limit=40\
 			&offset=",
-		);
-		url.push_str(&offset.to_string());
+		) + &offset.to_string();
 		if let Ok(languages) = defaults_get("languages").as_array() {
-			for lang in languages {
+			languages.for_each(|lang| {
 				if let Ok(lang) = lang.as_string() {
 					url.push_str("&translatedLanguage[]=");
 					url.push_str(&lang.read());
 				}
-			}
+			})
 		}
-		if let Ok(groups_string) = defaults_get("blockedGroups").as_string() {
-			groups_string.read().split(',').for_each(|group| {
-				let trimmed = group.trim();
-				if !trimmed.is_empty() {
+		if let Ok(groups) = defaults_get("blockedGroupsArray").as_array() {
+			groups.for_each(|group| {
+				if let Ok(group) = group.as_string() {
 					url.push_str("&excludedGroups[]=");
-					url.push_str(trimmed);
+					url.push_str(&group.read());
 				}
 			});
 		}
-		if let Ok(groups_string) = defaults_get("blockedUploaders").as_string() {
-			groups_string.read().split(',').for_each(|group| {
-				let trimmed = group.trim();
-				if !trimmed.is_empty() {
+		if let Ok(groups) = defaults_get("blockedUploadersArray").as_array() {
+			groups.for_each(|group| {
+				if let Ok(group) = group.as_string() {
 					url.push_str("&excludedUploaders[]=");
-					url.push_str(trimmed);
+					url.push_str(&group.read());
 				}
 			});
 		}
@@ -281,10 +284,8 @@ fn get_manga_details(id: String) -> Result<Manga> {
 
 #[get_chapter_list]
 fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
-	let mut url = String::from("https://api.mangadex.org/manga/");
-	url.push_str(&id);
-	url.push_str(
-		"/feed\
+	let mut url = String::from("https://api.mangadex.org/manga/")
+		+ &id + "/feed\
 		?order[volume]=desc\
 		&order[chapter]=desc\
 		&limit=500\
@@ -292,32 +293,29 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 		&contentRating[]=erotica\
 		&contentRating[]=suggestive\
 		&contentRating[]=safe\
-		&includes[]=scanlation_group",
-	);
+		&includes[]=scanlation_group";
+
 	if let Ok(languages) = defaults_get("languages").as_array() {
-		for lang in languages {
+		languages.for_each(|lang| {
 			if let Ok(lang) = lang.as_string() {
 				url.push_str("&translatedLanguage[]=");
 				url.push_str(&lang.read());
 			}
-		}
+		})
 	}
-
-	if let Ok(groups_string) = defaults_get("blockedGroups").as_string() {
-		groups_string.read().split(',').for_each(|group| {
-			let trimmed = group.trim();
-			if !trimmed.is_empty() {
+	if let Ok(groups) = defaults_get("blockedGroupsArray").as_array() {
+		groups.for_each(|group| {
+			if let Ok(group) = group.as_string() {
 				url.push_str("&excludedGroups[]=");
-				url.push_str(trimmed);
+				url.push_str(&group.read());
 			}
 		});
 	}
-	if let Ok(groups_string) = defaults_get("blockedUploaders").as_string() {
-		groups_string.read().split(',').for_each(|group| {
-			let trimmed = group.trim();
-			if !trimmed.is_empty() {
+	if let Ok(groups) = defaults_get("blockedUploadersArray").as_array() {
+		groups.for_each(|group| {
+			if let Ok(group) = group.as_string() {
 				url.push_str("&excludedUploaders[]=");
-				url.push_str(trimmed);
+				url.push_str(&group.read());
 			}
 		});
 	}
@@ -338,12 +336,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 	let mut offset = 500;
 	while offset < total {
 		let json = Request::new(
-			&{
-				let mut url = url.clone();
-				url.push_str("&offset=");
-				url.push_str(&offset.to_string());
-				url
-			},
+			&(url.clone() + "&offset=" + &offset.to_string()),
 			HttpMethod::Get,
 		)
 		.json_rl();
@@ -367,8 +360,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 
 #[get_page_list]
 fn get_page_list(id: String) -> Result<Vec<Page>> {
-	let mut url = String::from("https://api.mangadex.org/at-home/server/");
-	url.push_str(&id);
+	let mut url = String::from("https://api.mangadex.org/at-home/server/") + &id;
 	if defaults_get("standardHttpsPort").as_bool().unwrap_or(false) {
 		url.push_str("?forcePort443=true");
 	}
@@ -421,10 +413,7 @@ pub fn handle_url(url: String) -> Result<DeepLink> {
 	if url.starts_with("title") {
 		// ex: https://mangadex.org/title/a96676e5-8ae2-425e-b549-7f15dd34a6d8/komi-san-wa-komyushou-desu
 		let id = &url[6..]; // remove "title/"
-		let end = match id.find('/') {
-			Some(end) => end,
-			None => id.len(),
-		};
+		let end = id.find('/').unwrap_or(id.len());
 		let manga_id = &id[..end];
 
 		return Ok(DeepLink {
@@ -434,14 +423,10 @@ pub fn handle_url(url: String) -> Result<DeepLink> {
 	} else if url.starts_with("chapter") {
 		// ex: https://mangadex.org/chapter/56eecc6f-1a4e-464c-b6a4-a1cbdfdfd726/1
 		let id = &url[8..]; // remove "chapter/"
-		let end = match id.find('/') {
-			Some(end) => end,
-			None => id.len(),
-		};
+		let end = id.find('/').unwrap_or(id.len());
 		let chapter_id = &id[..end];
 
-		let mut url = String::from("https://api.mangadex.org/chapter/");
-		url.push_str(chapter_id);
+		let url = String::from("https://api.mangadex.org/chapter/") + chapter_id;
 
 		let json = Request::new(&url, HttpMethod::Get).json_rl().as_object()?;
 
@@ -464,4 +449,23 @@ pub fn handle_url(url: String) -> Result<DeepLink> {
 	Err(aidoku::error::AidokuError {
 		reason: aidoku::error::AidokuErrorKind::Unimplemented,
 	})
+}
+
+#[handle_notification]
+fn handle_notification(notification: String) {
+	match notification.as_str() {
+		"blockedGroups" | "blockedUploaders" => {
+			if let Ok(groups_string) = defaults_get(&notification).as_string() {
+				let mut arr = ArrayRef::new();
+				groups_string.read().split(',').for_each(|group| {
+					let trimmed = group.trim();
+					if !trimmed.is_empty() {
+						arr.insert(StringRef::from(trimmed).0);
+					}
+				});
+				defaults_set((notification + "Array").as_str(), arr.0);
+			}
+		}
+		_ => {}
+	}
 }
