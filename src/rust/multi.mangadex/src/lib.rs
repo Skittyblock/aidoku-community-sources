@@ -1,8 +1,10 @@
 #![no_std]
 #![feature(let_chains)]
 extern crate alloc;
+mod helper;
+mod parser;
 use aidoku::{
-	error::Result,
+	error::*,
 	prelude::*,
 	std::{
 		defaults::defaults_get,
@@ -12,33 +14,12 @@ use aidoku::{
 	Chapter, DeepLink, Filter, FilterType, Listing, Manga, MangaPageResult, Page,
 };
 use alloc::string::ToString;
-mod helper;
-mod parser;
-use helper::SendRatelimited;
+use helper::*;
 
 #[link(wasm_import_module = "net")]
 extern "C" {
 	fn set_rate_limit(rate_limit: i32);
 	fn set_rate_limit_period(period: i32);
-}
-
-fn urlencode(string: String) -> String {
-	let mut result: Vec<u8> = Vec::with_capacity(string.len() * 3);
-	let hex = "0123456789abcdef".as_bytes();
-	let bytes = string.as_bytes();
-
-	for byte in bytes {
-		let curr = *byte;
-		if curr.is_ascii_alphanumeric() {
-			result.push(curr);
-		} else {
-			result.push(b'%');
-			result.push(hex[curr as usize >> 4]);
-			result.push(hex[curr as usize & 15]);
-		}
-	}
-
-	String::from_utf8(result).unwrap_or_default()
 }
 
 #[no_mangle]
@@ -61,12 +42,16 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	for filter in filters {
 		match filter.kind {
 			FilterType::Title => {
-				url.push_str("&title=");
-				url.push_str(&urlencode(filter.value.as_string()?.read()));
+				if let Ok(value) = filter.value.as_string() {
+					url.push_str("&title=");
+					url.push_str(&urlencode(value.read()));
+				}
 			}
 			FilterType::Author => {
-				url.push_str("&author=");
-				url.push_str(&urlencode(filter.value.as_string()?.read()));
+				if let Ok(value) = filter.value.as_string() {
+					url.push_str("&author=");
+					url.push_str(&urlencode(value.read()));
+				}
 			}
 			FilterType::Check => {
 				let value = filter.value.as_int().unwrap_or(-1);
@@ -99,14 +84,15 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 				}
 			}
 			FilterType::Genre => {
-				// Run `python scripts/update_tags.py` to fetch tags from https://api.mangadex.org/manga/tag
-				let tag = filter.object.get("id").as_string()?.read();
-				match filter.value.as_int().unwrap_or(-1) {
-					0 => url.push_str("&excludedTags[]="),
-					1 => url.push_str("&includedTags[]="),
-					_ => continue,
+				if let Ok(id) = filter.object.get("id").as_string() {
+					// Run `python scripts/update_tags.py` to fetch tags from https://api.mangadex.org/manga/tag
+					match filter.value.as_int().unwrap_or(-1) {
+						0 => url.push_str("&excludedTags[]="),
+						1 => url.push_str("&includedTags[]="),
+						_ => continue,
+					}
+					url.push_str(&id.read());
 				}
-				url.push_str(&tag);
 			}
 			FilterType::Sort => {
 				let value = match filter.value.as_object() {
@@ -155,19 +141,18 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 
 	let data = json.get("data").as_array()?;
 
-	let mut manga_arr: Vec<Manga> = Vec::with_capacity(data.len());
-
-	for manga in data {
-		let manga_obj = manga.as_object()?;
-		if let Ok(manga) = parser::parse_basic_manga(manga_obj) {
-			manga_arr.push(manga);
-		}
-	}
+	let manga = data
+		.map(|manga| {
+			let obj = manga.as_object()?;
+			parser::parse_basic_manga(obj)
+		})
+		.filter_map(|manga| manga.ok())
+		.collect::<Vec<_>>();
 
 	let total = json.get("total").as_int().unwrap_or(0) as i32;
 
 	Ok(MangaPageResult {
-		manga: manga_arr,
+		manga,
 		has_more: offset + 20 < total,
 	})
 }
@@ -229,27 +214,26 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 
 		let total = json.get("total").as_int().unwrap_or(0) as i32;
 		let mut data = json.get("data").as_array()?;
-		let mut manga_ids: Vec<String> = Vec::with_capacity(data.len());
 
-		// Fetch unique manga IDs first
-		for chapter in data {
-			if let Ok(chapter_obj) = chapter.as_object() {
-				if let Ok(relationships) = chapter_obj.get("relationships").as_array() {
-					for relationship in relationships {
-						if let Ok(relationship_obj) = relationship.as_object() {
-							let relation_type = relationship_obj.get("type").as_string()?.read();
-							if relation_type == "manga" {
-								let id = relationship_obj.get("id").as_string()?.read();
-								if !manga_ids.contains(&id) {
-									manga_ids.push(id);
-								}
-								break;
-							}
-						}
+		let manga_ids = data
+			.map(|chapter| {
+				let obj = chapter.as_object()?;
+				let relationships = obj.get("relationships").as_array()?;
+				for relationship in relationships {
+					let relationship = relationship.as_object()?;
+					let relation_type = relationship.get("type").as_string()?.read();
+					if relation_type == "manga" {
+						let mut ret = String::from("&ids[]=");
+						ret.push_str(&relationship.get("id").as_string()?.read());
+						return Ok(ret);
 					}
 				}
-			}
-		}
+				Err(AidokuError {
+					reason: AidokuErrorKind::Unimplemented,
+				})
+			})
+			.filter_map(|id| id.ok())
+			.collect::<String>();
 
 		url = String::from(
 			"https://api.mangadex.org/manga\
@@ -259,22 +243,19 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 			&contentRating[]=suggestive\
 			&contentRating[]=safe",
 		);
-		manga_ids.iter().for_each(|id| {
-			url.push_str("&ids[]=");
-			url.push_str(id);
-		});
+		url.push_str(&manga_ids);
 		json = Request::new(&url, HttpMethod::Get).json_rl().as_object()?;
 		data = json.get("data").as_array()?;
-		let mut manga_arr: Vec<Manga> = Vec::with_capacity(data.len());
-		for manga in data {
-			let manga_obj = manga.as_object()?;
-			if let Ok(manga) = parser::parse_basic_manga(manga_obj) {
-				manga_arr.push(manga);
-			}
-		}
+		let manga = data
+			.map(|manga| {
+				let obj = manga.as_object()?;
+				parser::parse_basic_manga(obj)
+			})
+			.filter_map(|manga| manga.ok())
+			.collect::<Vec<_>>();
 
 		return Ok(MangaPageResult {
-			manga: manga_arr,
+			manga,
 			has_more: offset + 20 < total,
 		});
 	}
@@ -344,13 +325,15 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 	let total = json.get("total").as_int().unwrap_or(0);
 	let data = json.get("data").as_array()?;
 	let mut chapters: Vec<Chapter> = Vec::with_capacity(total.try_into().unwrap_or(0));
-	for chapter in data {
-		if let Ok(chapter_obj) = chapter.as_object() {
-			if let Ok(chapter) = parser::parse_chapter(chapter_obj) {
-				chapters.push(chapter);
-			}
-		}
-	}
+	chapters.append(
+		&mut data
+			.map(|chapter| {
+				let chapter_obj = chapter.as_object()?;
+				parser::parse_chapter(chapter_obj)
+			})
+			.filter_map(|chapter| chapter.ok())
+			.collect::<Vec<_>>(),
+	);
 
 	let mut offset = 500;
 	while offset < total {
@@ -363,16 +346,19 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 			},
 			HttpMethod::Get,
 		)
-		.json_rl()
-		.as_object()?;
+		.json_rl();
 
-		let data = json.get("data").as_array()?;
-		for chapter in data {
-			if let Ok(chapter_obj) = chapter.as_object() {
-				if let Ok(chapter) = parser::parse_chapter(chapter_obj) {
-					chapters.push(chapter);
-				}
-			}
+		if let Ok(json) = json.as_object() {
+			let data = json.get("data").as_array()?;
+			chapters.append(
+				&mut data
+					.map(|chapter| {
+						let chapter_obj = chapter.as_object()?;
+						parser::parse_chapter(chapter_obj)
+					})
+					.filter_map(|chapter| chapter.ok())
+					.collect::<Vec<_>>(),
+			);
 		}
 		offset += 500;
 	}
@@ -399,32 +385,33 @@ fn get_page_list(id: String) -> Result<Vec<Page>> {
 
 	let base_url = json.get("baseUrl").as_string()?.read();
 	let hash = chapter.get("hash").as_string()?.read();
+	let path = if defaults_get("dataSaver").as_bool().unwrap_or(false) {
+		String::from("/data-saver/")
+	} else {
+		String::from("/data/")
+	};
 
-	let mut pages: Vec<Page> = Vec::with_capacity(data.len());
+	Ok(data
+		.enumerate()
+		.map(|(i, page)| {
+			let data = page.as_string()?.read();
+			let mut url =
+				String::with_capacity(base_url.len() + hash.len() + data.len() + path.len() + 1);
+			url.push_str(&base_url);
+			url.push_str(&path);
+			url.push_str(&hash);
+			url.push('/');
+			url.push_str(&data);
 
-	for (i, page) in data.enumerate() {
-		let data_string = page.as_string()?.read();
-		// The 13 extra characters are for "/data-saver/" and slashes
-		let mut url = String::with_capacity(base_url.len() + hash.len() + data_string.len() + 13);
-		url.push_str(&base_url);
-		if defaults_get("dataSaver").as_bool().unwrap_or(false) {
-			url.push_str("/data-saver/");
-		} else {
-			url.push_str("/data/");
-		}
-		url.push_str(&hash);
-		url.push('/');
-		url.push_str(&data_string);
-
-		pages.push(Page {
-			index: i as i32,
-			url,
-			base64: String::new(),
-			text: String::new(),
-		});
-	}
-
-	Ok(pages)
+			Ok(Page {
+				index: i as i32,
+				url,
+				base64: String::new(),
+				text: String::new(),
+			})
+		})
+		.filter_map(|page: Result<Page>| page.ok())
+		.collect::<Vec<_>>())
 }
 
 #[handle_url]
@@ -439,10 +426,9 @@ pub fn handle_url(url: String) -> Result<DeepLink> {
 			None => id.len(),
 		};
 		let manga_id = &id[..end];
-		let manga = get_manga_details(String::from(manga_id))?;
 
 		return Ok(DeepLink {
-			manga: Some(manga),
+			manga: get_manga_details(String::from(manga_id)).ok(),
 			chapter: None,
 		});
 	} else if url.starts_with("chapter") {
@@ -462,17 +448,15 @@ pub fn handle_url(url: String) -> Result<DeepLink> {
 		let chapter_obj = json.get("data").as_object()?;
 		let relationships = chapter_obj.get("relationships").as_array()?;
 		for relationship in relationships {
-			if let Ok(relationship_obj) = relationship.as_object() {
-				let relation_type = relationship_obj.get("type").as_string()?.read();
-				if relation_type == "manga" {
-					let manga_id = relationship_obj.get("id").as_string()?.read();
-					let manga = get_manga_details(manga_id)?;
-					let chapter = parser::parse_chapter(chapter_obj)?;
-					return Ok(DeepLink {
-						manga: Some(manga),
-						chapter: Some(chapter),
-					});
-				}
+			if let Ok(obj) = relationship.as_object()
+				&& let Ok(relation_type) = obj.get("type").as_string()
+				&& relation_type.read() == "manga"
+				&& let Ok(manga_id) = obj.get("id").as_string()
+			{
+				return Ok(DeepLink {
+					manga: get_manga_details(manga_id.read()).ok(),
+					chapter: parser::parse_chapter(chapter_obj).ok(),
+				})
 			}
 		}
 	}

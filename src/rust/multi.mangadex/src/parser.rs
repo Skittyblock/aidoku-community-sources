@@ -39,21 +39,24 @@ pub fn parse_basic_manga(manga_object: ObjectRef) -> Result<Manga> {
 	let id = manga_object.get("id").as_string()?.read();
 
 	// Title
-	let titles = attributes.get("title").as_object()?;
-	let title = get_md_localized_string(titles);
+	let title = if let Ok(titles) = attributes.get("title").as_object() {
+		get_md_localized_string(titles)
+	} else {
+		String::new()
+	};
 
 	// Cover
 	let mut cover_file: String = String::new();
 
 	if let Ok(relationships) = manga_object.get("relationships").as_array() {
 		for relationship in relationships {
-			if let Ok(relationship_obj) = relationship.as_object() {
-				let relation_type = relationship_obj.get("type").as_string()?.read();
-				if relation_type == "cover_art" {
-					let cover_attributes = relationship_obj.get("attributes").as_object()?;
-					cover_file = cover_attributes.get("fileName").as_string()?.read();
-					break;
-				}
+			if let Ok(relationship_obj) = relationship.as_object()
+				&& let Ok(relation_type) = relationship_obj.get("type").as_string()
+				&& let Ok(attribs) = relationship_obj.get("attributes").as_object()
+				&& relation_type.read() == "cover_art"
+			{
+				cover_file = attribs.get("fileName").as_string().map(|v| v.read()).unwrap_or_default();
+				break;
 			}
 		}
 	}
@@ -65,7 +68,12 @@ pub fn parse_basic_manga(manga_object: ObjectRef) -> Result<Manga> {
 		cover.push_str(&id);
 		cover.push('/');
 		cover.push_str(&cover_file);
-		cover.push_str(&defaults_get("coverQuality").as_string()?.read());
+		cover.push_str(
+			&defaults_get("coverQuality")
+				.as_string()
+				.map(|v| v.read())
+				.unwrap_or_default(),
+		);
 	}
 
 	Ok(Manga {
@@ -89,8 +97,11 @@ pub fn parse_full_manga(manga_object: ObjectRef) -> Result<Manga> {
 	let id = manga_object.get("id").as_string()?.read();
 
 	// Title
-	let titles = attributes.get("title").as_object()?;
-	let title = get_md_localized_string(titles);
+	let title = if let Ok(titles) = attributes.get("title").as_object() {
+		get_md_localized_string(titles)
+	} else {
+		String::new()
+	};
 
 	// Cover, author, artist
 	let mut cover_file: String = String::new();
@@ -99,15 +110,15 @@ pub fn parse_full_manga(manga_object: ObjectRef) -> Result<Manga> {
 
 	if let Ok(relationships) = manga_object.get("relationships").as_array() {
 		for relationship in relationships {
-			let relationship_obj = relationship.as_object()?;
-			let relation_type = relationship_obj.get("type").as_string()?.read();
-			if let Ok(relationship_attributes) = relationship_obj.get("attributes").as_object() {
-				if relation_type == "cover_art" {
-					cover_file = relationship_attributes.get("fileName").as_string()?.read();
-				} else if relation_type == "author" {
-					author = relationship_attributes.get("name").as_string()?.read();
-				} else if relation_type == "artist" {
-					artist = relationship_attributes.get("name").as_string()?.read();
+			if let Ok(relationship_obj) = relationship.as_object()
+				&& let Ok(relation_type) = relationship_obj.get("type").as_string()
+				&& let Ok(attribs) = relationship_obj.get("attributes").as_object()
+			{
+				match relation_type.read().as_str() {
+					"cover_art" => cover_file = attribs.get("fileName").as_string().map(|v| v.read()).unwrap_or_default(),
+					"author" => author = attribs.get("name").as_string().map(|v| v.read()).unwrap_or_default(),
+					"artist" => artist = attribs.get("name").as_string().map(|v| v.read()).unwrap_or_default(),
+					_ => continue,
 				}
 			}
 		}
@@ -117,7 +128,12 @@ pub fn parse_full_manga(manga_object: ObjectRef) -> Result<Manga> {
 	cover.push_str(&id);
 	cover.push('/');
 	cover.push_str(&cover_file);
-	cover.push_str(&defaults_get("coverQuality").as_string()?.read());
+	cover.push_str(
+		&defaults_get("coverQuality")
+			.as_string()
+			.map(|v| v.read())
+			.unwrap_or_default(),
+	);
 
 	// Description
 	let description = match attributes.get("description").as_object() {
@@ -131,14 +147,14 @@ pub fn parse_full_manga(manga_object: ObjectRef) -> Result<Manga> {
 
 	// Tags
 	let categories = if let Ok(tags) = attributes.get("tags").as_array() {
-		let mut ret = Vec::with_capacity(tags.len());
-		for tag in tags {
-			let tag_obj = tag.as_object()?;
-			let tag_attributes = tag_obj.get("attributes").as_object()?;
-			let names = tag_attributes.get("name").as_object()?;
-			ret.push(get_md_localized_string(names));
-		}
-		ret
+		tags.map(|tag| {
+			let obj = tag.as_object()?;
+			let attribs = obj.get("attributes").as_object()?;
+			let names = attribs.get("name").as_object()?;
+			Ok(get_md_localized_string(names))
+		})
+		.filter_map(|tag: Result<String>| tag.ok())
+		.collect::<Vec<_>>()
 	} else {
 		Vec::new()
 	};
@@ -224,14 +240,12 @@ pub fn parse_chapter(chapter_object: ObjectRef) -> Result<Chapter> {
 
 	if let Ok(relationships) = chapter_object.get("relationships").as_array() {
 		for relationship in relationships {
-			let relationship_object = relationship.as_object()?;
-			let relationship_type = relationship_object.get("type").as_string()?.read();
-			if relationship_type == "scanlation_group" {
-				if let Ok(relationship_attributes) =
-					relationship_object.get("attributes").as_object()
-				{
-					scanlator = relationship_attributes.get("name").as_string()?.read();
-				}
+			if let Ok(relationship_object) = relationship.as_object()
+				&& let Ok(relation_type) = relationship_object.get("type").as_string()
+				&& let Ok(attribs) = relationship_object.get("attributes").as_object()
+				&& relation_type.read() == "scanlation_group"
+			{
+				scanlator = attribs.get("name").as_string().map(|v| v.read()).unwrap_or_default();
 				break;
 			}
 		}
