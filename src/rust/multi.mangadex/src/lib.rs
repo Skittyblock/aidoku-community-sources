@@ -240,11 +240,10 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 							let relation_type = relationship_obj.get("type").as_string()?.read();
 							if relation_type == "manga" {
 								let id = relationship_obj.get("id").as_string()?.read();
-								if manga_ids.contains(&id) {
-									continue;
-								} else {
+								if !manga_ids.contains(&id) {
 									manga_ids.push(id);
 								}
+								break;
 							}
 						}
 					}
