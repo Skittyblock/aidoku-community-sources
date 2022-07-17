@@ -1,8 +1,37 @@
 use aidoku::{
 	error::Result,
-	std::{defaults::defaults_get, ObjectRef, String, StringRef, Vec},
+	std::{current_date, defaults::defaults_get, ObjectRef, String, StringRef, Vec},
 	Chapter, Manga, MangaContentRating, MangaStatus, MangaViewer,
 };
+
+fn get_md_localized_string(obj: ObjectRef) -> String {
+	let language = if let Ok(langs) = defaults_get("languages").as_array()
+		&& let Ok(lang) = langs.get(0).as_string()
+		&& defaults_get("usePreferredLanguage").as_bool().unwrap_or(false)
+	{
+		lang.read()
+	} else {
+		String::from("en")
+	};
+
+	// Try for preferred language first
+	match obj.get(&language).as_string() {
+		Ok(value) => value.read(),
+		// Fallback to English
+		Err(_) => match obj.get("en").as_string() {
+			Ok(value) => value.read(),
+			// Fallback to Japanese (might be romaji)
+			Err(_) => match obj.get("ja-ro").as_string() {
+				Ok(value) => value.read(),
+				// Fuck it, get first value
+				Err(_) => match obj.values().get(0).as_string() {
+					Ok(value) => value.read(),
+					Err(_) => String::from(""),
+				},
+			},
+		},
+	}
+}
 
 // Parse manga with title and cover
 pub fn parse_basic_manga(manga_object: ObjectRef) -> Result<Manga> {
@@ -11,19 +40,7 @@ pub fn parse_basic_manga(manga_object: ObjectRef) -> Result<Manga> {
 
 	// Title
 	let titles = attributes.get("title").as_object()?;
-	let title = match titles.get("en").as_string() {
-		// try for english title
-		Ok(title) => title.read(),
-		Err(_) => match titles.get("ja-ro").as_string() {
-			// try for japanese (possibly romaji)
-			Ok(title) => title.read(),
-			Err(_) => match titles.values().get(0).as_string() {
-				// get first title instead
-				Ok(title) => title.read(),
-				Err(_) => String::new(),
-			},
-		},
-	};
+	let title = get_md_localized_string(titles);
 
 	// Cover
 	let mut cover_file: String = String::new();
@@ -73,19 +90,7 @@ pub fn parse_full_manga(manga_object: ObjectRef) -> Result<Manga> {
 
 	// Title
 	let titles = attributes.get("title").as_object()?;
-	let title = match titles.get("en").as_string() {
-		// try for english title
-		Ok(title) => title.read(),
-		Err(_) => match titles.get("ja-ro").as_string() {
-			// try for japanese (possibly romaji)
-			Ok(title) => title.read(),
-			Err(_) => match titles.values().get(0).as_string() {
-				// get first title instead
-				Ok(title) => title.read(),
-				Err(_) => String::new(),
-			},
-		},
-	};
+	let title = get_md_localized_string(titles);
 
 	// Cover, author, artist
 	let mut cover_file: String = String::new();
@@ -116,15 +121,7 @@ pub fn parse_full_manga(manga_object: ObjectRef) -> Result<Manga> {
 
 	// Description
 	let description = match attributes.get("description").as_object() {
-		Ok(descriptions) => match descriptions.get("en").as_string() {
-			// try for english desc
-			Ok(desc) => desc.read(),
-			Err(_) => match descriptions.values().get(0).as_string() {
-				// get first desc instead
-				Ok(desc) => desc.read(),
-				Err(_) => String::new(),
-			},
-		},
+		Ok(descriptions) => get_md_localized_string(descriptions),
 		Err(_) => String::new(),
 	};
 
@@ -133,21 +130,18 @@ pub fn parse_full_manga(manga_object: ObjectRef) -> Result<Manga> {
 	url.push_str(&id);
 
 	// Tags
-	let mut categories: Vec<String> = Vec::new();
-	if let Ok(tags) = attributes.get("tags").as_array() {
+	let categories = if let Ok(tags) = attributes.get("tags").as_array() {
+		let mut ret = Vec::with_capacity(tags.len());
 		for tag in tags {
 			let tag_obj = tag.as_object()?;
 			let tag_attributes = tag_obj.get("attributes").as_object()?;
 			let names = tag_attributes.get("name").as_object()?;
-			categories.push(match names.get("en").as_string() {
-				Ok(name) => name.read(),
-				Err(_) => match names.values().get(0).as_string() {
-					Ok(name) => name.read(),
-					Err(_) => String::new(),
-				},
-			});
+			ret.push(get_md_localized_string(names));
 		}
-	}
+		ret
+	} else {
+		Vec::new()
+	};
 
 	// Status
 	let status_string = match attributes.get("status").as_string() {
@@ -203,9 +197,14 @@ pub fn parse_full_manga(manga_object: ObjectRef) -> Result<Manga> {
 pub fn parse_chapter(chapter_object: ObjectRef) -> Result<Chapter> {
 	let attributes = chapter_object.get("attributes").as_object()?;
 
+	let date_updated = attributes
+		.get("publishAt")
+		.as_date("yyyy-MM-dd'T'HH:mm:ss+ss:ss", None, None)
+		.unwrap_or(-1.0);
+
 	// Fix for Skittyblock/aidoku-community-sources#25
 	let ext_url = attributes.get("externalUrl");
-	if ext_url.is_none() || ext_url.as_string().is_ok() {
+	if ext_url.is_none() || ext_url.as_string().is_ok() || date_updated > current_date() {
 		return Err(aidoku::error::AidokuError {
 			reason: aidoku::error::AidokuErrorKind::Unimplemented,
 		});
@@ -220,11 +219,6 @@ pub fn parse_chapter(chapter_object: ObjectRef) -> Result<Chapter> {
 
 	let volume = attributes.get("volume").as_float().unwrap_or(-1.0) as f32;
 	let chapter = attributes.get("chapter").as_float().unwrap_or(-1.0) as f32;
-
-	let date_updated = attributes
-		.get("publishAt")
-		.as_date("yyyy-MM-dd'T'HH:mm:ss+ss:ss", None, None)
-		.unwrap_or(-1.0);
 
 	let mut scanlator = String::new();
 
@@ -246,7 +240,8 @@ pub fn parse_chapter(chapter_object: ObjectRef) -> Result<Chapter> {
 	let mut url = String::from("https://mangadex.org/chapter/");
 	url.push_str(&id);
 
-	let lang = attributes.get("translatedLanguage")
+	let lang = attributes
+		.get("translatedLanguage")
 		.as_string()
 		.unwrap_or_else(|_| StringRef::from("en"))
 		.read();

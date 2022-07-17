@@ -1,12 +1,20 @@
 #![no_std]
+#![feature(let_chains)]
 extern crate alloc;
 use aidoku::{
-	error::Result, prelude::*, std::defaults::defaults_get, std::net::HttpMethod,
-	std::net::Request, std::ObjectRef, std::String, std::Vec, Chapter, DeepLink, Filter,
-	FilterType, Listing, Manga, MangaPageResult, Page,
+	error::Result,
+	prelude::*,
+	std::{
+		defaults::defaults_get,
+		net::{HttpMethod, Request},
+		ObjectRef, String, Vec,
+	},
+	Chapter, DeepLink, Filter, FilterType, Listing, Manga, MangaPageResult, Page,
 };
 use alloc::string::ToString;
+mod helper;
 mod parser;
+use helper::SendRatelimited;
 
 #[link(wasm_import_module = "net")]
 extern "C" {
@@ -43,8 +51,11 @@ pub unsafe extern "C" fn initialize() {
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	let offset = (page - 1) * 20;
-	let mut url =
-		String::from("https://api.mangadex.org/manga/?includes[]=cover_art&limit=20&offset=");
+	let mut url = String::from(
+		"https://api.mangadex.org/manga/?includes[]=cover_art\
+		&limit=20\
+		&offset=",
+	);
 	url.push_str(&offset.to_string());
 
 	for filter in filters {
@@ -68,6 +79,23 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 						id = id.replace("&originalLanguage", "&excludedOriginalLanguage");
 					}
 					url.push_str(&id);
+				} else {
+					match filter.name.as_str() {
+						"Has available chapters" => {
+							if value == 1 {
+								url.push_str("&hasAvailableChapters=true");
+								if let Ok(languages) = defaults_get("languages").as_array() {
+									for lang in languages {
+										if let Ok(lang) = lang.as_string() {
+											url.push_str("&availableTranslatedLanguage[]=");
+											url.push_str(&lang.read());
+										}
+									}
+								}
+							}
+						}
+						_ => continue,
+					}
 				}
 			}
 			FilterType::Genre => {
@@ -100,15 +128,34 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 				url.push_str("]=");
 				url.push_str(if ascending { "asc" } else { "desc" });
 			}
+			FilterType::Select => match filter.name.as_str() {
+				"Included tags mode" => {
+					url.push_str("&includedTagsMode=");
+					match filter.value.as_int().unwrap_or(-1) {
+						0 => url.push_str("AND"),
+						1 => url.push_str("OR"),
+						_ => url.push_str("AND"),
+					}
+				}
+				"Excluded tags mode" => {
+					url.push_str("&excludedTagsMode=");
+					match filter.value.as_int().unwrap_or(-1) {
+						0 => url.push_str("AND"),
+						1 => url.push_str("OR"),
+						_ => url.push_str("OR"),
+					}
+				}
+				_ => continue,
+			},
 			_ => continue,
 		}
 	}
 
-	let json = Request::new(&url, HttpMethod::Get).json().as_object()?;
+	let json = Request::new(&url, HttpMethod::Get).json_rl().as_object()?;
 
 	let data = json.get("data").as_array()?;
 
-	let mut manga_arr: Vec<Manga> = Vec::new();
+	let mut manga_arr: Vec<Manga> = Vec::with_capacity(data.len());
 
 	for manga in data {
 		let manga_obj = manga.as_object()?;
@@ -127,12 +174,11 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 
 #[get_manga_listing]
 fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
-	let mut filters: Vec<Filter> = Vec::new();
-
+	let mut filters: Vec<Filter> = Vec::with_capacity(1);
 	let mut selection = ObjectRef::new();
 
 	if listing.name == "Popular" {
-		selection.set("index", 2i32.into());
+		selection.set("index", 2.into());
 		selection.set("ascending", false.into());
 		filters.push(Filter {
 			kind: FilterType::Sort,
@@ -143,7 +189,14 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 	} else if listing.name == "Latest" {
 		// get recently published chapters
 		let offset = (page - 1) * 20;
-		let mut url = String::from("https://api.mangadex.org/chapter?includes[]=manga&order[publishAt]=desc&includeFutureUpdates=0&limit=20&offset=");
+		let mut url = String::from(
+			"https://api.mangadex.org/chapter\
+			?includes[]=manga\
+			&order[publishAt]=desc\
+			&includeFutureUpdates=0\
+			&limit=20\
+			&offset=",
+		);
 		url.push_str(&offset.to_string());
 		if let Ok(languages) = defaults_get("languages").as_array() {
 			for lang in languages {
@@ -154,12 +207,12 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 			}
 		}
 
-		let json = Request::new(&url, HttpMethod::Get).json().as_object()?;
+		let json = Request::new(&url, HttpMethod::Get).json_rl().as_object()?;
 
 		let data = json.get("data").as_array()?;
 
-		let mut manga_arr: Vec<Manga> = Vec::new();
-		let mut manga_ids: Vec<String> = Vec::new();
+		let mut manga_arr: Vec<Manga> = Vec::with_capacity(data.len());
+		let mut manga_ids: Vec<String> = Vec::with_capacity(data.len());
 
 		for chapter in data {
 			if let Ok(chapter_obj) = chapter.as_object() {
@@ -199,8 +252,12 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 fn get_manga_details(id: String) -> Result<Manga> {
 	let mut url = String::from("https://api.mangadex.org/manga/");
 	url.push_str(&id);
-	url.push_str("?includes[]=cover_art&includes[]=author&includes[]=artist");
-	let json = Request::new(&url, HttpMethod::Get).json().as_object()?;
+	url.push_str(
+		"?includes[]=cover_art\
+		&includes[]=author\
+		&includes[]=artist",
+	);
+	let json = Request::new(&url, HttpMethod::Get).json_rl().as_object()?;
 
 	let data = json.get("data").as_object()?;
 
@@ -211,7 +268,17 @@ fn get_manga_details(id: String) -> Result<Manga> {
 fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 	let mut url = String::from("https://api.mangadex.org/manga/");
 	url.push_str(&id);
-	url.push_str("/feed?order[volume]=desc&order[chapter]=desc&limit=500&contentRating[]=pornographic&contentRating[]=erotica&contentRating[]=suggestive&contentRating[]=safe&includes[]=scanlation_group");
+	url.push_str(
+		"/feed\
+		?order[volume]=desc\
+		&order[chapter]=desc\
+		&limit=500\
+		&contentRating[]=pornographic\
+		&contentRating[]=erotica\
+		&contentRating[]=suggestive\
+		&contentRating[]=safe\
+		&includes[]=scanlation_group",
+	);
 	if let Ok(languages) = defaults_get("languages").as_array() {
 		for lang in languages {
 			if let Ok(lang) = lang.as_string() {
@@ -220,21 +287,50 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 			}
 		}
 	}
+
 	if let Ok(groups_string) = defaults_get("blockedGroups").as_string() {
 		groups_string.read().split(',').for_each(|group| {
-			url.push_str("&excludedGroups[]=");
-			url.push_str(group.trim());
+			let trimmed = group.trim();
+			if !trimmed.is_empty() {
+				url.push_str("&excludedGroups[]=");
+				url.push_str(trimmed);
+			}
 		});
 	}
-	let mut offset = 0;
-	let mut chapters: Vec<Chapter> = Vec::new();
-	loop {
-		let mut url_offset = url.clone();
-		url_offset.push_str("&offset=");
-		url_offset.push_str(&offset.to_string());
-		let json = Request::new(&url_offset, HttpMethod::Get)
-			.json()
-			.as_object()?;
+	if let Ok(groups_string) = defaults_get("blockedUploaders").as_string() {
+		groups_string.read().split(',').for_each(|group| {
+			let trimmed = group.trim();
+			if !trimmed.is_empty() {
+				url.push_str("&excludedUploaders[]=");
+				url.push_str(trimmed);
+			}
+		});
+	}
+	let json = Request::new(&url, HttpMethod::Get).json_rl().as_object()?;
+	let total = json.get("total").as_int().unwrap_or(0);
+	let data = json.get("data").as_array()?;
+	let mut chapters: Vec<Chapter> = Vec::with_capacity(total.try_into().unwrap_or(0));
+	for chapter in data {
+		if let Ok(chapter_obj) = chapter.as_object() {
+			if let Ok(chapter) = parser::parse_chapter(chapter_obj) {
+				chapters.push(chapter);
+			}
+		}
+	}
+
+	let mut offset = 500;
+	while offset < total {
+		let json = Request::new(
+			&{
+				let mut url = url.clone();
+				url.push_str("&offset=");
+				url.push_str(&offset.to_string());
+				url
+			},
+			HttpMethod::Get,
+		)
+		.json_rl()
+		.as_object()?;
 
 		let data = json.get("data").as_array()?;
 		for chapter in data {
@@ -244,14 +340,8 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 				}
 			}
 		}
-
-		let total = json.get("total").as_int().unwrap_or(0);
-		if offset + 500 >= total {
-			break;
-		}
 		offset += 500;
 	}
-
 	Ok(chapters)
 }
 
@@ -259,7 +349,10 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 fn get_page_list(id: String) -> Result<Vec<Page>> {
 	let mut url = String::from("https://api.mangadex.org/at-home/server/");
 	url.push_str(&id);
-	let json = Request::new(&url, HttpMethod::Get).json().as_object()?;
+	if defaults_get("standardHttpsPort").as_bool().unwrap_or(false) {
+		url.push_str("?forcePort443=true");
+	}
+	let json = Request::new(&url, HttpMethod::Get).json_rl().as_object()?;
 
 	let chapter = json.get("chapter").as_object()?;
 	let data = chapter
@@ -273,7 +366,7 @@ fn get_page_list(id: String) -> Result<Vec<Page>> {
 	let base_url = json.get("baseUrl").as_string()?.read();
 	let hash = chapter.get("hash").as_string()?.read();
 
-	let mut pages: Vec<Page> = Vec::new();
+	let mut pages: Vec<Page> = Vec::with_capacity(data.len());
 
 	for (i, page) in data.enumerate() {
 		let data_string = page.as_string()?.read();
@@ -329,7 +422,7 @@ pub fn handle_url(url: String) -> Result<DeepLink> {
 		let mut url = String::from("https://api.mangadex.org/chapter/");
 		url.push_str(chapter_id);
 
-		let json = Request::new(&url, HttpMethod::Get).json().as_object()?;
+		let json = Request::new(&url, HttpMethod::Get).json_rl().as_object()?;
 
 		let chapter_obj = json.get("data").as_object()?;
 		let relationships = chapter_obj.get("relationships").as_array()?;
