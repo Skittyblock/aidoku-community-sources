@@ -207,13 +207,13 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 			}
 		}
 
-		let json = Request::new(&url, HttpMethod::Get).json_rl().as_object()?;
+		let mut json = Request::new(&url, HttpMethod::Get).json_rl().as_object()?;
 
-		let data = json.get("data").as_array()?;
-
-		let mut manga_arr: Vec<Manga> = Vec::with_capacity(data.len());
+		let total = json.get("total").as_int().unwrap_or(0) as i32;
+		let mut data = json.get("data").as_array()?;
 		let mut manga_ids: Vec<String> = Vec::with_capacity(data.len());
 
+		// Fetch unique manga IDs first
 		for chapter in data {
 			if let Ok(chapter_obj) = chapter.as_object() {
 				if let Ok(relationships) = chapter_obj.get("relationships").as_array() {
@@ -224,12 +224,9 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 								let id = relationship_obj.get("id").as_string()?.read();
 								if manga_ids.contains(&id) {
 									continue;
+								} else {
+									manga_ids.push(id);
 								}
-								if let Ok(parsed_manga) = get_manga_details(id) {
-									manga_ids.push(parsed_manga.id.clone());
-									manga_arr.push(parsed_manga);
-								}
-								break;
 							}
 						}
 					}
@@ -237,7 +234,26 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 			}
 		}
 
-		let total = json.get("total").as_int().unwrap_or(0) as i32;
+		url = String::from("https://api.mangadex.org/manga\
+			?includes[]=cover_art\
+			&order[updatedAt]=desc\
+			&contentRating[]=erotica\
+			&contentRating[]=suggestive\
+			&contentRating[]=safe",
+		);
+		manga_ids.iter().for_each(|id| {
+			url.push_str("&ids[]=");
+			url.push_str(id);
+		});
+		json = Request::new(&url, HttpMethod::Get).json_rl().as_object()?;
+		data = json.get("data").as_array()?;
+		let mut manga_arr: Vec<Manga> = Vec::with_capacity(data.len());
+		for manga in data {
+			let manga_obj = manga.as_object()?;
+			if let Ok(manga) = parser::parse_basic_manga(manga_obj) {
+				manga_arr.push(manga);
+			}
+		}
 
 		return Ok(MangaPageResult {
 			manga: manga_arr,
