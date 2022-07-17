@@ -386,7 +386,8 @@ fn get_page_list(id: String) -> Result<Vec<Page>> {
 
 	for (i, page) in data.enumerate() {
 		let data_string = page.as_string()?.read();
-		let mut url = String::new();
+		// The 13 extra characters are for "/data-saver/" and slashes
+		let mut url = String::with_capacity(base_url.len() + hash.len() + data_string.len() + 13);
 		url.push_str(&base_url);
 		if defaults_get("dataSaver").as_bool().unwrap_or(false) {
 			url.push_str("/data-saver/");
