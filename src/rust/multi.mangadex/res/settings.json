@@ -22,7 +22,7 @@
 	},
 	{
 		"type": "group",
-		"footer": "A comma-separated list of UUIDs. Chapters from blocked scanlators or uploaders will not be shown.",
+		"footer": "A comma-separated list of UUIDs. Chapters from blocked scanlators or uploaders will not be shown.\nBy default, MangaPlus, Comikey, Bilibili Comics, Azuki and MangaHot are blocked.",
 		"items": [
 			{
 				"type": "text",
