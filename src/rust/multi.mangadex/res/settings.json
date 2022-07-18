@@ -17,6 +17,13 @@
 				"title": "Data Saver",
 				"subtitle": "Use smaller, more compressed images",
 				"default": false
+			},
+			{
+				"type": "switch",
+				"key": "standardHttpsPort",
+				"title": "Force Standard HTTPS Port",
+				"subtitle": "Prevent firewall restrictions on image servers",
+				"default": false
 			}
 		]
 	},
@@ -36,19 +43,6 @@
 				"key": "blockedUploaders",
 				"notification": "blockedUploaders",
 				"placeholder": "Blocked Uploader UUIDs"
-			}
-		]
-	},
-	{
-		"type": "group",
-		"footer": "This allow users with stricter firewall restrictions to load pages correctly.",
-		"items": [
-			{
-				"type": "switch",
-				"key": "standardHttpsPort",
-				"title": "Use Standard HTTPS Port",
-				"subtitle": "Only request image servers on port 443",
-				"default": false
 			}
 		]
 	}
