@@ -13,7 +13,7 @@ use aidoku::{
 	},
 	Chapter, DeepLink, Filter, FilterType, Listing, Manga, MangaPageResult, Page,
 };
-use alloc::{borrow::ToOwned, string::ToString};
+use alloc::borrow::ToOwned;
 use helper::*;
 
 #[link(wasm_import_module = "net")]
@@ -43,7 +43,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 		"https://api.mangadex.org/manga/?includes[]=cover_art\
 		&limit=20\
 		&offset=",
-	) + &offset.to_string();
+	) + itoa::Buffer::new().format(offset);
 
 	for filter in filters {
 		match filter.kind {
@@ -115,7 +115,11 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 					3 => "createdAt",
 					4 => "updatedAt",
 					5 => "title",
-					_ => continue,
+					_ => {
+						// Un-push the last "&order[" pushed
+						url.replace_range(url.len() - 7..url.len() - 1, "");
+						continue;
+					}
 				});
 				url.push_str("]=");
 				url.push_str(if ascending { "asc" } else { "desc" });
@@ -187,7 +191,7 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 			&includeFutureUpdates=0\
 			&limit=40\
 			&offset=",
-		) + &offset.to_string();
+		) + itoa::Buffer::new().format(offset);
 		if let Ok(languages) = defaults_get("languages").as_array() {
 			languages.for_each(|lang| {
 				if let Ok(lang) = lang.as_string() {
@@ -245,8 +249,7 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 			&contentRating[]=erotica\
 			&contentRating[]=suggestive\
 			&contentRating[]=safe",
-		);
-		url.push_str(&manga_ids);
+		) + &manga_ids;
 		json = Request::new(&url, HttpMethod::Get).json_rl().as_object()?;
 		data = json.get("data").as_array()?;
 		let manga = data
@@ -268,13 +271,11 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 
 #[get_manga_details]
 fn get_manga_details(id: String) -> Result<Manga> {
-	let mut url = String::from("https://api.mangadex.org/manga/");
-	url.push_str(&id);
-	url.push_str(
-		"?includes[]=cover_art\
+	let url = String::from("https://api.mangadex.org/manga/")
+		+ &id
+		+ "?includes[]=cover_art\
 		&includes[]=author\
-		&includes[]=artist",
-	);
+		&includes[]=artist";
 	let json = Request::new(&url, HttpMethod::Get).json_rl().as_object()?;
 
 	let data = json.get("data").as_object()?;
@@ -336,7 +337,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 	let mut offset = 500;
 	while offset < total {
 		let json = Request::new(
-			&(url.clone() + "&offset=" + &offset.to_string()),
+			&(url.clone() + "&offset=" + itoa::Buffer::new().format(offset)),
 			HttpMethod::Get,
 		)
 		.json_rl();
