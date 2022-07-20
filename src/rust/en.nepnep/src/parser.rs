@@ -10,7 +10,7 @@ pub fn parse_basic_manga(manga_object: ObjectRef) -> Result<Manga> {
 	let id = manga_object.get("i").as_string()?.read();
 	let title = manga_object.get("s").as_string()?.read();
 
-	let mut cover = String::from("https://cover.nep.li/cover/");
+	let mut cover = String::from("https://temp.compsci88.com/cover/");
 	cover.push_str(&id);
 	cover.push_str(".jpg");
 
