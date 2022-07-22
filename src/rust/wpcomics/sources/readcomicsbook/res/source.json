@@ -5,7 +5,7 @@
 		"name": "ReadComicsBook",
 		"version": 1,
 		"url": "https://readcomicsbook.com",
-		"nsfw": 0
+		"nsfw": 1
 	},
 	"listings": [
 		{

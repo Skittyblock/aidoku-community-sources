@@ -1,0 +1,305 @@
+[
+	{
+		"type": "title"
+	},
+	{
+		"type": "select",
+		"name": "Adult Content",
+		"options": [
+			"All",
+			"No Adult Content",
+			"Only Adult Content"
+		]
+	},
+	{
+		"type": "group",
+		"name": "Status",
+		"filters": [
+			{
+				"type": "check",
+				"name": "Ongoing"
+			},
+			{
+				"type": "check",
+				"name": "On Hold"
+			},
+			{
+				"type": "check",
+				"name": "Cancelled"
+			},
+			{
+				"type": "check",
+				"name": "Completed"
+			}
+		]
+	},
+	{
+		"type": "select",
+		"name": "Genre Condition",
+		"options": [
+			"OR (having one of the selected genre)",
+			"AND (having all of the selected genres)"
+		]
+	},
+	{
+		"type": "group",
+		"name": "Genres",
+		"filters": [
+			{
+				"type": "genre",
+				"name": "4-Koma",
+				"id": "4-koma"
+			},
+			{
+				"type": "genre",
+				"name": "Action",
+				"id": "action"
+			},
+			{
+				"type": "genre",
+				"name": "Adventure",
+				"id": "adventure"
+			},
+			{
+				"type": "genre",
+				"name": "Age Gap",
+				"id": "age-gap"
+			},
+			{
+				"type": "genre",
+				"name": "All Ages",
+				"id": "all-ages"
+			},
+			{
+				"type": "genre",
+				"name": "BDSM",
+				"id": "bdsm"
+			},
+			{
+				"type": "genre",
+				"name": "Campus",
+				"id": "campus"
+			},
+			{
+				"type": "genre",
+				"name": "Comedy",
+				"id": "comedy"
+			},
+			{
+				"type": "genre",
+				"name": "Crime",
+				"id": "crime"
+			},
+			{
+				"type": "genre",
+				"name": "Dance",
+				"id": "dance"
+			},
+			{
+				"type": "genre",
+				"name": "Drama",
+				"id": "drama"
+			},
+			{
+				"type": "genre",
+				"name": "Fantasy",
+				"id": "fantasy"
+			},
+			{
+				"type": "genre",
+				"name": "Female Friend",
+				"id": "female-friend"
+			},
+			{
+				"type": "genre",
+				"name": "Female Professor",
+				"id": "female-professor"
+			},
+			{
+				"type": "genre",
+				"name": "Gender Bender",
+				"id": "gender-bender"
+			},
+			{
+				"type": "genre",
+				"name": "Gossip",
+				"id": "gossip"
+			},
+			{
+				"type": "genre",
+				"name": "Harem",
+				"id": "harem"
+			},
+			{
+				"type": "genre",
+				"name": "Historical",
+				"id": "historical"
+			},
+			{
+				"type": "genre",
+				"name": "Horror",
+				"id": "horror"
+			},
+			{
+				"type": "genre",
+				"name": "Incest",
+				"id": "incest"
+			},
+			{
+				"type": "genre",
+				"name": "Isekai",
+				"id": "isekai"
+			},
+			{
+				"type": "genre",
+				"name": "Josei",
+				"id": "josei"
+			},
+			{
+				"type": "genre",
+				"name": "Magic",
+				"id": "magic"
+			},
+			{
+				"type": "genre",
+				"name": "Martial Arts",
+				"id": "martial-arts"
+			},
+			{
+				"type": "genre",
+				"name": "Mature",
+				"id": "mature"
+			},
+			{
+				"type": "genre",
+				"name": "Mystery",
+				"id": "mystery"
+			},
+			{
+				"type": "genre",
+				"name": "Neighbour",
+				"id": "neighbour"
+			},
+			{
+				"type": "genre",
+				"name": "NTR",
+				"id": "netorare"
+			},
+			{
+				"type": "genre",
+				"name": "Office",
+				"id": "office"
+			},
+			{
+				"type": "genre",
+				"name": "Psychological",
+				"id": "psychological"
+			},
+			{
+				"type": "genre",
+				"name": "Rape",
+				"id": "rape"
+			},
+			{
+				"type": "genre",
+				"name": "Reincarnation",
+				"id": "reincarnation"
+			},
+			{
+				"type": "genre",
+				"name": "Revenge",
+				"id": "revenge"
+			},
+			{
+				"type": "genre",
+				"name": "Reverse Harem",
+				"id": "reverse-harem"
+			},
+			{
+				"type": "genre",
+				"name": "Romance",
+				"id": "romance"
+			},
+			{
+				"type": "genre",
+				"name": "School Life",
+				"id": "school-life"
+			},
+			{
+				"type": "genre",
+				"name": "Sci-Fi",
+				"id": "scifi-webtoon"
+			},
+			{
+				"type": "genre",
+				"name": "Secret Relationship",
+				"id": "secret-relationship"
+			},
+			{
+				"type": "genre",
+				"name": "Seinen",
+				"id": "seinen"
+			},
+			{
+				"type": "genre",
+				"name": "Senior/Junior",
+				"id": "senior-junior"
+			},
+			{
+				"type": "genre",
+				"name": "Shoujo",
+				"id": "shoujo"
+			},
+			{
+				"type": "genre",
+				"name": "Shounen",
+				"id": "shounen"
+			},
+			{
+				"type": "genre",
+				"name": "Slice of Life",
+				"id": "slice-of-life"
+			},
+			{
+				"type": "genre",
+				"name": "Sports",
+				"id": "sports"
+			},
+			{
+				"type": "genre",
+				"name": "Supernatural",
+				"id": "supernatural"
+			},
+			{
+				"type": "genre",
+				"name": "Thriller",
+				"id": "thriller"
+			},
+			{
+				"type": "genre",
+				"name": "Tragedy",
+				"id": "tragedy"
+			},
+			{
+				"type": "genre",
+				"name": "Uncensored",
+				"id": "uncensored"
+			},
+			{
+				"type": "genre",
+				"name": "Work Life",
+				"id": "work-life"
+			},
+			{
+				"type": "genre",
+				"name": "Yaoi",
+				"id": "yaoi"
+			},
+			{
+				"type": "genre",
+				"name": "Yuri",
+				"id": "yuri"
+			}
+		]
+	}
+]

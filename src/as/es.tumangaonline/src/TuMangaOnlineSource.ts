@@ -12,9 +12,8 @@ import {
 	Request,
 	HttpMethod,
 	Html,
-	console,
 	ValueRef
-} from "aidoku-as";
+} from "aidoku-as/src";
 
 let genreValues = new Map<string, string>();
 genreValues.set("Acción", "1");
@@ -72,6 +71,21 @@ let demographicOptions = ["", "seinen", "shoujo", "shounen", "josei", "kodomo"];
 let statusOptions = ["", "publishing", "ended", "cancelled", "on_hold"];
 let typeOptions = ["", "manga", "manhua", "manhwa", "novel", "one_shot", "doujinshi", "oel"];
 
+let CACHED_MANGA_ID = "";
+let CACHED_MANGA: ArrayBuffer = new ArrayBuffer(1);
+
+function cache_manga_page(url: string, headers: Map<string, string>): void {
+	if (CACHED_MANGA.byteLength > 1 && CACHED_MANGA_ID == url) {
+		return
+	}
+
+	let request = Request.create(HttpMethod.GET);
+	CACHED_MANGA_ID = request.url = url;
+	request.headers = headers;
+
+	CACHED_MANGA = request.data();
+}
+
 export class TuMangaOnlineSource extends Source {
 	private headers: Map<string, string>;
 
@@ -82,7 +96,7 @@ export class TuMangaOnlineSource extends Source {
 		this.headers.set("Referer", "https://lectortmo.com/");
 	}
 
-	private parseMangaList(url: String): MangaPageResult {
+	private parseMangaList(url: string): MangaPageResult {
 		let request = Request.create(HttpMethod.GET);
 		request.url = url;
 		request.headers = this.headers;
@@ -178,10 +192,8 @@ export class TuMangaOnlineSource extends Source {
 	}
 
 	getMangaDetails(mangaId: string): Manga {
-		let request = Request.create(HttpMethod.GET);
-		request.url = mangaId;
-		request.headers = this.headers;
-		let document = request.html();
+		cache_manga_page(mangaId, this.headers);
+		let document = Html.parse(CACHED_MANGA);
 		
 		let title = document.select("h2.element-subtitle").first().text();
 		let titleElements = document.select("h5.card-title");
@@ -229,10 +241,8 @@ export class TuMangaOnlineSource extends Source {
 	}
 
 	getChapterList(mangaId: string): Chapter[] {
-		let request = Request.create(HttpMethod.GET);
-		request.url = mangaId;
-		request.headers = this.headers;
-		let document = request.html();
+		cache_manga_page(mangaId, this.headers);
+		let document = Html.parse(CACHED_MANGA);
 
 		let chapterElements = document.select("div.chapters > ul.list-group li.p-0.list-group-item").array();
 

@@ -1,0 +1,136 @@
+name: Test PR
+on:
+  pull_request:
+    paths:
+    - 'src/**'
+    - 'lib/**'
+    - '.github/workflows/pr.yaml'
+
+jobs:
+  tests:
+    env:
+      RUSTC_WRAPPER: sccache
+      SCCACHE_CACHE_SIZE: 2G
+      SCCACHE_VERSION: 0.3.0
+    runs-on: ubuntu-latest
+    steps:
+    -
+      uses: actions/checkout@v3
+    -
+      name: Get changed files
+      id: files
+      uses: jitterbit/get-changed-files@v1
+      with:
+        format: json
+    -
+      name: Process changed files
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        readarray -t TEMP <<< "$(jq -r '.[]' <<<'${{ steps.files.outputs.added_modified }}')"
+        for line in "${TEMP[@]}"
+        do
+          if [[ "$line" == *"src/rust"* ]]; then
+            echo "SETUP_RUST=true" >> $GITHUB_ENV
+          elif [[ "$line" == *"src/as"* ]]; then
+            echo "SETUP_AS=true" >> $GITHUB_ENV
+          fi         
+        done
+    -
+      uses: google/wireit@setup-github-actions-caching/v1
+      if: ${{ env.SETUP_AS == 'true' }}
+    - 
+      uses: actions/setup-node@v3
+      if: ${{ env.SETUP_AS == 'true' }}
+      with:
+        node-version: 16
+        cache: npm
+        cache-dependency-path: '**/package-lock.json'
+    -
+      name: Cache rust stuff
+      uses: actions/cache@v3
+      if: ${{ env.SETUP_RUST == 'true' }}
+      with:
+        path: |
+         ~/.cargo/registry/index
+         ~/.cargo/registry/cache
+         ~/.cargo/git/db
+         ~/.cargo/bin
+         src/rust/**/target
+        key: ${{ runner.os }}-cargo3-${{ hashFiles('**/Cargo.lock') }}
+        restore-keys: ${{ runner.os }}-cargo3-
+    -
+      name: sccache
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/sccache
+        key: ${{ runner.os }}-sccache-${{ github.sha }}
+        restore-keys: ${{ runner.os }}-sccache-
+    -
+      uses: actions-rs/toolchain@v1
+      if: ${{ env.SETUP_RUST == 'true' }}
+      with:
+        toolchain: nightly
+        override: true
+        target: wasm32-unknown-unknown
+    -
+      name: Install build dependencies
+      run: |
+        sudo ln -s $(which wasm-ld-13 || which wasm-ld-12 || which wasm-ld-11 || which wasm-ld-10) /usr/bin/wasm-ld
+        brew install beerpiss/tap/aidoku-cli
+
+        SCCACHE_FILE=sccache-v$SCCACHE_VERSION-x86_64-unknown-linux-musl
+        curl -L https://github.com/mozilla/sccache/releases/download/v$SCCACHE_VERSION/$SCCACHE_FILE.tar.gz | tar -xz
+        sudo mv -f $SCCACHE_FILE/sccache* /usr/local/bin/sccache
+        sudo chmod +x /usr/local/bin/sccache
+    -
+      name: Build sources
+      id: build
+      run: |
+        REBUILD_C_SOURCES="false"
+        readarray -t TEMP <<< "$(jq -r '.[]' <<<'${{ steps.files.outputs.added_modified }}')"
+
+        while IFS= read -r -d $'\0' i; do
+          if [[ "$i" == *"src/rust"* ]]; then
+            (
+              cd "$i"
+              ./build.sh -a
+            )
+          elif [[ "$i" == *"src/as"* ]]; then
+            (
+              cd "$i"
+              npm clean-install
+              npm run build
+            )
+          elif [[ "$i" == *"src/c"* ]]; then
+            (
+              cd "$i"
+              make CC="sccache clang" package.aix
+            )
+          elif [[ "$i" == *"lib/c" ]]; then
+            REBUILD_C_SOURCES="true"
+          fi
+        done < <(printf "%s\n" "${TEMP[@]}" | cut -d'/' -f-3 | sort -u | grep 'src' | tr '\n' '\0')
+
+        if [ "$REBUILD_C_SOURCES" = "true" ]; then
+          for src in ./src/c/*; do
+            (
+              cd "$src"
+              make package.aix
+            )
+          done
+        fi
+    -
+      name: Test if sources are valid
+      run: aidoku verify --force-color ./**/*.aix
+    -
+      name: Flatten packages directory
+      if: always()
+      run: aidoku build ./**/*.aix
+    - 
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: packages
+        path: public/sources/*.aix
+        if-no-files-found: ignore

@@ -1,0 +1,18 @@
+{
+	"info": {
+		"id": "en.coloredmanga",
+		"lang": "en",
+		"name": "Colored Manga",
+		"version": 3,
+		"url": "https://coloredmanga.com",
+		"nsfw": 0
+	},
+	"listings": [
+		{
+			"name": "Trending"
+		},
+		{
+			"name": "Popular"
+		}
+	]
+}

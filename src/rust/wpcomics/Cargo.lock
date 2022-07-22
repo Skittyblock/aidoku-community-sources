@@ -94,6 +94,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "readcomicsfree"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "wpcomics_template",
+]
+
+[[package]]
 name = "syn"
 version = "1.0.94"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -102,6 +110,22 @@ dependencies = [
  "proc-macro2",
  "quote",
  "unicode-xid",
+]
+
+[[package]]
+name = "truyenqq"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "wpcomics_template",
+]
+
+[[package]]
+name = "truyentranhaudio"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "wpcomics_template",
 ]
 
 [[package]]

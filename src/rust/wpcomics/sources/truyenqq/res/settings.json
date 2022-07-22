@@ -1,0 +1,19 @@
+[
+	{
+		"type": "group",
+		"title": "Settings",
+		"items": [
+			{
+				"type": "select",
+				"key": "serverSelection",
+				"title": "Server",
+				"values": ["1", "2"],
+				"titles": [
+					"Server 1",
+					"Server 2"
+				],
+				"default": "1"
+			}
+		]
+	}
+]

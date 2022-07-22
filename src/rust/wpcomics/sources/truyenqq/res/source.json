@@ -1,0 +1,18 @@
+{
+	"info": {
+		"id": "vi.truyenqq",
+		"lang": "vi",
+		"name": "TruyenQQ",
+		"version": 2,
+		"url": "http://truyenqqpro.com/",
+		"nsfw": 1
+	},
+	"listings": [
+		{
+			"name": "Truyện con gái"
+		},
+		{
+			"name": "Truyện con trai"
+		}
+	]
+}

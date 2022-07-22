@@ -1,0 +1,18 @@
+{
+	"info": {
+		"id": "vi.yocomic",
+		"lang": "vi",
+		"name": "Yocomic",
+		"version": 3,
+		"url": "https://yocomic.com",
+		"nsfw": 1
+	},
+	"listings": [
+		{
+			"name": "Truyện hot"
+		},
+		{
+			"name": "Phổ biến"
+		}
+	]
+}

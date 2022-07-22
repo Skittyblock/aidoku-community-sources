@@ -1,0 +1,123 @@
+name: Build sources
+on:
+  push:
+    paths:
+    - 'src/**'
+    - 'lib/**'
+    - '.github/workflows/build.yaml'
+
+jobs:
+  build:
+    env:
+      RUSTC_WRAPPER: sccache
+      SCCACHE_CACHE_SIZE: 2G
+      SCCACHE_VERSION: 0.3.0
+    runs-on: ubuntu-latest
+    steps:
+    -
+      uses: actions/checkout@v3
+    -
+      uses: google/wireit@setup-github-actions-caching/v1
+    - 
+      uses: actions/setup-node@v3
+      with:
+        node-version: 16
+        cache: npm
+        cache-dependency-path: '**/package-lock.json'
+    -
+      name: Cache rust stuff
+      uses: actions/cache@v3
+      with:
+        path: |
+         ~/.cargo/registry/index
+         ~/.cargo/registry/cache
+         ~/.cargo/git/db
+         ~/.cargo/bin
+         src/rust/**/target/
+        key: ${{ runner.os }}-cargo3-${{ hashFiles('**/Cargo.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-cargo3-
+    -
+      name: sccache
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/sccache
+        key: ${{ runner.os }}-sccache-${{ github.sha }}
+        restore-keys: ${{ runner.os }}-sccache-
+    -
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: nightly
+        override: true
+        target: wasm32-unknown-unknown
+    -
+      name: Install build dependencies
+      run: |
+        sudo ln -s $(which wasm-ld-13 || which wasm-ld-12 || which wasm-ld-11 || which wasm-ld-10) /usr/bin/wasm-ld
+        brew install beerpiss/tap/aidoku-cli
+
+        SCCACHE_FILE=sccache-v$SCCACHE_VERSION-x86_64-unknown-linux-musl
+        curl -L https://github.com/mozilla/sccache/releases/download/v$SCCACHE_VERSION/$SCCACHE_FILE.tar.gz | tar -xz
+        sudo mv -f $SCCACHE_FILE/sccache /usr/local/bin/sccache
+        sudo chmod +x /usr/local/bin/sccache
+    -
+      name: Build AssemblyScript sources
+      run: |
+        for src in ./src/as/*; do
+          (
+            cd "$src"
+            npm clean-install
+            npm run build
+          ) &
+        done
+        wait
+    -
+      name: Build C sources
+      run: |
+        for src in ./src/c/*; do
+          (
+            cd "$src"
+            make CC="sccache clang" package.aix
+          )
+        done
+    -
+      name: Build Rust sources
+      run: |
+        for src in ./src/rust/*; do
+          (
+            cd "$src"
+            ./build.sh -a
+          )
+        done
+    -
+      name: Building source list
+      run: |
+        aidoku build ./**/*.aix
+    -
+      name: Deploy to GitHub Pages
+      uses: JamesIves/github-pages-deploy-action@v4.2.5
+      if: ${{ github.ref == 'refs/heads/main' }}
+      with:
+        branch: gh-pages
+        folder: public
+        git-config-name: GitHub Actions
+        git-config-email: github-actions[bot]@users.noreply.github.com
+        commit-message: Update source list
+        single-commit: true
+    - 
+      name: Uploading packages as artifact
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: packages
+        path: public/sources/*.aix
+        if-no-files-found: ignore
+    -
+      name: Uploading gh-pages deployment as artifact
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: gh-pages
+        path: public
+        if-no-files-found: ignore
+

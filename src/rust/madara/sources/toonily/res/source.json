@@ -1,0 +1,18 @@
+{
+	"info": {
+		"id": "en.toonily",
+		"lang": "en",
+		"name": "Toonily",
+		"version": 3,
+		"url": "https://toonily.com",
+		"nsfw": 2
+	},
+	"listings": [
+		{
+			"name": "Trending"
+		},
+		{
+			"name": "Popular"
+		}
+	]
+}

@@ -5,39 +5,44 @@ use aidoku::{
 	error::Result,
 	prelude::*,
 	std::{net::HttpMethod, net::Request, String, Vec},
-	Chapter, DeepLink, Filter, FilterType, Listing, Manga, MangaPageResult, MangaViewer, Page,
+	Chapter, DeepLink, Filter, FilterType, Listing, Manga, MangaPageResult, Page,
 };
-use helper::{convert_time, get_search_url, get_tag_id, listing_mapping, status_map};
+use helper::{get_search_url, listing_mapping};
 use parser::parse_comic;
 use wpcomics_template::{
-	helper::urlencode,
+	helper::{get_tag_id, urlencode},
 	template::{self, *},
 };
 
-pub static SELECTORS: Selectors = Selectors {
-	next_page: "li > a[rel=next]",
-	manga_cell: "li[itemtype=\"https://schema.org/Book\"]",
-	manga_cell_title: "div.manga-info > h3 > a",
-	manga_cell_url: "div.manga-info > h3 > a",
-	manga_cell_image: "div.manga-thumb > a > img",
+fn get_instance() -> WPComicsSource {
+	WPComicsSource {
+		base_url: String::from("https://readcomicsbook.com"),
+		listing_mapping,
 
-	manga_details_title: "div.headline > h2[itemprop=name]",
-	manga_details_title_transformer: |title| title,
-	manga_details_cover: "div.manga-thumb > img",
-	manga_details_author: "div.mt-author",
-	manga_details_author_transformer: |title| title.replace("Author(s): ", ""),
-	manga_details_description: "div.summary-content",
-	manga_details_tags: "div.meta-data.view + div.meta-data",
-	manga_details_tags_splitter: " - ",
-	manga_details_status: "div.meta-data:contains(Status)",
-	manga_details_status_transformer: |title| title.replace("Status: ", ""),
-	manga_details_chapters: "ul.chapter-list > li",
+		manga_cell: "li[itemtype=\"https://schema.org/Book\"]",
+		manga_cell_title: "div.manga-info > h3 > a",
+		manga_cell_url: "div.manga-info > h3 > a",
+		manga_cell_image: "div.manga-thumb > a > img",
 
-	manga_viewer_page: "div.page-chapter > img",
+		manga_details_title: "div.headline > h2[itemprop=name]",
+		manga_details_cover: "div.manga-thumb > img",
+		manga_details_author: "div.mt-author",
+		manga_details_author_transformer: |title| title.replace("Author(s): ", ""),
+		manga_details_description: "div.summary-content",
+		manga_details_tags: "div.meta-data.view + div.meta-data",
+		manga_details_status: "div.meta-data:contains(Status)",
+		manga_details_status_transformer: |title| title.replace("Status: ", ""),
+		manga_details_chapters: "ul.chapter-list > li",
 
-	chapter_anchor_selector: "span > a",
-	chapter_date_selector: "span.time",
-};
+		chapter_skip_first: true,
+		chapter_anchor_selector: "span > a",
+		chapter_date_selector: "span.time",
+
+		manga_viewer_page_url_suffix: "/full",
+
+		..Default::default()
+	}
+}
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
@@ -56,7 +61,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 			},
 		}
 	}
-	if title != "" {
+	if !title.is_empty() {
 		let json = Request::new(
 			format!("https://readcomicsbook.com/ajax/search?q={title}").as_str(),
 			HttpMethod::Get,
@@ -71,44 +76,37 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 				manga_arr.push(manga);
 			}
 		}
-		return Ok(MangaPageResult {
+		Ok(MangaPageResult {
 			manga: manga_arr,
 			has_more: false,
-		});
+		})
 	} else {
-		template::get_manga_list(
-			get_search_url(String::from("https://readcomicsbook.com"), genre, page),
-			&SELECTORS,
-		)
+		get_instance().get_manga_list(get_search_url(
+			String::from("https://readcomicsbook.com"),
+			genre,
+			page,
+		))
 	}
 }
 
 #[get_manga_listing]
 fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
-	template::get_manga_listing(
-		String::from("https://readcomicsbook.com/"),
-		listing,
-		&SELECTORS,
-		listing_mapping,
-		page,
-	)
+	get_instance().get_manga_listing(listing, page)
 }
 
 #[get_manga_details]
 fn get_manga_details(id: String) -> Result<Manga> {
-	template::get_manga_details(id, &SELECTORS, MangaViewer::Ltr, status_map)
+	get_instance().get_manga_details(id)
 }
 
 #[get_chapter_list]
 fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
-	template::get_chapter_list(id, &SELECTORS, true, convert_time)
+	get_instance().get_chapter_list(id)
 }
 
 #[get_page_list]
 fn get_page_list(id: String) -> Result<Vec<Page>> {
-	template::get_page_list(id, &SELECTORS, String::from("/all"), |url| {
-		return url;
-	})
+	get_instance().get_page_list(id)
 }
 
 #[modify_image_request]
@@ -122,5 +120,5 @@ fn modify_image_request(request: Request) {
 
 #[handle_url]
 fn handle_url(url: String) -> Result<DeepLink> {
-	template::handle_url(url, &SELECTORS, MangaViewer::Ltr, status_map)
+	get_instance().handle_url(url)
 }
