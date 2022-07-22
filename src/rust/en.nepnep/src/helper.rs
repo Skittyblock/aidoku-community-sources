@@ -6,7 +6,7 @@ pub fn string_between(string: &str, start: &str, end: &str, extension: usize) ->
 	let half = &string[start_loc..];
 	let end_loc = half.find(end).unwrap_or(string.len()) + extension;
 	let result = &half[..end_loc];
-	return String::from(result);
+	String::from(result)
 }
 
 // converts chapter id to a (optionally) padded float string
@@ -17,15 +17,15 @@ pub fn chapter_image(id: &str, pad: bool) -> String {
 	if pad {
 		new_str.push_str(&id[1..id.len()-1]);
 	} else {
-		new_str.push_str(&id[1..id.len()-1].trim_start_matches('0'));
+		new_str.push_str(id[1..id.len()-1].trim_start_matches('0'));
 	}
 
 	if new_str.is_empty() {
-		new_str.push_str("0");
+		new_str.push('0');
 	}
 
 	if id.chars().last().unwrap_or('0') != '0' {
-		new_str.push_str(".");
+		new_str.push('.');
 		new_str.push_str(id.chars().last().unwrap_or('0').encode_utf8(&mut [0; 1]));
 	}
 

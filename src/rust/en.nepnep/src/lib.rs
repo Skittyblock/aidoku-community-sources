@@ -1,4 +1,5 @@
 #![no_std]
+#![allow(clippy::mut_range_bound)]
 use aidoku::{
 	prelude::*, error::Result, std::String, std::Vec, std::net::Request, std::net::HttpMethod, std::html::Node,
 	Filter, FilterType, Listing, Manga, MangaPageResult, Chapter, Page, DeepLink,
@@ -11,6 +12,7 @@ mod parser;
 static mut DIRECTORY_RID: Option<i32> = None;
 static mut CACHED_MANGA_ID: Option<String> = None;
 static mut CACHED_MANGA: Option<String> = None;
+static mut COVER_SERVER: Option<String> = None;
 
 // Cache full manga directory
 // Done to avoid repeated requests and speed up parsing
@@ -19,8 +21,13 @@ pub fn initialize_directory() {
 		let mut url = url_str.read();
 		url.push_str("/search/");
 
-		let result = Request::new(&url, HttpMethod::Get).string();
+		let html = Request::new(&url, HttpMethod::Get).html();
+		let node = html.select("div.SearchResultCover img[ng-src]");
+		unsafe {
+			COVER_SERVER = Some(node.attr("ng-src").read());
+		}
 
+		let result = html.outer_html().read();
 		let final_str = helper::string_between(&result, "vm.Directory = ", "];", 1);
 
 		let mut directory_parsed = parse(final_str.as_bytes());
@@ -33,15 +40,13 @@ pub fn initialize_directory() {
 
 // Cache manga page html
 pub fn cache_manga_page(id: &str) {
-	if unsafe { CACHED_MANGA_ID.is_some() } {
-		if unsafe { CACHED_MANGA_ID.clone().unwrap() } == id {
-			return;
-		}
+	if unsafe { CACHED_MANGA_ID.is_some() } && unsafe { CACHED_MANGA_ID.clone().unwrap() } == id {
+		return;
 	}
 	if let Ok(url_str) = defaults_get("sourceURL").as_string() {
 		let mut url = url_str.read();
 		url.push_str("/manga/");
-		url.push_str(&id);
+		url.push_str(id);
 		unsafe { CACHED_MANGA = Some(Request::new(&url, HttpMethod::Get).string()) };
 	}
 }
@@ -57,7 +62,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	let mut directory = unsafe { aidoku::std::ValueRef::new(DIRECTORY_RID.unwrap()) };
 	directory.1 = false;
 
-	let mut directory_arr = directory.clone().as_array()?;
+	let mut directory_arr = directory.as_array()?;
 
 	let offset = (page as usize - 1) * 20;
 
@@ -114,7 +119,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 
 	for i in offset..end {
 		let manga_obj = directory_arr.get(i).as_object()?;
-		manga.push(parser::parse_basic_manga(manga_obj)?);
+		manga.push(parser::parse_basic_manga(manga_obj, unsafe { COVER_SERVER.clone().unwrap_or_default() })?);
 	}
 
 	Ok(MangaPageResult {
@@ -187,10 +192,10 @@ fn get_page_list(id: String) -> Result<Vec<Page>> {
 	base_path.push_str(&base_url);
 	base_path.push_str("/manga/");
 	base_path.push_str(&title_uri);
-	base_path.push_str("/");
+	base_path.push('/');
 	if !directory.is_empty() {
 		base_path.push_str(&directory);
-		base_path.push_str("/");
+		base_path.push('/');
 	}
 	base_path.push_str(&helper::chapter_image(&chapter.get("Chapter").as_string()?.read(), true));
 
@@ -212,8 +217,8 @@ fn get_page_list(id: String) -> Result<Vec<Page>> {
 		}
 
 		let mut page_url = base_path.clone();
-		page_url.push_str("-");
-		page_url.push_str(&String::from_utf8(vec).unwrap_or(String::from("000")));
+		page_url.push('-');
+		page_url.push_str(&String::from_utf8(vec).unwrap_or_else(|_| String::from("000")));
 		page_url.push_str(".png");
 
 		pages.push(Page {
@@ -230,7 +235,7 @@ fn get_page_list(id: String) -> Result<Vec<Page>> {
 #[handle_url]
 fn hande_url(url: String) -> Result<DeepLink> {
 	let mut url = &url[8..]; // remove "https://"
-	let end = match url.find("/") {
+	let end = match url.find('/') {
 		Some(i) => i + 1,
 		None => url.len(),
 	};
@@ -240,8 +245,8 @@ fn hande_url(url: String) -> Result<DeepLink> {
 		// ex: https://mangasee123.com/manga/Kanojo-Okarishimasu
 		//     https://manga4life.com/manga/Kanojo-Okarishimasu
 
-		let id = &url[6..]; // remove "manga/"
-		let id_end = match id.find("/") {
+		let id = url.strip_prefix("manga/").unwrap_or_default(); // remove "manga/"
+		let id_end = match id.find('/') {
 			Some(i) => i,
 			None => id.len(),
 		};
@@ -255,7 +260,7 @@ fn hande_url(url: String) -> Result<DeepLink> {
 	} else if url.starts_with("read-online/") {
 		// ex: https://manga4life.com/read-online/Kanojo-Okarishimasu-chapter-232.html
 
-		let id = &url[12..]; // remove "read-online/"
+		let id = url.strip_prefix("read-online/").unwrap_or_default(); // remove "read-online/"
 		let id_end = match id.find("-chapter") {
 			Some(i) => i,
 			None => id.len(),
