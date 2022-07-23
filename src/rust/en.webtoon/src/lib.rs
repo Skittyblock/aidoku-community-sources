@@ -1,10 +1,8 @@
 #![no_std]
 extern crate alloc;
 
-use aidoku::{
-	error::Result, prelude::*, std::net::HttpMethod, std::net::Request, std::String, std::Vec,
-	Chapter, Filter, FilterType, Manga, MangaPageResult, Page,
-};
+use aidoku::{error::Result, prelude::*, std::net::HttpMethod, std::net::Request, std::String, std::Vec, Chapter, Filter, FilterType, Manga, MangaPageResult, Page, DeepLink};
+use aidoku::error::{AidokuError, ValueCastError};
 
 use crate::parser::urlencode;
 
@@ -82,3 +80,9 @@ fn modify_image_request(request: Request) {
         .header("Referer", format!("{}/", BASE_URL).as_str())
         .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.5005.124 Safari/537.36 Edg/102.0.1245.44");
 }
+
+// TODO: Implement in the future
+// #[handle_url]
+// pub fn handle_url(url: String) -> Result<DeepLink> {
+// 	parser::handle_url(url)
+// }
