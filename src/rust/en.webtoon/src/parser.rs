@@ -1,10 +1,13 @@
 use alloc::string::ToString;
 use alloc::vec;
 
-use aidoku::{error::Result, prelude::*, std::html::Node, std::String, std::Vec, Chapter, Manga, MangaContentRating, MangaStatus, MangaViewer, Page, DeepLink};
+use aidoku::{
+	error::Result, prelude::*, std::html::Node, std::String, std::Vec, Chapter, DeepLink, Manga,
+	MangaContentRating, MangaStatus, MangaViewer, Page,
+};
 use chrono::NaiveDate;
 
-use crate::{BASE_URL, HttpMethod, Request};
+use crate::{get_manga_details, BASE_URL};
 
 const REPLACE_STRINGS: [&str; 6] = [":", "-", "/", "(", ")", "%"];
 
@@ -131,13 +134,15 @@ pub fn parse_manga(obj: Node, id: String) -> Result<Manga> {
 		.select("img")
 		.attr("src")
 		.read();
-	if cover.is_empty() {
+
+	if cover.trim().is_empty() {
 		cover = obj
 			.select(".detail_chal_pic")
 			.select("img")
 			.attr("src")
 			.read();
 	}
+
 	let author = obj
 		.select(".author")
 		.first()
@@ -229,12 +234,8 @@ pub fn get_page_list(obj: Node) -> Result<Vec<Page>> {
 }
 
 pub fn handle_url(url: String) -> Result<DeepLink> {
-	println!("{}", url);
 	let manga_id = substr_after(&url, "webtoons.com/en/").to_string();
-
-	let url = format!("{}/en/{}", BASE_URL, &manga_id);
-	let html = Request::new(url.clone().as_str(), HttpMethod::Get).html();
-	let parsed = parse_manga(html, manga_id);
+	let parsed = get_manga_details(manga_id);
 
 	Ok(DeepLink {
 		manga: parsed.ok(),

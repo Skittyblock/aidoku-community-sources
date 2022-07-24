@@ -3,7 +3,10 @@
 		"id": "en.webtoon",
 		"lang": "en",
 		"name": "Webtoon",
-		"url": "https://webtoons.com",
+		"urls": [
+			"https://webtoons.com",
+			"https://m.webtoons.com"
+		],
 		"version": 1
 	}
 }
