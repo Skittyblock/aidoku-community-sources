@@ -4,7 +4,8 @@
 		"lang": "multi",
 		"name": "MangaDex",
 		"url": "https://mangadex.org",
-		"version": 3
+		"version": 3,
+		"minAppVersion": "0.5"
 	},
 	"languages": [
 		{ "code": "ar", "value": "ar" },

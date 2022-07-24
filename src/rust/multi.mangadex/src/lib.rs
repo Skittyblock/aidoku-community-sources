@@ -152,11 +152,10 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	let data = json.get("data").as_array()?;
 
 	let manga = data
-		.map(|manga| {
-			let obj = manga.as_object()?;
-			parser::parse_basic_manga(obj)
+		.filter_map(|manga| match manga.as_object() {
+			Ok(obj) => parser::parse_basic_manga(obj).ok(),
+			Err(_) => None,
 		})
-		.filter_map(|manga| manga.ok())
 		.collect::<Vec<_>>();
 
 	let total = json.get("total").as_int().unwrap_or(0) as i32;
@@ -223,23 +222,26 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 		let mut data = json.get("data").as_array()?;
 
 		let manga_ids = data
-			.map(|chapter| {
-				let obj = chapter.as_object()?;
-				let relationships = obj.get("relationships").as_array()?;
-				for relationship in relationships {
-					let relationship = relationship.as_object()?;
-					let relation_type = relationship.get("type").as_string()?.read();
-					if relation_type == "manga" {
-						let mut ret = String::from("&ids[]=");
-						ret.push_str(&relationship.get("id").as_string()?.read());
-						return Ok(ret);
+			.filter_map(|chapter| match chapter.as_object() {
+				Ok(obj) => {
+					if let Ok(relationships) = obj.get("relationships").as_array() {
+						for relationship in relationships {
+							if let Ok(relationship) = relationship.as_object()
+								   && let Ok(relation_type) = relationship.get("type").as_string() 
+								   && relation_type.read() == "manga"
+								   && let Ok(id) = relationship.get("id").as_string() {
+									let mut ret = String::from("&ids[]=");
+									ret.push_str(&id.read());
+									return Some(ret);
+								}
+						}
+						None
+					} else {
+						None
 					}
 				}
-				Err(AidokuError {
-					reason: AidokuErrorKind::Unimplemented,
-				})
+				Err(_) => None,
 			})
-			.filter_map(|id| id.ok())
 			.collect::<String>();
 
 		url = String::from(
@@ -253,11 +255,10 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 		json = Request::new(&url, HttpMethod::Get).json_rl().as_object()?;
 		data = json.get("data").as_array()?;
 		let manga = data
-			.map(|manga| {
-				let obj = manga.as_object()?;
-				parser::parse_basic_manga(obj)
+			.filter_map(|manga| match manga.as_object() {
+				Ok(obj) => parser::parse_basic_manga(obj).ok(),
+				Err(_) => None,
 			})
-			.filter_map(|manga| manga.ok())
 			.collect::<Vec<_>>();
 
 		return Ok(MangaPageResult {
@@ -272,8 +273,7 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 #[get_manga_details]
 fn get_manga_details(id: String) -> Result<Manga> {
 	let url = String::from("https://api.mangadex.org/manga/")
-		+ &id
-		+ "?includes[]=cover_art\
+		+ &id + "?includes[]=cover_art\
 		&includes[]=author\
 		&includes[]=artist";
 	let json = Request::new(&url, HttpMethod::Get).json_rl().as_object()?;
@@ -326,11 +326,10 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 	let mut chapters: Vec<Chapter> = Vec::with_capacity(total.try_into().unwrap_or(0));
 	chapters.append(
 		&mut data
-			.map(|chapter| {
-				let chapter_obj = chapter.as_object()?;
-				parser::parse_chapter(chapter_obj)
+			.filter_map(|chapter| match chapter.as_object() {
+				Ok(obj) => parser::parse_chapter(obj).ok(),
+				Err(_) => None,
 			})
-			.filter_map(|chapter| chapter.ok())
 			.collect::<Vec<_>>(),
 	);
 
@@ -346,11 +345,10 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 			let data = json.get("data").as_array()?;
 			chapters.append(
 				&mut data
-					.map(|chapter| {
-						let chapter_obj = chapter.as_object()?;
-						parser::parse_chapter(chapter_obj)
+					.filter_map(|chapter| match chapter.as_object() {
+						Ok(obj) => parser::parse_chapter(obj).ok(),
+						Err(_) => None,
 					})
-					.filter_map(|chapter| chapter.ok())
 					.collect::<Vec<_>>(),
 			);
 		}
@@ -386,24 +384,27 @@ fn get_page_list(id: String) -> Result<Vec<Page>> {
 
 	Ok(data
 		.enumerate()
-		.map(|(i, page)| {
-			let data = page.as_string()?.read();
-			let mut url =
-				String::with_capacity(base_url.len() + hash.len() + data.len() + path.len() + 1);
-			url.push_str(&base_url);
-			url.push_str(&path);
-			url.push_str(&hash);
-			url.push('/');
-			url.push_str(&data);
+		.filter_map(|(i, page)| match page.as_string() {
+			Ok(data) => {
+				let data = data.read();
+				let mut url = String::with_capacity(
+					base_url.len() + hash.len() + data.len() + path.len() + 1,
+				);
+				url.push_str(&base_url);
+				url.push_str(&path);
+				url.push_str(&hash);
+				url.push('/');
+				url.push_str(&data);
 
-			Ok(Page {
-				index: i as i32,
-				url,
-				base64: String::new(),
-				text: String::new(),
-			})
+				Some(Page {
+					index: i as i32,
+					url,
+					base64: String::new(),
+					text: String::new(),
+				})
+			}
+			Err(_) => None,
 		})
-		.filter_map(|page: Result<Page>| page.ok())
 		.collect::<Vec<_>>())
 }
 

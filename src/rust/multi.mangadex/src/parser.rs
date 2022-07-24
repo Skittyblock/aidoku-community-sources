@@ -1,6 +1,6 @@
 use aidoku::{
 	error::Result,
-	std::{current_date, defaults::defaults_get, ObjectRef, String, StringRef, Vec},
+	std::{current_date, defaults::defaults_get, ObjectRef, String, Vec},
 	Chapter, Manga, MangaContentRating, MangaStatus, MangaViewer,
 };
 
@@ -39,11 +39,11 @@ pub fn parse_basic_manga(manga_object: ObjectRef) -> Result<Manga> {
 	let id = manga_object.get("id").as_string()?.read();
 
 	// Title
-	let title = if let Ok(titles) = attributes.get("title").as_object() {
-		get_md_localized_string(titles)
-	} else {
-		String::new()
-	};
+	let title = attributes
+		.get("title")
+		.as_object()
+		.map(get_md_localized_string)
+		.unwrap_or_default();
 
 	// Cover
 	let mut cover_file: String = String::new();
@@ -97,11 +97,11 @@ pub fn parse_full_manga(manga_object: ObjectRef) -> Result<Manga> {
 	let id = manga_object.get("id").as_string()?.read();
 
 	// Title
-	let title = if let Ok(titles) = attributes.get("title").as_object() {
-		get_md_localized_string(titles)
-	} else {
-		String::new()
-	};
+	let title = attributes
+		.get("title")
+		.as_object()
+		.map(get_md_localized_string)
+		.unwrap_or_default();
 
 	// Cover, author, artist
 	let mut cover_file: String = String::new();
@@ -136,34 +136,41 @@ pub fn parse_full_manga(manga_object: ObjectRef) -> Result<Manga> {
 	);
 
 	// Description
-	let description = match attributes.get("description").as_object() {
-		Ok(descriptions) => get_md_localized_string(descriptions),
-		Err(_) => String::new(),
-	};
+	let description = attributes
+		.get("description")
+		.as_object()
+		.map(get_md_localized_string)
+		.unwrap_or_default();
 
 	// URL
 	let mut url = String::from("https://mangadex.org/title/");
 	url.push_str(&id);
 
 	// Tags
-	let categories = if let Ok(tags) = attributes.get("tags").as_array() {
-		tags.map(|tag| {
-			let obj = tag.as_object()?;
-			let attribs = obj.get("attributes").as_object()?;
-			let names = attribs.get("name").as_object()?;
-			Ok(get_md_localized_string(names))
+	let categories = attributes
+		.get("tags")
+		.as_array()
+		.map(|tags| {
+			tags.filter_map(|tag| {
+				if let Ok(obj) = tag.as_object()
+			       && let Ok(attribs) = obj.get("attributes").as_object()
+			       && let Ok(names) = attribs.get("name").as_object() {
+					Some(get_md_localized_string(names))
+				} else {
+					None
+				}
+			})
+			.collect::<Vec<_>>()
 		})
-		.filter_map(|tag: Result<String>| tag.ok())
-		.collect::<Vec<_>>()
-	} else {
-		Vec::new()
-	};
+		.unwrap_or_default();
 
 	// Status
-	let status_string = match attributes.get("status").as_string() {
-		Ok(status) => status.read(),
-		Err(_) => String::new(),
-	};
+	let status_string = attributes
+		.get("status")
+		.as_string()
+		.map(|v| v.read())
+		.unwrap_or_default();
+
 	let status = match status_string.as_str() {
 		"ongoing" => MangaStatus::Ongoing,
 		"completed" => MangaStatus::Completed,
@@ -173,25 +180,31 @@ pub fn parse_full_manga(manga_object: ObjectRef) -> Result<Manga> {
 	};
 
 	// Content rating
-	let nsfw = match attributes.get("contentRating").as_string() {
-		Ok(string) => match string.read().as_str() {
-			"suggestive" => MangaContentRating::Suggestive,
-			"erotica" => MangaContentRating::Nsfw,
-			"pornographic" => MangaContentRating::Nsfw,
-			_ => MangaContentRating::Safe,
-		},
-		Err(_) => MangaContentRating::Safe,
+	let nsfw = match attributes
+		.get("contentRating")
+		.as_string()
+		.map(|v| v.read())
+		.unwrap_or_default()
+		.as_str()
+	{
+		"suggestive" => MangaContentRating::Suggestive,
+		"erotica" => MangaContentRating::Nsfw,
+		"pornographic" => MangaContentRating::Nsfw,
+		_ => MangaContentRating::Safe,
 	};
 
 	// Viewer
-	let viewer = match attributes.get("originalLanguage").as_string() {
-		Ok(string) => match string.read().as_str() {
-			"ja" => MangaViewer::Rtl,
-			"zh" => MangaViewer::Scroll,
-			"ko" => MangaViewer::Scroll,
-			_ => MangaViewer::Rtl,
-		},
-		Err(_) => MangaViewer::Rtl,
+	let viewer = match attributes
+		.get("originalLanguage")
+		.as_string()
+		.map(|v| v.read())
+		.unwrap_or_default()
+		.as_str()
+	{
+		"ja" => MangaViewer::Rtl,
+		"zh" => MangaViewer::Scroll,
+		"ko" => MangaViewer::Scroll,
+		_ => MangaViewer::Rtl,
 	};
 
 	Ok(Manga {
@@ -230,8 +243,8 @@ pub fn parse_chapter(chapter_object: ObjectRef) -> Result<Chapter> {
 	let title = attributes
 		.get("title")
 		.as_string()
-		.unwrap_or_else(|_| StringRef::from(""))
-		.read();
+		.map(|v| v.read())
+		.unwrap_or_default();
 
 	let volume = attributes.get("volume").as_float().unwrap_or(-1.0) as f32;
 	let chapter = attributes.get("chapter").as_float().unwrap_or(-1.0) as f32;
@@ -257,8 +270,8 @@ pub fn parse_chapter(chapter_object: ObjectRef) -> Result<Chapter> {
 	let lang = attributes
 		.get("translatedLanguage")
 		.as_string()
-		.unwrap_or_else(|_| StringRef::from("en"))
-		.read();
+		.map(|v| v.read())
+		.unwrap_or_else(|_| String::from("en"));
 
 	Ok(Chapter {
 		id,
