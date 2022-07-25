@@ -20,11 +20,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 
 #[get_manga_listing]
 fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
-	parser::parse_manga_listing(
-		String::from(API_URL),
-		listing.name,
-		page
-	)
+	parser::parse_manga_listing(String::from(API_URL), listing.name, page)
 }
 
 #[get_manga_details]

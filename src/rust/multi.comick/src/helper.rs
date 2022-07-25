@@ -1,7 +1,7 @@
 use aidoku::{
 	prelude::format,
-	std::Vec,
 	std::defaults::defaults_get,
+	std::Vec,
 	std::{ObjectRef, String},
 	MangaStatus,
 };
@@ -40,7 +40,7 @@ pub fn get_search_url(
 		url.push_str(&format!("&t=true&q={}", query.replace(' ', "%20")))
 	}
 	if !demographic_tags.is_empty() {
-		for tag in demographic_tags{
+		for tag in demographic_tags {
 			url.push_str(&format!("&demographic={}", tag));
 		}
 	}

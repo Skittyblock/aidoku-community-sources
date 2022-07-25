@@ -3,8 +3,8 @@ use aidoku::{
 	prelude::format,
 	std::net::HttpMethod,
 	std::net::Request,
-	std::{String, defaults::defaults_get},
 	std::Vec,
+	std::{defaults::defaults_get, String},
 	Chapter, DeepLink, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
 	MangaViewer, Page,
 };
@@ -24,30 +24,35 @@ pub fn parse_manga_list(
 	let mut title: String = String::new();
 	let mut manga_type: String = String::new();
 	let mut completed: String = String::new();
-	let sort_options = ["", "view", "uploaded", "rating", "follow", "user_follow_count"];
-	let type_options = ["", "jp", "kr", "cn" ];
-	let completed_options = ["","true","false" ];
+	let sort_options = [
+		"",
+		"view",
+		"uploaded",
+		"rating",
+		"follow",
+		"user_follow_count",
+	];
+	let type_options = ["", "jp", "kr", "cn"];
+	let completed_options = ["", "true", "false"];
 	for filter in filters {
 		match filter.kind {
 			FilterType::Title => {
 				title = filter.value.as_string()?.read();
-			},
-			FilterType::Genre => {
-				match filter.value.as_int().unwrap_or(-1) {
-					0 => excluded_tags.push(filter.object.get("id").as_string()?.read()),
-					1 => included_tags.push(filter.object.get("id").as_string()?.read()),
-					_ => continue,
-				}
+			}
+			FilterType::Genre => match filter.value.as_int().unwrap_or(-1) {
+				0 => excluded_tags.push(filter.object.get("id").as_string()?.read()),
+				1 => included_tags.push(filter.object.get("id").as_string()?.read()),
+				_ => continue,
 			},
 			FilterType::Select => {
 				let index = filter.value.as_int().unwrap_or(-1) as usize;
 				match filter.name.as_str() {
 					"Sort" => sort_by = String::from(sort_options[index]),
 					"Type" => manga_type = String::from(type_options[index]),
-					"Completed" => completed = String::from(completed_options[index]), 
+					"Completed" => completed = String::from(completed_options[index]),
 					_ => continue,
 				}
-			},
+			}
 			FilterType::Check => {
 				if filter.value.as_int().unwrap_or(-1) <= 0 {
 					continue;
@@ -63,11 +68,28 @@ pub fn parse_manga_list(
 			_ => continue,
 		};
 	}
-	
-	if title.is_empty() && demographic_tags.is_empty() && included_tags.is_empty() && excluded_tags.is_empty() && sort_by.is_empty() && manga_type.is_empty() && completed.is_empty() {
+
+	if title.is_empty()
+		&& demographic_tags.is_empty()
+		&& included_tags.is_empty()
+		&& excluded_tags.is_empty()
+		&& sort_by.is_empty()
+		&& manga_type.is_empty()
+		&& completed.is_empty()
+	{
 		parse_manga_listing(api_url, String::from("Hot"), page)
-	}else{
-		let url =  get_search_url(api_url, title, included_tags, excluded_tags, demographic_tags, manga_type, sort_by, completed, page);
+	} else {
+		let url = get_search_url(
+			api_url,
+			title,
+			included_tags,
+			excluded_tags,
+			demographic_tags,
+			manga_type,
+			sort_by,
+			completed,
+			page,
+		);
 		let mut mangas: Vec<Manga> = Vec::new();
 		let json = Request::new(&url, HttpMethod::Get).json().as_array()?;
 		for data in json {
@@ -87,7 +109,7 @@ pub fn parse_manga_list(
 					status: MangaStatus::Unknown,
 					nsfw: MangaContentRating::Safe,
 					viewer: MangaViewer::Rtl,
-				}); 
+				});
 			}
 		}
 		Ok(MangaPageResult {
@@ -154,8 +176,8 @@ pub fn parse_manga_details(api_url: String, id: String) -> Result<Manga> {
 	let json = Request::new(&url, HttpMethod::Get).json().as_object()?;
 	let data = json.get("comic").as_object()?;
 	let mid = data.get("id").as_int().unwrap_or(-1);
-	let title = data_from_json(data.clone(), "title"); //data.get("title").as_string()?.read();
-	let cover = data_from_json(data.clone(), "cover_url"); //data.get("cover_url").as_string()?.read();
+	let title = data_from_json(data.clone(), "title");
+	let cover = data_from_json(data.clone(), "cover_url");
 	let authors = json.get("authors").as_array()?;
 	let author = authors
 		.map(|author| {
@@ -174,10 +196,7 @@ pub fn parse_manga_details(api_url: String, id: String) -> Result<Manga> {
 		.map(|a: Result<String>| a.unwrap_or_default())
 		.collect::<Vec<String>>()
 		.join(", ");
-	let description = data_from_json(data.clone(), "desc"); /*match data.get("desc").as_string() {
-															Ok(str) => str.read(),
-															Err(_) => String::new(),
-														};*/
+	let description = data_from_json(data.clone(), "desc");
 	let status = manga_status(data.get("status").as_int().unwrap_or(0));
 	let genres = json.get("genres").as_array()?;
 	let categories = genres
@@ -206,7 +225,7 @@ pub fn parse_manga_details(api_url: String, id: String) -> Result<Manga> {
 		author,
 		artist,
 		description,
-		url: format!("{}/comic/{}", String::from("https://comick.fun"), id),
+		url: format!("https://comick.fun/comic/{}", id),
 		categories,
 		status,
 		nsfw,
@@ -259,7 +278,7 @@ pub fn parse_chapter_list(api_url: String, id: String) -> Result<Vec<Chapter>> {
 			},
 			Err(_) => String::new(),
 		};
-		let scan_group = match defaults_get("scanlator_name").as_string(){
+		let scan_group = match defaults_get("scanlator_name").as_string() {
 			Ok(str) => str.read(),
 			Err(_) => String::new(),
 		};

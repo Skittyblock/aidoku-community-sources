@@ -2,15 +2,14 @@
 	{
 		"type": "group",
 		"title": "Settings",
-		"footer": "NOTE: This will apply to all the manga in this source",
+		"footer": "Show translations from this group only. This will apply to all manga in this source.",
 		"items": [
 			{
 				"type": "text",
 				"key": "scanlator_name",
-				"placeholder": "Show translation from this group only"
+				"placeholder": "Group Name"
 				
 			}
-			
 		]
 	}
 ]
