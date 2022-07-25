@@ -52,7 +52,7 @@
 	],
 	"languageSelectType": "single",
 	"listings": [
-		{ "name": "Hot" },
+		{ "name": "Hot"},
 		{ "name": "New"}
 	]
 }
