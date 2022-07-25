@@ -1,11 +1,7 @@
-
 use aidoku::{
 	error::Result,
 	prelude::{format, println},
-	std::{
-		defaults::defaults_get,
-		String, Vec,
-	},
+	std::{defaults::defaults_get, String, Vec},
 	Filter, FilterType, MangaPageResult,
 };
 
@@ -79,15 +75,13 @@ pub fn parse_manga_list(
 			FilterType::Title => {
 				title = filter.value.as_string()?.read();
 			}
-			FilterType::Genre => {
-				match filter.value.as_int().unwrap_or(-1) {
-					1 => {
-						if let Ok(id) = filter.object.get("id").as_string() {
-							included_tags.push(id.read());
-						}
-					},
-					_ => continue,
+			FilterType::Genre => match filter.value.as_int().unwrap_or(-1) {
+				1 => {
+					if let Ok(id) = filter.object.get("id").as_string() {
+						included_tags.push(id.read());
+					}
 				}
+				_ => continue,
 			},
 
 			FilterType::Select => {
@@ -101,19 +95,8 @@ pub fn parse_manga_list(
 			_ => continue,
 		};
 	}
-	let url = get_search_url(
-		source,
-		title,
-		page,
-		included_tags,
-		status,
-		manga_type,
-	);
-	source.parse_manga_listing(
-		url,
-		String::from("Latest"),
-		page,
-	)
+	let url = get_search_url(source, title, page, included_tags, status, manga_type);
+	source.parse_manga_listing(url, String::from("Latest"), page)
 }
 
 pub fn get_search_url(
@@ -126,11 +109,7 @@ pub fn get_search_url(
 ) -> String {
 	let mut url = format!("{}/{}", source.base_url, source.traverse_pathname);
 	if query.is_empty() && included_tags.is_empty() && status.is_empty() && manga_type.is_empty() {
-		return get_listing_url(
-			source,
-			String::from(source.listing[0]),
-			page,
-		);
+		return get_listing_url(source, String::from(source.listing[0]), page);
 	}
 	if !query.is_empty() {
 		url.push_str(&format!("/page/{}?s={}", page, query.replace(' ', "+")))
@@ -138,9 +117,9 @@ pub fn get_search_url(
 		url.push_str(&format!("/?page={}", page));
 	}
 	if !included_tags.is_empty() {
-			for tag in included_tags {
-				url.push_str(&format!("&genre%5B%5D={}", tag));
-			}
+		for tag in included_tags {
+			url.push_str(&format!("&genre%5B%5D={}", tag));
+		}
 	}
 	if !status.is_empty() {
 		url.push_str(&format!("&status={}", status));

@@ -78,14 +78,14 @@ pub fn i32_to_string(mut integer: i32) -> String {
 // return chpater number from string
 pub fn get_chapter_number(id: String) -> f32 {
 	id.chars()
-			.filter(|a| (*a >= '0' && *a <= '9') || *a == ' ' || *a == '.')
-			.collect::<String>()
-			.split(' ')
-			.collect::<Vec<&str>>()
-			.into_iter()
-			.map(|a| a.parse::<f32>().unwrap_or(0.0))
-			.find(|a| *a > 0.0)
-			.unwrap_or(0.0)
+		.filter(|a| (*a >= '0' && *a <= '9') || *a == ' ' || *a == '.')
+		.collect::<String>()
+		.split(' ')
+		.collect::<Vec<&str>>()
+		.into_iter()
+		.map(|a| a.parse::<f32>().unwrap_or(0.0))
+		.find(|a| *a > 0.0)
+		.unwrap_or(0.0)
 }
 
 // generates the search, filter and homepage url
@@ -231,7 +231,7 @@ pub fn get_image_src(node: Node) -> String {
 }
 
 pub fn append_protocol(url: String) -> String {
-	if url.starts_with("https") || url.starts_with("http"){
+	if url.starts_with("https") || url.starts_with("http") {
 		url
 	} else {
 		format!("{}{}", "https:", url)

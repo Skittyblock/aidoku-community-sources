@@ -20,7 +20,7 @@ pub fn parse_manga_details(source: &MangaStreamSource, id: String) -> Result<Man
 		.read()
 		.replace("?resize=165,225", "");
 	let cover: String = if image.starts_with("data:") || image.is_empty() {
-		let title_id = title.replace(' ', "+").replace("’", "%27");
+		let title_id = title.replace(' ', "+").replace('’', "%27");
 		let url = format!("{}/?s={}", source.base_url, title_id);
 		println!("{} -> {}", title_id, url);
 		Request::new(&url, HttpMethod::Get)
@@ -29,7 +29,7 @@ pub fn parse_manga_details(source: &MangaStreamSource, id: String) -> Result<Man
 			.attr("src")
 			.read()
 	} else {
-		image.clone()
+		image
 	};
 
 	println!("{}", cover);

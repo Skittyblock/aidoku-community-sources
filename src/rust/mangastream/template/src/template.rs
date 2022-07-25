@@ -1,7 +1,7 @@
 use aidoku::{
-	error::Result, std::json::parse, std::net::HttpMethod, std::net::Request,
-	std::String, std::Vec, Chapter, DeepLink, Filter, FilterType, Manga, MangaContentRating,
-	MangaPageResult, MangaStatus, MangaViewer, Page,
+	error::Result, std::json::parse, std::net::HttpMethod, std::net::Request, std::String,
+	std::Vec, Chapter, DeepLink, Filter, FilterType, Manga, MangaContentRating, MangaPageResult,
+	MangaStatus, MangaViewer, Page,
 };
 
 use crate::helper::*;
@@ -213,13 +213,13 @@ impl MangaStreamSource {
 		let html = Request::new(id.as_str(), HttpMethod::Get).html();
 		let raw_title = html.select(self.manga_details_title).text().read();
 		let mut title = String::new();
-		for i in self.manga_title_trim.iter(){
+		for i in self.manga_title_trim.iter() {
 			if raw_title.clone().contains(i) {
 				title = raw_title.replace(i, "");
-			}else{
+			} else {
 				title = raw_title.clone();
 			}
-		};
+		}
 		let cover: String = html
 			.select(self.manga_details_cover)
 			.first()
@@ -359,7 +359,7 @@ impl MangaStreamSource {
 
 	pub fn handle_url(&self, url: String) -> Result<DeepLink> {
 		Ok(DeepLink {
-			manga: Some(Self::parse_manga_details(self, url)?),
+			manga: Self::parse_manga_details(self, url).ok(),
 			chapter: None,
 		})
 	}

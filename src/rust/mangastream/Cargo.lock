@@ -274,14 +274,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "infernalvoidscans"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "mangastream_template",
-]
-
-[[package]]
 name = "inflate"
 version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -603,6 +595,14 @@ name = "utf8-ranges"
 version = "1.0.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7fcfc827f90e53a02eaef5e535ee14266c1d569214c6aa70133a624d8a3164ba"
+
+[[package]]
+name = "voidscans"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "mangastream_template",
+]
 
 [[package]]
 name = "wee_alloc"

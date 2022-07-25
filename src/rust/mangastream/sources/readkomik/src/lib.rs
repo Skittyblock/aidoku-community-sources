@@ -1,13 +1,13 @@
 #![no_std]
 use aidoku::{
-	prelude::*, error::Result, std::{String}, std::Vec, std::net::Request,
-	Filter, Listing, Manga, MangaPageResult, Page, Chapter, DeepLink,
+	error::Result, prelude::*, std::net::Request, std::String, std::Vec, Chapter, DeepLink, Filter,
+	Listing, Manga, MangaPageResult, Page,
 };
 
 use mangastream_template::template::MangaStreamSource;
 
 fn get_instance() -> MangaStreamSource {
-    MangaStreamSource{
+	MangaStreamSource {
 		base_url: String::from("https://readkomik.com"),
 		..Default::default()
 	}
@@ -15,7 +15,7 @@ fn get_instance() -> MangaStreamSource {
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
-	get_instance().parse_manga_list( filters, page)
+	get_instance().parse_manga_list(filters, page)
 }
 
 #[get_manga_listing]
@@ -25,12 +25,12 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 
 #[get_manga_details]
 fn get_manga_details(id: String) -> Result<Manga> {
-	get_instance().parse_manga_details( id)
+	get_instance().parse_manga_details(id)
 }
 
 #[get_chapter_list]
 fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
-	get_instance().parse_chapter_list( id)
+	get_instance().parse_chapter_list(id)
 }
 
 #[get_page_list]

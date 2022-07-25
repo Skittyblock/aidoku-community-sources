@@ -1,21 +1,21 @@
 #![no_std]
 use aidoku::{
-	prelude::*, error::Result, std::{String}, std::Vec, std::net::Request,
-	Filter, Listing, Manga, MangaPageResult, Page, Chapter, DeepLink,
+	error::Result, prelude::*, std::net::Request, std::String, std::Vec, Chapter, DeepLink, Filter,
+	Listing, Manga, MangaPageResult, Page,
 };
 
-use helper::{get_tag_id, get_base_url};
+use helper::{get_base_url, get_tag_id};
 use mangastream_template::template::MangaStreamSource;
 pub mod helper;
 fn get_instance() -> MangaStreamSource {
-    MangaStreamSource{
+	MangaStreamSource {
 		tagid_mapping: get_tag_id,
 		base_url: get_base_url(),
 		traverse_pathname: "series",
 		last_page_text_2: "التالي",
 		manga_details_status: ".imptdt:contains(Status) i, r:contains(الحالة) td:eq(1)",
-		chapter_date_format:  "MMMM dd, yyyy",
-		status_options_2: [ "مستمر", "مكتمل", "متوقف", "ملغي", "متروك" ],
+		chapter_date_format: "MMMM dd, yyyy",
+		status_options_2: ["مستمر", "مكتمل", "متوقف", "ملغي", "متروك"],
 		language_2: "ar",
 		..Default::default()
 	}
@@ -33,12 +33,12 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 
 #[get_manga_details]
 fn get_manga_details(id: String) -> Result<Manga> {
-	get_instance().parse_manga_details( id)
+	get_instance().parse_manga_details(id)
 }
 
 #[get_chapter_list]
 fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
-	get_instance().parse_chapter_list( id)
+	get_instance().parse_chapter_list(id)
 }
 
 #[get_page_list]
