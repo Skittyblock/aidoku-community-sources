@@ -23,7 +23,7 @@ fn get_md_localized_string(obj: ObjectRef) -> String {
 			// Fallback to Japanese (might be romaji)
 			Err(_) => match obj.get("ja-ro").as_string() {
 				Ok(value) => value.read(),
-				// Fuck it, get first value
+				// Screw it, get first value
 				Err(_) => match obj.values().get(0).as_string() {
 					Ok(value) => value.read(),
 					Err(_) => String::from(""),
