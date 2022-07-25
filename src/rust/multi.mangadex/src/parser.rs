@@ -1,8 +1,37 @@
 use aidoku::{
-	error::Result, std::String, std::Vec, std::ObjectRef,
-	Manga, MangaStatus, MangaContentRating, MangaViewer, Chapter,
-	std::defaults::defaults_get,
+	error::Result,
+	std::{current_date, defaults::defaults_get, ObjectRef, String, Vec},
+	Chapter, Manga, MangaContentRating, MangaStatus, MangaViewer,
 };
+
+fn get_md_localized_string(obj: ObjectRef) -> String {
+	let language = if let Ok(langs) = defaults_get("languages").as_array()
+		&& let Ok(lang) = langs.get(0).as_string()
+		&& defaults_get("usePreferredLanguage").as_bool().unwrap_or(false)
+	{
+		lang.read()
+	} else {
+		String::from("en")
+	};
+
+	// Try for preferred language first
+	match obj.get(&language).as_string() {
+		Ok(value) => value.read(),
+		// Fallback to English
+		Err(_) => match obj.get("en").as_string() {
+			Ok(value) => value.read(),
+			// Fallback to Japanese (might be romaji)
+			Err(_) => match obj.get("ja-ro").as_string() {
+				Ok(value) => value.read(),
+				// Screw it, get first value
+				Err(_) => match obj.values().get(0).as_string() {
+					Ok(value) => value.read(),
+					Err(_) => String::from(""),
+				},
+			},
+		},
+	}
+}
 
 // Parse manga with title and cover
 pub fn parse_basic_manga(manga_object: ObjectRef) -> Result<Manga> {
@@ -10,30 +39,24 @@ pub fn parse_basic_manga(manga_object: ObjectRef) -> Result<Manga> {
 	let id = manga_object.get("id").as_string()?.read();
 
 	// Title
-	let titles = attributes.get("title").as_object()?;
-	let title = match titles.get("en").as_string() { // try for english title
-		Ok(title) => title.read(),
-		Err(_) => match titles.get("ja-ro").as_string() { // try for japanese (possibly romaji)
-			Ok(title) => title.read(),
-			Err(_) => match titles.values().get(0).as_string() { // get first title instead
-				Ok(title) => title.read(),
-				Err(_) => String::new(),
-			},
-		},
-	};
+	let title = attributes
+		.get("title")
+		.as_object()
+		.map(get_md_localized_string)
+		.unwrap_or_default();
 
 	// Cover
 	let mut cover_file: String = String::new();
-	
+
 	if let Ok(relationships) = manga_object.get("relationships").as_array() {
 		for relationship in relationships {
-			if let Ok(relationship_obj) = relationship.as_object() {
-				let relation_type = relationship_obj.get("type").as_string()?.read();
-				if relation_type == "cover_art" {
-					let cover_attributes = relationship_obj.get("attributes").as_object()?;
-					cover_file = cover_attributes.get("fileName").as_string()?.read();
-					break;
-				}
+			if let Ok(relationship_obj) = relationship.as_object()
+				&& let Ok(relation_type) = relationship_obj.get("type").as_string()
+				&& let Ok(attribs) = relationship_obj.get("attributes").as_object()
+				&& relation_type.read() == "cover_art"
+			{
+				cover_file = attribs.get("fileName").as_string().map(|v| v.read()).unwrap_or_default();
+				break;
 			}
 		}
 	}
@@ -43,9 +66,14 @@ pub fn parse_basic_manga(manga_object: ObjectRef) -> Result<Manga> {
 		cover = cover_file;
 	} else {
 		cover.push_str(&id);
-		cover.push_str("/");
+		cover.push('/');
 		cover.push_str(&cover_file);
-		cover.push_str(&defaults_get("coverQuality").as_string()?.read());
+		cover.push_str(
+			&defaults_get("coverQuality")
+				.as_string()
+				.map(|v| v.read())
+				.unwrap_or_default(),
+		);
 	}
 
 	Ok(Manga {
@@ -69,34 +97,28 @@ pub fn parse_full_manga(manga_object: ObjectRef) -> Result<Manga> {
 	let id = manga_object.get("id").as_string()?.read();
 
 	// Title
-	let titles = attributes.get("title").as_object()?;
-	let title = match titles.get("en").as_string() { // try for english title
-		Ok(title) => title.read(),
-		Err(_) => match titles.get("ja-ro").as_string() { // try for japanese (possibly romaji)
-			Ok(title) => title.read(),
-			Err(_) => match titles.values().get(0).as_string() { // get first title instead
-				Ok(title) => title.read(),
-				Err(_) => String::new(),
-			}
-		},
-	};
+	let title = attributes
+		.get("title")
+		.as_object()
+		.map(get_md_localized_string)
+		.unwrap_or_default();
 
 	// Cover, author, artist
 	let mut cover_file: String = String::new();
 	let mut author: String = String::new();
 	let mut artist: String = String::new();
-	
+
 	if let Ok(relationships) = manga_object.get("relationships").as_array() {
 		for relationship in relationships {
-			let relationship_obj = relationship.as_object()?;
-			let relation_type = relationship_obj.get("type").as_string()?.read();
-			if let Ok(relationship_attributes) = relationship_obj.get("attributes").as_object() {
-				if relation_type == "cover_art" {
-					cover_file = relationship_attributes.get("fileName").as_string()?.read();
-				} else if relation_type == "author" {
-					author = relationship_attributes.get("name").as_string()?.read();
-				} else if relation_type == "artist" {
-					artist = relationship_attributes.get("name").as_string()?.read();
+			if let Ok(relationship_obj) = relationship.as_object()
+				&& let Ok(relation_type) = relationship_obj.get("type").as_string()
+				&& let Ok(attribs) = relationship_obj.get("attributes").as_object()
+			{
+				match relation_type.read().as_str() {
+					"cover_art" => cover_file = attribs.get("fileName").as_string().map(|v| v.read()).unwrap_or_default(),
+					"author" => author = attribs.get("name").as_string().map(|v| v.read()).unwrap_or_default(),
+					"artist" => artist = attribs.get("name").as_string().map(|v| v.read()).unwrap_or_default(),
+					_ => continue,
 				}
 			}
 		}
@@ -104,48 +126,51 @@ pub fn parse_full_manga(manga_object: ObjectRef) -> Result<Manga> {
 
 	let mut cover = String::from("https://uploads.mangadex.org/covers/");
 	cover.push_str(&id);
-	cover.push_str("/");
+	cover.push('/');
 	cover.push_str(&cover_file);
-	cover.push_str(&defaults_get("coverQuality").as_string()?.read());
+	cover.push_str(
+		&defaults_get("coverQuality")
+			.as_string()
+			.map(|v| v.read())
+			.unwrap_or_default(),
+	);
 
 	// Description
-	let description = match attributes.get("description").as_object() {
-		Ok(descriptions) => match descriptions.get("en").as_string() { // try for english desc
-			Ok(desc) => desc.read(),
-			Err(_) => match descriptions.values().get(0).as_string() { // get first desc instead
-				Ok(desc) => desc.read(),
-				Err(_) => String::new(),
-			}
-		},
-		Err(_) => String::new(),
-	};
+	let description = attributes
+		.get("description")
+		.as_object()
+		.map(get_md_localized_string)
+		.unwrap_or_default();
 
 	// URL
 	let mut url = String::from("https://mangadex.org/title/");
 	url.push_str(&id);
 
 	// Tags
-	let mut categories: Vec<String> = Vec::new();
-	if let Ok(tags) = attributes.get("tags").as_array() {
-		for tag in tags {
-			let tag_obj = tag.as_object()?;
-			let tag_attributes = tag_obj.get("attributes").as_object()?;
-			let names = tag_attributes.get("name").as_object()?;
-			categories.push( match names.get("en").as_string() {
-				Ok(name) => name.read(),
-				Err(_) => match names.values().get(0).as_string() {
-					Ok(name) => name.read(),
-					Err(_) => String::new(),
+	let categories = attributes
+		.get("tags")
+		.as_array()
+		.map(|tags| {
+			tags.filter_map(|tag| {
+				if let Ok(obj) = tag.as_object()
+			       && let Ok(attribs) = obj.get("attributes").as_object()
+			       && let Ok(names) = attribs.get("name").as_object() {
+					Some(get_md_localized_string(names))
+				} else {
+					None
 				}
-			});
-		}
-	}
+			})
+			.collect::<Vec<_>>()
+		})
+		.unwrap_or_default();
 
 	// Status
-	let status_string = match attributes.get("status").as_string() {
-		Ok(status) => status.read(),
-		Err(_) => String::new(),
-	};
+	let status_string = attributes
+		.get("status")
+		.as_string()
+		.map(|v| v.read())
+		.unwrap_or_default();
+
 	let status = match status_string.as_str() {
 		"ongoing" => MangaStatus::Ongoing,
 		"completed" => MangaStatus::Completed,
@@ -155,25 +180,31 @@ pub fn parse_full_manga(manga_object: ObjectRef) -> Result<Manga> {
 	};
 
 	// Content rating
-	let nsfw = match attributes.get("contentRating").as_string() {
-		Ok(string) => match string.read().as_str() {
-			"suggestive" => MangaContentRating::Suggestive,
-			"erotica" => MangaContentRating::Nsfw,
-			"pornographic" => MangaContentRating::Nsfw,
-			_ => MangaContentRating::Safe,
-		},
-		Err(_) => MangaContentRating::Safe,
+	let nsfw = match attributes
+		.get("contentRating")
+		.as_string()
+		.map(|v| v.read())
+		.unwrap_or_default()
+		.as_str()
+	{
+		"suggestive" => MangaContentRating::Suggestive,
+		"erotica" => MangaContentRating::Nsfw,
+		"pornographic" => MangaContentRating::Nsfw,
+		_ => MangaContentRating::Safe,
 	};
 
 	// Viewer
-	let viewer = match attributes.get("originalLanguage").as_string() {
-		Ok(string) => match string.read().as_str() {
-			"ja" => MangaViewer::Rtl,
-			"zh" => MangaViewer::Scroll,
-			"ko" => MangaViewer::Scroll,
-			_ => MangaViewer::Rtl,
-		},
-		Err(_) => MangaViewer::Rtl,
+	let viewer = match attributes
+		.get("originalLanguage")
+		.as_string()
+		.map(|v| v.read())
+		.unwrap_or_default()
+		.as_str()
+	{
+		"ja" => MangaViewer::Rtl,
+		"zh" => MangaViewer::Scroll,
+		"ko" => MangaViewer::Scroll,
+		_ => MangaViewer::Rtl,
 	};
 
 	Ok(Manga {
@@ -195,44 +226,39 @@ pub fn parse_full_manga(manga_object: ObjectRef) -> Result<Manga> {
 pub fn parse_chapter(chapter_object: ObjectRef) -> Result<Chapter> {
 	let attributes = chapter_object.get("attributes").as_object()?;
 
-	let pages = attributes.get("pages").as_int()?;
+	let date_updated = attributes
+		.get("publishAt")
+		.as_date("yyyy-MM-dd'T'HH:mm:ss+ss:ss", None, None)
+		.unwrap_or(-1.0);
 
-	// ignore external chapters
-	if pages <= 0 { 
-		return Err(aidoku::error::AidokuError { reason: aidoku::error::AidokuErrorKind::Unimplemented });
+	// Fix for Skittyblock/aidoku-community-sources#25
+	let ext_url = attributes.get("externalUrl");
+	if ext_url.is_none() || ext_url.as_string().is_ok() || date_updated > current_date() {
+		return Err(aidoku::error::AidokuError {
+			reason: aidoku::error::AidokuErrorKind::Unimplemented,
+		});
 	}
 
 	let id = chapter_object.get("id").as_string()?.read();
-	let title = match attributes.get("title").as_string() {
-		Ok(title) => title.read(),
-		Err(_) => String::new(),
-	};
+	let title = attributes
+		.get("title")
+		.as_string()
+		.map(|v| v.read())
+		.unwrap_or_default();
 
-	let volume = match attributes.get("volume").as_float() {
-		Ok(volume) => volume as f32,
-		Err(_) => -1.0,
-	};
-	
-	let chapter = match attributes.get("chapter").as_float() {
-		Ok(chapter) => chapter as f32,
-		Err(_) => -1.0,
-	};
-
-	let date_updated = match attributes.get("publishAt").as_date("yyyy-MM-dd'T'HH:mm:ss+ss:ss") {
-		Ok(date) => date,
-		Err(_) => -1.0,
-	};
+	let volume = attributes.get("volume").as_float().unwrap_or(-1.0) as f32;
+	let chapter = attributes.get("chapter").as_float().unwrap_or(-1.0) as f32;
 
 	let mut scanlator = String::new();
 
 	if let Ok(relationships) = chapter_object.get("relationships").as_array() {
 		for relationship in relationships {
-			let relationship_object = relationship.as_object()?;
-			let relationship_type = relationship_object.get("type").as_string()?.read();
-			if relationship_type == "scanlation_group" {
-				if let Ok(relationship_attributes) = relationship_object.get("attributes").as_object() {
-					scanlator = relationship_attributes.get("name").as_string()?.read();
-				}
+			if let Ok(relationship_object) = relationship.as_object()
+				&& let Ok(relation_type) = relationship_object.get("type").as_string()
+				&& let Ok(attribs) = relationship_object.get("attributes").as_object()
+				&& relation_type.read() == "scanlation_group"
+			{
+				scanlator = attribs.get("name").as_string().map(|v| v.read()).unwrap_or_default();
 				break;
 			}
 		}
@@ -241,10 +267,11 @@ pub fn parse_chapter(chapter_object: ObjectRef) -> Result<Chapter> {
 	let mut url = String::from("https://mangadex.org/chapter/");
 	url.push_str(&id);
 
-	let lang = match attributes.get("translatedLanguage").as_string() {
-		Ok(lang) => lang.read(),
-		Err(_) => String::from("en"),
-	};
+	let lang = attributes
+		.get("translatedLanguage")
+		.as_string()
+		.map(|v| v.read())
+		.unwrap_or_else(|_| String::from("en"));
 
 	Ok(Chapter {
 		id,
