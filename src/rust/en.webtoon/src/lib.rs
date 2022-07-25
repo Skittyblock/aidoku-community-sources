@@ -43,7 +43,6 @@ fn get_manga_list(filters: Vec<Filter>, _page: i32) -> Result<MangaPageResult> {
 				}
 
 				listing_index = filter.value.as_int().unwrap_or(0);
-				println!("listing_index: {}", listing_index);
 			}
 			_ => {}
 		}

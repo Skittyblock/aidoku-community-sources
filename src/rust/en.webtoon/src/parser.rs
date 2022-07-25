@@ -100,9 +100,6 @@ pub fn parse_manga_list_trending(html: &Node) -> Vec<Manga> {
 			.trim()
 			.to_string();
 
-		println!("{}", title);
-		println!("{}", author);
-
 		if id.is_empty() || title.is_empty() {
 			continue;
 		}
