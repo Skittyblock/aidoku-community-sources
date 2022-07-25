@@ -5,26 +5,25 @@ use aidoku::{
 	error::Result, prelude::*, std::html::Node, std::String, std::Vec, Chapter, DeepLink, Manga,
 	MangaContentRating, MangaStatus, MangaViewer, Page,
 };
-use chrono::NaiveDate;
 
 use crate::{get_manga_details, BASE_URL};
 
 const REPLACE_STRINGS: [&str; 6] = [":", "-", "/", "(", ")", "%"];
 
 pub fn parse_manga_list_popular(html: &Node) -> Vec<Manga> {
-	let mut result: Vec<Manga> = Vec::new();
-
-	for page in html
+	let elements = html
 		.select(".ranking_lst.popular")
 		.array()
 		.next()
 		.unwrap()
 		.as_node()
 		.select("ul > li")
-		.array()
-	{
+		.array();
+	let mut result: Vec<Manga> = Vec::with_capacity(elements.len());
+
+	for page in elements {
 		let obj = page.as_node();
-		if &result.len() >= &10 {
+		if result.len() >= 10 {
 			break;
 		}
 
@@ -57,7 +56,7 @@ pub fn parse_manga_list_popular(html: &Node) -> Vec<Manga> {
 			artist: String::new(),
 			description: String::new(),
 			categories: Vec::new(),
-			status: MangaStatus::Ongoing,
+			status: MangaStatus::Unknown,
 			nsfw: MangaContentRating::Safe,
 			viewer: MangaViewer::Scroll,
 		});
@@ -67,20 +66,18 @@ pub fn parse_manga_list_popular(html: &Node) -> Vec<Manga> {
 }
 
 pub fn parse_manga_list_trending(html: &Node) -> Vec<Manga> {
-	let mut result: Vec<Manga> = Vec::new();
-
-	for page in html
+	let elements = html
 		.select("ul.lst_type1")
 		.array()
-		.skip(1)
-		.next()
-		.unwrap()
+		.get(1)
 		.as_node()
 		.select("li")
-		.array()
-	{
+		.array();
+	let mut result: Vec<Manga> = Vec::with_capacity(elements.len());
+
+	for page in elements {
 		let obj = page.as_node();
-		if &result.len() >= &10 {
+		if result.len() >= 10 {
 			break;
 		}
 
@@ -123,12 +120,13 @@ pub fn parse_manga_list_trending(html: &Node) -> Vec<Manga> {
 }
 
 pub fn parse_search(html: &Node, challenge: bool) -> Vec<Manga> {
-	let mut result: Vec<Manga> = Vec::new();
 	let selector_class = if challenge {
 		".challenge_lst"
 	} else {
 		".card_lst"
 	};
+	let elements = html.select(selector_class).select("li").array();
+	let mut result: Vec<Manga> = Vec::with_capacity(elements.len());
 
 	for page in html.select(selector_class).select("li").array() {
 		let obj = page.as_node();
@@ -144,7 +142,7 @@ pub fn parse_search(html: &Node, challenge: bool) -> Vec<Manga> {
 			.to_string();
 		let genre = obj.select(".genre").text().read().trim().to_string();
 
-		let mut url_title = title.replace(" ", "-").to_lowercase();
+		let mut url_title = title.replace(' ', "-").to_lowercase();
 		for replace_string in REPLACE_STRINGS.iter() {
 			url_title = url_title.replace(replace_string, "");
 		}
@@ -152,7 +150,7 @@ pub fn parse_search(html: &Node, challenge: bool) -> Vec<Manga> {
 		let url_prefix = if challenge {
 			"challenge".to_string()
 		} else {
-			genre.replace(" ", "-").to_lowercase()
+			genre.replace(' ', "-").to_lowercase()
 		};
 		let id_num =
 			substr_after(obj.select("a").attr("href").read().as_str(), "titleNo=").to_string();
@@ -224,9 +222,10 @@ pub fn parse_manga(obj: Node, id: String) -> Result<Manga> {
 }
 
 pub fn get_chapter_list(obj: Node, manga_id: String) -> Result<Vec<Chapter>> {
-	let mut chapters: Vec<Chapter> = Vec::new();
+	let elements = obj.select("#_episodeList").select("li").array();
+	let mut chapters: Vec<Chapter> = Vec::with_capacity(elements.len());
 
-	for chapter in obj.select("#_episodeList").select("li").array() {
+	for chapter in elements {
 		let obj = chapter.as_node();
 
 		let id = obj.attr("data-episode-no").read().to_string();
@@ -234,7 +233,7 @@ pub fn get_chapter_list(obj: Node, manga_id: String) -> Result<Vec<Chapter>> {
 			continue;
 		}
 
-		let chapter = id.parse::<f32>().unwrap();
+		let chapter = id.parse::<f32>().unwrap_or(-1.0);
 
 		// The mobile website sucks so we need to manually replace some chars
 		let title = obj
@@ -250,17 +249,19 @@ pub fn get_chapter_list(obj: Node, manga_id: String) -> Result<Vec<Chapter>> {
 			.replace("&gt;", ">")
 			.replace("&nbsp;", " ");
 
-		let date_str = obj.select(".date").text().read().to_string();
-		let date = NaiveDate::parse_from_str(&date_str, "%b %d, %Y")
-			.unwrap()
-			.and_hms(0, 0, 0);
+		let date_updated = obj
+			.select(".date")
+			.text()
+			.0
+			.as_date("MMM dd, yyyy", None, None)
+			.unwrap_or(-1.0);
 
 		chapters.push(Chapter {
 			id: format!("{}|{}", manga_id, id),
 			title,
 			chapter,
-			volume: 1.0,
-			date_updated: date.timestamp() as f64,
+			volume: -1.0,
+			date_updated,
 			scanlator: String::new(),
 			url: String::new(),
 			lang: String::from("en"),
@@ -271,10 +272,10 @@ pub fn get_chapter_list(obj: Node, manga_id: String) -> Result<Vec<Chapter>> {
 }
 
 pub fn get_page_list(obj: Node) -> Result<Vec<Page>> {
-	let mut pages: Vec<Page> = Vec::new();
+	let elements = obj.select(".viewer_lst").select("img").array();
+	let mut pages: Vec<Page> = Vec::with_capacity(elements.len());
 
-	let mut i = 0;
-	for page in obj.select(".viewer_lst").select("img").array() {
+	for (i, page) in elements.enumerate() {
 		let obj = page.as_node();
 		let url = obj.attr("data-url").read();
 
@@ -284,13 +285,12 @@ pub fn get_page_list(obj: Node) -> Result<Vec<Page>> {
 			base64: String::new(),
 			text: String::new(),
 		});
-		i += 1;
 	}
 	Ok(pages)
 }
 
 pub fn handle_url(url: String) -> Result<DeepLink> {
-	let manga_id = substr_after(&url, "webtoons.com/en/").to_string();
+	let manga_id = substr_after(&url, "webtoons.com/en/");
 	let parsed = get_manga_details(manga_id);
 
 	Ok(DeepLink {
@@ -306,10 +306,7 @@ pub fn urlencode(string: String) -> String {
 
 	for byte in bytes {
 		let curr = *byte;
-		if (b'a' <= curr && curr <= b'z')
-			|| (b'A' <= curr && curr <= b'Z')
-			|| (b'0' <= curr && curr <= b'9')
-		{
+		if curr.is_ascii_alphanumeric() {
 			result.push(curr);
 		} else {
 			result.push(b'%');
@@ -318,11 +315,11 @@ pub fn urlencode(string: String) -> String {
 		}
 	}
 
-	String::from_utf8(result).unwrap_or(String::new())
+	String::from_utf8(result).unwrap_or_default()
 }
 
 fn substr_after(string: &str, needle: &str) -> String {
-	let index = string.find(needle).unwrap();
+	let index = string.find(needle).unwrap_or(0);
 	let substr = &string[index + needle.len()..];
-	return substr.to_string();
+	substr.to_string()
 }

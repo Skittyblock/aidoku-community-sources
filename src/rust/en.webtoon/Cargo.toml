@@ -17,4 +17,3 @@ lto = true
 
 [dependencies]
 aidoku = { git = "https://github.com/Aidoku/aidoku-rs" }
-chrono = { version = "0.4.19", default-features = false }

@@ -8,9 +8,8 @@ use aidoku::{
 };
 use alloc::string::ToString;
 
-use crate::parser::urlencode;
-
 mod parser;
+use crate::parser::urlencode;
 
 const BASE_URL: &str = "https://webtoons.com";
 const MOBILE_BASE_URL: &str = "https://m.webtoons.com";
@@ -44,7 +43,7 @@ fn get_manga_list(filters: Vec<Filter>, _page: i32) -> Result<MangaPageResult> {
 
 				listing_index = filter.value.as_int().unwrap_or(0);
 			}
-			_ => {}
+			_ => continue
 		}
 	}
 
@@ -69,11 +68,11 @@ fn get_manga_list(filters: Vec<Filter>, _page: i32) -> Result<MangaPageResult> {
 
 #[get_manga_listing]
 fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
-	let mut filters: Vec<Filter> = Vec::new();
+	let mut filters: Vec<Filter> = Vec::with_capacity(1);
 	let value = ValueRef::from(match listing.name.as_str() {
-		"Popular" => 1i32,
-		"Trending" => 2i32,
-		_ => 0i32.into(),
+		"Popular" => 1,
+		"Trending" => 2,
+		_ => 0,
 	});
 
 	filters.push(Filter {
@@ -89,10 +88,10 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 #[get_manga_details]
 fn get_manga_details(manga_id: String) -> Result<Manga> {
 	let url = format!("{}/en/{}", MOBILE_BASE_URL, &manga_id);
-	let html = Request::new(url.clone().as_str(), HttpMethod::Get)
+	let html = Request::new(url.as_str(), HttpMethod::Get)
 		.header("User-Agent", MOBILE_USER_AGENT)
 		.html();
-	return parser::parse_manga(html, manga_id);
+	parser::parse_manga(html, manga_id)
 }
 
 #[get_chapter_list]
@@ -102,18 +101,17 @@ fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 		.header("User-Agent", MOBILE_USER_AGENT)
 		.html();
 
-	return parser::get_chapter_list(html, manga_id);
+	parser::get_chapter_list(html, manga_id)
 }
 
 #[get_page_list]
 fn get_page_list(id: String) -> Result<Vec<Page>> {
-	let [manga_id, chapter_id]: [&str; 2] =
-		<[&str; 2]>::try_from(id.split("|").collect::<Vec<&str>>()).unwrap();
-	let url = format!("{}/en/{}&episode_no={}", BASE_URL, &manga_id, &chapter_id)
-		.replace("list", format!("ep{}/viewer", chapter_id).as_str());
+	let ids = id.splitn(2, '|').collect::<Vec<_>>();
+	let url = format!("{}/en/{}&episode_no={}", BASE_URL, ids[0], ids[1])
+		.replace("list", format!("ep{}/viewer", ids[1]).as_str());
 
-	let html = Request::new(url.clone().as_str(), HttpMethod::Get).html();
-	return parser::get_page_list(html);
+	let html = Request::new(url.as_str(), HttpMethod::Get).html();
+	parser::get_page_list(html)
 }
 
 #[modify_image_request]
