@@ -1,9 +1,13 @@
 #![no_std]
 extern crate alloc;
 
-use aidoku::std::{ObjectRef, ValueRef};
 use aidoku::{
-	error::Result, prelude::*, std::net::HttpMethod, std::net::Request, std::String, std::Vec,
+	error::Result,
+	prelude::*,
+	std::{
+		net::{HttpMethod, Request},
+		ObjectRef, String, ValueRef, Vec,
+	},
 	Chapter, DeepLink, Filter, FilterType, Listing, Manga, MangaPageResult, Page,
 };
 use alloc::string::ToString;
@@ -43,7 +47,7 @@ fn get_manga_list(filters: Vec<Filter>, _page: i32) -> Result<MangaPageResult> {
 
 				listing_index = filter.value.as_int().unwrap_or(0);
 			}
-			_ => continue
+			_ => continue,
 		}
 	}
 

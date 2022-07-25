@@ -1,12 +1,11 @@
-use alloc::string::ToString;
-use alloc::vec;
-
-use aidoku::{
-	error::Result, prelude::*, std::html::Node, std::String, std::Vec, Chapter, DeepLink, Manga,
-	MangaContentRating, MangaStatus, MangaViewer, Page,
-};
-
 use crate::{get_manga_details, BASE_URL};
+use aidoku::{
+	error::Result,
+	prelude::*,
+	std::{html::Node, String, Vec},
+	Chapter, DeepLink, Manga, MangaContentRating, MangaStatus, MangaViewer, Page,
+};
+use alloc::{string::ToString, vec};
 
 const REPLACE_STRINGS: [&str; 6] = [":", "-", "/", "(", ")", "%"];
 
@@ -247,7 +246,12 @@ pub fn get_chapter_list(obj: Node, manga_id: String) -> Result<Vec<Chapter>> {
 			.replace("&gt;", ">")
 			.replace("&nbsp;", " ");
 
-		let date_updated = obj.select(".date").text().0.as_date("MMM dd, yyyy", None, None).unwrap_or(-1.0);
+		let date_updated = obj
+			.select(".date")
+			.text()
+			.0
+			.as_date("MMM dd, yyyy", None, None)
+			.unwrap_or(-1.0);
 
 		chapters.push(Chapter {
 			id: format!("{}|{}", manga_id, id),
