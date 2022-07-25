@@ -7,7 +7,7 @@
 			"https://webtoons.com",
 			"https://m.webtoons.com"
 		],
-		"version": 1
+		"version": 2
 	},
 	"listings": [
 		{ "name": "Popular" },

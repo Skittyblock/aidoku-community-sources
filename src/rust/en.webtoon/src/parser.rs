@@ -1,13 +1,11 @@
-use alloc::string::ToString;
-use alloc::vec;
-
-use aidoku::{
-	error::Result, prelude::*, std::html::Node, std::String, std::Vec, Chapter, DeepLink, Manga,
-	MangaContentRating, MangaStatus, MangaViewer, Page,
-};
-use chrono::NaiveDate;
-
 use crate::{get_manga_details, BASE_URL};
+use aidoku::{
+	error::Result,
+	prelude::*,
+	std::{html::Node, String, Vec},
+	Chapter, DeepLink, Manga, MangaContentRating, MangaStatus, MangaViewer, Page,
+};
+use alloc::{string::ToString, vec};
 
 const REPLACE_STRINGS: [&str; 6] = [":", "-", "/", "(", ")", "%"];
 
@@ -24,7 +22,7 @@ pub fn parse_manga_list_popular(html: &Node) -> Vec<Manga> {
 		.array()
 	{
 		let obj = page.as_node();
-		if &result.len() >= &10 {
+		if result.len() >= 10 {
 			break;
 		}
 
@@ -72,15 +70,13 @@ pub fn parse_manga_list_trending(html: &Node) -> Vec<Manga> {
 	for page in html
 		.select("ul.lst_type1")
 		.array()
-		.skip(1)
-		.next()
-		.unwrap()
+		.get(1)
 		.as_node()
 		.select("li")
 		.array()
 	{
 		let obj = page.as_node();
-		if &result.len() >= &10 {
+		if result.len() >= 10 {
 			break;
 		}
 
@@ -144,7 +140,7 @@ pub fn parse_search(html: &Node, challenge: bool) -> Vec<Manga> {
 			.to_string();
 		let genre = obj.select(".genre").text().read().trim().to_string();
 
-		let mut url_title = title.replace(" ", "-").to_lowercase();
+		let mut url_title = title.replace(' ', "-").to_lowercase();
 		for replace_string in REPLACE_STRINGS.iter() {
 			url_title = url_title.replace(replace_string, "");
 		}
@@ -152,7 +148,7 @@ pub fn parse_search(html: &Node, challenge: bool) -> Vec<Manga> {
 		let url_prefix = if challenge {
 			"challenge".to_string()
 		} else {
-			genre.replace(" ", "-").to_lowercase()
+			genre.replace(' ', "-").to_lowercase()
 		};
 		let id_num =
 			substr_after(obj.select("a").attr("href").read().as_str(), "titleNo=").to_string();
@@ -250,17 +246,19 @@ pub fn get_chapter_list(obj: Node, manga_id: String) -> Result<Vec<Chapter>> {
 			.replace("&gt;", ">")
 			.replace("&nbsp;", " ");
 
-		let date_str = obj.select(".date").text().read().to_string();
-		let date = NaiveDate::parse_from_str(&date_str, "%b %d, %Y")
-			.unwrap()
-			.and_hms(0, 0, 0);
+		let date_updated = obj
+			.select(".date")
+			.text()
+			.0
+			.as_date("MMM dd, yyyy", None, None)
+			.unwrap_or(-1.0);
 
 		chapters.push(Chapter {
 			id: format!("{}|{}", manga_id, id),
 			title,
 			chapter,
 			volume: 1.0,
-			date_updated: date.timestamp() as f64,
+			date_updated,
 			scanlator: String::new(),
 			url: String::new(),
 			lang: String::from("en"),
@@ -273,8 +271,7 @@ pub fn get_chapter_list(obj: Node, manga_id: String) -> Result<Vec<Chapter>> {
 pub fn get_page_list(obj: Node) -> Result<Vec<Page>> {
 	let mut pages: Vec<Page> = Vec::new();
 
-	let mut i = 0;
-	for page in obj.select(".viewer_lst").select("img").array() {
+	for (i, page) in obj.select(".viewer_lst").select("img").array().enumerate() {
 		let obj = page.as_node();
 		let url = obj.attr("data-url").read();
 
@@ -284,13 +281,12 @@ pub fn get_page_list(obj: Node) -> Result<Vec<Page>> {
 			base64: String::new(),
 			text: String::new(),
 		});
-		i += 1;
 	}
 	Ok(pages)
 }
 
 pub fn handle_url(url: String) -> Result<DeepLink> {
-	let manga_id = substr_after(&url, "webtoons.com/en/").to_string();
+	let manga_id = substr_after(&url, "webtoons.com/en/");
 	let parsed = get_manga_details(manga_id);
 
 	Ok(DeepLink {
@@ -306,10 +302,7 @@ pub fn urlencode(string: String) -> String {
 
 	for byte in bytes {
 		let curr = *byte;
-		if (b'a' <= curr && curr <= b'z')
-			|| (b'A' <= curr && curr <= b'Z')
-			|| (b'0' <= curr && curr <= b'9')
-		{
+		if curr.is_ascii_alphanumeric() {
 			result.push(curr);
 		} else {
 			result.push(b'%');
@@ -318,11 +311,11 @@ pub fn urlencode(string: String) -> String {
 		}
 	}
 
-	String::from_utf8(result).unwrap_or(String::new())
+	String::from_utf8(result).unwrap_or_default()
 }
 
 fn substr_after(string: &str, needle: &str) -> String {
 	let index = string.find(needle).unwrap();
 	let substr = &string[index + needle.len()..];
-	return substr.to_string();
+	substr.to_string()
 }
