@@ -8,5 +8,9 @@
 			"https://m.webtoons.com"
 		],
 		"version": 1
-	}
+	},
+	"listings": [
+		{ "name": "Popular" },
+		{ "name": "Trending" }
+	]
 }

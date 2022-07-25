@@ -1,10 +1,12 @@
 #![no_std]
 extern crate alloc;
 
+use aidoku::std::{ObjectRef, ValueRef};
 use aidoku::{
 	error::Result, prelude::*, std::net::HttpMethod, std::net::Request, std::String, std::Vec,
-	Chapter, DeepLink, Filter, FilterType, Manga, MangaPageResult, Page,
+	Chapter, DeepLink, Filter, FilterType, Listing, Manga, MangaPageResult, Page,
 };
+use alloc::string::ToString;
 
 use crate::parser::urlencode;
 
@@ -16,6 +18,7 @@ const MOBILE_USER_AGENT: &str = "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like 
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, _page: i32) -> Result<MangaPageResult> {
+	let mut listing_index = 0;
 	for filter in filters {
 		match filter.kind {
 			FilterType::Title => {
@@ -34,6 +37,14 @@ fn get_manga_list(filters: Vec<Filter>, _page: i32) -> Result<MangaPageResult> {
 					has_more: false,
 				});
 			}
+			FilterType::Select => {
+				if filter.name != "listing_index" {
+					continue;
+				}
+
+				listing_index = filter.value.as_int().unwrap_or(0);
+				println!("listing_index: {}", listing_index);
+			}
 			_ => {}
 		}
 	}
@@ -41,10 +52,39 @@ fn get_manga_list(filters: Vec<Filter>, _page: i32) -> Result<MangaPageResult> {
 	let url = format!("{}/en/top", BASE_URL);
 	let html = Request::new(url.as_str(), HttpMethod::Get).html();
 
+	let mut result: Vec<Manga> = Vec::new();
+	match listing_index {
+		1 => result.append(&mut parser::parse_manga_list_popular(&html)),
+		2 => result.append(&mut parser::parse_manga_list_trending(&html)),
+		_ => {
+			result.append(&mut parser::parse_manga_list_popular(&html));
+			result.append(&mut parser::parse_manga_list_trending(&html));
+		}
+	}
+
 	Ok(MangaPageResult {
-		manga: parser::parse_manga_list(html),
+		manga: result,
 		has_more: false,
 	})
+}
+
+#[get_manga_listing]
+fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
+	let mut filters: Vec<Filter> = Vec::new();
+	let value = ValueRef::from(match listing.name.as_str() {
+		"Popular" => 1i32,
+		"Trending" => 2i32,
+		_ => 0i32.into(),
+	});
+
+	filters.push(Filter {
+		kind: FilterType::Select,
+		name: "listing_index".to_string(),
+		object: ObjectRef::new(),
+		value,
+	});
+
+	get_manga_list(filters, page)
 }
 
 #[get_manga_details]

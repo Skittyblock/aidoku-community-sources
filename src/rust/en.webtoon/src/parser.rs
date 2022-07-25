@@ -11,7 +11,7 @@ use crate::{get_manga_details, BASE_URL};
 
 const REPLACE_STRINGS: [&str; 6] = [":", "-", "/", "(", ")", "%"];
 
-pub fn parse_manga_list(html: Node) -> Vec<Manga> {
+pub fn parse_manga_list_popular(html: &Node) -> Vec<Manga> {
 	let mut result: Vec<Manga> = Vec::new();
 
 	for page in html
@@ -43,6 +43,65 @@ pub fn parse_manga_list(html: Node) -> Vec<Manga> {
 			.read()
 			.trim()
 			.to_string();
+
+		if id.is_empty() || title.is_empty() {
+			continue;
+		}
+
+		result.push(Manga {
+			id,
+			cover,
+			title,
+			author,
+			url,
+			artist: String::new(),
+			description: String::new(),
+			categories: Vec::new(),
+			status: MangaStatus::Ongoing,
+			nsfw: MangaContentRating::Safe,
+			viewer: MangaViewer::Scroll,
+		});
+	}
+
+	result
+}
+
+pub fn parse_manga_list_trending(html: &Node) -> Vec<Manga> {
+	let mut result: Vec<Manga> = Vec::new();
+
+	for page in html
+		.select("ul.lst_type1")
+		.array()
+		.skip(1)
+		.next()
+		.unwrap()
+		.as_node()
+		.select("li")
+		.array()
+	{
+		let obj = page.as_node();
+		if &result.len() >= &10 {
+			break;
+		}
+
+		let url = obj.select("a").attr("href").read();
+		let id = substr_after(&url, "webtoons.com/en/").to_string();
+		let cover = obj
+			.select("img")
+			.attr("src")
+			.read()
+			.replace("a92", "crop540_540");
+		let title = obj.select(".subj").first().text().read().trim().to_string();
+		let author = obj
+			.select(".author")
+			.first()
+			.text()
+			.read()
+			.trim()
+			.to_string();
+
+		println!("{}", title);
+		println!("{}", author);
 
 		if id.is_empty() || title.is_empty() {
 			continue;
