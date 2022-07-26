@@ -113,7 +113,9 @@ pub fn get_manga_list(
 }
 
 pub fn get_search_result(data: MadaraSiteData, url: String) -> Result<MangaPageResult> {
-	let html = Request::new(url.as_str(), HttpMethod::Get).html();
+	let html = Request::new(url.as_str(), HttpMethod::Get)
+		.header("Cookie", "wpmanga-adault=1")
+		.html();
 	let mut manga: Vec<Manga> = Vec::new();
 	let mut has_more = false;
 

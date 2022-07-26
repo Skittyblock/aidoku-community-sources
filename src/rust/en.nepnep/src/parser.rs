@@ -1,18 +1,19 @@
 use aidoku::{
-	error::Result, std::String, std::Vec, std::ObjectRef, std::html::Node,
+	error::Result, std::String, std::Vec, std::ObjectRef, std::html::Node, std::defaults::defaults_get,
 	Manga, MangaStatus, MangaContentRating, MangaViewer, Chapter,
 };
 
 use super::helper::{chapter_url_encode, chapter_image};
 
 // Parse manga with title and cover
-pub fn parse_basic_manga(manga_object: ObjectRef) -> Result<Manga> {
+pub fn parse_basic_manga(manga_object: ObjectRef, cover_url: String) -> Result<Manga> {
 	let id = manga_object.get("i").as_string()?.read();
 	let title = manga_object.get("s").as_string()?.read();
+	let cover = cover_url.replace("{{Result.i}}", &id);
 
-	let mut cover = String::from("https://cover.nep.li/cover/");
-	cover.push_str(&id);
-	cover.push_str(".jpg");
+	let mut url = defaults_get("sourceURL").as_string()?.read();
+	url.push_str("/manga/");
+	url.push_str(&id);
 
 	Ok(Manga {
 		id,
@@ -21,7 +22,7 @@ pub fn parse_basic_manga(manga_object: ObjectRef) -> Result<Manga> {
 		author: String::new(),
 		artist: String::new(),
 		description: String::new(),
-		url: String::new(),
+		url,
 		categories: Vec::new(),
 		status: MangaStatus::Unknown,
 		nsfw: MangaContentRating::Safe,
@@ -97,7 +98,7 @@ pub fn parse_chapter(manga_id: &str, chapter_object: ObjectRef) -> Result<Chapte
 	};
 	if title.is_empty() {
 		title = chapter_object.get("Type").as_string()?.read();
-		title.push_str(" ");
+		title.push(' ');
 		title.push_str(&chapter_image(&id, false));
 	}
 

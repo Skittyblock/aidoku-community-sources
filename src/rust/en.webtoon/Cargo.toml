@@ -1,6 +1,6 @@
 [package]
-name = "mangadex-aidoku"
-version = "0.2.0"
+name = "webtoon-aidoku"
+version = "0.1.0"
 edition = "2021"
 
 [lib]
@@ -17,4 +17,3 @@ lto = true
 
 [dependencies]
 aidoku = { git = "https://github.com/Aidoku/aidoku-rs" }
-itoa = "1.0.2"
