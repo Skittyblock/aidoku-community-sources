@@ -1,28 +1,20 @@
 #![no_std]
-
 use aidoku::{
 	error::Result, prelude::*, std::net::Request, std::String, std::Vec, Chapter, DeepLink, Filter,
 	Listing, Manga, MangaPageResult, Page,
 };
 
 use mangastream_template::template::MangaStreamSource;
-mod helper;
 
 fn get_instance() -> MangaStreamSource {
 	MangaStreamSource {
-		listing: ["الرائج", "آخر", "جَديد"],
-		base_url: String::from("https://swatmanga.co"),
-		manga_details_title: ".infox h1",
-		manga_details_author: "td:contains(Autor)+td",
-		manga_details_description: ".desc",
-		manga_details_categories: ".spe a",
-		manga_details_cover: ".ime img",
-		manga_details_type: ".spe b:contains(النوع)+a",
-		last_page_text: "التالي",
-		chapter_selector: ".bxcl ul li",
-		chapter_title: "span.lchx",
-		chapter_date_format: "yyyy-MM-dd",
-		alt_pages: true,
+		base_url: String::from("https://kiryuu.id"),
+		manga_title_trim: ["Bahasa Indonesia".into()].to_vec(),
+		chapter_date_format: "MMMM d, yyyy",
+		manga_details_author: "td:contains(Author)+td",
+		manga_details_artist: "td:contains(Artist)+td",
+		manga_details_type: "td:contains(Type)+td",
+		locale: "id",
 		..Default::default()
 	}
 }
@@ -39,7 +31,7 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 
 #[get_manga_details]
 fn get_manga_details(id: String) -> Result<Manga> {
-	helper::parse_manga_details(&get_instance(), id)
+	get_instance().parse_manga_details(id)
 }
 
 #[get_chapter_list]
@@ -49,7 +41,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 
 #[get_page_list]
 fn get_page_list(id: String) -> Result<Vec<Page>> {
-	helper::parse_page_list(&get_instance(), id)
+	get_instance().parse_page_list(id)
 }
 
 #[modify_image_request]
