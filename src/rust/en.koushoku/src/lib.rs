@@ -85,8 +85,8 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 			viewer: MangaViewer::Rtl,
 		});
 	}
-	// check if paging node exists
 
+	// check if paging node exists
 	let paging = html.select("nav.pagination ul li.last a");
 	if !paging.html().read().is_empty() {
 		let last_page = helper::get_page(paging.last().attr("href").read());
@@ -131,7 +131,7 @@ fn get_manga_details(id: String) -> Result<Manga> {
 
 	let share_url = format!("https://koushoku.org/archive/{}", &id);
 
-	let manga = Manga {
+	Ok(Manga {
 		id,
 		title,
 		author,
@@ -143,9 +143,7 @@ fn get_manga_details(id: String) -> Result<Manga> {
 		status: MangaStatus::Completed,
 		nsfw: MangaContentRating::Nsfw,
 		viewer: MangaViewer::Rtl,
-	};
-
-	Ok(manga)
+	})
 }
 
 #[get_chapter_list]
@@ -161,7 +159,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 
 	let date_updated = created_at.parse::<f64>().unwrap_or(-1.0);
 
-	let chapters: Vec<Chapter> = vec![Chapter {
+	Ok(vec![Chapter {
 		id,
 		title: String::new(),
 		volume: -1.0,
@@ -170,9 +168,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 		date_updated,
 		scanlator: String::new(),
 		lang: String::from("en"),
-	}];
-
-	Ok(chapters)
+	}])
 }
 
 #[get_page_list]
@@ -181,9 +177,6 @@ fn get_page_list(id: String) -> Result<Vec<Page>> {
 
 	let mut pages: Vec<Page> = Vec::new();
 
-	// let json = Request::new(url.as_str(), HttpMethod::Get)
-	// 	.json()
-	// 	.as_object()?;
 	let html = Request::new(url.as_str(), HttpMethod::Get).html();
 
 	let pages_total_str = html
