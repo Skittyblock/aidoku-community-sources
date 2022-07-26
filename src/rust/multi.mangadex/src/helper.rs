@@ -1,4 +1,4 @@
-use aidoku::std::{current_date, net::Request, String, ValueRef, Vec};
+use aidoku::std::{net::Request, String, ValueRef, Vec};
 
 pub fn urlencode(string: String) -> String {
 	let mut result: Vec<u8> = Vec::with_capacity(string.len() * 3);
@@ -35,6 +35,13 @@ extern "C" {
 	fn request_get_status_code(rd: i32) -> i32;
 }
 
+#[link(wasm_import_module = "std")]
+extern "C" {
+	fn destroy(rid: i32);
+	fn create_date(value: f64) -> i32;
+	fn read_date(ctx: i32) -> f64;
+}
+
 /// Helper for automatically retrying a rate-limited request.
 ///
 /// This works on the assumption that Aidoku rate-limited requests
@@ -47,6 +54,15 @@ extern "C" {
 pub trait SendRatelimited {
 	fn send_rl(&self);
 	fn json_rl(self) -> ValueRef;
+}
+
+pub fn current_date() -> f64 {
+	unsafe {
+		let date = create_date(-1.0);
+		let result = read_date(date);
+		destroy(date);
+		result
+	}
 }
 
 impl SendRatelimited for Request {
