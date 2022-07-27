@@ -1,0 +1,16 @@
+{
+	"info": {
+		"id": "en.webtoon",
+		"lang": "en",
+		"name": "Webtoon",
+		"urls": [
+			"https://webtoons.com",
+			"https://m.webtoons.com"
+		],
+		"version": 2
+	},
+	"listings": [
+		{ "name": "Popular" },
+		{ "name": "Trending" }
+	]
+}
