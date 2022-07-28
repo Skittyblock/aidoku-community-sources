@@ -1,6 +1,7 @@
 use aidoku::std::String;
 
-// get string after and before substrings, with an added character count extension
+// get string after and before substrings, with an added character count
+// extension
 pub fn string_between(string: &str, start: &str, end: &str, extension: usize) -> String {
 	let start_loc = string.find(start).unwrap_or(0) + start.len();
 	let half = &string[start_loc..];
@@ -13,11 +14,11 @@ pub fn string_between(string: &str, start: &str, end: &str, extension: usize) ->
 // e.g. "100345" -> "0034.5"
 pub fn chapter_image(id: &str, pad: bool) -> String {
 	let mut new_str = String::new();
-	
+
 	if pad {
-		new_str.push_str(&id[1..id.len()-1]);
+		new_str.push_str(&id[1..id.len() - 1]);
 	} else {
-		new_str.push_str(id[1..id.len()-1].trim_start_matches('0'));
+		new_str.push_str(id[1..id.len() - 1].trim_start_matches('0'));
 	}
 
 	if new_str.is_empty() {
@@ -48,6 +49,6 @@ pub fn chapter_url_encode(id: &str) -> String {
 	}
 
 	output.push_str(".html");
-	
+
 	output
 }
