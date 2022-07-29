@@ -214,8 +214,9 @@ impl<'a> MMRCMSSource<'a> {
 		if !title.is_empty() {
 			if self.use_search_engine && unsafe { INTERNAL_USE_SEARCH_ENGINE } {
 				let url = format!("{}/search?query={title}", self.base_url);
-				if let Ok(json) = Request::new(&url, HttpMethod::Get).json()?.as_object() {
-					let suggestions = json.get("suggestions").as_array()?;
+				if let Ok(obj) = Request::new(&url, HttpMethod::Get).json()
+				   && let Ok(json) = obj.as_object()
+				   && let Ok(suggestions) = json.get("suggestions").as_array() {
 					let mut manga = Vec::with_capacity(suggestions.len());
 					for suggestion in suggestions {
 						if let Ok(suggestion) = suggestion.as_object()
@@ -321,14 +322,11 @@ impl<'a> MMRCMSSource<'a> {
 						manga.artist = next_node.text().read()
 					}
 					"categories" | "categorías" | "catégories" | "ジャンル" | "kategoriler" | "categorias" | "kategorie" | "التصنيفات" | "жанр" | "kategori" | "tagi" | "tags" => {
-						next_node
+						manga.categories.extend(next_node
 							.select("a")
 							.array()
-							.for_each(|elem| {
-								if let Ok(node) = elem.as_node() {
-									manga.categories.push(node.text().read())
-								}
-							})
+							.filter_map(|elem| elem.as_node().map(|node| node.text().read()).ok())
+						)
 					}
 					"status" | "statut" | "estado" | "状態" | "durum" | "الحالة" | "статус" => {
 						manga.status = match next_node.text().read().to_lowercase().trim() {
@@ -369,39 +367,40 @@ impl<'a> MMRCMSSource<'a> {
 		let should_extract_chapter_title = node.select("em").array().is_empty();
 		Ok(elems
 			.filter_map(|elem| {
-				if let Ok(chapter_node) = elem.as_node() {
-					let volume = extract_f32_from_string(
-						String::from("volume-"),
-						chapter_node.attr("class").read(),
-					);
-					let url = chapter_node.select("a").attr("abs:href").read();
-					let chapter_title = chapter_node.select("a").first().text().read();
+				elem.as_node()
+					.map(|chapter_node| {
+						let volume = extract_f32_from_string(
+							String::from("volume-"),
+							chapter_node.attr("class").read(),
+						);
+						let url = chapter_node.select("a").attr("abs:href").read();
+						let chapter_title = chapter_node.select("a").first().text().read();
 
-					let chapter = extract_f32_from_string(title.clone(), chapter_title.clone());
-					let mut title = chapter_node.select("em").text().read();
-					if title.is_empty() && should_extract_chapter_title {
-						title = chapter_title;
-					}
+						let chapter = extract_f32_from_string(title.clone(), chapter_title.clone());
+						let mut title = chapter_node.select("em").text().read();
+						if title.is_empty() && should_extract_chapter_title {
+							title = chapter_title;
+						}
 
-					let chapter_id = String::from(url.split('/').collect::<Vec<_>>()[5]);
-					let date_updated = chapter_node
-						.select("div.date-chapter-title-rtl, div.col-md-4")
-						.first()
-						.own_text()
-						.as_date("dd MMM'.' yyyy", Some("en_US"), None);
-					Some(Chapter {
-						id: chapter_id,
-						title,
-						volume,
-						chapter,
-						date_updated,
-						url,
-						lang: String::from(self.lang),
-						..Default::default()
+						let chapter_id = String::from(url.split('/').collect::<Vec<_>>()[5]);
+						let date_updated = chapter_node
+							.select("div.date-chapter-title-rtl, div.col-md-4")
+							.first()
+							.own_text()
+							.as_date("dd MMM'.' yyyy", Some("en_US"), None);
+
+						Chapter {
+							id: chapter_id,
+							title,
+							volume,
+							chapter,
+							date_updated,
+							url,
+							lang: String::from(self.lang),
+							..Default::default()
+						}
 					})
-				} else {
-					None
-				}
+					.ok()
 			})
 			.collect::<Vec<Chapter>>())
 	}

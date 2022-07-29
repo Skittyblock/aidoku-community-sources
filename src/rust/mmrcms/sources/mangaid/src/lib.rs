@@ -46,7 +46,7 @@ fn get_page_list(manga_id: String, id: String) -> Result<Vec<Page>> {
 				 && let Ok(cdn) = default.as_string().map(|v| v.read()) {
 		cdn
 	} else {
-		String::from("?cdn=off");
+		String::from("?cdn=off")
 	};
 	INSTANCE.get_page_list(manga_id, format!("{id}{cdn}"))
 }
