@@ -9,12 +9,10 @@ use mangastream_template::template::MangaStreamSource;
 fn get_instance() -> MangaStreamSource {
 	MangaStreamSource {
 		base_url: String::from("https://manhwaindo.id"),
-		manga_title_trim: ["Bahasa Indonesia".into()].to_vec(),
+		traverse_pathname: "series",
 		chapter_date_format: "MMMM d, yyyy",
-		manga_details_author: "td:contains(Author)+td",
-		manga_details_artist: "td:contains(Artist)+td",
-		manga_details_type: "td:contains(Type)+td",
 		locale: "id",
+		alt_pages: true,
 		..Default::default()
 	}
 }
