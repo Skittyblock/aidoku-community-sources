@@ -8,9 +8,8 @@ use aidoku::{
 use lazy_static::lazy_static;
 use mmrcms_template::template::{cache_manga_page, MMRCMSSource, CACHED_MANGA};
 
-
 lazy_static! {
-	static ref INSTANCE: MMRCMSSource = MMRCMSSource {
+	static ref INSTANCE: MMRCMSSource<'static> = MMRCMSSource {
 		base_url: "http://animaregia.net",
 		lang: "pt-BR",
 		category: "Categoria",
@@ -57,53 +56,48 @@ fn get_manga_details(id: String) -> Result<Manga> {
 	};
 
 	for elem in html.select("li.list-group-item").array() {
-		let node = elem.as_node()?;
-		let text = node.text().read().to_lowercase();
-		let end = text.find(':').unwrap_or(0);
-		match &text.as_str()[..end] {
-			"autor(es)" => {
-				manga.author = node
-					.select("a")
-					.array()
-					.filter_map(|elem| {
-						match elem.as_node() {
+		if let Ok(node) = elem.as_node() {
+			let text = node.text().read().to_lowercase();
+			let end = text.find(':').unwrap_or(0);
+			match &text.as_str()[..end] {
+				"autor(es)" => {
+					manga.author = node
+						.select("a")
+						.array()
+						.filter_map(|elem| match elem.as_node() {
 							Ok(node) => Some(node.text().read()),
 							Err(_) => None,
-						}
-					})
-					.collect::<Vec<_>>()
-					.join(", ")
-			}
-			"artist(s)" => {
-				manga.artist = node
-					.select("a")
-					.array()
-					.filter_map(|elem| {
-						match elem.as_node() {
-							Ok(node) => Some(node.text().read()),
-							Err(_) => None,
-						}
-					})
-					.collect::<Vec<_>>()
-					.join(", ")
-			}
-			"categorias" => node
-				.select("a")
-				.array()
-				.for_each(|elem| {
-					match elem.as_node() {
-						Ok(node) => manga.categories.push(node.text().read()),
-						Err(_) => {},
-					}
-				}),
-			"status" => {
-				manga.status = match node.select("span.label").text().read().trim() {
-					"Completo" | "Concluído" => aidoku::MangaStatus::Completed,
-					"Ativo" => aidoku::MangaStatus::Ongoing,
-					_ => aidoku::MangaStatus::Unknown,
+						})
+						.collect::<Vec<_>>()
+						.join(", ")
 				}
+				"artist(s)" => {
+					manga.artist = node
+						.select("a")
+						.array()
+						.filter_map(|elem| match elem.as_node() {
+							Ok(node) => Some(node.text().read()),
+							Err(_) => None,
+						})
+						.collect::<Vec<_>>()
+						.join(", ")
+				}
+				"categorias" => node
+					.select("a")
+					.array()
+					.for_each(|elem| match elem.as_node() {
+						Ok(node) => manga.categories.push(node.text().read()),
+						Err(_) => {}
+					}),
+				"status" => {
+					manga.status = match node.select("span.label").text().read().trim() {
+						"Completo" | "Concluído" => aidoku::MangaStatus::Completed,
+						"Ativo" => aidoku::MangaStatus::Ongoing,
+						_ => aidoku::MangaStatus::Unknown,
+					}
+				}
+				_ => continue,
 			}
-			_ => continue,
 		}
 	}
 	(manga.nsfw, manga.viewer) = (INSTANCE.category_parser)(&html, manga.categories.clone());

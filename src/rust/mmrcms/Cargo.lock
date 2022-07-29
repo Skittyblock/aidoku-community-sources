@@ -5,7 +5,7 @@ version = 3
 [[package]]
 name = "aidoku"
 version = "0.2.0"
-source = "git+https://github.com/beerpiss/aidoku-rs?branch=qol-improvements#c5247b84b2240d031592ad1f6c56c9fca93e07de"
+source = "git+https://github.com/beerpiss/aidoku-rs?branch=qol-improvements#d79c002472e543bd166b08db31d39f02f6157e70"
 dependencies = [
  "aidoku_imports",
  "aidoku_macros",
@@ -16,7 +16,7 @@ dependencies = [
 [[package]]
 name = "aidoku_helpers"
 version = "0.1.0"
-source = "git+https://github.com/beerpiss/aidoku-rs?branch=qol-improvements#c5247b84b2240d031592ad1f6c56c9fca93e07de"
+source = "git+https://github.com/beerpiss/aidoku-rs?branch=qol-improvements#d79c002472e543bd166b08db31d39f02f6157e70"
 dependencies = [
  "aidoku_imports",
 ]
@@ -24,17 +24,17 @@ dependencies = [
 [[package]]
 name = "aidoku_imports"
 version = "0.2.0"
-source = "git+https://github.com/beerpiss/aidoku-rs?branch=qol-improvements#c5247b84b2240d031592ad1f6c56c9fca93e07de"
+source = "git+https://github.com/beerpiss/aidoku-rs?branch=qol-improvements#d79c002472e543bd166b08db31d39f02f6157e70"
 
 [[package]]
 name = "aidoku_macros"
 version = "0.1.0"
-source = "git+https://github.com/beerpiss/aidoku-rs?branch=qol-improvements#c5247b84b2240d031592ad1f6c56c9fca93e07de"
+source = "git+https://github.com/beerpiss/aidoku-rs?branch=qol-improvements#d79c002472e543bd166b08db31d39f02f6157e70"
 
 [[package]]
 name = "aidoku_proc_macros"
 version = "0.2.0"
-source = "git+https://github.com/beerpiss/aidoku-rs?branch=qol-improvements#c5247b84b2240d031592ad1f6c56c9fca93e07de"
+source = "git+https://github.com/beerpiss/aidoku-rs?branch=qol-improvements#d79c002472e543bd166b08db31d39f02f6157e70"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -186,9 +186,9 @@ dependencies = [
 
 [[package]]
 name = "proc-macro2"
-version = "1.0.40"
+version = "1.0.42"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dd96a1e8ed2596c337f8eae5f24924ec83f5ad5ab21ea8e455d3566c69fbcaf7"
+checksum = "c278e965f1d8cf32d6e0e96de3d3e79712178ae67986d9cf9151f51e95aac89b"
 dependencies = [
  "unicode-ident",
 ]
@@ -230,9 +230,9 @@ dependencies = [
 
 [[package]]
 name = "unicode-ident"
-version = "1.0.1"
+version = "1.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5bd2fe26506023ed7b5e1e315add59d6f584c621d037f9368fea9cfb988f368c"
+checksum = "15c61ba63f9235225a22310255a29b806b907c9b8c964bcbd0a2c70f3f2deea7"
 
 [[package]]
 name = "utsukushii"

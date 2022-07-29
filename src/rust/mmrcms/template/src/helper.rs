@@ -1,4 +1,10 @@
-use aidoku::{error::Result, prelude::*, std::html::Node, std::String, std::Vec};
+use aidoku::{
+	error::{AidokuError, Result},
+	prelude::*,
+	std::html::Node,
+	std::String,
+	std::Vec,
+};
 
 pub fn extract_f32_from_string(title: String, text: String) -> f32 {
 	text.replace(&title, "")
@@ -40,25 +46,33 @@ pub fn urlencode(string: String) -> String {
 	String::from_utf8(result).unwrap_or_default()
 }
 
-fn parse_email_protected<T: AsRef<str>>(data: T) -> String {
+fn parse_email_protected<T: AsRef<str>>(data: T) -> Result<String> {
 	let data = data.as_ref();
-	let key = u32::from_str_radix(&data[0..2], 16).unwrap();
-	let mut email = String::with_capacity(data.len() / 2 - 1);
-	let mut n = 2;
+	if let Ok(key) = u32::from_str_radix(&data[0..2], 16) {
+		let mut email = String::with_capacity(data.len() / 2 - 1);
+		let mut n = 2;
 
-	while n < data.len() {
-		let chrcode = u32::from_str_radix(&data[n..n + 2], 16).unwrap() ^ key;
-		email.push(char::from_u32(chrcode).unwrap_or_default());
-		n += 2;
+		while n < data.len() {
+			if let Ok(chrcode) = u32::from_str_radix(&data[n..n + 2], 16)
+			   && let Some(chr) = char::from_u32(chrcode ^ key) {
+				email.push(chr);
+			}
+			n += 2;
+		}
+		Ok(email)
+	} else {
+		Err(AidokuError {
+			reason: aidoku::error::AidokuErrorKind::Unimplemented,
+		})
 	}
-	email
 }
 
 pub fn email_unprotected(html: &Node) {
 	let elems = html.select(".__cf_email__");
 	for elem in elems.array() {
-		let mut node = elem.as_node().unwrap();
-		let email = parse_email_protected(node.attr("data-cfemail").read());
-		node.set_text(email).ok();
+		if let Ok(mut node) = elem.as_node()
+		   && let Ok(email) = parse_email_protected(node.attr("data-cfemail").read()) {
+			node.set_text(email).ok();
+		}
 	}
 }

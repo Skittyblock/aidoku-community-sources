@@ -9,7 +9,7 @@ use lazy_static::lazy_static;
 use mmrcms_template::template::MMRCMSSource;
 
 lazy_static! {
-	static ref INSTANCE: MMRCMSSource = MMRCMSSource {
+	static ref INSTANCE: MMRCMSSource<'static> = MMRCMSSource {
 		base_url: "https://hentai.gekkouscans.com.br",
 		lang: "pt-BR",
 		category: "Categoria",

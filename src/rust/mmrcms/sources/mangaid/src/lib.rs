@@ -1,4 +1,5 @@
 #![no_std]
+#![feature(let_chains)]
 use aidoku::{
 	error::Result,
 	prelude::*,
@@ -9,7 +10,7 @@ use lazy_static::lazy_static;
 use mmrcms_template::template::MMRCMSSource;
 
 lazy_static! {
-	static ref INSTANCE: MMRCMSSource = MMRCMSSource {
+	static ref INSTANCE: MMRCMSSource<'static> = MMRCMSSource {
 		base_url: "https://mangaid.click",
 		category_mapper: |idx| {
 			if idx == 0 {
@@ -41,7 +42,12 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 
 #[get_page_list]
 fn get_page_list(manga_id: String, id: String) -> Result<Vec<Page>> {
-	let cdn = defaults_get("useCDN")?.as_string()?.read();
+	let cdn = if let Ok(default) = defaults_get("useCDN")
+				 && let Ok(cdn) = default.as_string().map(|v| v.read()) {
+		cdn
+	} else {
+		String::from("?cdn=off");
+	};
 	INSTANCE.get_page_list(manga_id, format!("{id}{cdn}"))
 }
 

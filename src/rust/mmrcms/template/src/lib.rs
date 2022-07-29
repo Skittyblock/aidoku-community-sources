@@ -1,5 +1,5 @@
 #![no_std]
-#![feature(stmt_expr_attributes)]
+#![feature(stmt_expr_attributes, let_chains)]
 pub mod helper;
 pub mod template;
 
@@ -15,7 +15,7 @@ macro_rules! mmrcms {
 		use lazy_static::lazy_static;
 
 		lazy_static! {
-			static ref INSTANCE: MMRCMSSource = $e;
+			static ref INSTANCE: MMRCMSSource<'static> = $e;
 		}
 
 		#[get_manga_list]

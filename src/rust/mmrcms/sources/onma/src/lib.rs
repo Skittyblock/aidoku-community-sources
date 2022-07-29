@@ -10,7 +10,7 @@ use lazy_static::lazy_static;
 use mmrcms_template::template::{cache_manga_page, MMRCMSSource, CACHED_MANGA};
 
 lazy_static! {
-	static ref INSTANCE: MMRCMSSource = MMRCMSSource {
+	static ref INSTANCE: MMRCMSSource<'static> = MMRCMSSource {
 		base_url: "https://onma.me",
 		lang: "ar",
 
@@ -57,30 +57,30 @@ fn get_manga_details(id: String) -> Result<Manga> {
 		..Default::default()
 	};
 	for elem in html.select("div.col-md-6 h3").array() {
-		let node = elem.as_node()?;
-		let text = node.text().read().to_lowercase();
-		let end = text.find(" : ").unwrap_or(0);
-		match &text.as_str()[..end] {
-			"النوع" => manga.categories.push(node.select("div").text().read()),
-			"المؤلف" => manga.author = node.select("div").text().read(),
-			"الرسام" => manga.artist = node.select("div").text().read(),
-			"الحالة" => {
-				manga.status = match node.select("span.label").text().read().trim() {
-					"مستمرة" => MangaStatus::Ongoing,
-					"مكتملة" => MangaStatus::Completed,
-					_ => MangaStatus::Unknown,
-				}
-			}
-			"التصنيفات" => node
-				.select("a")
-				.array()
-				.for_each(|elem| {
-					match elem.as_node() {
-						Ok(node) => manga.categories.push(node.text().read()),
-						Err(_) => {},
+		if let Ok(node) = elem.as_node() {
+			let text = node.text().read().to_lowercase();
+			let end = text.find(" : ").unwrap_or(0);
+			match &text.as_str()[..end] {
+				"النوع" => manga.categories.push(node.select("div").text().read()),
+				"المؤلف" => manga.author = node.select("div").text().read(),
+				"الرسام" => manga.artist = node.select("div").text().read(),
+				"الحالة" => {
+					manga.status = match node.select("span.label").text().read().trim() {
+						"مستمرة" => MangaStatus::Ongoing,
+						"مكتملة" => MangaStatus::Completed,
+						_ => MangaStatus::Unknown,
 					}
-				}),
-			_ => continue,
+				}
+				"التصنيفات" => {
+					node.select("a")
+						.array()
+						.for_each(|elem| match elem.as_node() {
+							Ok(node) => manga.categories.push(node.text().read()),
+							Err(_) => {}
+						})
+				}
+				_ => continue,
+			}
 		}
 	}
 	(manga.nsfw, manga.viewer) = (INSTANCE.category_parser)(&html, manga.categories.clone());
