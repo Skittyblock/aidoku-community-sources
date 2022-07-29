@@ -5,26 +5,34 @@ use aidoku::{
 };
 
 use mangastream_template::template::MangaStreamSource;
+pub mod helper;
+use helper::{get_listing_url, get_title_skip};
 
 fn get_instance() -> MangaStreamSource {
 	MangaStreamSource {
-		base_url: String::from("https://manhwaindo.id"),
-		traverse_pathname: "series",
-		chapter_date_format: "MMMM d, yyyy",
-		locale: "id",
-		alt_pages: true,
+		base_url: String::from("https://mangagenki.com"),
+		manga_details_cover_src: "data-lazy-src",
+		is_nsfw: true,
+		//next_page_2: ".pagination .next",
+		//manga_details_author: "tr:contains(Author) td:eq(1)",
+		//manga_details_categories: ".seriestugenre a",
+		manga_title_trim: get_title_skip(),
 		..Default::default()
 	}
 }
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
-	get_instance().parse_manga_list(filters, page)
+	helper::parse_manga_list(&get_instance(), filters, page)
 }
 
 #[get_manga_listing]
 fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
-	get_instance().parse_manga_listing(get_instance().base_url, listing.name, page)
+	get_instance().parse_manga_listing(
+		get_listing_url(&get_instance(), listing.name.clone(), page),
+		listing.name,
+		page,
+	)
 }
 
 #[get_manga_details]
