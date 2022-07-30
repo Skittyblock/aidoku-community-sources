@@ -1,0 +1,68 @@
+[
+    { 
+        "type": "title" 
+    },
+    {
+        "type": "author"
+    },
+    {
+        "type": "select",
+        "name": "Official Translation",
+        "options": [
+            "Any",
+            "Official Translation Only"
+        ]
+    },
+    {
+        "type": "select",
+        "name": "Scan Status",
+        "options": [
+            "Any",
+            "Cancelled",
+            "Complete",
+            "Discontinued",
+            "Hiatus",
+            "Ongoing"
+        ]
+    },
+    {
+        "type": "select",
+        "name": "Publish Status",
+        "options": [
+            "Any",
+            "Cancelled",
+            "Complete",
+            "Discontinued",
+            "Hiatus",
+            "Ongoing"
+        ]
+    },
+    {
+        "type": "select",
+        "name": "Type",
+        "options": [
+            "Any",
+            "Doujinshi",
+            "Manga",
+            "Manhua",
+            "Manhwa",
+            "OEL",
+            "One-shot"
+        ]
+    },
+    {
+        "type": "sort",
+        "name": "Sort By",
+        "canAscend": true,
+        "options": [
+            "Title",
+            "Date Updated",
+            "Popularity (All Time)",
+            "Popularity (Monthly)"
+        ],
+        "default": {
+            "index": 0,
+            "ascending": true
+        }
+    }
+]

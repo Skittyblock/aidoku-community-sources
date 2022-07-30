@@ -1,6 +1,6 @@
 use aidoku::{
 	error::{AidokuError, Result},
-	prelude::*,
+	prelude::Deserializable,
 	std::{
 		html::Node,
 		json,
@@ -94,7 +94,7 @@ impl<'a> Default for MMRCMSSource<'a> {
 			},
 			category_mapper: |idx| {
 				if idx != 0 {
-					format!("{}", idx)
+					String::from(itoa::Buffer::new().format(idx))
 				} else {
 					String::new()
 				}
@@ -108,10 +108,13 @@ impl<'a> Default for MMRCMSSource<'a> {
 impl<'a> MMRCMSSource<'a> {
 	fn guess_cover(&self, url: &str, id: &str) -> String {
 		if url.ends_with("no-image.png") || url.is_empty() {
-			format!(
-				"{}/uploads/manga/{}/cover/cover_250x350.jpg",
-				self.base_url, id
-			)
+			[
+				self.base_url,
+				"/uploads/manga/",
+				id,
+				"/cover/cover_250x350.jpg",
+			]
+			.concat()
 		} else {
 			append_protocol(String::from(url))
 		}
@@ -120,7 +123,7 @@ impl<'a> MMRCMSSource<'a> {
 	fn self_search<T: AsRef<str>>(&self, query: T) -> Result<MangaPageResult> {
 		let query = query.as_ref();
 		let html = Request::new(
-			format!("{}/changeMangaList?type=text", self.base_url),
+			[self.base_url, "/changeMangaList?type=text"].concat(),
 			HttpMethod::Get,
 		)
 		.html()?;
@@ -133,7 +136,7 @@ impl<'a> MMRCMSSource<'a> {
 				   && let Ok(title) = elem.as_node().map(|v| v.text().read())
 				   && title.to_lowercase().contains(query) {
 					let url = node.attr("abs:href").read();
-					let id = url.replace(&format!("{}/{}", self.base_url, self.manga_path), "");
+					let id = url.replace(&[self.base_url, "/", self.manga_path].concat(), "");
 					let cover = self.guess_cover("", &id);
 					Some(Manga {
 						id,
@@ -171,18 +174,19 @@ impl<'a> MMRCMSSource<'a> {
 					title = urlencode(t);
 					break;
 				}
-				FilterType::Author => {
-					query.push(format!(
-						"artist={}",
-						urlencode(
+				FilterType::Author => query.push(
+					[
+						"artist=",
+						&urlencode(
 							filter
 								.value
 								.as_string()
 								.map(|v| v.read())
-								.unwrap_or_default()
-						)
-					));
-				}
+								.unwrap_or_default(),
+						),
+					]
+					.concat(),
+				),
 				FilterType::Sort => {
 					if let Ok(value) = filter.value.as_object() {
 						let index = value.get("index").as_int().unwrap_or(0);
@@ -193,17 +197,17 @@ impl<'a> MMRCMSSource<'a> {
 							2 => "sortBy=last_release", // Readcomicsonline.ru
 							_ => continue,
 						}));
-						query.push(format!("asc={}", asc));
+						query.push(["asc=", if asc { "true" } else { "false" }].concat())
 					}
 				}
 				FilterType::Select => {
 					let value = filter.value.as_int().unwrap_or(-1);
 					match filter.name.as_str() {
 						x if x == self.category => {
-							query.push(format!("cat={}", (self.category_mapper)(value)))
+							query.push(["cat=", &(self.category_mapper)(value)].concat())
 						}
 						x if x == self.tags => {
-							query.push(format!("tag={}", (self.tags_mapper)(value)))
+							query.push(["tag=", &(self.tags_mapper)(value)].concat())
 						}
 						_ => continue,
 					}
@@ -213,7 +217,7 @@ impl<'a> MMRCMSSource<'a> {
 		}
 		if !title.is_empty() {
 			if self.use_search_engine && unsafe { INTERNAL_USE_SEARCH_ENGINE } {
-				let url = format!("{}/search?query={title}", self.base_url);
+				let url = [self.base_url, "/search?query=", &title].concat();
 				if let Ok(obj) = Request::new(&url, HttpMethod::Get).json()
 				   && let Ok(json) = obj.as_object()
 				   && let Ok(suggestions) = json.get("suggestions").as_array() {
@@ -223,7 +227,7 @@ impl<'a> MMRCMSSource<'a> {
 						   && let Ok(obj) = MMRCMSSearchResult::try_from(suggestion) {
 							manga.push(Manga {
 								cover: self.guess_cover("", &obj.data),
-								url: format!("{}/{}/{}", self.base_url, self.manga_path, obj.data),
+								url: [self.base_url, "/", self.manga_path, "/", &obj.data].concat(),
 								id: obj.data,
 								title: obj.value,
 								..Default::default()
@@ -242,12 +246,14 @@ impl<'a> MMRCMSSource<'a> {
 				self.self_search(title)
 			}
 		} else {
-			let url = format!(
-				"{}/filterList?page={}&{}",
+			let url = [
 				self.base_url,
-				page,
-				query.join("&")
-			);
+				"/filterList?page=",
+				itoa::Buffer::new().format(page),
+				"&",
+				&query.join("&"),
+			]
+			.concat();
 			let html = Request::new(&url, HttpMethod::Get).html()?;
 			email_unprotected(&html);
 			let node = html.select("div[class^=col-sm-]");
@@ -258,19 +264,16 @@ impl<'a> MMRCMSSource<'a> {
 			for elem in elems {
 				if let Ok(manga_node) = elem.as_node() {
 					let url = manga_node
-						.select(&format!("a[href*='{}/{}']", self.base_url, self.manga_path))
+						.select(["a[href*='", self.base_url, "/", self.manga_path, "']"].concat())
 						.attr("abs:href")
 						.read();
-					let id = url.replace(
-						format!("{}/{}/", self.base_url, self.manga_path).as_str(),
-						"",
-					);
+					let id = url.replace(&[self.base_url, "/", self.manga_path, "/"].concat(), "");
 					let cover = self.guess_cover(
 						&manga_node
-							.select(&format!(
-								"a[href*='{}/{}'] img",
-								self.base_url, self.manga_path
-							))
+							.select(
+								["a[href*='", self.base_url, "/", self.manga_path, "'] img"]
+									.concat(),
+							)
 							.attr("abs:src")
 							.read(),
 						&id,
@@ -290,7 +293,7 @@ impl<'a> MMRCMSSource<'a> {
 	}
 
 	pub fn get_manga_details(&self, id: String) -> Result<Manga> {
-		let url = format!("{}/{}/{}", self.base_url, self.manga_path, id);
+		let url = [self.base_url, "/", self.manga_path, "/", &id].concat();
 		cache_manga_page(&url);
 		let html = unsafe { CACHED_MANGA.clone().unwrap() };
 		let cover = append_protocol(html.select("img[class^=img-]").attr("abs:src").read());
@@ -354,7 +357,7 @@ impl<'a> MMRCMSSource<'a> {
 	}
 
 	pub fn get_chapter_list(&self, id: String) -> Result<Vec<Chapter>> {
-		let url = format!("{}/{}/{}", self.base_url, self.manga_path, id);
+		let url = [self.base_url, "/", self.manga_path, "/", &id].concat();
 		cache_manga_page(&url);
 		let html = unsafe { CACHED_MANGA.clone().unwrap() };
 		let node = html.select("li:has(.chapter-title-rtl)");
@@ -367,13 +370,14 @@ impl<'a> MMRCMSSource<'a> {
 		let should_extract_chapter_title = node.select("em").array().is_empty();
 		Ok(elems
 			.filter_map(|elem| {
-				elem.as_node()
-					.map(|chapter_node| {
+				if let Ok(chapter_node) = elem.as_node() {
+					let url = chapter_node.select("a").attr("abs:href").read();
+
+					if let Some(chapter_id) = url.split('/').nth(5).map(String::from) {
 						let volume = extract_f32_from_string(
 							String::from("volume-"),
 							chapter_node.attr("class").read(),
 						);
-						let url = chapter_node.select("a").attr("abs:href").read();
 						let chapter_title = chapter_node.select("a").first().text().read();
 
 						let chapter = extract_f32_from_string(title.clone(), chapter_title.clone());
@@ -382,14 +386,13 @@ impl<'a> MMRCMSSource<'a> {
 							title = chapter_title;
 						}
 
-						let chapter_id = String::from(url.split('/').collect::<Vec<_>>()[5]);
 						let date_updated = chapter_node
 							.select("div.date-chapter-title-rtl, div.col-md-4")
 							.first()
 							.own_text()
 							.as_date("dd MMM'.' yyyy", Some("en_US"), None);
 
-						Chapter {
+						Some(Chapter {
 							id: chapter_id,
 							title,
 							volume,
@@ -398,15 +401,28 @@ impl<'a> MMRCMSSource<'a> {
 							url,
 							lang: String::from(self.lang),
 							..Default::default()
-						}
-					})
-					.ok()
+						})
+					} else {
+						None
+					}
+				} else {
+					None
+				}
 			})
 			.collect::<Vec<Chapter>>())
 	}
 
 	pub fn get_page_list(&self, manga_id: String, id: String) -> Result<Vec<Page>> {
-		let url = format!("{}/{}/{}/{}", self.base_url, self.manga_path, manga_id, id);
+		let url = [
+			self.base_url,
+			"/",
+			self.manga_path,
+			"/",
+			&manga_id,
+			"/",
+			&id,
+		]
+		.concat();
 		let html = Request::new(&url, HttpMethod::Get).string()?;
 		let array = json::parse(
 			html.substring_after("var pages = ")
@@ -422,10 +438,7 @@ impl<'a> MMRCMSSource<'a> {
 			   && let Ok(page_image) = pageobj.get("page_image").as_string() {
 				let page_image = page_image.read();
 				let url = if pageobj.get("external").as_int().unwrap_or(-1) == 0 {
-					format!(
-						"{}/uploads/manga/{}/chapters/{}/{}",
-						self.base_url, manga_id, id, page_image
-					)
+					[self.base_url, "/uploads/manga/", &manga_id, "/chapters/", &id, "/", &page_image].concat()
 				} else {
 					page_image
 				};
@@ -447,24 +460,13 @@ impl<'a> MMRCMSSource<'a> {
 		// https://manga.fascans.com/manga/aharensan-wa-hakarenai/11/1
 		// ['https:', '', 'manga.fascans.com', 'manga', 'aharensan-wa-hakarenai', '11',
 		// '1']
-		let split = url.split('/').collect::<Vec<_>>();
-		if split.len() > 4 {
-			let manga = Some(self.get_manga_details(String::from(split[4]))?);
-			let chapter = if split.len() > 5 {
-				let chapnum = split[5].substring_before('-').unwrap_or(split[5]);
-				Some(Chapter {
-					id: String::from(split[5]),
-					chapter: chapnum.parse().unwrap_or(-1.0),
-					url: format!(
-						"{}/{}/{}/{}",
-						self.base_url, self.manga_path, split[4], split[5]
-					),
-					lang: String::from(self.lang),
-					..Default::default()
-				})
-			} else {
-				None
-			};
+		let mut split = url.split('/');
+		if let Some(id) = split.nth(4).map(String::from) {
+			let manga = Some(self.get_manga_details(id)?);
+			let chapter = split.next().map(String::from).map(|id| Chapter {
+				id,
+				..Default::default()
+			});
 			Ok(DeepLink { manga, chapter })
 		} else {
 			Err(AidokuError {
