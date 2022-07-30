@@ -324,7 +324,7 @@ impl MangaStreamSource {
 			let json = parse(trimmed_text.as_bytes()).as_object()?;
 			let images = json.get("images").as_array()?;
 			for (index, page) in images.enumerate() {
-				let page_url = page.as_string()?.read().replace(' ', "%20");
+				let page_url = urlencode(page.as_string()?.read());
 				pages.push(Page {
 					index: index as i32,
 					url: page_url,
