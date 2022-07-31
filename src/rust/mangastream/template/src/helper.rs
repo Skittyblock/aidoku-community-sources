@@ -237,3 +237,22 @@ pub fn append_protocol(url: String) -> String {
 		format!("{}{}", "https:", url)
 	}
 }
+
+pub fn urlencode<T: AsRef<[u8]>>(url: T) -> String {
+    let bytes = url.as_ref();
+    let hex = "0123456789ABCDEF".as_bytes();
+
+    let mut result: Vec<u8> = Vec::with_capacity(bytes.len() * 3);
+
+    for byte in bytes {
+        let curr = *byte;
+        if curr.is_ascii_alphanumeric() || b";,/?:@&=+$-_.!~*'()#".contains(&curr) {
+            result.push(curr);
+        } else {
+            result.push(b'%');
+            result.push(hex[curr as usize >> 4]);
+            result.push(hex[curr as usize & 15]);
+        }
+    }
+    String::from_utf8(result).unwrap_or_default()
+}
