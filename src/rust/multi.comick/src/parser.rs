@@ -4,7 +4,7 @@ use aidoku::{
 	std::net::HttpMethod,
 	std::net::Request,
 	std::Vec,
-	std::{defaults::defaults_get, String},
+	std::String,
 	Chapter, DeepLink, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
 	MangaViewer, Page,
 };
@@ -278,13 +278,6 @@ pub fn parse_chapter_list(api_url: String, id: String) -> Result<Vec<Chapter>> {
 			},
 			Err(_) => String::new(),
 		};
-		let scan_group = match defaults_get("scanlator_name").as_string() {
-			Ok(str) => str.read(),
-			Err(_) => String::new(),
-		};
-		if !scan_group.is_empty() && scanlator != scan_group {
-			continue;
-		}
 		//chapter_obj.get("group_name").as_array()?.get(0).as_string().unwrap_or("");
 		chapters.push(Chapter {
 			id: hid,
