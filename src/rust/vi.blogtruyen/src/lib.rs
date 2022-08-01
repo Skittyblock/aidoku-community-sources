@@ -186,7 +186,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 				viewer,
 			});
 		}
-		Ok(MangaPageResult {
+		return Ok(MangaPageResult {
 			manga: manga_arr,
 			has_more: html.select("a[title=\"Trang cuối\"]").array().len() > 0,
 		})
