@@ -53,7 +53,7 @@ jobs:
                 jq --raw-output \
                    --slurp \
                    --arg WORKING_DIRECTORY "${i%/}" \
-                   --from-file ${{ github.workspace }}/.github/workflows/supporting/annotations.jq 
+                   --from-file ${{ github.workspace }}/.github/workflows/supporting/annotations.jq \
                    annotations.json
                 let "LINT_COUNT = $LINT_COUNT + $(jq -sr 'map(select(.reason == "compiler-message" and .message.code and .message.spans[].is_primary)) | length' annotations.json)"
               )
