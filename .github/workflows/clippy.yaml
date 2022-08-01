@@ -47,26 +47,8 @@ jobs:
             if [[ "$i" == *"src/rust"* ]]; then
               (
                 cd "$i"
-                cargo clippy --message-format=json > annotations.json
-                jq -s -f ${{ github.workspace }}/.github/workflows/supporting/annotations.jq annotations.json \
-                  | jq --arg v "${i%/}" 'map(.path = $v + "/" + .path)' \
-                  | sponge annotations.json
+                cargo clippy --message-format=json \
+                  | jq -r --arg WORKING_DIRECTORY "${i%/}" -s -f ${{ github.workspace }}/.github/workflows/supporting/annotations.jq 
               )
             fi
           done < <(printf "%s\n" "${TEMP[@]}" | cut -d'/' -f-3 | sort -u | grep 'src' | tr '\n' '\0')
-
-          shopt -s globstar
-          jq -s 'add' ./**/annotations.json > annotations.json
-          echo "::set-output name=LINTS_COUNT::$(jq -s 'length' ./annotations.json)"
-      -
-        name: Send annotations
-        uses: yuzutech/annotations-action@v0.4.0
-        with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          title: Clippy
-          input: ./annotations.json
-          ignore-missing-file: false
-      - 
-        name: Exit with error if linting failed
-        if: steps.lint.outputs.LINTS_COUNT != '0'
-        run: exit 1

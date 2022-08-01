@@ -4,25 +4,11 @@ def annotation_level(x):
   elif x == "warning" then 
     "warning" 
   else 
-    "failure"
+    "error"
   end;
 
-map(
-  select(.reason == "compiler-message" and .message.code and .message.spans[].is_primary)
+.[] 
+  | select(.reason == "compiler-message" and .message.code and .message.spans[].is_primary)
   | .message
   | (.spans[] | select(.is_primary)) as $span
-  | {
-      title: .message,
-      message: .rendered,
-      annotation_level: annotation_level(.level),
-      path: $span.file_name,
-      start_line: $span.line_start,
-      end_line: $span.line_end,
-    }
-  | if $span.line_start == $span.line_end then
-      .start_column = $span.column_start
-      | .end_column = $span.column_end
-    else
-      .
-    end
-)
+  | "::\(annotation_level(.level)) file=$WORKING_DIRECTORY/\($span.file_name),line=\($span.line_start),endLine=\($span.line_end),title=\(.message)::\(.rendered)"
