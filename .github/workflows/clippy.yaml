@@ -1,0 +1,72 @@
+name: Lint Rust sources
+on:
+  pull_request:
+    paths:
+    - 'src/rust/**'
+  
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - 
+        uses: actions/checkout@v3
+      -
+        name: Get changed files
+        id: files
+        uses: jitterbit/get-changed-files@v1
+        with:
+          format: json
+      -
+        name: Cache rust stuff
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/registry/index
+            ~/.cargo/registry/cache
+            ~/.cargo/git/db
+            ~/.cargo/bin
+            src/rust/**/target
+          key: ${{ runner.os }}-cargo3-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: ${{ runner.os }}-cargo3-
+      -
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: nightly
+          override: true
+          components: clippy
+          target: wasm32-unknown-unknown
+      -
+        name: Other dependencies
+        run: sudo apt-get install -y moreutils
+      -
+        name: Lint sources
+        id: lint
+        run: |
+          readarray -t TEMP <<< "$(jq -r '.[]' <<<'${{ steps.files.outputs.added_modified }}')"
+          while IFS= read -r -d $'\0' i; do
+            if [[ "$i" == *"src/rust"* ]]; then
+              (
+                cd "$i"
+                cargo clippy --message-format=json > annotations.json
+                jq -s -f ${{ github.workspace }}/.github/workflows/supporting/annotations.jq annotations.json \
+                  | jq --arg v "${i%/}" 'map(.path = $v + "/" + .path)' \
+                  | sponge annotations.json
+              )
+            fi
+          done < <(printf "%s\n" "${TEMP[@]}" | cut -d'/' -f-3 | sort -u | grep 'src' | tr '\n' '\0')
+
+          shopt -s globstar
+          jq -s 'add' ./**/annotations.json > annotations.json
+          echo "::set-output name=LINTS_COUNT::$(jq -s 'length' ./annotations.json)"
+      -
+        name: Send annotations
+        uses: yuzutech/annotations-action@v0.4.0
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          title: Clippy
+          input: ./annotations.json
+          ignore-missing-file: false
+      - 
+        name: Exit with error if linting failed
+        if: steps.lint.outputs.LINTS_COUNT != '0'
+        run: exit 1
