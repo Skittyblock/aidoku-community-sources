@@ -11,14 +11,12 @@ def sanitize(x):
     x 
     | gsub("%"; "%25")
     | gsub("\n"; "%0A")
-    | gsub("\r"; "%0D")
-    | gsub(":"; "%3A")
-    | gsub(","; "%2C");
+    | gsub("\r"; "%0D");
 
 
 .[] 
   | select(.reason == "compiler-message" and .message.code and .message.spans[].is_primary)
   | .message
   | (.spans[] | select(.is_primary)) as $span
-  | "::\(annotation_level(.level)) file=$WORKING_DIRECTORY/\($span.file_name),line=\($span.line_start),endLine=\($span.line_end),title=\(.message)::"
+  | "::\(annotation_level(.level)) file=\($WORKING_DIRECTORY)/\($span.file_name),line=\($span.line_start),endLine=\($span.line_end),col=\($span.column_start),endColumn=\($span.column_end),title=\(.message)::"
     + sanitize(.rendered)
