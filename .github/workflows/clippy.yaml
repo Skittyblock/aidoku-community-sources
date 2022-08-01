@@ -43,15 +43,23 @@ jobs:
         id: lint
         run: |
           readarray -t TEMP <<< "$(jq -r '.[]' <<<'${{ steps.files.outputs.added_modified }}')"
+
+          let LINT_COUNT=0
           while IFS= read -r -d $'\0' i; do
             if [[ "$i" == *"src/rust"* ]]; then
               (
                 cd "$i"
-                cargo clippy --message-format=json \
-                  | jq --raw-output \
-                       --slurp \
-                       --arg WORKING_DIRECTORY "${i%/}" \
-                       --from-file ${{ github.workspace }}/.github/workflows/supporting/annotations.jq 
+                cargo clippy --message-format=json > annotations.json
+                jq --raw-output \
+                   --slurp \
+                   --arg WORKING_DIRECTORY "${i%/}" \
+                   --from-file ${{ github.workspace }}/.github/workflows/supporting/annotations.jq 
+                   annotations.json
+                let "LINT_COUNT = $LINT_COUNT + $(jq -sr 'map(select(.reason == "compiler-message" and .message.code and .message.spans[].is_primary)) | length' annotations.json)"
               )
             fi
           done < <(printf "%s\n" "${TEMP[@]}" | cut -d'/' -f-3 | sort -u | grep 'src' | tr '\n' '\0')
+
+          if ! [ $LINT_COUNT = '0' ]; then
+            exit 1
+          fi
