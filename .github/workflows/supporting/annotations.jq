@@ -11,4 +11,5 @@ def annotation_level(x):
   | select(.reason == "compiler-message" and .message.code and .message.spans[].is_primary)
   | .message
   | (.spans[] | select(.is_primary)) as $span
-  | "::\(annotation_level(.level)) file=$WORKING_DIRECTORY/\($span.file_name),line=\($span.line_start),endLine=\($span.line_end),title=\(.message)::\(.rendered)"
+  | "::\(annotation_level(.level)) file=$WORKING_DIRECTORY/\($span.file_name),line=\($span.line_start),endLine=\($span.line_end),title=\(.message)::"
+    + @uri "\(.rendered)"
