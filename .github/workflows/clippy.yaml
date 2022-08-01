@@ -3,12 +3,12 @@ on:
   pull_request:
     paths:
     - 'src/rust/**'
-  
+
 jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - 
+      -
         uses: actions/checkout@v3
       -
         name: Get changed files
@@ -44,24 +44,13 @@ jobs:
         run: |
           readarray -t TEMP <<< "$(jq -r '.[]' <<<'${{ steps.files.outputs.added_modified }}')"
 
-          let LINT_COUNT=0
           while IFS= read -r -d $'\0' i; do
             if [[ "$i" == *"src/rust"* ]]; then
               (
                 cd "$i"
-                cargo clippy --message-format=json > annotations.json
-                jq --raw-output \
-                   --slurp \
-                   --arg WORKING_DIRECTORY "${i%/}" \
-                   --from-file ${{ github.workspace }}/.github/workflows/supporting/annotations.jq \
-                   annotations.json
-                let "LINT_COUNT = $LINT_COUNT + $(jq -sr 'map(select(.reason == "compiler-message" and .message.code and .message.spans[].is_primary)) | length' annotations.json)"
+                RUSTFLAGS="-D warnings" cargo clippy --message-format=json \
+                  | jq --arg WORKING_DIRECTORY "${i%/}" \
+                       -rsf ${{ github.workspace }}/.github/workflows/supporting/annotations.jq
               )
             fi
           done < <(printf "%s\n" "${TEMP[@]}" | cut -d'/' -f-3 | sort -u | grep 'src' | tr '\n' '\0')
-
-          echo "::set-output name=LINT_COUNT::$LINT_COUNT"
-      -
-        name: Fail action if lints fail
-        if: steps.lint.outputs.LINT_COUNT != '0'
-        run: exit 1
