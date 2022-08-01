@@ -48,7 +48,10 @@ jobs:
               (
                 cd "$i"
                 cargo clippy --message-format=json \
-                  | jq -r --arg WORKING_DIRECTORY "${i%/}" -s -f ${{ github.workspace }}/.github/workflows/supporting/annotations.jq 
+                  | jq --raw-output \
+                       --slurp \
+                       --arg WORKING_DIRECTORY "${i%/}" \
+                       --from-file ${{ github.workspace }}/.github/workflows/supporting/annotations.jq 
               )
             fi
           done < <(printf "%s\n" "${TEMP[@]}" | cut -d'/' -f-3 | sort -u | grep 'src' | tr '\n' '\0')
