@@ -1,5 +1,4 @@
 #![no_std]
-#![feature(let_chains)]
 use aidoku::{
 	error::Result,
 	prelude::*,
@@ -16,9 +15,9 @@ lazy_static! {
 			if idx == 0 {
 				String::new()
 			} else if (1..=16).contains(&idx) {
-				format!("{}", idx)
+				String::from(itoa::Buffer::new().format(idx))
 			} else {
-				format!("{}", idx + 1)
+				String::from(itoa::Buffer::new().format(idx + 1))
 			}
 		},
 		..Default::default()
@@ -48,7 +47,7 @@ fn get_page_list(manga_id: String, id: String) -> Result<Vec<Page>> {
 	} else {
 		String::from("?cdn=off")
 	};
-	INSTANCE.get_page_list(manga_id, format!("{id}{cdn}"))
+	INSTANCE.get_page_list(manga_id, [id.as_str(), cdn.as_str()].concat())
 }
 
 #[handle_url]

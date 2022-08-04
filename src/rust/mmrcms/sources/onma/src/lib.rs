@@ -41,7 +41,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 
 #[get_manga_details]
 fn get_manga_details(id: String) -> Result<Manga> {
-	let url = format!("{}/{}/{}", INSTANCE.base_url, INSTANCE.manga_path, id);
+	let url = [INSTANCE.base_url, "/", INSTANCE.manga_path, "/", &id].concat();
 	cache_manga_page(&url);
 	let html = unsafe { CACHED_MANGA.clone().unwrap() };
 

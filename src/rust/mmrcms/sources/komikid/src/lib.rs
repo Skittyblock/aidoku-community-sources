@@ -1,5 +1,4 @@
 #![no_std]
-use aidoku::prelude::format;
 use mmrcms_template::{mmrcms, template::MMRCMSSource};
 
 mmrcms! {
@@ -8,8 +7,8 @@ mmrcms! {
 		category_mapper: |idx| {
 			match idx {
 				0 => String::new(),
-				1..=5 => format!("{}", idx),
-				6..=31 => format!("{}", idx + 1),
+				1..=5 => String::from(itoa::Buffer::new().format(idx)),
+				6..=31 => String::from(itoa::Buffer::new().format(idx + 1)),
 				_ => String::new(),
 			}
 		},

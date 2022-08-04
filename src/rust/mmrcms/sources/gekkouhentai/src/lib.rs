@@ -27,9 +27,9 @@ lazy_static! {
 			if idx == 0 {
 				String::new()
 			} else if (1..=7).contains(&idx) {
-				format!("{}", idx)
+				String::from(itoa::Buffer::new().format(idx))
 			} else {
-				format!("{}", idx + 1)
+				String::from(itoa::Buffer::new().format(idx + 1))
 			}
 		},
 		..Default::default()

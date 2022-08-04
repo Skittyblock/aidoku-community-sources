@@ -1,18 +1,17 @@
 use aidoku::{
 	error::{AidokuError, Result},
-	prelude::Deserializable,
+	helpers::{substring::Substring, cfemail::decode_cfemail, uri::encode_uri_component},
 	std::{
 		html::Node,
 		json,
 		net::{HttpMethod, Request},
-		String, Vec,
+		String, Vec, ObjectRef,
 	},
 	Chapter, DeepLink, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
 	MangaViewer, Page,
 };
-use aidoku_helpers::substring::Substring;
 
-use crate::helper::{append_protocol, email_unprotected, extract_f32_from_string, urlencode};
+use crate::helper::{append_protocol, extract_f32_from_string};
 
 pub static mut CACHED_MANGA: Option<Node> = None;
 static mut CACHED_MANGA_ID: Option<String> = None;
@@ -32,7 +31,7 @@ pub fn cache_manga_page(url: &str) {
 		}
 
 		if let Ok(html) = Request::new(url, HttpMethod::Get).html() {
-			email_unprotected(&html);
+			decode_cfemail(&html);
 			CACHED_MANGA = Some(html);
 			CACHED_MANGA_ID = Some(String::from(url));
 		}
@@ -56,10 +55,21 @@ pub struct MMRCMSSource<'a> {
 	pub use_search_engine: bool,
 }
 
-#[derive(Default, Deserializable)]
+#[derive(Default)]
 struct MMRCMSSearchResult {
 	pub data: String,
 	pub value: String,
+}
+
+impl TryFrom<ObjectRef> for MMRCMSSearchResult {
+	type Error = AidokuError;
+
+    fn try_from(obj: ObjectRef) -> Result<Self> {
+		Ok(Self {
+			data: obj.get("data").as_string()?.read(),
+			value: obj.get("value").as_string()?.read(),
+		})
+    }
 }
 
 impl<'a> Default for MMRCMSSource<'a> {
@@ -127,7 +137,7 @@ impl<'a> MMRCMSSource<'a> {
 			HttpMethod::Get,
 		)
 		.html()?;
-		email_unprotected(&html);
+		decode_cfemail(&html);
 		let manga = html
 			.select("ul.manga-list a")
 			.array()
@@ -171,13 +181,13 @@ impl<'a> MMRCMSSource<'a> {
 					if t.is_empty() {
 						continue;
 					}
-					title = urlencode(t);
+					title = encode_uri_component(t);
 					break;
 				}
 				FilterType::Author => query.push(
 					[
 						"artist=",
-						&urlencode(
+						&encode_uri_component(
 							filter
 								.value
 								.as_string()
@@ -255,7 +265,7 @@ impl<'a> MMRCMSSource<'a> {
 			]
 			.concat();
 			let html = Request::new(&url, HttpMethod::Get).html()?;
-			email_unprotected(&html);
+			decode_cfemail(&html);
 			let node = html.select("div[class^=col-sm-]");
 			let elems = node.array();
 			let mut manga = Vec::with_capacity(elems.len());

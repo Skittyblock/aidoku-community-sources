@@ -5,8 +5,9 @@ version = 3
 [[package]]
 name = "aidoku"
 version = "0.2.0"
-source = "git+https://github.com/beerpiss/aidoku-rs?branch=qol-improvements#d79c002472e543bd166b08db31d39f02f6157e70"
+source = "git+https://github.com/Aidoku/aidoku-rs/#5a68a5507a78716c2eb327eb2c12cdb1700a4bf3"
 dependencies = [
+ "aidoku_helpers",
  "aidoku_imports",
  "aidoku_macros",
  "aidoku_proc_macros",
@@ -16,7 +17,7 @@ dependencies = [
 [[package]]
 name = "aidoku_helpers"
 version = "0.1.0"
-source = "git+https://github.com/beerpiss/aidoku-rs?branch=qol-improvements#d79c002472e543bd166b08db31d39f02f6157e70"
+source = "git+https://github.com/Aidoku/aidoku-rs/#5a68a5507a78716c2eb327eb2c12cdb1700a4bf3"
 dependencies = [
  "aidoku_imports",
 ]
@@ -24,17 +25,17 @@ dependencies = [
 [[package]]
 name = "aidoku_imports"
 version = "0.2.0"
-source = "git+https://github.com/beerpiss/aidoku-rs?branch=qol-improvements#d79c002472e543bd166b08db31d39f02f6157e70"
+source = "git+https://github.com/Aidoku/aidoku-rs/#5a68a5507a78716c2eb327eb2c12cdb1700a4bf3"
 
 [[package]]
 name = "aidoku_macros"
 version = "0.1.0"
-source = "git+https://github.com/beerpiss/aidoku-rs?branch=qol-improvements#d79c002472e543bd166b08db31d39f02f6157e70"
+source = "git+https://github.com/Aidoku/aidoku-rs/#5a68a5507a78716c2eb327eb2c12cdb1700a4bf3"
 
 [[package]]
 name = "aidoku_proc_macros"
 version = "0.2.0"
-source = "git+https://github.com/beerpiss/aidoku-rs?branch=qol-improvements#d79c002472e543bd166b08db31d39f02f6157e70"
+source = "git+https://github.com/Aidoku/aidoku-rs/#5a68a5507a78716c2eb327eb2c12cdb1700a4bf3"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -70,21 +71,23 @@ name = "gekkouhentai"
 version = "0.1.0"
 dependencies = [
  "aidoku",
+ "itoa",
  "lazy_static",
  "mmrcms_template",
 ]
 
 [[package]]
 name = "itoa"
-version = "1.0.2"
+version = "1.0.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "112c678d4050afce233f4f2852bb2eb519230b3cf12f33585275537d7e41578d"
+checksum = "6c8af84674fe1f223a982c933a0ee1086ac4d4052aa0fb8060c12c6ad838e754"
 
 [[package]]
 name = "komikid"
 version = "0.1.0"
 dependencies = [
  "aidoku",
+ "itoa",
  "lazy_static",
  "mmrcms_template",
 ]
@@ -100,15 +103,16 @@ dependencies = [
 
 [[package]]
 name = "libc"
-version = "0.2.126"
+version = "0.2.127"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "349d5a591cd28b49e1d1037471617a32ddcda5731b99419008085f72d5a53836"
+checksum = "505e71a4706fa491e9b1b55f51b95d4037d0821ee40131190475f692b35b009b"
 
 [[package]]
 name = "mangadoor"
 version = "0.1.0"
 dependencies = [
  "aidoku",
+ "itoa",
  "lazy_static",
  "mmrcms_template",
 ]
@@ -127,6 +131,7 @@ name = "mangaid"
 version = "0.1.0"
 dependencies = [
  "aidoku",
+ "itoa",
  "lazy_static",
  "mmrcms_template",
 ]
@@ -169,7 +174,6 @@ name = "mmrcms_template"
 version = "0.1.0"
 dependencies = [
  "aidoku",
- "aidoku_helpers",
  "itoa",
 ]
 
@@ -187,24 +191,25 @@ name = "phoenixscans"
 version = "0.1.0"
 dependencies = [
  "aidoku",
+ "itoa",
  "lazy_static",
  "mmrcms_template",
 ]
 
 [[package]]
 name = "proc-macro2"
-version = "1.0.42"
+version = "1.0.43"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c278e965f1d8cf32d6e0e96de3d3e79712178ae67986d9cf9151f51e95aac89b"
+checksum = "0a2ca2c61bc9f3d74d2886294ab7b9853abd9c1ad903a3ac7815c58989bb7bab"
 dependencies = [
  "unicode-ident",
 ]
 
 [[package]]
 name = "quote"
-version = "1.0.20"
+version = "1.0.21"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3bcdf212e9776fbcb2d23ab029360416bb1706b1aea2d1a5ba002727cbcab804"
+checksum = "bbe448f377a7d6961e30f5955f9b8d106c3f5e449d493ee1b125c1d43c2b5179"
 dependencies = [
  "proc-macro2",
 ]
@@ -226,9 +231,9 @@ checksum = "6e63cff320ae2c57904679ba7cb63280a3dc4613885beafb148ee7bf9aa9042d"
 
 [[package]]
 name = "syn"
-version = "1.0.98"
+version = "1.0.99"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c50aef8a904de4c23c788f104b7dddc7d6f79c647c7c8ce4cc8f73eb0ca773dd"
+checksum = "58dbef6ec655055e20b86b15a8cc6d439cca19b667537ac6a1369572d151ab13"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -237,15 +242,16 @@ dependencies = [
 
 [[package]]
 name = "unicode-ident"
-version = "1.0.2"
+version = "1.0.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "15c61ba63f9235225a22310255a29b806b907c9b8c964bcbd0a2c70f3f2deea7"
+checksum = "c4f5b37a154999a8f3f98cc23a628d850e154479cd94decf3414696e12e31aaf"
 
 [[package]]
 name = "utsukushii"
 version = "0.1.0"
 dependencies = [
  "aidoku",
+ "itoa",
  "lazy_static",
  "mmrcms_template",
 ]

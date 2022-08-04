@@ -9,6 +9,3 @@ panic = "abort"
 opt-level = "s"
 strip = true
 lto = true
-
-[patch."https://github.com/Aidoku/aidoku-rs/"]
-aidoku = { git = "https://github.com/beerpiss/aidoku-rs", branch = "qol-improvements" } 

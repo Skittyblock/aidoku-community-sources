@@ -11,9 +11,9 @@ mmrcms! {
 		category_mapper: |idx| {
 			match idx {
 				0 => String::new(),
-				1..=21 => format!("{}", idx + 32),
-				22..=30 => format!("{}", idx + 34),
-				31..=32 => format!("{}", idx + 35),
+				1..=21 => String::from(itoa::Buffer::new().format(idx + 32)),
+				22..=30 => String::from(itoa::Buffer::new().format(idx + 34)),
+				31..=32 => String::from(itoa::Buffer::new().format(idx + 35)),
 				_ => String::new(),
 			}
 		},

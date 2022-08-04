@@ -10,3 +10,4 @@ crate-type = ["cdylib"]
 aidoku = { git = "https://github.com/Aidoku/aidoku-rs" }
 mmrcms_template = { path = "../../template" }
 lazy_static = { version = "1.4.0", features = ["spin_no_std"] }
+itoa = "1.0.2"
