@@ -74,9 +74,8 @@ fn get_manga_details(id: String) -> Result<Manga> {
 				"التصنيفات" => {
 					node.select("a")
 						.array()
-						.for_each(|elem| match elem.as_node() {
-							Ok(node) => manga.categories.push(node.text().read()),
-							Err(_) => {}
+						.for_each(|elem| if let Ok(node) = elem.as_node() {
+							manga.categories.push(node.text().read());
 						})
 				}
 				_ => continue,
