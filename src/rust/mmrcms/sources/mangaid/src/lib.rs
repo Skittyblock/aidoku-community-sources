@@ -47,7 +47,7 @@ fn get_page_list(manga_id: String, id: String) -> Result<Vec<Page>> {
 	} else {
 		String::from("?cdn=off")
 	};
-	INSTANCE.get_page_list(manga_id, [id.as_str(), cdn.as_str()].concat())
+	INSTANCE.get_page_list(manga_id, format!("{id}{cdn}"))
 }
 
 #[handle_url]
