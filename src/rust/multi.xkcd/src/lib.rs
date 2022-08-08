@@ -12,29 +12,38 @@ use alloc::vec;
 
 #[get_manga_list]
 fn get_manga_list(_: Vec<Filter>, _: i32) -> Result<MangaPageResult> {
-	let mut manga: Vec<Manga> = Vec::with_capacity(6);
-	if let Ok(languages) = defaults_get("languages").as_array() {
-		for lang in languages {
-			manga.push(match lang.as_string()?.read().as_str() {
-				"en" => languages::en::comic_info(),
-				"es" => languages::es::comic_info(),
-				"fr" => languages::fr::comic_info(),
-				"ko" => languages::ko::comic_info(),
-				"ru" => languages::ru::comic_info(),
-				"zh" => languages::zh::comic_info(),
-				_ => continue,
-			})
-		}
-	} else {
-		manga = vec![
-			languages::en::comic_info(),
-			languages::es::comic_info(),
-			languages::fr::comic_info(),
-			languages::ko::comic_info(),
-			languages::ru::comic_info(),
-			languages::zh::comic_info(),
-		];
-	}
+	let manga = defaults_get("languages")
+		.and_then(|v| v.as_array())
+		.map(|languages| {
+			languages
+				.filter_map(|lang| {
+					match lang
+						.as_string()
+						.map(|v| v.read())
+						.unwrap_or_default()
+						.as_str()
+					{
+						"en" => Some(languages::en::comic_info()),
+						"es" => Some(languages::es::comic_info()),
+						"fr" => Some(languages::fr::comic_info()),
+						"ko" => Some(languages::ko::comic_info()),
+						"ru" => Some(languages::ru::comic_info()),
+						"zh" => Some(languages::zh::comic_info()),
+						_ => None,
+					}
+				})
+				.collect::<Vec<_>>()
+		})
+		.unwrap_or_else(|_| {
+			vec![
+				languages::en::comic_info(),
+				languages::es::comic_info(),
+				languages::fr::comic_info(),
+				languages::ko::comic_info(),
+				languages::ru::comic_info(),
+				languages::zh::comic_info(),
+			]
+		});
 
 	Ok(MangaPageResult {
 		manga,

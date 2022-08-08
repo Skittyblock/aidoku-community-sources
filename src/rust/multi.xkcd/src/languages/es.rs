@@ -26,39 +26,43 @@ pub fn comic_info() -> Manga {
 }
 
 pub fn get_chapter_list() -> Result<Vec<Chapter>> {
-	let html = Request::new("https://es.xkcd.com/archive", HttpMethod::Get).html();
+	let html = Request::new("https://es.xkcd.com/archive", HttpMethod::Get).html()?;
 	let count = html.select("#archive-ul > ul > li > a").array().len();
 	Ok(html
 		.select("#archive-ul > ul > li > a")
 		.array()
 		.enumerate()
-		.map(|(idx, elem)| {
-			let node = elem.as_node();
-			let url = node.attr("abs:href").read();
-			let id = node
-				.attr("href")
-				.read()
-				.split('/')
-				.filter_map(|val| {
-					if val.is_empty() {
-						None
-					} else {
-						Some(String::from(val))
+		.filter_map(|(idx, elem)| {
+			elem.as_node()
+				.map(|node| {
+					let url = node.attr("abs:href").read();
+					let id = node
+						.attr("href")
+						.read()
+						.split('/')
+						.filter_map(|val| {
+							if val.is_empty() {
+								None
+							} else {
+								Some(String::from(val))
+							}
+						})
+						.last()
+						.unwrap_or_default();
+					Chapter {
+						id,
+						title: node.text().read(),
+						volume: -1.0,
+						chapter: (count as f32) - (idx as f32), /* Doesn't match the original,
+						                                         * but what
+						                                         * can I do /shrug */
+						date_updated: -1.0,
+						scanlator: String::new(),
+						url,
+						lang: String::from("es"),
 					}
 				})
-				.last()
-				.unwrap_or_default();
-			Chapter {
-				id,
-				title: node.text().read(),
-				volume: -1.0,
-				chapter: (count as f32) - (idx as f32), /* Doesn't match the original, but what
-				                                         * can I do /shrug */
-				date_updated: -1.0,
-				scanlator: String::new(),
-				url,
-				lang: String::from("es"),
-			}
+				.ok()
 		})
 		.collect::<Vec<_>>())
 }

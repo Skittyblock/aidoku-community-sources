@@ -28,31 +28,34 @@ pub fn comic_info() -> Manga {
 }
 
 pub fn get_chapter_list() -> Result<Vec<Chapter>> {
-	let html = Request::new("https://xkcd.ru/img", HttpMethod::Get).html();
+	let html = Request::new("https://xkcd.ru/img", HttpMethod::Get).html()?;
 	Ok(html
 		.select(".main > a")
 		.array()
-		.map(|elem| {
-			let node = elem.as_node();
-			let url = node.attr("abs:href").read();
-			let chapter = extract_f32_from_string(node.attr("href").read())[0];
-			let title = node.select("img").attr("alt").read();
-			Chapter {
-				id: chapter.to_string(),
-				title,
-				volume: -1.0,
-				chapter,
-				date_updated: -1.0,
-				scanlator: String::new(),
-				url,
-				lang: String::from("ru"),
-			}
+		.filter_map(|elem| {
+			elem.as_node()
+				.map(|node| {
+					let url = node.attr("abs:href").read();
+					let chapter = extract_f32_from_string(node.attr("href").read())[0];
+					let title = node.select("img").attr("alt").read();
+					Chapter {
+						id: chapter.to_string(),
+						title,
+						volume: -1.0,
+						chapter,
+						date_updated: -1.0,
+						scanlator: String::new(),
+						url,
+						lang: String::from("ru"),
+					}
+				})
+				.ok()
 		})
 		.collect::<Vec<_>>())
 }
 
 pub fn get_page_list(id: String) -> Result<Vec<Page>> {
-	let html = Request::new(format!("https://xkcd.ru/{id}/"), HttpMethod::Get).html();
+	let html = Request::new(format!("https://xkcd.ru/{id}/"), HttpMethod::Get).html()?;
 	let image_url = html.select(".main img[alt]").attr("abs:src").read();
 	let title = html.select(".main img[alt]").attr("alt").read();
 	let alt = html.select(".main .comics_text").text().read();

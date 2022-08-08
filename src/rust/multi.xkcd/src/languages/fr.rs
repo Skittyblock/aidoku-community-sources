@@ -4,7 +4,7 @@ use aidoku::{
 	error::Result,
 	prelude::*,
 	std::{
-        html::Node,
+		html::Node,
 		net::{HttpMethod, Request},
 		String, Vec,
 	},
@@ -32,28 +32,31 @@ pub fn comic_info() -> Manga {
 
 pub fn get_chapter_list() -> Result<Vec<Chapter>> {
 	let data = Request::new("https://xkcd.lapin.org/tous-episodes.php", HttpMethod::Get).data();
-    let html = Node::new_with_uri(
-        String::from_utf8_lossy(&data).as_ref(),
-        "https://xkcd.lapin.org/tous-episodes.php",
-    );
+	let html = Node::new_with_uri(
+		String::from_utf8_lossy(&data).as_ref(),
+		"https://xkcd.lapin.org/tous-episodes.php",
+	)?;
 	Ok(html
 		.select("#content a:not(:last-of-type)")
 		.array()
-        .rev()
-		.map(|elem| {
-			let node = elem.as_node();
-			let url = node.attr("abs:href").read();
-			let chapter = String::from(&url[url.find('=').unwrap_or(0) + 1..]);
-			Chapter {
-				id: chapter.clone(),
-				title: node.text().read(),
-				volume: -1.0,
-				chapter: extract_f32_from_string(chapter)[0],
-				date_updated: -1.0,
-				scanlator: String::new(),
-				url,
-				lang: String::from("fr"),
-			}
+		.rev()
+		.filter_map(|elem| {
+			elem.as_node()
+				.map(|node| {
+					let url = node.attr("abs:href").read();
+					let chapter = String::from(&url[url.find('=').unwrap_or(0) + 1..]);
+					Chapter {
+						id: chapter.clone(),
+						title: node.text().read(),
+						volume: -1.0,
+						chapter: extract_f32_from_string(chapter)[0],
+						date_updated: -1.0,
+						scanlator: String::new(),
+						url,
+						lang: String::from("fr"),
+					}
+				})
+				.ok()
 		})
 		.collect::<Vec<_>>())
 }
@@ -64,13 +67,19 @@ pub fn get_page_list(id: String) -> Result<Vec<Page>> {
 		HttpMethod::Get,
 	)
 	.data();
-    let html = Node::new_with_uri(
-        String::from_utf8_lossy(&data).as_ref(),
-        format!("https://xkcd.lapin.org/index.php?number={id}"),
-    );
-	let title = html.select("#col1 h2").array().get(0).as_node().text().read();
+	let html = Node::new_with_uri(
+		String::from_utf8_lossy(&data).as_ref(),
+		format!("https://xkcd.lapin.org/index.php?number={id}"),
+	)?;
+	let title = html
+		.select("#col1 h2")
+		.array()
+		.get(0)
+		.as_node()
+		.map(|v| v.text().read())
+		.unwrap_or_default();
 
-    let image_node = html.select("#col1 img[title]");
+	let image_node = html.select("#col1 img[title]");
 	let image_url = image_node.attr("abs:src").read();
 	let alt = image_node.attr("alt").read();
 	Ok(vec![

@@ -1,14 +1,14 @@
-use crate::helper::urlencode;
 use aidoku::{
 	error::Result,
 	prelude::format,
+	helpers::uri::encode_uri_component,
 	std::{
 		net::{HttpMethod, Request},
 		String, Vec,
 	},
 	Page,
 };
-use alloc::{string::ToString, vec};
+use alloc::{borrow::ToOwned, vec};
 
 pub mod en;
 pub mod es;
@@ -34,7 +34,7 @@ where
 	S: AsRef<str>,
 {
 	fn to_image_url(&self, variant: ImageVariant) -> String {
-		let text = urlencode(self.as_ref().to_string());
+		let text = encode_uri_component(self.as_ref());
 		match variant {
             ImageVariant::Latin => format!("https://fakeimg.pl/1500x2126/ffffff/000000/?font=noto&font_size=42&text={text}"),
             ImageVariant::Cjk => format!("https://placehold.jp/42/ffffff/000000/1500x2126.png?css=%7B%22padding%22%3A%22300px%22%2C%22text-align%22%3A%22left%22%7D&text={text}"),
@@ -76,7 +76,7 @@ fn get_page_list<T: AsRef<str>>(
 	open_in_browser_message: T,
 	variant: ImageVariant,
 ) -> Result<Vec<Page>> {
-	let html = Request::new(url, HttpMethod::Get).html();
+	let html = Request::new(url, HttpMethod::Get).html()?;
 	let node = html.select(selector);
 	if (!interactive_if_empty && node.first().next().is_some())
 		|| (interactive_if_empty && node.array().is_empty())
@@ -89,8 +89,7 @@ fn get_page_list<T: AsRef<str>>(
 	} else {
 		let url = if node.has_attr("srcset") {
 			let raw = node.attr("abs:srcset").read();
-			let end = raw.find(' ').unwrap_or(raw.len());
-			String::from(&raw[..end])
+			raw.split(' ').next().map(|v| v.to_owned()).unwrap_or(raw)
 		} else {
 			node.attr("abs:src").read()
 		};

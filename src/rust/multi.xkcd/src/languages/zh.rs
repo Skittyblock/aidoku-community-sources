@@ -28,7 +28,7 @@ pub fn comic_info() -> Manga {
 
 pub fn get_chapter_list() -> Result<Vec<Chapter>> {
 	let json = Request::new("https://xkcd.tw/api/strips.json", HttpMethod::Get)
-		.json()
+		.json()?
 		.as_object()?;
 	Ok(json
 		.values()

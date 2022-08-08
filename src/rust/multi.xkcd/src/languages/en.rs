@@ -28,29 +28,32 @@ pub fn comic_info() -> Manga {
 }
 
 pub fn get_chapter_list() -> Result<Vec<Chapter>> {
-	let html = Request::new("https://xkcd.com/archive", HttpMethod::Get).html();
+	let html = Request::new("https://xkcd.com/archive", HttpMethod::Get).html()?;
 	Ok(html
 		.select("#middleContainer > a")
 		.array()
-		.map(|elem| {
-			let node = elem.as_node();
-			let url = node.attr("abs:href").read();
-			let date_updated = node
-				.attr("title")
-				.0
-				.as_date("yyyy-M-d", None, None)
-				.unwrap_or(-1.0);
-			let chapter = extract_f32_from_string(node.attr("href").read())[0];
-			Chapter {
-				id: chapter.to_string(),
-				title: node.text().read(),
-				volume: -1.0,
-				chapter,
-				date_updated,
-				scanlator: String::new(),
-				url,
-				lang: String::from("en"),
-			}
+		.filter_map(|elem| {
+			elem.as_node()
+				.map(|node| {
+					let url = node.attr("abs:href").read();
+					let date_updated = node
+						.attr("title")
+						.0
+						.as_date("yyyy-M-d", None, None)
+						.unwrap_or(-1.0);
+					let chapter = extract_f32_from_string(node.attr("href").read())[0];
+					Chapter {
+						id: chapter.to_string(),
+						title: node.text().read(),
+						volume: -1.0,
+						chapter,
+						date_updated,
+						scanlator: String::new(),
+						url,
+						lang: String::from("en"),
+					}
+				})
+				.ok()
 		})
 		.collect::<Vec<_>>())
 }
