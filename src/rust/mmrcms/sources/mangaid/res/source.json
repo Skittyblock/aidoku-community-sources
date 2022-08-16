@@ -1,0 +1,10 @@
+{
+	"info": {
+		"id": "id.mangaid",
+		"lang": "id",
+		"name": "MangaID",
+		"version": 1,
+		"url": "https://mangaid.click",
+		"nsfw": 1
+	}
+}
