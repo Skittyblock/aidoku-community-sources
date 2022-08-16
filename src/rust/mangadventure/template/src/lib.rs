@@ -230,7 +230,7 @@ impl MangAdventure {
 			let obj = result.as_object().unwrap();
 			let mut url = get_value!(obj, url, as_string).read();
 			url.insert_str(0, self.base_url);
-			let title = get_value!(obj, full_title, as_string).read();
+			let title = get_value!(obj, title, as_string).read();
 			let chapter = get_value!(obj, number, as_float) as f32;
 			let volume = get_value!(obj, volume, as_int, -1) as f32;
 			let scanlator = get_array_as_vec!(obj, groups).join(", ");
