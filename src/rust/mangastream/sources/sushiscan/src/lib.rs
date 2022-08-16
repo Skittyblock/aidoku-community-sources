@@ -10,7 +10,6 @@ fn get_instance() -> MangaStreamSource {
 	MangaStreamSource {
 		base_url: String::from("https://sushiscan.su"),
 		listing: ["Dernières", "Populaire", "Nouveau"],
-		alt_pages: true,
 		..Default::default()
 	}
 }
