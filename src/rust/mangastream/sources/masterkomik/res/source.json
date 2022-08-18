@@ -4,6 +4,7 @@
 		"lang": "id",
 		"name": "MasterKomik",
 		"version": 1,
+		"nfsw": 1,
 		"url": "https://masterkomik.com/"
 	},
 	"listings": [
