@@ -88,7 +88,23 @@ dependencies = [
 ]
 
 [[package]]
+name = "kanzenin"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "mangastream_template",
+]
+
+[[package]]
 name = "kiryuu"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "mangastream_template",
+]
+
+[[package]]
+name = "komikucom"
 version = "0.1.0"
 dependencies = [
  "aidoku",
@@ -149,6 +165,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "mangkomik"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "mangastream_template",
+]
+
+[[package]]
 name = "manhwafreak"
 version = "0.1.0"
 dependencies = [
@@ -165,7 +189,23 @@ dependencies = [
 ]
 
 [[package]]
+name = "manhwaland"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "mangastream_template",
+]
+
+[[package]]
 name = "manhwax"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "mangastream_template",
+]
+
+[[package]]
+name = "masterkomik"
 version = "0.1.0"
 dependencies = [
  "aidoku",
@@ -271,6 +311,14 @@ dependencies = [
  "libc",
  "memory_units",
  "winapi",
+]
+
+[[package]]
+name = "westmanga"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "mangastream_template",
 ]
 
 [[package]]
