@@ -220,7 +220,7 @@ impl MangAdventure {
 
 	pub fn get_chapter_list(&self, id: String) -> Result<Vec<Chapter>> {
 		let json = json_request(format!(
-			"{}/api/v2/chapters?series={}&date_format=timestamp",
+			"{}/api/v2/series/{}/chapters?date_format=timestamp",
 			self.base_url, id
 		));
 		let results = get_value!(json, results, as_array);
@@ -247,12 +247,7 @@ impl MangAdventure {
 				scanlator,
 				date_updated,
 				lang: String::from(self.language),
-				id: format!(
-					"series={}&volume={}&number={}",
-					id,
-					volume.max(0.0) as i32,
-					chapter
-				),
+				id: format!("{}", get_value!(obj, id, as_int)),
 			});
 		}
 
@@ -260,7 +255,10 @@ impl MangAdventure {
 	}
 
 	pub fn get_page_list(&self, id: String) -> Result<Vec<Page>> {
-		let json = json_request(format!("{}/api/v2/pages?{}&track=true", self.base_url, id));
+		let json = json_request(format!(
+			"{}/api/v2/chapters/{}/pages?track=true",
+			self.base_url, id
+		));
 		let results = get_value!(json, results, as_array);
 		let mut pages = vec_from_array::<Page>(&results);
 
