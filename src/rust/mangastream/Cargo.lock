@@ -104,6 +104,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "komikcast"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "mangastream_template",
+]
+
+[[package]]
 name = "komikucom"
 version = "0.1.0"
 dependencies = [
