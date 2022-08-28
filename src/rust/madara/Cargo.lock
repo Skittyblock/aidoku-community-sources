@@ -133,6 +133,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "reaperscansid"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "madara_template",
+]
+
+[[package]]
 name = "resetscans"
 version = "0.1.0"
 dependencies = [
