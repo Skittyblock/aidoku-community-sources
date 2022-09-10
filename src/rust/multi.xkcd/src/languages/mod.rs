@@ -37,7 +37,7 @@ where
 		let text = encode_uri_component(self.as_ref());
 		match variant {
             ImageVariant::Latin => format!("https://fakeimg.pl/1500x2126/ffffff/000000/?font=noto&font_size=42&text={text}"),
-            ImageVariant::Cjk => format!("https://placehold.jp/42/ffffff/000000/1500x2126.png?css=%7B%22padding%22%3A%22300px%22%2C%22text-align%22%3A%22left%22%7D&text={text}"),
+            ImageVariant::Cjk => format!("https://placehold.jp/42/ffffff/000000/1500x2126.png?css=%7B%22padding%22%3A%22%200%20300px%22%2C%22text-align%22%3A%22left%22%7D&text={text}"),
         }
 	}
 }
