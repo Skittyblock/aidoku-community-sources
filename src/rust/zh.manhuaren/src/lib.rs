@@ -99,9 +99,7 @@ fn get_manga_details(id: String) -> Result<Manga> {
 	print("url:");
 	print(&url);
 
-	let req = Request::new(url, HttpMethod::Get);
-
-	let body = req.string()?;
+	let body = helper::request(url, HttpMethod::Get)?;
 	// print(&body);
 
 	let json = json::parse(body)?.as_object()?;
@@ -173,9 +171,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 	print("url:");
 	print(&url);
 
-	let req = Request::new(url, HttpMethod::Get);
-
-	let body = req.string()?;
+	let body = helper::request(url, HttpMethod::Get)?;
 	// print(&body);
 
 	let json = json::parse(body)?.as_object()?;
@@ -213,9 +209,7 @@ fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 	print("url:");
 	print(&url);
 
-	let req = Request::new(url, HttpMethod::Get);
-
-	let body = req.string()?;
+	let body = helper::request(url, HttpMethod::Get)?;
 	// print(&body);
 
 	let json = json::parse(body)?.as_object()?;
@@ -257,9 +251,7 @@ fn get_manga_list_by_filter(filter: ListFilter, page: i32) -> Result<MangaPageRe
 	print("url:");
 	print(&url);
 
-	let req = Request::new(url, HttpMethod::Get);
-
-	let body = req.string()?;
+	let body = helper::request(url, HttpMethod::Get)?;
 	// print(&body);
 
 	let json = json::parse(body)?.as_object()?;
@@ -334,9 +326,7 @@ fn get_manga_list_by_query(query: String, page: i32) -> Result<MangaPageResult> 
 	print("url:");
 	print(&url);
 
-	let req = Request::new(url, HttpMethod::Get);
-
-	let body = req.string()?;
+	let body = helper::request(url, HttpMethod::Get)?;
 	// print(&body);
 
 	let json = json::parse(body)?.as_object()?;

@@ -1,6 +1,11 @@
 use aidoku::{
+	error::Result,
 	std::String,
-	std::{format, print, Vec},
+	std::{
+		format,
+		net::{HttpMethod, Request},
+		print, Vec,
+	},
 };
 use md5::{Digest, Md5};
 
@@ -142,4 +147,9 @@ pub fn generate_get_query(args: &mut Vec<(String, String)>) -> String {
 	}
 
 	return qs;
+}
+
+pub fn request<T: AsRef<str>>(url: T, method: HttpMethod) -> Result<String> {
+	let req = Request::new(url, method).header("X-Yq-Yqci", "{\"le\": \"zh\"}");
+	return req.string();
 }
