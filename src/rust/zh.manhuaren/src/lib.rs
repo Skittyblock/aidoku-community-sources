@@ -192,6 +192,10 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 
 #[get_page_list]
 fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
+	print("get_page_list:");
+	print(&manga_id);
+	print(&chapter_id);
+
 	let mut args: Vec<(String, String)> = Vec::new();
 
 	args.push((String::from("mangaId"), manga_id));
@@ -446,11 +450,7 @@ fn parse_chapters(manga: &ObjectRef, key: &str) -> Vec<Chapter> {
 				}
 
 				chapter_arr.push(Chapter {
-					id: ch_obj
-						.get("sectionId")
-						.as_string()
-						.unwrap_or(StringRef::from("-"))
-						.read(),
+					id: helper::i32_to_string(ch_obj.get("sectionId").as_int().unwrap_or(0) as i32),
 					title,
 					volume: -1.0,
 					chapter: ch_obj.get("sectionSort").as_float().unwrap_or(0.0) as f32,
@@ -498,7 +498,7 @@ fn parse_page(chapter: &ObjectRef) -> Vec<Page> {
 				url.push_str(&p_str);
 				url.push_str(&query);
 
-				print(&url);
+				// print(&url);
 
 				page_arr.push(Page {
 					index: (i + 1) as i32,
