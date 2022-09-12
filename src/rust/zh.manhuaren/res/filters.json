@@ -5,7 +5,7 @@
   {
     "type": "select",
     "name": "连载状态",
-    "options": ["全部", "已完结", "连载中"]
+    "options": ["全部", "连载", "完结"]
   },
   {
     "type": "select",
@@ -47,7 +47,7 @@
     "type": "sort",
     "name": "排序",
     "canAscend": false,
-    "options": ["最热门", "最近更新", "最新上架"],
+    "options": ["热门", "更新", "新作"],
     "default": {
       "index": 0,
       "ascending": false

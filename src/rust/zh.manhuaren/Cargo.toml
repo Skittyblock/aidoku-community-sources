@@ -17,3 +17,4 @@ lto = true
 
 [dependencies]
 aidoku = { git = "https://github.com/Aidoku/aidoku-rs" }
+md-5 = { version = "0.10.4", default-features = false }

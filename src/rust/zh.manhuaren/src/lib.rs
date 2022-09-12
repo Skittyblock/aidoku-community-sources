@@ -1,6 +1,6 @@
 #![no_std]
 use aidoku::{
-	error::Result,
+	error::{AidokuErrorKind, Result},
 	prelude::*,
 	std::{format, print, ObjectRef, String, StringRef, ValueRef, Vec},
 	std::{
@@ -16,8 +16,10 @@ const FILTER_GENRE: [i32; 30] = [
 	0, 31, 26, 1, 3, 27, 5, 2, 6, 8, 9, 25, 10, 11, 12, 17, 33, 37, 14, 15, 29, 20, 21, 4, 7, 30,
 	34, 36, 40, 61,
 ];
-const FILTER_STATUS: [i32; 3] = [0, 2, 1];
-const FILTER_SORT: [i32; 3] = [10, 2, 18];
+const FILTER_STATUS: [i32; 3] = [0, 1, 2];
+const FILTER_SORT: [i32; 3] = [0, 1, 2];
+
+const API_URL: &str = "http://mangaapi.manhuaren.com";
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
@@ -83,8 +85,23 @@ fn get_manga_listing(_: Listing, _: i32) -> Result<MangaPageResult> {
 }
 
 #[get_manga_details]
-fn get_manga_details(_: String) -> Result<Manga> {
-	todo!()
+fn get_manga_details(id: String) -> Result<Manga> {
+	print("get_manga_details");
+	print(id);
+
+	return Ok(Manga {
+		id: String::from(""),
+		cover: String::from(""),
+		title: String::from(""),
+		author: String::from(""),
+		artist: String::from(""),
+		description: String::from(""),
+		url: String::from(""),
+		categories: Vec::new(),
+		status: MangaStatus::Ongoing,
+		nsfw: MangaContentRating::Safe,
+		viewer: MangaViewer::Vertical,
+	});
 }
 
 #[get_chapter_list]
@@ -106,62 +123,73 @@ fn handle_url(_: String) -> Result<DeepLink> {
 }
 
 fn get_manga_list_by_filter(filter: ListFilter, page: i32) -> Result<MangaPageResult> {
-	const BASE_URL: &str = "https://www.manhuaren.com/manhua-list/dm5.ashx";
+	let mut args: Vec<(String, String)> = Vec::new();
 
-	let body_content = format!("action=getclasscomics&pageindex={}&pagesize=20&categoryid=0&tagid={}&status={}&usergroup=0&pay=-1&areaid=0&sort={}&iscopyright=0", page, filter.genre, filter.status, filter.sort);
+	args.push((String::from("subCategoryType"), String::from("0")));
+	args.push((
+		String::from("subCategoryId"),
+		helper::i32_to_string(filter.genre),
+	));
+	args.push((
+		String::from("start"),
+		helper::i32_to_string((page - 1) * 20),
+	));
+	args.push((String::from("limit"), String::from("20")));
+	args.push((String::from("sort"), helper::i32_to_string(filter.sort)));
+	args.push((String::from("status"), helper::i32_to_string(filter.status)));
 
-	print(&body_content);
+	let qs = helper::generate_get_query(&mut args);
 
-	let req = Request::new(BASE_URL, HttpMethod::Post)
-		.body(body_content.as_bytes())
-		.header("Content-Type", "application/x-www-form-urlencoded");
+	print("qs:");
+	print(&qs);
+
+	let url = String::from(API_URL) + "/v2/manga/getCategoryMangas?" + &qs;
+	print("url:");
+	print(&url);
+
+	let req = Request::new(url, HttpMethod::Get);
 
 	let body = req.string()?;
 	// print(&body);
 
 	let json = json::parse(body)?.as_object()?;
-	let result = json.get("UpdateComicItems").as_array()?;
-	let item_count = result.len();
+	let response = json.get("response").as_object()?;
+	let mangas = response.get("mangas").as_array()?;
+	let item_count = mangas.len();
 
 	print(format(format_args!("items: {}", item_count)));
 
 	let mut manga_arr: Vec<Manga> = Vec::new();
 
-	for manga in result {
+	for manga in mangas {
 		let manga_obj = manga.as_object()?;
-		let mut author_vec: Vec<String> = Vec::new();
-		let author_arr = manga_obj.get("Author").as_array()?;
-		for a in author_arr {
-			let s = a.as_string().unwrap_or(StringRef::from("-")).read();
-			author_vec.push(s);
-		}
 
 		manga_arr.push(Manga {
-			id: manga_obj
-				.get("ID")
-				.as_string()
-				.unwrap_or(StringRef::from("-"))
-				.read(),
+			id: helper::i32_to_string(manga_obj.get("mangaId").as_int().unwrap_or(0) as i32),
 			cover: manga_obj
-				.get("ShowPicUrlB")
+				.get("mangaPicimageUrl")
 				.as_string()
 				.unwrap_or(StringRef::from("-"))
 				.read(),
 			title: manga_obj
-				.get("Title")
+				.get("mangaName")
 				.as_string()
 				.unwrap_or(StringRef::from("-"))
 				.read(),
-			author: author_vec.join(", "),
-			artist: author_vec.join(", "),
-			description: manga_obj
-				.get("Content")
+			author: manga_obj
+				.get("mangaAuthor")
 				.as_string()
 				.unwrap_or(StringRef::from("-"))
 				.read(),
+			artist: manga_obj
+				.get("mangaAuthor")
+				.as_string()
+				.unwrap_or(StringRef::from("-"))
+				.read(),
+			description: String::from(""),
 			url: String::from(""),
 			categories: Vec::new(),
-			status: match manga_obj.get("Status").as_int().unwrap_or(-1) {
+			status: match manga_obj.get("mangaIsOver").as_int().unwrap_or(-1) {
 				0 => MangaStatus::Ongoing,
 				1 => MangaStatus::Completed,
 				_ => MangaStatus::Unknown,
@@ -178,74 +206,69 @@ fn get_manga_list_by_filter(filter: ListFilter, page: i32) -> Result<MangaPageRe
 }
 
 fn get_manga_list_by_query(query: String, page: i32) -> Result<MangaPageResult> {
-	const BASE_URL: &str = "https://www.manhuaren.com/pagerdata.ashx";
+	let mut args: Vec<(String, String)> = Vec::new();
 
-	let body_content = format!(
-		"t=7&pageindex={}&pagesize=20&f=0&title={}",
-		page,
-		helper::urlencode(query)
-	);
+	args.push((String::from("keywords"), query));
+	args.push((
+		String::from("start"),
+		helper::i32_to_string((page - 1) * 20),
+	));
+	args.push((String::from("limit"), String::from("20")));
 
-	print(&body_content);
+	let qs = helper::generate_get_query(&mut args);
 
-	let req = Request::new(BASE_URL, HttpMethod::Post)
-		.body(body_content.as_bytes())
-		.header("Content-Type", "application/x-www-form-urlencoded")
-		.header("Referer", "https://www.manhuaren.com/manhua-list/");
+	print("qs:");
+	print(&qs);
+
+	let url = String::from(API_URL) + "/v1/search/getSearchManga?" + &qs;
+	print("url:");
+	print(&url);
+
+	let req = Request::new(url, HttpMethod::Get);
 
 	let body = req.string()?;
 	// print(&body);
 
-	let result = json::parse(body)?.as_array()?;
-	let item_count = result.len();
+	let json = json::parse(body)?.as_object()?;
+	let response = json.get("response").as_object()?;
+	let mangas = response.get("result").as_array()?;
+	let item_count = mangas.len();
 
 	print(format(format_args!("items: {}", item_count)));
 
 	let mut manga_arr: Vec<Manga> = Vec::new();
 
-	for manga in result {
+	for manga in mangas {
 		let manga_obj = manga.as_object()?;
-		let mut author_vec: Vec<String> = Vec::new();
-		let author_arr = manga_obj.get("Author").as_array()?;
-		for a in author_arr {
-			let s = a.as_string().unwrap_or(StringRef::from("-")).read();
-			author_vec.push(s);
-		}
 
 		manga_arr.push(Manga {
-			id: manga_obj
-				.get("Id")
-				.as_string()
-				.unwrap_or(StringRef::from("-"))
-				.read(),
+			id: helper::i32_to_string(manga_obj.get("mangaId").as_int().unwrap_or(0) as i32),
 			cover: manga_obj
-				.get("BigPic")
+				.get("mangaCoverimageUrl")
 				.as_string()
 				.unwrap_or(StringRef::from("-"))
 				.read(),
 			title: manga_obj
-				.get("Title")
+				.get("mangaName")
 				.as_string()
 				.unwrap_or(StringRef::from("-"))
 				.read(),
-			author: author_vec.join(", "),
-			artist: author_vec.join(", "),
-			description: manga_obj
-				.get("Content")
+			author: manga_obj
+				.get("mangaAuthor")
 				.as_string()
 				.unwrap_or(StringRef::from("-"))
 				.read(),
+			artist: manga_obj
+				.get("mangaAuthor")
+				.as_string()
+				.unwrap_or(StringRef::from("-"))
+				.read(),
+			description: String::from(""),
 			url: String::from(""),
 			categories: Vec::new(),
-			status: match manga_obj
-				.get("Status")
-				.as_string()
-				.unwrap_or(StringRef::from(""))
-				.read()
-				.as_str()
-			{
-				"连载中" => MangaStatus::Ongoing,
-				"已完结" => MangaStatus::Completed,
+			status: match manga_obj.get("mangaIsOver").as_int().unwrap_or(-1) {
+				0 => MangaStatus::Ongoing,
+				1 => MangaStatus::Completed,
 				_ => MangaStatus::Unknown,
 			},
 			nsfw: MangaContentRating::Safe,
@@ -255,7 +278,7 @@ fn get_manga_list_by_query(query: String, page: i32) -> Result<MangaPageResult> 
 
 	return Ok(MangaPageResult {
 		manga: manga_arr,
-		has_more: false,
+		has_more: item_count > 0,
 	});
 }
 
