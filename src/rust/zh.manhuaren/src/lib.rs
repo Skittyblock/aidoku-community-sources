@@ -191,8 +191,33 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 }
 
 #[get_page_list]
-fn get_page_list(_: String, _: String) -> Result<Vec<Page>> {
-	todo!()
+fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
+	let mut args: Vec<(String, String)> = Vec::new();
+
+	args.push((String::from("mangaId"), manga_id));
+	args.push((String::from("mangaSectionId"), chapter_id));
+	args.push((String::from("netType"), String::from("3")));
+	args.push((String::from("loadreal"), String::from("1")));
+	args.push((String::from("imageQuality"), String::from("2")));
+
+	let qs = helper::generate_get_query(&mut args);
+
+	print("qs:");
+	print(&qs);
+
+	let url = String::from(API_URL) + "/v1/manga/getRead?" + &qs;
+	print("url:");
+	print(&url);
+
+	let req = Request::new(url, HttpMethod::Get);
+
+	let body = req.string()?;
+	// print(&body);
+
+	let json = json::parse(body)?.as_object()?;
+	let manga = json.get("response").as_object()?;
+
+	return Ok(parse_page(&manga));
 }
 
 #[modify_image_request]
@@ -444,6 +469,45 @@ fn parse_chapters(manga: &ObjectRef, key: &str) -> Vec<Chapter> {
 			}
 
 			return chapter_arr;
+		}
+		_ => Vec::new(),
+	}
+}
+
+fn parse_page(chapter: &ObjectRef) -> Vec<Page> {
+	match chapter.get("mangaSectionImages").as_array() {
+		Ok(pages) => {
+			let host_list = chapter.get("hostList").as_array().unwrap();
+			let host = host_list
+				.get(0)
+				.as_string()
+				.unwrap_or(StringRef::from(""))
+				.read();
+			let query = chapter
+				.get("query")
+				.as_string()
+				.unwrap_or(StringRef::from(""))
+				.read();
+
+			let mut page_arr: Vec<Page> = Vec::new();
+
+			for (i, p) in pages.enumerate() {
+				let p_str = p.as_string().unwrap_or(StringRef::from("")).read();
+
+				let mut url = String::from(helper::encode_uri(String::from(&host)));
+				url.push_str(&p_str);
+				url.push_str(&query);
+
+				print(&url);
+
+				page_arr.push(Page {
+					index: (i + 1) as i32,
+					url,
+					base64: String::from(""),
+					text: String::from(""),
+				});
+			}
+			return page_arr;
 		}
 		_ => Vec::new(),
 	}

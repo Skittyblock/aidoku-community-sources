@@ -4,7 +4,7 @@ use aidoku::{
 };
 use md5::{Digest, Md5};
 
-pub fn urlencode(string: String) -> String {
+pub fn encode_uri_component(string: String) -> String {
 	let mut result: Vec<u8> = Vec::with_capacity(string.len() * 3);
 	let hex = "0123456789ABCDEF".as_bytes();
 	let bytes = string.as_bytes();
@@ -14,6 +14,36 @@ pub fn urlencode(string: String) -> String {
 		if curr.is_ascii_alphanumeric() || curr == 45 || curr == 95 {
 			// 45: -
 			// 95: _
+			result.push(curr);
+		} else {
+			result.push(b'%');
+			result.push(hex[curr as usize >> 4]);
+			result.push(hex[curr as usize & 15]);
+		}
+	}
+
+	String::from_utf8(result).unwrap_or_default()
+}
+
+pub fn encode_uri(string: String) -> String {
+	let mut result: Vec<u8> = Vec::with_capacity(string.len() * 3);
+	let hex = "0123456789ABCDEF".as_bytes();
+	let bytes = string.as_bytes();
+
+	for byte in bytes {
+		let curr = *byte;
+		if curr.is_ascii_alphanumeric()
+			|| curr == 45
+			|| curr == 46
+			|| curr == 47
+			|| curr == 58
+			|| curr == 95
+		{
+			// 45: -
+			// 95: _
+			// 46: .
+			// 47: /
+			// 58: :
 			result.push(curr);
 		} else {
 			result.push(b'%');
@@ -80,7 +110,7 @@ pub fn generate_gsn_hash(args: &mut Vec<(String, String)>) -> String {
 
 	for a in args {
 		temp.push_str(&a.0);
-		temp.push_str(&urlencode(String::from(&a.1)));
+		temp.push_str(&encode_uri_component(String::from(&a.1)));
 	}
 
 	temp.push_str(GSN_KEY);
@@ -107,7 +137,7 @@ pub fn generate_get_query(args: &mut Vec<(String, String)>) -> String {
 			qs.push_str("&");
 		}
 
-		let v = urlencode(String::from(&a.1));
+		let v = encode_uri_component(String::from(&a.1));
 		qs.push_str(&format(format_args!("{}={}", a.0, v)));
 	}
 
