@@ -1,8 +1,8 @@
 #![no_std]
 use aidoku::{
-	error::{AidokuErrorKind, Result},
+	error::Result,
 	prelude::*,
-	std::{format, print, ObjectRef, String, StringRef, ValueRef, Vec},
+	std::{format, print, ObjectRef, String, StringRef, Vec},
 	std::{
 		json,
 		net::{HttpMethod, Request},
@@ -86,27 +86,108 @@ fn get_manga_listing(_: Listing, _: i32) -> Result<MangaPageResult> {
 
 #[get_manga_details]
 fn get_manga_details(id: String) -> Result<Manga> {
-	print("get_manga_details");
-	print(id);
+	let mut args: Vec<(String, String)> = Vec::new();
+
+	args.push((String::from("mangaId"), id));
+
+	let qs = helper::generate_get_query(&mut args);
+
+	print("qs:");
+	print(&qs);
+
+	let url = String::from(API_URL) + "/v1/manga/getDetail?" + &qs;
+	print("url:");
+	print(&url);
+
+	let req = Request::new(url, HttpMethod::Get);
+
+	let body = req.string()?;
+	// print(&body);
+
+	let json = json::parse(body)?.as_object()?;
+	let manga = json.get("response").as_object()?;
+
+	let category_str = manga
+		.get("mangaTheme")
+		.as_string()
+		.unwrap_or(StringRef::from(""))
+		.read();
+
+	let categories: Vec<&str> = category_str.split(" ").collect();
 
 	return Ok(Manga {
-		id: String::from(""),
-		cover: String::from(""),
-		title: String::from(""),
-		author: String::from(""),
-		artist: String::from(""),
-		description: String::from(""),
-		url: String::from(""),
-		categories: Vec::new(),
-		status: MangaStatus::Ongoing,
+		id: helper::i32_to_string(manga.get("mangaId").as_int().unwrap_or(0) as i32),
+		cover: manga
+			.get("mangaPicimageUrl")
+			.as_string()
+			.unwrap_or(StringRef::from("-"))
+			.read(),
+		title: manga
+			.get("mangaName")
+			.as_string()
+			.unwrap_or(StringRef::from("-"))
+			.read(),
+		author: manga
+			.get("mangaAuthor")
+			.as_string()
+			.unwrap_or(StringRef::from("-"))
+			.read(),
+		artist: manga
+			.get("mangaAuthor")
+			.as_string()
+			.unwrap_or(StringRef::from("-"))
+			.read(),
+		description: manga
+			.get("mangaIntro")
+			.as_string()
+			.unwrap_or(StringRef::from("-"))
+			.read(),
+		url: manga
+			.get("shareUrl")
+			.as_string()
+			.unwrap_or(StringRef::from("-"))
+			.read(),
+		categories: categories.iter().map(|c| String::from(*c)).collect(),
+		status: match manga.get("mangaIsOver").as_int().unwrap_or(-1) {
+			0 => MangaStatus::Ongoing,
+			1 => MangaStatus::Completed,
+			_ => MangaStatus::Unknown,
+		},
 		nsfw: MangaContentRating::Safe,
 		viewer: MangaViewer::Vertical,
 	});
 }
 
 #[get_chapter_list]
-fn get_chapter_list(_: String) -> Result<Vec<Chapter>> {
-	todo!()
+fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
+	let mut args: Vec<(String, String)> = Vec::new();
+
+	args.push((String::from("mangaId"), id));
+
+	let qs = helper::generate_get_query(&mut args);
+
+	print("qs:");
+	print(&qs);
+
+	let url = String::from(API_URL) + "/v1/manga/getDetail?" + &qs;
+	print("url:");
+	print(&url);
+
+	let req = Request::new(url, HttpMethod::Get);
+
+	let body = req.string()?;
+	// print(&body);
+
+	let json = json::parse(body)?.as_object()?;
+	let manga = json.get("response").as_object()?;
+
+	let mut chapter_arr: Vec<Chapter> = Vec::new();
+
+	chapter_arr.append(&mut parse_chapters(&manga, "mangaEpisode"));
+	chapter_arr.append(&mut parse_chapters(&manga, "mangaWords"));
+	chapter_arr.append(&mut parse_chapters(&manga, "mangaRolls"));
+
+	return Ok(chapter_arr);
 }
 
 #[get_page_list]
@@ -280,6 +361,92 @@ fn get_manga_list_by_query(query: String, page: i32) -> Result<MangaPageResult> 
 		manga: manga_arr,
 		has_more: item_count > 0,
 	});
+}
+
+// {
+//   sectionId: 738001,
+//   sectionName: '第89卷',
+//   sectionIsNewest: 0,
+//   sectionOfflineUrl:
+// 'mangaapi.manhuaren.com/comicChapterDownLoad.ashx?cid=738001',   sectionType:
+// 0,   sectionUrl: '',
+//   sectionTitle: '',
+//   sectionSort: 89,
+//   sectionSubName: '89',
+//   isMustPay: 0,
+//   authority: 0,
+//   hasUnlockDate: 0,
+//   releaseTime: '2018-12-12',
+//   beFreeSince: '',
+//   imageUrl: '',
+//   isNoAllowDownload: 0,
+//   otherSectionId: '',
+//   mangaLanguage: 0,
+//   sectionSign: 0,
+//   uploadUserId: 0
+// }
+fn parse_chapters(manga: &ObjectRef, key: &str) -> Vec<Chapter> {
+	match manga.get(key).as_array() {
+		Ok(chapters) => {
+			let mut chapter_arr: Vec<Chapter> = Vec::new();
+
+			for ch in chapters {
+				let ch_obj = ch.as_object().unwrap();
+				let mut title = String::new();
+
+				if ch_obj.get("isMustPay").as_int().unwrap_or(0) == 1 {
+					title.push_str("(锁) ");
+				}
+
+				if key.eq("mangaEpisode") {
+					title.push_str("[番外] ");
+				}
+
+				let section_name = ch_obj
+					.get("sectionName")
+					.as_string()
+					.unwrap_or(StringRef::from(""))
+					.read();
+				let section_title = ch_obj
+					.get("sectionTitle")
+					.as_string()
+					.unwrap_or(StringRef::from(""))
+					.read();
+
+				title.push_str(&section_name);
+
+				if !section_title.is_empty() {
+					title.push_str(": ");
+					title.push_str(&section_title);
+				}
+
+				chapter_arr.push(Chapter {
+					id: ch_obj
+						.get("sectionId")
+						.as_string()
+						.unwrap_or(StringRef::from("-"))
+						.read(),
+					title,
+					volume: -1.0,
+					chapter: ch_obj.get("sectionSort").as_float().unwrap_or(0.0) as f32,
+					date_updated: match ch_obj.get("releaseTime").as_date(
+						"yyyy-MM-dd",
+						Option::from("zh"),
+						Option::from("TW"),
+					) {
+						Ok(d) => d,
+						_ => -1.0,
+					},
+					scanlator: String::from(""),
+					url: String::from(""),
+					lang: String::from("zh"),
+				})
+			}
+
+			return chapter_arr;
+		}
+		_ => Vec::new(),
+	}
 }
 
 struct ListFilter {
