@@ -100,7 +100,7 @@ pub fn md5(str: &String) -> String {
 		result.push(HEX_CHARS[y]);
 	}
 
-	return result;
+	result
 }
 
 const GSN_KEY: &str = "4e0a48e1c0b54041bce9c8f0e036124d";
@@ -122,7 +122,7 @@ pub fn generate_gsn_hash(args: &mut Vec<(String, String)>) -> String {
 
 	print(&temp);
 
-	return md5(&temp);
+	md5(&temp)
 }
 
 pub fn generate_get_query(args: &mut Vec<(String, String)>) -> String {
@@ -139,17 +139,17 @@ pub fn generate_get_query(args: &mut Vec<(String, String)>) -> String {
 
 	for (i, a) in args.iter().enumerate() {
 		if i > 0 {
-			qs.push_str("&");
+			qs.push('&');
 		}
 
 		let v = encode_uri_component(String::from(&a.1));
 		qs.push_str(&format(format_args!("{}={}", a.0, v)));
 	}
 
-	return qs;
+	qs
 }
 
 pub fn request<T: AsRef<str>>(url: T, method: HttpMethod) -> Result<String> {
 	let req = Request::new(url, method).header("X-Yq-Yqci", "{\"le\": \"zh\"}");
-	return req.string();
+	req.string()
 }
