@@ -1,10 +1,10 @@
 #![no_std]
 use aidoku::{
-	error::Result, prelude::*, std::net::Request, std::String, std::Vec, Chapter, DeepLink, Filter,
+	error::Result, std::json::parse, prelude::*, std::net::{ Request,HttpMethod}, std::String, std::Vec, Chapter, DeepLink, Filter,
 	Listing, Manga, MangaPageResult, Page,
 };
 
-use mangastream_template::template::MangaStreamSource;
+use mangastream_template::{template::MangaStreamSource, helper::urlencode};
 
 fn get_instance() -> MangaStreamSource {
 	MangaStreamSource {
@@ -35,7 +35,25 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 
 #[get_page_list]
 fn get_page_list(id: String) -> Result<Vec<Page>> {
-	get_instance().parse_page_list(id)
+	let mut pages: Vec<Page> = Vec::new();
+	let html = Request::new(&id, HttpMethod::Get)
+		.header("Referer", &get_instance().base_url)
+		.html();
+	let raw_text = html.select("script").html().read();
+	let trimmed_text = &raw_text[raw_text.find(r#":[{"s"#).unwrap_or(0) + 2
+		..raw_text.rfind("}],").unwrap_or(0) + 1];
+	let json = parse(trimmed_text.as_bytes()).as_object()?;
+	let images = json.get("images").as_array()?;
+	for (index, page) in images.enumerate() {
+		let page_url = urlencode(page.as_string()?.read());
+		pages.push(Page {
+			index: index as i32,
+			url: page_url,
+			base64: String::new(),
+			text: String::new(),
+		});
+	}
+	Ok(pages)
 }
 
 #[modify_image_request]
