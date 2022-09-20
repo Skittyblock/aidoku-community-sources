@@ -38,7 +38,7 @@ fn get_instance() -> WPComicsSource {
 		chapter_anchor_selector: "span > a",
 		chapter_date_selector: "span.time",
 
-		manga_viewer_page_url_suffix: "/full",
+		manga_viewer_page_url_suffix: "/all",
 
 		..Default::default()
 	}

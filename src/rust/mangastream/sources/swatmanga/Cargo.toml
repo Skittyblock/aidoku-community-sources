@@ -10,4 +10,3 @@ crate-type = ["cdylib"]
 [dependencies]
 aidoku = { git = "https://github.com/Aidoku/aidoku-rs/" }
 mangastream_template = { path = "../../template" }
-image-base64-wasm = "0.5.0"
