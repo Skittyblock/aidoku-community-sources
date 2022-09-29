@@ -11,6 +11,10 @@ fn get_instance() -> MangaStreamSource {
 		base_url: String::from("https://194.233.66.232"),
 		is_nsfw: true,
 		chapter_date_format: "MMMM d, yyyy",
+		manga_details_author: "td:contains(Author)+td",
+		manga_details_artist: "td:contains(Artist)+td",
+		manga_details_type: "td:contains(Type)+td",
+		manga_details_categories: ".seriestugenre a",
 		locale: "id",
 		alt_pages: true,
 		..Default::default()
