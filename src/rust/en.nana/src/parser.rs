@@ -7,12 +7,15 @@ const BASE_URL: &str = "https://nana.my.id";
 
 pub fn parse_search(html: Node, result: &mut Vec<Manga>) {
 	for page in html.select("#thumbs_container > .id1").array() {
-		let obj = page.as_node();
-		let uwobj = obj.expect("Node Object");
-		let a = uwobj.select(".id3 > a");
+		let obj = match page.as_node() {
+			Ok(node) => node,
+			Err(_) => return,
+		};
+		
+		let a = obj.select(".id3 > a");
 		let id: String = a.attr("href")
 		.read()
-		.split("/")
+		.split('/')
 		.last()
 		.unwrap()
 		.into();
@@ -22,29 +25,29 @@ pub fn parse_search(html: Node, result: &mut Vec<Manga>) {
 		let author = a.select("img").attr("alt").read().replace(&format!("{} by ", title), "");
 
 		let img = a.select("img").attr("src").read();
-		let img_url = if img.starts_with("/") {
+		let img_url = if img.starts_with('/') {
 			format!("{}{}", BASE_URL, img)
 		} else {
 			img
 		};
 
 		let mut categories: Vec<String> = Vec::new();
-		uwobj.select(".id4 > .tags > span")
+		obj.select(".id4 > .tags > span")
 		.array()
 		.for_each(|tag| categories.push(tag.as_node().unwrap().text().read()));
 
 
 
-		if id.len() > 0 && title.len() > 0 && img_url.len() > 0 {
+		if !id.is_empty() && !title.is_empty()  && !img_url.is_empty() {
 			result.push(Manga {
 				id,
 				cover: img_url,
 				title,
-				author: author,
+				author,
 				artist: String::new(),
 				description: String::new(),
-				url: url,
-				categories: categories,
+				url,
+				categories,
 				status: MangaStatus::Completed,
 				nsfw: MangaContentRating::Nsfw,
 				viewer: MangaViewer::Scroll
@@ -56,8 +59,7 @@ pub fn parse_search(html: Node, result: &mut Vec<Manga>) {
 pub fn get_page_list(obj: ObjectRef) -> Result<Vec<Page>> {
 	let mut pages: Vec<Page> = Vec::new();
 
-	let mut i = 0;
-	for page in obj.get("pages").as_array()? {
+	for (i, page) in (obj.get("pages").as_array()?).enumerate(){
 		let cleanid: String = page.as_string()?.read().replace("thumbnails", "pages").chars().skip(1).collect();
 		let url = format!("{}{}", BASE_URL, cleanid);
 
@@ -67,7 +69,6 @@ pub fn get_page_list(obj: ObjectRef) -> Result<Vec<Page>> {
 			base64: String::new(),
 			text: String::new(),
 		});
-		i += 1;
 	}
 
 	Ok(pages)
@@ -123,7 +124,7 @@ pub fn i32_to_string(mut integer: i32) -> String {
 		string.insert(pos, char::from_u32((digit as u32) + ('0' as u32)).unwrap());
 		integer /= 10;
 	}
-	return string;
+	string
 }
 
 pub fn urlencode(string: String) -> String {
@@ -133,9 +134,9 @@ pub fn urlencode(string: String) -> String {
 
 	for byte in bytes {
 		let curr = *byte;
-		if (b'a' <= curr && curr <= b'z')
-			|| (b'A' <= curr && curr <= b'Z')
-			|| (b'0' <= curr && curr <= b'9') {
+		if (b'a'..=b'z').contains(&curr)
+			|| (b'A'..=b'Z').contains(&curr)
+			|| (b'0'..=b'9').contains(&curr) {
 				result.push(curr);
 		} else {
 			result.push(b'%');
@@ -144,5 +145,5 @@ pub fn urlencode(string: String) -> String {
 		}
 	}
 
-	String::from_utf8(result).unwrap_or(String::new())
+	String::from_utf8(result).unwrap_or_default()
 }
