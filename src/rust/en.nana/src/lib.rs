@@ -1,8 +1,11 @@
 #![no_std]
+extern crate alloc;
+
 use aidoku::{
-	prelude::*, error::Result, std::String, std::Vec, std::net::Request, std::net::HttpMethod,
-	Filter, Manga, MangaPageResult, Page, Chapter
+	error::Result, prelude::*, std::net::HttpMethod, std::net::Request, std::String, std::Vec,
+	Chapter, Filter, Manga, MangaPageResult, Page,
 };
+use alloc::string::ToString;
 
 mod parser;
 
@@ -14,7 +17,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	let mut url = String::new();
 
 	parser::get_filtered_url(filters, page, &mut url);
-	
+
 	let html = Request::new(url.as_str(), HttpMethod::Get).html()?;
 	let html_next_page = Request::new(url.as_str(), HttpMethod::Get).html()?;
 
@@ -22,82 +25,88 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 
 	Ok(MangaPageResult {
 		manga: result,
-		has_more: !html_next_page.select("a.paginate_button.current + a.paginate_button").array().is_empty(),
+		has_more: !html_next_page
+			.select("a.paginate_button.current + a.paginate_button")
+			.array()
+			.is_empty(),
 	})
 }
 
 /// # Safety
 #[no_mangle]
 pub unsafe extern "C" fn get_manga_details(manga_rid: i32) -> i32 {
-    let manga = aidoku::std::ValueRef::new(manga_rid).as_object().unwrap();
-	let url = format!("{}/reader/{}", BASE_URL, manga.get("id").as_string().unwrap().read());
+	let manga = aidoku::std::ValueRef::new(manga_rid).as_object().unwrap();
+	let url = format!(
+		"{}/reader/{}",
+		BASE_URL,
+		manga.get("id").as_string().unwrap().read()
+	);
 
-	let mut img_url = String::new();
-	let mut mut_title = String::new();
+	let (title, cover) =
+		if manga.get("title").as_string().is_err() && manga.get("cover").as_string().is_err() {
+			let html = match Request::new(url.as_str(), HttpMethod::Get).html() {
+				Ok(req) => req,
+				Err(_) => return -1,
+			};
 
-	if manga.get("title").as_string().is_err() && manga.get("cover").as_string().is_err() {
-		let html = match Request::new(url.as_str(), HttpMethod::Get).html() {
-			Ok(req) => req,
-			Err(_) => return -1,
+			let title = html
+				.select("#archivePagesOverlay .spanh3reader")
+				.text()
+				.read()
+				.trim()
+				.to_string();
+			
+			let img = html.select("a#display img").attr("src").read();
+			let cover = if img.starts_with('/') {
+				format!("{}{}", BASE_URL, img)
+			} else {
+				img
+			}
+			.replace("/image/page", "/image/thumbnails");
+			
+			(title, cover)
+		} else {
+			(
+				manga.get("title").as_string().unwrap().read(),
+				manga.get("cover").as_string().unwrap().read(),
+			)
 		};
 
-		mut_title.push_str(html.select("#archivePagesOverlay .spanh3reader").text().read().as_str().trim());
-
-		let img = html.select("a#display img").attr("src").read();
-		let formatted_img_url = if img.starts_with('/') {
-			format!("{}{}", BASE_URL, img)
-		} else {
-			img
-		}.replace("/image/page", "/image/thumbnails");
-
-		img_url.push_str(formatted_img_url.as_str());
-
-	}
-
-    let mut categories: Vec<String> = Vec::new();
+	let mut categories: Vec<String> = Vec::new();
 	if let Ok(tags) = manga.get("tags").as_array() {
 		for tag in tags {
 			let tag = match tag.as_string() {
 				Ok(node) => node.read(),
 				Err(_) => return -1,
-			}; 
+			};
 			categories.push(tag);
 		}
 	}
 
-	let cover = match manga.get("cover").as_string() {
-        Ok(cover) => cover.read(),
-        Err(_) => img_url // get new cover
-    };
+	let author = match manga.get("author").as_string() {
+		Ok(author) => author.read(),
+		Err(_) => String::new(),
+	};
 
-	let title = match manga.get("title").as_string() {
-        Ok(title) => title.read(),
-        Err(_) => mut_title // get new title
-    };
+	let url = match manga.get("url").as_string() {
+		Ok(url) => url.read(),
+		Err(_) => url,
+	};
 
-    let author = match manga.get("author").as_string() {
-        Ok(author) => author.read(),
-        Err(_) => String::new()
-    };
-
-    let url = match manga.get("url").as_string() {
-        Ok(url) => url.read(),
-        Err(_) => url
-    };
-
-    Manga {
-        id: manga.get("id").as_string().unwrap().read(),
-        cover,
-        title,
-        author,
-        artist: String::new(),
-        description: String::new(),
-        url,
-        categories,
-        status: aidoku::MangaStatus::Completed,
-        nsfw: aidoku::MangaContentRating::Nsfw,
-        viewer: aidoku::MangaViewer::Scroll
-    }.create()
+	Manga {
+		id: manga.get("id").as_string().unwrap().read(),
+		cover,
+		title,
+		author,
+		artist: String::new(),
+		description: String::new(),
+		url,
+		categories,
+		status: aidoku::MangaStatus::Completed,
+		nsfw: aidoku::MangaContentRating::Nsfw,
+		viewer: aidoku::MangaViewer::Scroll,
+	}
+	.create()
 }
 
 #[get_chapter_list]
@@ -118,11 +127,14 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 
 #[get_page_list]
 fn get_page_list(chapter_id: String, _manga_id: String) -> Result<Vec<Page>> {
-	let url = format!("{}/api/archives/{}/extractthumbnails", BASE_URL, &chapter_id);
+	let url = format!(
+		"{}/api/archives/{}/extractthumbnails",
+		BASE_URL, &chapter_id
+	);
 
 	let request = Request::new(url, HttpMethod::Get).header("User-Agent", "Aidoku");
 	let json = request.json()?.as_object()?;
-	
+
 	parser::get_page_list(json)
 }
 

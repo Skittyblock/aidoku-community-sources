@@ -1,6 +1,10 @@
 use aidoku::{
-	prelude::*, error::Result, std::{String, ObjectRef}, std::Vec, std::html::Node,
-	Filter, FilterType, Manga, Page, MangaStatus, MangaContentRating, MangaViewer
+	error::Result,
+	prelude::*,
+	std::html::Node,
+	std::Vec,
+	std::{ObjectRef, String},
+	Filter, FilterType, Manga, MangaContentRating, MangaStatus, MangaViewer, Page,
 };
 
 const BASE_URL: &str = "https://nana.my.id";
@@ -11,13 +15,17 @@ pub fn parse_search(html: Node, result: &mut Vec<Manga>) {
 			Ok(node) => node,
 			Err(_) => return,
 		};
-		
+
 		let a = obj.select(".id3 > a");
 		let id: String = a.attr("href").read().split('/').last().unwrap().into();
-		
+
 		let url = format!("{}/reader/{}", BASE_URL, &id);
 		let title = a.attr("title").read();
-		let author = a.select("img").attr("alt").read().replace(&format!("{} by ", title), "");
+		let author = a
+			.select("img")
+			.attr("alt")
+			.read()
+			.replace(&format!("{} by ", title), "");
 
 		let img = a.select("img").attr("src").read();
 		let img_url = if img.starts_with('/') {
@@ -28,11 +36,10 @@ pub fn parse_search(html: Node, result: &mut Vec<Manga>) {
 
 		let mut categories: Vec<String> = Vec::new();
 		obj.select(".id4 > .tags > span")
-		.array()
-		.for_each(|tag| categories.push(tag.as_node().unwrap().text().read()));
+			.array()
+			.for_each(|tag| categories.push(tag.as_node().unwrap().text().read()));
 
-		
-		if !id.is_empty() && !title.is_empty()  && !img_url.is_empty() {
+		if !id.is_empty() && !title.is_empty() && !img_url.is_empty() {
 			result.push(Manga {
 				id,
 				cover: img_url,
@@ -44,7 +51,7 @@ pub fn parse_search(html: Node, result: &mut Vec<Manga>) {
 				categories,
 				status: MangaStatus::Completed,
 				nsfw: MangaContentRating::Nsfw,
-				viewer: MangaViewer::Scroll
+				viewer: MangaViewer::Scroll,
 			});
 		}
 	}
@@ -53,8 +60,14 @@ pub fn parse_search(html: Node, result: &mut Vec<Manga>) {
 pub fn get_page_list(obj: ObjectRef) -> Result<Vec<Page>> {
 	let mut pages: Vec<Page> = Vec::new();
 
-	for (i, page) in (obj.get("pages").as_array()?).enumerate(){
-		let cleanid: String = page.as_string()?.read().replace("thumbnails", "pages").chars().skip(1).collect();
+	for (i, page) in (obj.get("pages").as_array()?).enumerate() {
+		let cleanid: String = page
+			.as_string()?
+			.read()
+			.replace("thumbnails", "pages")
+			.chars()
+			.skip(1)
+			.collect();
 		let url = format!("{}{}", BASE_URL, cleanid);
 
 		pages.push(Page {
@@ -84,7 +97,6 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32, url: &mut String) {
 			_ => continue,
 		}
 	}
-
 
 	if is_searching {
 		url.push_str("/?q=");
@@ -130,8 +142,9 @@ pub fn urlencode(string: String) -> String {
 		let curr = *byte;
 		if (b'a'..=b'z').contains(&curr)
 			|| (b'A'..=b'Z').contains(&curr)
-			|| (b'0'..=b'9').contains(&curr) {
-				result.push(curr);
+			|| (b'0'..=b'9').contains(&curr)
+		{
+			result.push(curr);
 		} else {
 			result.push(b'%');
 			result.push(hex[curr as usize >> 4]);
