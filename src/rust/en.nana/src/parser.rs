@@ -13,12 +13,7 @@ pub fn parse_search(html: Node, result: &mut Vec<Manga>) {
 		};
 		
 		let a = obj.select(".id3 > a");
-		let id: String = a.attr("href")
-		.read()
-		.split('/')
-		.last()
-		.unwrap()
-		.into();
+		let id: String = a.attr("href").read().split('/').last().unwrap().into();
 		
 		let url = format!("{}/reader/{}", BASE_URL, &id);
 		let title = a.attr("title").read();
@@ -36,8 +31,7 @@ pub fn parse_search(html: Node, result: &mut Vec<Manga>) {
 		.array()
 		.for_each(|tag| categories.push(tag.as_node().unwrap().text().read()));
 
-
-
+		
 		if !id.is_empty() && !title.is_empty()  && !img_url.is_empty() {
 			result.push(Manga {
 				id,
