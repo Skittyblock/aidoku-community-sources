@@ -55,7 +55,7 @@ pub unsafe extern "C" fn get_manga_details(manga_rid: i32) -> i32 {
 				.read()
 				.trim()
 				.to_string();
-			
+
 			let img = html.select("a#display img").attr("src").read();
 			let cover = if img.starts_with('/') {
 				format!("{}{}", BASE_URL, img)
@@ -63,7 +63,7 @@ pub unsafe extern "C" fn get_manga_details(manga_rid: i32) -> i32 {
 				img
 			}
 			.replace("/image/page", "/image/thumbnails");
-			
+
 			(title, cover)
 		} else {
 			(
