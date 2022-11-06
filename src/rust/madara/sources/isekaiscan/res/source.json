@@ -5,7 +5,7 @@
 		"name": "IsekaiScan",
 		"version": 1,
 		"url": "https://isekaiscan.com",
-		"nsfw": 0
+		"nsfw": 1
 	},
 	"listings": [
 		{
