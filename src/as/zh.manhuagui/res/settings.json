@@ -1,0 +1,29 @@
+[
+	{
+		"type": "group",
+		"title": "Settings",
+		"footer": "You can have footers for a setting group",
+		"items": [
+			{
+				"type": "select",
+				"key": "something",
+				"title": "A select option",
+				"values": ["your", "values", "here"],
+				"titles": ["your", "titles", "here"],
+				"default": "here"
+			},
+			{
+				"type": "switch",
+				"key": "something2",
+				"title": "A switch",
+				"subtitle": "A subtext to describe this option",
+				"default": false
+			},
+			{
+				"type": "text",
+				"key": "something3",
+				"placeholder": "A text box"
+			}
+		]
+	}
+]
