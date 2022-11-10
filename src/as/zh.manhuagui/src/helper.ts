@@ -1,11 +1,14 @@
 import {
-    Chapter,
+  Chapter,
   Filter,
   FilterType,
   Html,
+  HttpMethod,
   Manga,
   MangaPageResult,
   MangaStatus,
+  Page,
+  Request,
   ValueRef,
 } from "aidoku-as/src";
 
@@ -73,6 +76,13 @@ let audienceOptions = [
 let progressOptions = ["ALL", "LIANZAI", "WANJIE"];
 
 export class Parser {
+  private headers: Map<string, string>;
+
+  constructor() {
+    this.headers = new Map<string, string>();
+    this.headers.set("Referer", "https://www.manhuagui.com/");
+  }
+
   parseHomePage(document: Html): MangaPageResult {
     let mangas: Manga[] = [];
 
@@ -146,38 +156,74 @@ export class Parser {
   }
 
   getChapterList(document: Html, mangaId: string): Chapter[] {
-    // TODO
     let chapters: Chapter[] = [];
-    const elements  = document.select('div#chapterlist ul li').array();
-    for (let i=0; i<elements.length; i++) {
-        let element = elements[i];
-        const url   = element.select('a').attr('href');
-        const id    = url.replace('/manga/', '').replace('/1.html', '');
-        const spl   = id.split('/');
+    const elements = document.select(".chapter-list > ul > li").array();
+    for (let i = 0; i < elements.length; i++) {
+      let element = elements[i];
+      const url = element.select("a").attr("href");
+      const id = url.replace(`/comic/`, "").replace(".html", "");
 
-        let title = '';
-        const titleSplit = element.select('p.title3').text().trim().split('-');
-        if (titleSplit.length >= 2) title = titleSplit.slice(1).join('-');
+      let title = element.select("a").attr("title");
 
-        let dateString = element.select('.title2').text().trim();
-        let dateObject = ValueRef.string(dateString);
-        let date = dateObject.toDate('MMM d,yyyy', 'en_US');
-        dateObject.close();
+      let chapter = new Chapter(id, title);
+      chapter.url = `https://www.manhuagui.com${url}`;
+      chapter.lang = "zh";
+      chapter.chapter = (elements.length - i) as f32;
 
-        let chapter = new Chapter(id, title);
-        chapter.url     = url;
-        chapter.lang    = 'en';
-        chapter.chapter = parseFloat(spl[spl.length-1].replace('c', '')) as f32;
-        chapter.dateUpdated = date;
-
-        if (spl.length > 2) {
-            chapter.volume = parseFloat(spl[spl.length-2].replace('v', '')) as f32;
-        }
-        chapters.push(chapter);
+      chapters.push(chapter);
     }
     document.close();
     return chapters;
-}
+  }
+
+  getPageList(webUrl: string, mobileUrl: string): Page[] {
+    // TODO: check why cannot get the imageUrl
+    let pages: Page[] = [];
+
+    let request = Request.create(HttpMethod.GET);
+    request.url = `https://m.manhuagui.com/comic/46271/664480.html`;
+    request.headers = this.headers;
+    let document: Html = request.html();
+
+    console.log(document.text())
+
+    let imageUrl = document.select("#manga > img").attr("src");
+
+    let page = new Page(0);
+    page.url = encodeURI(decodeURI(imageUrl));
+
+    pages.push(page);
+
+    // let page = new Page(0);
+    // page.url = encodeURI(decodeURI(`https://i.hamreus.com/ps4/i/5816/bouquettosshop/短篇/01.jpg.webp`));
+
+    // pages.push(page);
+
+    return pages;
+  }
+
+  getNumberOfPage(webUrl: string): i32 {
+    let request = Request.create(HttpMethod.GET);
+    request.url = webUrl;
+    request.headers = this.headers;
+    let document: Html = request.html();
+    let pageOptions = document.select("#pageSelect > option").array();
+
+    return pageOptions.length;
+  }
+
+  getPage(mobileUrl: string, i: i32): Page {
+    let request = Request.create(HttpMethod.GET);
+    request.url = `${mobileUrl}#p=${i}`;
+    request.headers = this.headers;
+    let document: Html = request.html();
+
+    let imageUrl = document.select("#manga > img").attr("src");
+
+    let page = new Page(i - 1);
+    page.url = encodeURI(decodeURI(imageUrl));
+    return page;
+  }
 }
 
 export class FilterMap {

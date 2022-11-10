@@ -2,5 +2,5 @@
 	"extends": "assemblyscript/std/assembly.json",
 	"include": [
 		"./**/*.ts"
-, "src/__test__/helper.test.mts"	],
+, "src/test.js", "src/__test__/helper.test.mts"	],
 }
