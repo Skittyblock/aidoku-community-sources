@@ -13,15 +13,12 @@ const BASE_URL: &str = "https://nana.my.id";
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
-	let mut result: Vec<Manga> = Vec::new();
-	let mut url = String::new();
-
-	parser::get_filtered_url(filters, page, &mut url);
+	let url = parser::get_filtered_url(filters, page);
 
 	let html = Request::new(url.as_str(), HttpMethod::Get).html()?;
 	let html_next_page = Request::new(url.as_str(), HttpMethod::Get).html()?;
 
-	parser::parse_search(html, &mut result);
+	let result = parser::parse_search(html);
 
 	Ok(MangaPageResult {
 		manga: result,
