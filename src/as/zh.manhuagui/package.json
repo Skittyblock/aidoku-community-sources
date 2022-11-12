@@ -74,11 +74,16 @@
 	},
 	"keywords": [],
 	"dependencies": {
-		"aidoku-as": "github:Aidoku/aidoku-as"
+		"aidoku-as": "github:Aidoku/aidoku-as",
+		"assemblyscript-json": "^1.1.0",
+		"assemblyscript-regex": "^1.6.4",
+		"lz-string": "^1.4.4"
 	},
 	"devDependencies": {
+		"@types/lz-string": "^1.3.34",
 		"assemblyscript": "^0.20.6",
 		"shx": "^0.3.4",
+		"ts-node": "^10.9.1",
 		"wireit": "^0.3.1"
 	}
 }

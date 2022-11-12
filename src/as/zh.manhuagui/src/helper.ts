@@ -11,6 +11,9 @@ import {
   Request,
   ValueRef,
 } from "aidoku-as/src";
+import { json } from "aidoku-as/src/modules/net";
+import { DecoderState, JSON } from "assemblyscript-json";
+import { Decoder } from "./Decoder";
 
 let regionOptions = [
   "all",
@@ -185,14 +188,28 @@ export class Parser {
     request.headers = this.headers;
     let document: Html = request.html();
 
-    console.log(document.text())
+    let decoder = new Decoder(document.text());
+    let jsonObj = decoder.decode();
+    let arrOrNull = jsonObj.getArr("images")
+    if (arrOrNull !== null) {
+      arrOrNull._arr.forEach((value) => {
+        if (value.isString) {
+          let imageUrl = (<JSON.Str>value).valueOf();
+          let page = new Page(0);
+          page.url = encodeURI(decodeURI(imageUrl));
+          pages.push(page)
+        }
+      })
+    }
 
-    let imageUrl = document.select("#manga > img").attr("src");
+    // console.log(document.text())
 
-    let page = new Page(0);
-    page.url = encodeURI(decodeURI(imageUrl));
+    // let imageUrl = document.select("#manga > img").attr("src");
 
-    pages.push(page);
+    // let page = new Page(0);
+    // page.url = encodeURI(decodeURI(imageUrl));
+
+    // pages.push(page);
 
     // let page = new Page(0);
     // page.url = encodeURI(decodeURI(`https://i.hamreus.com/ps4/i/5816/bouquettosshop/短篇/01.jpg.webp`));
