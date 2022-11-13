@@ -10,6 +10,8 @@ fn get_data() -> template::MadaraSiteData {
 	let data: template::MadaraSiteData = template::MadaraSiteData {
 		base_url: String::from("https://toonily.com"),
 		source_path: String::from("webtoon"),
+		search_path: String::from("search"),
+		search_selector: String::from("div.page-item-detail"),
 		alt_ajax: true,
 		..Default::default()
 	};
