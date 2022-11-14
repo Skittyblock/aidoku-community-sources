@@ -12,6 +12,7 @@ fn get_data() -> template::MadaraSiteData {
 		source_path: String::from("webtoon"),
 		search_path: String::from("search/x/page"),
 		search_cookies: String::from("toonily-mature=1"),
+		post_type: String::from(""),
 		search_selector: String::from("div.page-item-detail.manga"),
 		alt_ajax: true,
 		..Default::default()
