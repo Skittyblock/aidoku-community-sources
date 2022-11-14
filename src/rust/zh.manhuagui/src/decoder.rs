@@ -1,7 +1,7 @@
 use core::{iter::Map, ops::{Index, IndexMut}};
 
 use aidoku::{std::{String, Vec, format}, prelude::format};
-use alloc::vec;
+use alloc::{vec, string::ToString};
 
 pub struct Decoder {
 	func: String,
@@ -82,11 +82,18 @@ impl Decoder {
 
         let mut func = self.func.clone();
         let mut result: Vec<String> = vec![];
-        // TODO
-        todo!();
+        for c in func.split("") {
+            let char = String::from(c);
+            if d_key.contains(&char) {
+                let index = d_key.clone().iter().position(|r| r.eq(char.as_str())).unwrap();
+                result.push(d_value[index].clone());
+            } else {
+                result.push(char);
+            }
+        }
 
         aidoku::prelude::println!("func: {:?}", func);
-        aidoku::prelude::println!("result: {:?}", result);
+        aidoku::prelude::println!("result: {:?}", result.join(""));
 
         return String::new();
 	}
