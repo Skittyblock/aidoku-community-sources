@@ -124,6 +124,7 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32, data: &MadaraSiteData) 
 	let mut query = String::new();
 	let mut search_string = String::new();
 	let mut url = data.base_url.clone();
+	let post_type = String::from("&post_type=") + &data.post_type.clone();
 
 	for filter in filters {
 		match filter.kind {
@@ -196,7 +197,7 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32, data: &MadaraSiteData) 
 		url.push_str(&i32_to_string(page));
 		url.push_str("/?s=");
 		url.push_str(&search_string);
-		url.push_str("&post_type=wp-manga");
+		url.push_str(&post_type);
 		url.push_str(&query);
 	}
 	(url, is_searching)

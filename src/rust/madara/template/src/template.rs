@@ -21,6 +21,7 @@ pub struct MadaraSiteData {
 	pub search_path: String,
 
 	pub search_cookies: String,
+	pub post_type: String,
 
 	pub search_selector: String,
 	pub image_selector: String,
@@ -55,6 +56,8 @@ impl Default for MadaraSiteData {
 			search_selector: String::from("div.c-tabs-item__content"),
 			// cookies to pass for search request
 			search_cookies: String::from("wpmanga-adault=1"),
+			// the type of request to perform "post_type={post_type}", some sites (toonily) do not work with the default
+			post_type: String::from("wp-manga"),
 			// div to select images from a chapter
 			image_selector: String::from("div.page-break > img"),
 			// div to select all the genres
