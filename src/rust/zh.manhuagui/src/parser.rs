@@ -1,3 +1,4 @@
+use crate::decoder::{ Decoder };
 use crate::helper::{i32_to_string, urlencode};
 
 use aidoku::{
@@ -5,7 +6,7 @@ use aidoku::{
 	prelude::*,
 	std::html::Node,
 	std::Vec,
-	std::{ObjectRef, String},
+	std::{ObjectRef, String, net::HttpMethod, net::Request},
 	Chapter, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
 	MangaViewer, Page,
 };
@@ -227,6 +228,11 @@ pub fn get_page_list(base_url: String, mobile_url: String) -> Result<Vec<Page>> 
 
 	aidoku::prelude::println!("base_url: {}", base_url);
 	aidoku::prelude::println!("mobile_url: {}", mobile_url);
+
+	let html = Request::new(base_url.as_str(), HttpMethod::Get).html()?;
+
+	let decoder = Decoder::new(html.html().read());
+	decoder.decode();
 
 	Ok(pages)
 }

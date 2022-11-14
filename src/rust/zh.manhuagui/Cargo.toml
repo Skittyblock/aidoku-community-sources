@@ -1,5 +1,5 @@
 [package]
-name = "nana-aidoku"
+name = "manhuagui-aidoku"
 version = "0.1.0"
 edition = "2021"
 
@@ -17,4 +17,3 @@ lto = true
 
 [dependencies]
 aidoku = { git = "https://github.com/Aidoku/aidoku-rs" }
-regex = "1.7.0"

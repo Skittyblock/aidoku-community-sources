@@ -1,6 +1,7 @@
 #![no_std]
 extern crate alloc;
 
+mod decoder;
 mod helper;
 mod parser;
 
@@ -45,8 +46,8 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 
 #[get_page_list]
 fn get_page_list(chapter_id: String, _manga_id: String) -> Result<Vec<Page>> {
-	let base_url = format!("{}/comic/{}.hmtl", BASE_URL, chapter_id);
-	let mobile_url = format!("{}/comic/{}.hmtl", MOBILE_URL, chapter_id);
+	let base_url = format!("{}/comic/{}.html", BASE_URL,_manga_id);
+	let mobile_url = format!("{}/comic/{}.html", MOBILE_URL, _manga_id);
     
 	let result = parser::get_page_list(base_url, mobile_url).unwrap();
 	Ok(result)
