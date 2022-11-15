@@ -20,6 +20,9 @@ pub struct MadaraSiteData {
 	pub source_path: String,
 	pub search_path: String,
 
+	pub search_cookies: String,
+	pub post_type: String,
+
 	pub search_selector: String,
 	pub image_selector: String,
 	pub genre_selector: String,
@@ -51,6 +54,10 @@ impl Default for MadaraSiteData {
 			search_path: String::from("page"),
 			// selector div for search results page
 			search_selector: String::from("div.c-tabs-item__content"),
+			// cookies to pass for search request
+			search_cookies: String::from("wpmanga-adault=1"),
+			// the type of request to perform "post_type={post_type}", some sites (toonily) do not work with the default
+			post_type: String::from("wp-manga"),
 			// div to select images from a chapter
 			image_selector: String::from("div.page-break > img"),
 			// div to select all the genres
@@ -114,7 +121,7 @@ pub fn get_manga_list(
 
 pub fn get_search_result(data: MadaraSiteData, url: String) -> Result<MangaPageResult> {
 	let html = Request::new(url.as_str(), HttpMethod::Get)
-		.header("Cookie", "wpmanga-adault=1")
+		.header("Cookie", &data.search_cookies)
 		.html();
 	let mut manga: Vec<Manga> = Vec::new();
 	let mut has_more = false;
