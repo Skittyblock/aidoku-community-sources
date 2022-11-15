@@ -1,5 +1,5 @@
 use crate::decoder::{ Decoder };
-use crate::helper::{i32_to_string, urlencode};
+use crate::helper::{i32_to_string, encode_uri, self};
 
 use aidoku::{
 	error::Result,
@@ -232,7 +232,17 @@ pub fn get_page_list(base_url: String, mobile_url: String) -> Result<Vec<Page>> 
 	let html = Request::new(base_url.as_str(), HttpMethod::Get).html()?;
 
 	let decoder = Decoder::new(html.html().read());
-	decoder.decode();
+	let (path, pages_str) = decoder.decode();
+
+	let mut index = 0;
+	for str in pages_str {
+		let url = format!("https://i.hamreus.com{}{}", path, str);
+		aidoku::prelude::println!("page_url: {}", url);
+		let encoded_url = helper::encode_uri(&url);
+		aidoku::prelude::println!("encoded_url: {}", encoded_url);
+		let page: Page = Page { index, url: encoded_url, base64: String::new(), text: String::new() };
+		pages.push(page)
+	}
 
 	Ok(pages)
 }
@@ -253,7 +263,7 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32, url: &mut String) {
 		match filter.kind {
 			FilterType::Title => {
 				if let Ok(filter_value) = filter.value.as_string() {
-					search_string.push_str(urlencode(filter_value.read().to_lowercase()).as_str());
+					search_string.push_str(encode_uri(&filter_value.read().to_lowercase()).as_str());
 					is_searching = true;
 				}
 			}

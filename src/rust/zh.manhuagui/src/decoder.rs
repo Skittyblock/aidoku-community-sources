@@ -1,6 +1,6 @@
-use core::{iter::Map, ops::{Index, IndexMut}};
+// use core::{iter::Map, ops::{Index, IndexMut}};
 
-use aidoku::{std::{String, Vec, format}, prelude::format};
+use aidoku::{std::{String, Vec, format, json}, prelude::format};
 use alloc::{vec, string::ToString};
 
 pub struct Decoder {
@@ -54,7 +54,7 @@ impl Decoder {
         return format!("{}{}", first, second);
     }
 
-	pub fn decode(&self) -> String {
+	pub fn decode(&self) -> (String, Vec<String>) {
         let mut c = (self.c - 1).clone();
         let mut d_key: Vec<String> = vec![];
         let mut d_value: Vec<String> = vec![];
@@ -77,25 +77,79 @@ impl Decoder {
             c -= 1;
         }
 
-        aidoku::prelude::println!("d_key: {:?}", d_key);
-        aidoku::prelude::println!("d_value: {:?}", d_value);
-
         let mut func = self.func.clone();
         let mut result: Vec<String> = vec![];
-        for c in func.split("") {
-            let char = String::from(c);
-            if d_key.contains(&char) {
-                let index = d_key.clone().iter().position(|r| r.eq(char.as_str())).unwrap();
+        let mut splited: Vec<String> = vec![];
+        let mut skip_next = false;
+        for (a, b) in func.split("").into_iter().zip(func.clone().split("").into_iter().skip(1)) {
+            if skip_next {
+                skip_next = false;
+                continue;
+            }
+            let key = format!("{}{}", a, b);
+            if d_key.contains(&key) {
+                splited.push(key);
+                skip_next = true;
+            } else {
+                splited.push(String::from(a));
+            }
+        }
+        if !skip_next {
+            let last = func.split("").into_iter().last().unwrap();
+            splited.push(String::from(last));
+        }
+
+        for ori in splited {
+            if d_key.contains(&ori) {
+                let index = d_key.clone().iter().position(|r| r.eq(ori.as_str())).unwrap();
                 result.push(d_value[index].clone());
             } else {
-                result.push(char);
+                result.push(ori);
             }
         }
 
-        aidoku::prelude::println!("func: {:?}", func);
-        aidoku::prelude::println!("result: {:?}", result.join(""));
+        let js = result.join("");
+        let mut json = String::new();
 
-        return String::new();
+        for (i, s) in js.split(".imgData(").into_iter().enumerate() {
+            if i == 1 {
+                for (j, ss) in String::from(s).clone().split(").preInit();").into_iter().enumerate() {
+                    if j == 0 {
+                        json = String::from(ss);
+                    }
+                }
+            }
+        }
+
+        let mut pages: Vec<String> = vec![];
+        let mut path: String = String::new();
+
+        for (i, s) in json.clone().split("[").into_iter().enumerate() {
+            if i == 1 {
+                for (j, ss) in s.clone().split("]").into_iter().enumerate() {
+                    if j == 0 {
+                        // get files here
+                        for sss in ss.split(",") {
+                            pages.push(String::from(sss).replace("\"", ""));
+                        }
+                    } else if j == 1 {
+                        // get path here
+                        for (k, sss) in ss.split("\"path\":\"").into_iter().enumerate() {
+                            if k == 1 {
+                                for (x, ssss) in sss.split("\",\"").into_iter().enumerate() {
+                                    aidoku::prelude::println!("x:{}, ssss: {}", x, ssss);
+                                    if x == 0 {
+                                        path = String::from(ssss);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        return (path, pages);
 	}
 }
 
