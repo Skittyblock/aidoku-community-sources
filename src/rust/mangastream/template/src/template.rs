@@ -337,6 +337,10 @@ impl MangaStreamSource {
 			for (at, page) in html.select(self.page_selector).array().enumerate() {
 				let page_node = page.as_node();
 				let page_url = urlencode(page_node.attr(self.page_url).read());
+				// avoid svgs
+				if page_url.starts_with("data") {
+					continue;
+				}
 				pages.push(Page {
 					index: at as i32,
 					url: page_url,

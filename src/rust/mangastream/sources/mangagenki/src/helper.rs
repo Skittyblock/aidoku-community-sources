@@ -1,6 +1,6 @@
 use aidoku::{
 	error::Result,
-	prelude::{format, println},
+	prelude::format,
 	std::{defaults::defaults_get, String, Vec},
 	Filter, FilterType, MangaPageResult,
 };
@@ -32,7 +32,6 @@ pub fn get_listing_url(source: &MangaStreamSource, listing_name: String, page: i
 		),
 		_ => source.base_url.clone(),
 	};
-	println!("{}", url);
 	url
 }
 
