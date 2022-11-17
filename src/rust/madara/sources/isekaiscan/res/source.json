@@ -1,11 +1,11 @@
 {
 	"info": {
-		"id": "en.toonily",
+		"id": "en.isekaiscan",
 		"lang": "en",
-		"name": "Toonily",
-		"version": 6,
-		"url": "https://toonily.com",
-		"nsfw": 2
+		"name": "IsekaiScan",
+		"version": 1,
+		"url": "https://isekaiscan.com",
+		"nsfw": 1
 	},
 	"listings": [
 		{

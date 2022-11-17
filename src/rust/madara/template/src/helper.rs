@@ -113,8 +113,8 @@ pub fn get_image_url(obj: Node) -> String {
 
 	let mut encoded_img = String::new();
 
-	for i in 0..img_split.len() - 1 {
-		encoded_img.push_str(img_split[i]);
+	for item in img_split.iter().take(img_split.len() - 1) {
+		encoded_img.push_str(item);
 		encoded_img.push('/');
 	}
 	encoded_img.push_str(&last_encoded);
