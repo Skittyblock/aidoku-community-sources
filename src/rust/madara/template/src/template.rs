@@ -56,7 +56,8 @@ impl Default for MadaraSiteData {
 			search_selector: String::from("div.c-tabs-item__content"),
 			// cookies to pass for search request
 			search_cookies: String::from("wpmanga-adault=1"),
-			// the type of request to perform "post_type={post_type}", some sites (toonily) do not work with the default
+			// the type of request to perform "post_type={post_type}", some sites (toonily) do not
+			// work with the default
 			post_type: String::from("wp-manga"),
 			// div to select images from a chapter
 			image_selector: String::from("div.page-break > img"),

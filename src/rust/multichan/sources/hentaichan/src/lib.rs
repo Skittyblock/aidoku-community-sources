@@ -1,12 +1,12 @@
 #![no_std]
 extern crate alloc;
-use alloc::vec;
 use aidoku::{
 	error::Result,
 	prelude::*,
 	std::{html::Node, net::Request, String, Vec},
 	Chapter, DeepLink, Filter, Listing, Manga, MangaPageResult, Page,
 };
+use alloc::vec;
 use manga_chan_template::template::{cache_manga_page, MangaChanSource, CACHED_MANGA};
 
 static INSTANCE: MangaChanSource = MangaChanSource {
@@ -40,18 +40,16 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 		.0
 		.as_date("dd MMMM yyyy", Some("ru_RU"), None)
 		.unwrap_or(-1.0);
-	Ok(vec![
-		Chapter {
-			id: html.select("a:contains(Читать онлайн)").attr("href").read(),
-			title: String::new(),
-			volume: -1.0,
-			chapter: 1.0,
-			date_updated,
-			scanlator: String::new(),
-			url: html.select("a:contains(Читать онлайн)").attr("href").read(),
-			lang: String::from("ru"),
-		}
-	])
+	Ok(vec![Chapter {
+		id: html.select("a:contains(Читать онлайн)").attr("href").read(),
+		title: String::new(),
+		volume: -1.0,
+		chapter: 1.0,
+		date_updated,
+		scanlator: String::new(),
+		url: html.select("a:contains(Читать онлайн)").attr("href").read(),
+		lang: String::from("ru"),
+	}])
 }
 
 #[get_page_list]

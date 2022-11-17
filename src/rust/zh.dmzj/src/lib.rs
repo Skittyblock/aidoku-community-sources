@@ -228,22 +228,11 @@ fn get_manga_details(id: String) -> Result<Manga> {
 
 		let url = format!("{}/dynamic/comicinfo/{}.json", API_URL, id);
 
-		let req = helper::get(&url);
+		let json = helper::get(&url).json().as_object()?;
 
-		let info = req
-			.json()
-			.as_object()?
-			.get("data")
-			.as_object()?
-			.get("info")
-			.clone() 
-			/* 
-			Notice here is a huge bug about ownership lose.
-			You have to clone ref especially after convert to object and before convert to other type.
-			Or you lose everything.
-			Ctrl F clone to search for evidence.
-			*/				
-			.as_object()?;
+		let data = json.get("data").as_object()?;
+		let info = data.get("info").as_object()?;
+		let types = info.get("types").as_string()?.read();
 
 		return Ok(Manga {
 			id: id.clone(),
@@ -253,11 +242,7 @@ fn get_manga_details(id: String) -> Result<Manga> {
 			artist: String::new(),
 			description: info.get("description").as_string()?.read(),
 			url: format!("{}/info/{}.html", BASE_URL, id),
-			categories: info
-				.get("types")
-				.clone()
-				.as_string()?
-				.read()
+			categories: types
 				.split('/')
 				.collect::<Vec<_>>()
 				.iter()
@@ -326,7 +311,6 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 			.get("data")
 			.as_object()?
 			.get("list")
-			.clone()
 			.as_array()?;
 
 		let len = list.len();

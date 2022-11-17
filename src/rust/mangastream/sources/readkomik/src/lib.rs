@@ -1,10 +1,15 @@
 #![no_std]
 use aidoku::{
-	error::Result, std::json::parse, prelude::*, std::net::{ Request,HttpMethod}, std::String, std::Vec, Chapter, DeepLink, Filter,
-	Listing, Manga, MangaPageResult, Page,
+	error::Result,
+	prelude::*,
+	std::json::parse,
+	std::net::{HttpMethod, Request},
+	std::String,
+	std::Vec,
+	Chapter, DeepLink, Filter, Listing, Manga, MangaPageResult, Page,
 };
 
-use mangastream_template::{template::MangaStreamSource, helper::urlencode};
+use mangastream_template::{helper::urlencode, template::MangaStreamSource};
 
 fn get_instance() -> MangaStreamSource {
 	MangaStreamSource {
@@ -40,8 +45,8 @@ fn get_page_list(id: String) -> Result<Vec<Page>> {
 		.header("Referer", &get_instance().base_url)
 		.html();
 	let raw_text = html.select("script").html().read();
-	let trimmed_text = &raw_text[raw_text.find(r#":[{"s"#).unwrap_or(0) + 2
-		..raw_text.rfind("}],").unwrap_or(0) + 1];
+	let trimmed_text = &raw_text
+		[raw_text.find(r#":[{"s"#).unwrap_or(0) + 2..raw_text.rfind("}],").unwrap_or(0) + 1];
 	let json = parse(trimmed_text.as_bytes()).as_object()?;
 	let images = json.get("images").as_array()?;
 	for (index, page) in images.enumerate() {

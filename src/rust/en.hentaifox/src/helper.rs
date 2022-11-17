@@ -7,9 +7,9 @@ pub fn urlencode(string: String) -> String {
 
 	for byte in bytes {
 		let curr = *byte;
-		if (b'a' <= curr && curr <= b'z')
-			|| (b'A' <= curr && curr <= b'Z')
-			|| (b'0' <= curr && curr <= b'9')
+		if (b'a'..=b'z').contains(&curr)
+			|| (b'A'..=b'Z').contains(&curr)
+			|| (b'0'..=b'9').contains(&curr)
 		{
 			result.push(curr);
 		} else {
@@ -19,7 +19,7 @@ pub fn urlencode(string: String) -> String {
 		}
 	}
 
-	String::from_utf8(result).unwrap_or(String::new())
+	String::from_utf8(result).unwrap_or_default()
 }
 
 pub fn i32_to_string(mut integer: i32) -> String {
@@ -42,7 +42,7 @@ pub fn i32_to_string(mut integer: i32) -> String {
 		string.insert(pos, char::from_u32((digit as u32) + ('0' as u32)).unwrap());
 		integer /= 10;
 	}
-	return string;
+	string
 }
 
 // numbers only from string as i32
@@ -61,7 +61,7 @@ pub fn numbers_only_from_string(string: String) -> i32 {
 	}
 	for i in index..length {
 		let curr = string.as_bytes()[i];
-		if curr < b'0' || curr > b'9' {
+		if !(b'0'..=b'9').contains(&curr) {
 			break;
 		}
 		result = result * 10 + (curr - b'0') as i32;
@@ -69,17 +69,17 @@ pub fn numbers_only_from_string(string: String) -> i32 {
 	if negative {
 		result *= -1;
 	}
-	return result;
+	result
 }
 
 pub fn get_gallery_id(path: String) -> i32 {
-	let parts = path.split("/").nth(2).unwrap_or("");
-	return numbers_only_from_string(String::from(parts));
+	let parts = path.split('/').nth(2).unwrap_or("");
+	numbers_only_from_string(String::from(parts))
 }
 
 pub fn get_tag_slug(path: String) -> String {
-	let parts = path.split("/").nth(2).unwrap_or("");
-	return String::from(parts);
+	let parts = path.split('/').nth(2).unwrap_or("");
+	String::from(parts)
 }
 
 pub fn build_search_url(
@@ -90,18 +90,16 @@ pub fn build_search_url(
 ) -> String {
 	let base_url = String::from("https://hentaifox.com");
 	let mut path = String::new();
-	if query.len() > 0 {
+	if !query.is_empty() {
 		path = format!("/search?q={}&page={}", urlencode(query), page);
 		if sort_type == "popular" {
 			path.push_str("&sort=popular");
 		}
 	} else {
-		if tags.len() > 0 {
-			if tags[0] == "none" {
-				tags.remove(0);
-			}
+		if !tags.is_empty() && tags[0] == "none" {
+			tags.remove(0);
 		}
-		if tags.len() > 0 {
+		if !tags.is_empty() {
 			let tag = &tags[0];
 			if sort_type == "popular" {
 				path = format!("/tag/{}/popular/pag/{}", tag, page);
@@ -124,7 +122,7 @@ pub fn build_search_url(
 
 	let url = format!("{}{}", base_url, path);
 
-	return url;
+	url
 }
 
 pub fn only_chars_from_string(str: String) -> String {
@@ -136,7 +134,7 @@ pub fn only_chars_from_string(str: String) -> String {
 		}
 		result.push(c);
 	}
-	return result;
+	result
 }
 
 pub fn tag_list() -> [&'static str; 51] {

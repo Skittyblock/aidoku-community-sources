@@ -1,5 +1,6 @@
 #![no_std]
 #![feature(stmt_expr_attributes)]
+#![feature(let_chains)]
 pub mod helper;
 pub mod template;
 
