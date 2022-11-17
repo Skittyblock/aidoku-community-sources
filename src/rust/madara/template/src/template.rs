@@ -235,7 +235,16 @@ pub fn get_manga_details(manga_id: String, data: MadaraSiteData) -> Result<Manga
 
 	let html = Request::new(url.as_str(), HttpMethod::Get).html();
 
-	let title = html.select("div.post-title h1").text().read();
+	// These are useless badges that are added to the title like "HOT", "NEW", etc.
+	let title_badges = html
+		.select("div.post-title h1 span.manga-title-badges")
+		.text()
+		.read();
+	let mut title = html.select("div.post-title h1").text().read();
+	if title.contains(&title_badges) {
+		title = title.replace(&title_badges, "");
+		title = String::from(title.trim());
+	}
 	let cover = get_image_url(html.select("div.summary_image img"));
 	let author = html.select("div.author-content a").text().read();
 	let artist = html.select("div.artist-content a").text().read();
