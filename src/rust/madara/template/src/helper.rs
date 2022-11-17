@@ -36,13 +36,15 @@ pub fn img_url_encode(string: String) -> String {
 		let curr = *byte;
 		if curr == b'-' {
 			result.push(b'-');
+		} else if curr == b'%' {
+			result.push(b'%');
 		} else if curr == b'.' {
 			result.push(b'.');
 		} else if curr == b'_' {
 			result.push(b'_');
-		} else if (b'a' <= curr && curr <= b'z')
-			|| (b'A' <= curr && curr <= b'Z')
-			|| (b'0' <= curr && curr <= b'9')
+		} else if (b'a'..=b'z').contains(&curr)
+			|| (b'A'..=b'Z').contains(&curr)
+			|| (b'0'..=b'9').contains(&curr)
 		{
 			result.push(curr);
 		} else {
@@ -85,8 +87,7 @@ pub fn i32_to_string(mut integer: i32) -> String {
 }
 
 pub fn get_image_url(obj: Node) -> String {
-	let mut img;
-	img = obj.attr("data-src").read();
+	let mut img = obj.attr("data-src").read();
 	if img.is_empty() {
 		img = obj.attr("data-lazy-src").read();
 	}
@@ -98,28 +99,26 @@ pub fn get_image_url(obj: Node) -> String {
 	}
 	img = String::from(img.trim());
 
-	if defaults_get("highres").as_bool().unwrap_or(false) {
-		if !img.contains("width") {
-			img = img
-				.replace("-350x476", "")
-				.replace("-193x278", "")
-				.replace("-110x150", "")
-				.replace("-175x238", "");
-		}
+	if defaults_get("highres").as_bool().unwrap_or(false) && !img.contains("width") {
+		img = img
+			.replace("-350x476", "")
+			.replace("-193x278", "")
+			.replace("-110x150", "")
+			.replace("-175x238", "");
 	}
 	// encoding last part of the url as some scanlations use non-alphanumerical
 	// chars which need to be encoded
-	let img_split = img.split("/").collect::<Vec<&str>>();
+	let img_split = img.split('/').collect::<Vec<&str>>();
 	let last_encoded = img_url_encode(String::from(img_split[img_split.len() - 1]));
 
 	let mut encoded_img = String::new();
 
-	for i in 0..img_split.len() - 1 {
-		encoded_img.push_str(img_split[i]);
-		encoded_img.push_str("/");
+	for item in img_split.iter().take(img_split.len() - 1) {
+		encoded_img.push_str(item);
+		encoded_img.push('/');
 	}
 	encoded_img.push_str(&last_encoded);
-	return encoded_img;
+	encoded_img
 }
 
 pub fn get_filtered_url(filters: Vec<Filter>, page: i32, data: &MadaraSiteData) -> (String, bool) {
@@ -127,6 +126,7 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32, data: &MadaraSiteData) 
 	let mut query = String::new();
 	let mut search_string = String::new();
 	let mut url = data.base_url.clone();
+	let post_type = String::from("&post_type=") + &data.post_type.clone();
 
 	for filter in filters {
 		match filter.kind {
@@ -199,7 +199,7 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32, data: &MadaraSiteData) 
 		url.push_str(&i32_to_string(page));
 		url.push_str("/?s=");
 		url.push_str(&search_string);
-		url.push_str("&post_type=wp-manga");
+		url.push_str(&post_type);
 		url.push_str(&query);
 	}
 	(url, is_searching)
@@ -210,5 +210,5 @@ pub fn get_int_manga_id(manga_id: String, base_url: String, path: String) -> Str
 	let html = Request::new(url.as_str(), HttpMethod::Get).html();
 	let id_html = html.select("script#wp-manga-js-extra").html().read();
 	let id = &id_html[id_html.find("manga_id").unwrap() + 11..id_html.find("\"};").unwrap()];
-	return String::from(id);
+	String::from(id)
 }

@@ -1,0 +1,18 @@
+{
+	"info": {
+		"id": "en.twilightscans",
+		"lang": "en",
+		"name": "Twilight Scans",
+		"version": 2,
+		"url": "https://twilightscans.com",
+		"nsfw": 0
+	},
+	"listings": [
+		{
+			"name": "Trending"
+		},
+		{
+			"name": "Popular"
+		}
+	]
+}

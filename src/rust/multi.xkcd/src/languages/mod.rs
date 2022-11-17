@@ -1,7 +1,7 @@
 use aidoku::{
 	error::Result,
-	prelude::format,
 	helpers::uri::encode_uri_component,
+	prelude::format,
 	std::{
 		net::{HttpMethod, Request},
 		String, Vec,

@@ -104,6 +104,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "komiktap"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "mangastream_template",
+]
+
+[[package]]
 name = "komikucom"
 version = "0.1.0"
 dependencies = [
@@ -162,6 +170,14 @@ name = "mangastream_template"
 version = "0.1.0"
 dependencies = [
  "aidoku",
+]
+
+[[package]]
+name = "mangasusu"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "mangastream_template",
 ]
 
 [[package]]

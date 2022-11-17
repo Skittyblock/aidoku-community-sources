@@ -9,52 +9,52 @@ use aidoku::{
 
 const BASE_URL: &str = "https://nana.my.id";
 
-pub fn parse_search(html: Node, result: &mut Vec<Manga>) {
+pub fn parse_search(html: Node) -> Vec<Manga> {
+	let mut result = Vec::new();
 	for page in html.select("#thumbs_container > .id1").array() {
-		let obj = match page.as_node() {
-			Ok(node) => node,
-			Err(_) => return,
-		};
+		if let Ok(obj) = page.as_node() {
+			let a = obj.select(".id3 > a");
+			let id: String = a.attr("href").read().split('/').last().unwrap().into();
 
-		let a = obj.select(".id3 > a");
-		let id: String = a.attr("href").read().split('/').last().unwrap().into();
+			let url = format!("{}/reader/{}", BASE_URL, &id);
+			let title = a.attr("title").read();
+			let author = a
+				.select("img")
+				.attr("alt")
+				.read()
+				.replace(&format!("{} by ", title), "");
 
-		let url = format!("{}/reader/{}", BASE_URL, &id);
-		let title = a.attr("title").read();
-		let author = a
-			.select("img")
-			.attr("alt")
-			.read()
-			.replace(&format!("{} by ", title), "");
+			let img = a.select("img").attr("src").read();
+			let img_url = if img.starts_with('/') {
+				format!("{}{}", BASE_URL, img)
+			} else {
+				img
+			};
 
-		let img = a.select("img").attr("src").read();
-		let img_url = if img.starts_with('/') {
-			format!("{}{}", BASE_URL, img)
-		} else {
-			img
-		};
+			let mut categories: Vec<String> = Vec::new();
+			obj.select(".id4 > .tags > span")
+				.array()
+				.for_each(|tag| categories.push(tag.as_node().unwrap().text().read()));
 
-		let mut categories: Vec<String> = Vec::new();
-		obj.select(".id4 > .tags > span")
-			.array()
-			.for_each(|tag| categories.push(tag.as_node().unwrap().text().read()));
-
-		if !id.is_empty() && !title.is_empty() && !img_url.is_empty() {
-			result.push(Manga {
-				id,
-				cover: img_url,
-				title,
-				author,
-				artist: String::new(),
-				description: String::new(),
-				url,
-				categories,
-				status: MangaStatus::Completed,
-				nsfw: MangaContentRating::Nsfw,
-				viewer: MangaViewer::Scroll,
-			});
+			if !id.is_empty() && !title.is_empty() && !img_url.is_empty() {
+				result.push(Manga {
+					id,
+					cover: img_url,
+					title,
+					author,
+					artist: String::new(),
+					description: String::new(),
+					url,
+					categories,
+					status: MangaStatus::Completed,
+					nsfw: MangaContentRating::Nsfw,
+					viewer: MangaViewer::Scroll,
+				});
+			}
 		}
 	}
+
+	result
 }
 
 pub fn get_page_list(obj: ObjectRef) -> Result<Vec<Page>> {
@@ -81,32 +81,79 @@ pub fn get_page_list(obj: ObjectRef) -> Result<Vec<Page>> {
 	Ok(pages)
 }
 
-pub fn get_filtered_url(filters: Vec<Filter>, page: i32, url: &mut String) {
-	let mut is_searching = false;
-	let mut search_string = String::new();
-	url.push_str(BASE_URL);
+pub fn get_filtered_url(filters: Vec<Filter>, page: i32) -> String {
+	let mut query = String::new();
+	let mut ascending = false;
+
+	let mut included_tags: Vec<String> = Vec::new();
+	let mut excluded_tags: Vec<String> = Vec::new();
 
 	for filter in filters {
 		match filter.kind {
 			FilterType::Title => {
-				if let Ok(filter_value) = filter.value.as_string() {
-					search_string.push_str(urlencode(filter_value.read().to_lowercase()).as_str());
-					is_searching = true;
+				if let Ok(value) = filter.value.as_string() {
+					query = value.read();
 				}
+			}
+			FilterType::Genre => {
+				if let Ok(tag_id) = filter.object.get("id").as_string() {
+					match filter.value.as_int().unwrap_or(-1) {
+						0 => excluded_tags.push(tag_id.read()),
+						1 => included_tags.push(tag_id.read()),
+						_ => continue,
+					}
+				}
+			}
+			FilterType::Sort => {
+				let value = match filter.value.as_object() {
+					Ok(value) => value,
+					Err(_) => continue,
+				};
+				ascending = value.get("ascending").as_bool().unwrap_or(false);
 			}
 			_ => continue,
 		}
 	}
 
-	if is_searching {
-		url.push_str("/?q=");
-		url.push_str(&search_string);
-		url.push_str("&p=");
-		url.push_str(&i32_to_string(page));
-	} else {
-		url.push_str("?p=");
-		url.push_str(&i32_to_string(page));
+	build_search_url(query, included_tags, excluded_tags, ascending, page)
+}
+
+pub fn build_search_url(
+	query: String,
+	included_tags: Vec<String>,
+	excluded_tags: Vec<String>,
+	ascending: bool,
+	page: i32,
+) -> String {
+	let mut url = String::new();
+
+	url.push_str(format!("https://nana.my.id/").as_str());
+	url.push('?');
+
+	url.push_str(
+		format!(
+			"p={}&sort={}&q={}",
+			i32_to_string(page),
+			if ascending { "asc" } else { "desc" },
+			urlencode(query).as_str()
+		)
+		.as_str(),
+	);
+	let mut query_params = String::new();
+	if !included_tags.is_empty() {
+		for tag in included_tags {
+			query_params.push_str(format!("+\"{}\"", tag).as_str());
+		}
 	}
+	if !excluded_tags.is_empty() {
+		for tag in excluded_tags {
+			query_params.push_str(format!("-\"{}\"", tag).as_str());
+		}
+	}
+
+	url.push_str(urlencode(query_params).as_str());
+
+	url
 }
 
 // HELPER FUNCTIONS
