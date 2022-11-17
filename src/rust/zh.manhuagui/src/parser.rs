@@ -250,6 +250,8 @@ pub fn get_page_list(base_url: String, mobile_url: String) -> Result<Vec<Page>> 
 	let decoder = Decoder::new(html.html().read());
 	let (path, pages_str) = decoder.decode();
 
+	aidoku::prelude::println!("pages_str: {:?}", pages_str);
+
 	let mut index = 0;
 	for str in pages_str {
 		let url = format!("https://i.hamreus.com{}{}", path, str);
@@ -262,9 +264,11 @@ pub fn get_page_list(base_url: String, mobile_url: String) -> Result<Vec<Page>> 
 			base64: String::new(),
 			text: String::new(),
 		};
-		pages.push(page)
+		pages.push(page);
+		index += 1;
 	}
 
+	aidoku::prelude::println!("pages: {:?}", pages);
 	Ok(pages)
 }
 
