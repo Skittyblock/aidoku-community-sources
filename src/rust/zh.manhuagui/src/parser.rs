@@ -1,5 +1,4 @@
-use crate::decoder::Decoder;
-use crate::helper::{self, encode_uri, i32_to_string};
+use crate::{helper::{self, encode_uri, i32_to_string}, decoder::{decompress_from_base64, Decoder}};
 
 use aidoku::{
 	error::Result,
@@ -189,22 +188,22 @@ pub fn get_chapter_list(html: Node) -> Result<Vec<Chapter>> {
 	let mut chapters: Vec<Chapter> = Vec::new();
 	let mut index = 1.0;
 
-	aidoku::prelude::println!("html: {:?}", html.clone().html().read());
-	// for element in html.select(".chapter-list > ul > li").array() {
-	for element in html.select(".chapter-list").array() {
-		let div = element.as_node().unwrap();
+	let mut div = html.clone();
+	let hidden = html.clone().html().read().contains("__VIEWSTATE");
+	if hidden {
+		let compressed = html.clone().select("#__VIEWSTATE").attr("value").read();
+		let decompressed = String::from_utf16(&decompress_from_base64(compressed.as_str()).unwrap()).unwrap();
+		div = Node::new_fragment(decompressed.as_bytes()).unwrap();
+	}
 
-		aidoku::prelude::println!("chapter list: {:?}", div.clone().html().read());
+	for element in div.select(".chapter-list").array() {
+		let chapt_list_div = element.as_node().unwrap();
 
-		for ul_ref in div.select("ul").array() {
+		for ul_ref in chapt_list_div.select("ul").array() {
 			let ul = ul_ref.as_node().unwrap();
-			aidoku::prelude::println!("ul: {:?}", ul.clone().html().read());
 
 			for li_ref in ul.select("li").array() {
 				let elem = li_ref.as_node().unwrap();
-				aidoku::prelude::println!("li: {:?}", elem.clone().html().read());
-
-				// let elem = element.as_node().unwrap();
 
 				let url = elem.select("a").attr("href").read();
 				let id = url.clone().replace("/comic/", "").replace(".html", "");

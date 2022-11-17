@@ -311,7 +311,7 @@ where
 	}
 }
 
-fn decompress_from_base64(compressed: &str) -> Option<Vec<u16>> {
+pub fn decompress_from_base64(compressed: &str) -> Option<Vec<u16>> {
 	let compressed: Option<Vec<u16>> = compressed
 		.encode_utf16()
 		.flat_map(|c| {
