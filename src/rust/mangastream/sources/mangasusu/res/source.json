@@ -1,0 +1,15 @@
+{
+	"info": {
+		"id": "id.mangasusu",
+		"lang": "id",
+		"name": "Mangasusu",
+		"version": 1,
+		"url": "https://194.233.87.209",
+		"nsfw": 2
+	},
+	"listings": [
+		{ "name": "Popular" },
+		{ "name": "Latest" },
+		{ "name": "New" }
+	]
+}
