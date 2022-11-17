@@ -1,12 +1,12 @@
-use crate::decoder::{ Decoder };
-use crate::helper::{i32_to_string, encode_uri, self};
+use crate::decoder::Decoder;
+use crate::helper::{self, encode_uri, i32_to_string};
 
 use aidoku::{
 	error::Result,
 	prelude::*,
 	std::html::Node,
 	std::Vec,
-	std::{ObjectRef, String, net::HttpMethod, net::Request},
+	std::{net::HttpMethod, net::Request, ObjectRef, String},
 	Chapter, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
 	MangaViewer, Page,
 };
@@ -188,36 +188,53 @@ pub fn parse_manga_details(html: Node, manga_id: String) -> Result<Manga> {
 pub fn get_chapter_list(html: Node) -> Result<Vec<Chapter>> {
 	let mut chapters: Vec<Chapter> = Vec::new();
 	let mut index = 1.0;
-	for element in html.select(".chapter-list > ul > li").array() {
-		let elem = element.as_node().unwrap();
 
-		let url = elem.select("a").attr("href").read();
-		let id = url.clone().replace("/comic/", "").replace(".html", "");
-		let title = elem.select("a").attr("title").read();
-		let mut ch = title
-			.clone()
-			.replace("第", "")
-			.replace("话", "")
-			.replace("卷", "")
-			.parse::<f32>()
-			.unwrap_or(index);
-		if title.contains("卷") {
-			ch += 99999.0;
+	aidoku::prelude::println!("html: {:?}", html.clone().html().read());
+	// for element in html.select(".chapter-list > ul > li").array() {
+	for element in html.select(".chapter-list").array() {
+		let div = element.as_node().unwrap();
+
+		aidoku::prelude::println!("chapter list: {:?}", div.clone().html().read());
+
+		for ul_ref in div.select("ul").array() {
+			let ul = ul_ref.as_node().unwrap();
+			aidoku::prelude::println!("ul: {:?}", ul.clone().html().read());
+
+			for li_ref in ul.select("li").array() {
+				let elem = li_ref.as_node().unwrap();
+				aidoku::prelude::println!("li: {:?}", elem.clone().html().read());
+
+				// let elem = element.as_node().unwrap();
+
+				let url = elem.select("a").attr("href").read();
+				let id = url.clone().replace("/comic/", "").replace(".html", "");
+				let title = elem.select("a").attr("title").read();
+				let mut ch = title
+					.clone()
+					.replace("第", "")
+					.replace("话", "")
+					.replace("卷", "")
+					.parse::<f32>()
+					.unwrap_or(index);
+				if title.contains("卷") {
+					ch += 99999.0;
+				}
+
+				let chapter = Chapter {
+					id,
+					title,
+					volume: -1.0,
+					chapter: ch,
+					date_updated: index as f64,
+					scanlator: String::new(),
+					url,
+					lang: String::from("zh"),
+				};
+
+				chapters.push(chapter);
+				index += 1.0;
+			}
 		}
-
-		let chapter = Chapter {
-			id,
-			title,
-			volume: -1.0,
-			chapter: ch,
-			date_updated: index as f64,
-			scanlator: String::new(),
-			url,
-			lang: String::from("zh"),
-		};
-
-		chapters.push(chapter);
-		index += 1.0;
 	}
 
 	Ok(chapters)
@@ -240,7 +257,12 @@ pub fn get_page_list(base_url: String, mobile_url: String) -> Result<Vec<Page>> 
 		aidoku::prelude::println!("page_url: {}", url);
 		let encoded_url = helper::encode_uri(&url);
 		aidoku::prelude::println!("encoded_url: {}", encoded_url);
-		let page: Page = Page { index, url: encoded_url, base64: String::new(), text: String::new() };
+		let page: Page = Page {
+			index,
+			url: encoded_url,
+			base64: String::new(),
+			text: String::new(),
+		};
 		pages.push(page)
 	}
 
@@ -263,7 +285,8 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32, url: &mut String) {
 		match filter.kind {
 			FilterType::Title => {
 				if let Ok(filter_value) = filter.value.as_string() {
-					search_string.push_str(encode_uri(&filter_value.read().to_lowercase()).as_str());
+					search_string
+						.push_str(encode_uri(&filter_value.read().to_lowercase()).as_str());
 					is_searching = true;
 				}
 			}
