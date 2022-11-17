@@ -13,6 +13,9 @@ use aidoku::{
 
 use crate::helper::*;
 
+extern crate alloc;
+use alloc::string::ToString;
+
 pub struct MadaraSiteData {
 	pub base_url: String,
 	pub lang: String,
@@ -186,13 +189,20 @@ pub fn get_series_page(data: MadaraSiteData, listing: &str, page: i32) -> Result
 			continue;
 		}
 
-		let id = obj
-			.select("h3.h5 > a")
-			.attr("href")
-			.read()
-			.replace(&data.base_url.clone(), "")
-			.replace(&data.source_path.clone(), "")
-			.replace('/', "");
+		let base_id = obj.select("h3.h5 > a").attr("href").read();
+		let final_path = base_id
+			.strip_prefix(&data.base_url)
+			.unwrap_or(&base_id)
+			.strip_prefix('/')
+			.unwrap_or(&base_id)
+			.strip_prefix(&data.source_path)
+			.unwrap_or(&base_id)
+			.strip_prefix('/')
+			.unwrap_or(&base_id);
+		let id = final_path
+			.strip_suffix('/')
+			.unwrap_or(final_path)
+			.to_string();
 
 		let title = obj.select("h3.h5 > a").text().read();
 

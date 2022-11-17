@@ -5,6 +5,9 @@ use aidoku::{
 
 use crate::template::MadaraSiteData;
 
+extern crate alloc;
+use alloc::string::ToString;
+
 pub fn urlencode(string: String) -> String {
 	let mut result: Vec<u8> = Vec::with_capacity(string.len() * 3);
 	let hex = "0123456789abcdef".as_bytes();
@@ -62,28 +65,6 @@ pub fn img_url_encode(string: String) -> String {
 		}
 	}
 	String::from_utf8(result).unwrap_or_default()
-}
-
-pub fn i32_to_string(mut integer: i32) -> String {
-	if integer == 0 {
-		return String::from("0");
-	}
-	let mut string = String::with_capacity(11);
-	let pos = if integer < 0 {
-		string.insert(0, '-');
-		1
-	} else {
-		0
-	};
-	while integer != 0 {
-		let mut digit = integer % 10;
-		if pos == 1 {
-			digit *= -1;
-		}
-		string.insert(pos, char::from_u32((digit as u32) + ('0' as u32)).unwrap());
-		integer /= 10;
-	}
-	string
 }
 
 pub fn get_image_url(obj: Node) -> String {
@@ -196,7 +177,7 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32, data: &MadaraSiteData) 
 		url.push('/');
 		url.push_str(&data.search_path);
 		url.push('/');
-		url.push_str(&i32_to_string(page));
+		url.push_str(&page.to_string());
 		url.push_str("/?s=");
 		url.push_str(&search_string);
 		url.push_str(&post_type);
