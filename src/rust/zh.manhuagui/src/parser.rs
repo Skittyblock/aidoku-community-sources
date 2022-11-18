@@ -1,18 +1,21 @@
-use crate::{helper::{self, encode_uri, i32_to_string}, decoder::{decompress_from_base64, Decoder}};
+use crate::{
+	decoder::{decompress_from_base64, Decoder},
+	helper::{self, encode_uri, i32_to_string},
+};
 
 use aidoku::{
 	error::Result,
 	prelude::*,
 	std::html::Node,
 	std::Vec,
-	std::{net::HttpMethod, net::Request, ObjectRef, String},
+	std::{net::HttpMethod, net::Request, String},
 	Chapter, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
 	MangaViewer, Page,
 };
 use alloc::vec;
 
 const BASE_URL: &str = "https://www.manhuagui.com";
-const mobileURL: &str = "https://m.manhuagui.com";
+// const mobileURL: &str = "https://m.manhuagui.com";
 
 const FILTER_REGION: [&str; 7] = [
 	"all", "japan", "hongkong", "other", "europe", "china", "korea",
@@ -76,7 +79,7 @@ pub fn parse_home_page(html: Node) -> Result<MangaPageResult> {
 			.attr("href")
 			.read()
 			.replace("/comic/", "")
-			.replace("/", "");
+			.replace('/', "");
 		let title = elem.select("a").attr("title").read();
 		let manga = Manga {
 			id: manga_id.clone(),
@@ -121,7 +124,7 @@ pub fn parse_search_page(html: Node) -> Result<MangaPageResult> {
 			.attr("href")
 			.read()
 			.replace("/comic/", "")
-			.replace("/", "");
+			.replace('/', "");
 		let title = elem.attr("title").read();
 		let manga = Manga {
 			id: manga_id.clone(),
@@ -170,9 +173,9 @@ pub fn parse_manga_details(html: Node, manga_id: String) -> Result<Manga> {
 	let _manga = Manga {
 		id: manga_id,
 		cover: image,
-		title: title,
+		title,
 		author: author.clone(),
-		artist: author.clone(),
+		artist: author,
 		description: desc,
 		url,
 		categories: vec![],
@@ -189,10 +192,11 @@ pub fn get_chapter_list(html: Node) -> Result<Vec<Chapter>> {
 	let mut index = 1.0;
 
 	let mut div = html.clone();
-	let hidden = html.clone().html().read().contains("__VIEWSTATE");
+	let hidden = html.html().read().contains("__VIEWSTATE");
 	if hidden {
-		let compressed = html.clone().select("#__VIEWSTATE").attr("value").read();
-		let decompressed = String::from_utf16(&decompress_from_base64(compressed.as_str()).unwrap()).unwrap();
+		let compressed = html.select("#__VIEWSTATE").attr("value").read();
+		let decompressed =
+			String::from_utf16(&decompress_from_base64(compressed.as_str()).unwrap()).unwrap();
 		div = Node::new_fragment(decompressed.as_bytes()).unwrap();
 	}
 
@@ -210,12 +214,10 @@ pub fn get_chapter_list(html: Node) -> Result<Vec<Chapter>> {
 				let title = elem.select("a").attr("title").read();
 				let mut ch = title
 					.clone()
-					.replace("第", "")
-					.replace("话", "")
-					.replace("卷", "")
+					.replace(['第', '话', '卷'], "")
 					.parse::<f32>()
 					.unwrap_or(index);
-				if title.contains("卷") {
+				if title.contains('卷') {
 					ch += 99999.0;
 				}
 
@@ -239,36 +241,28 @@ pub fn get_chapter_list(html: Node) -> Result<Vec<Chapter>> {
 	Ok(chapters)
 }
 
-pub fn get_page_list(base_url: String, mobile_url: String) -> Result<Vec<Page>> {
+pub fn get_page_list(base_url: String) -> Result<Vec<Page>> {
 	let mut pages: Vec<Page> = Vec::new();
-
-	aidoku::prelude::println!("base_url: {}", base_url);
-	aidoku::prelude::println!("mobile_url: {}", mobile_url);
 
 	let html = Request::new(base_url.as_str(), HttpMethod::Get).html()?;
 
 	let decoder = Decoder::new(html.html().read());
 	let (path, pages_str) = decoder.decode();
 
-	aidoku::prelude::println!("pages_str: {:?}", pages_str);
-
-	let mut index = 0;
-	for str in pages_str {
+	// let mut index = 0;
+	for (index, str) in pages_str.into_iter().enumerate() {
 		let url = format!("https://i.hamreus.com{}{}", path, str);
-		aidoku::prelude::println!("page_url: {}", url);
 		let encoded_url = helper::encode_uri(&url);
-		aidoku::prelude::println!("encoded_url: {}", encoded_url);
 		let page: Page = Page {
-			index,
+			index: index.try_into().unwrap(),
 			url: encoded_url,
 			base64: String::new(),
 			text: String::new(),
 		};
 		pages.push(page);
-		index += 1;
+		// index += 1;
 	}
 
-	aidoku::prelude::println!("pages: {:?}", pages);
 	Ok(pages)
 }
 

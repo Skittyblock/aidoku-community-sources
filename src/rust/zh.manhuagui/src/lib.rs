@@ -11,7 +11,7 @@ use aidoku::{
 };
 
 const BASE_URL: &str = "https://www.manhuagui.com";
-const MOBILE_URL: &str = "https://m.manhuagui.com";
+// const MOBILE_URL: &str = "https://m.manhuagui.com";
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
@@ -22,7 +22,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	let html = Request::new(url.as_str(), HttpMethod::Get).html()?;
 	if url.contains("https://www.manhuagui.com/list/") {
 		let result = parser::parse_home_page(html).unwrap();
-		return Ok(result)
+		return Ok(result);
 	}
 	let result = parser::parse_search_page(html).unwrap();
 	Ok(result)
@@ -45,11 +45,10 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 }
 
 #[get_page_list]
-fn get_page_list(chapter_id: String, _manga_id: String) -> Result<Vec<Page>> {
-	let base_url = format!("{}/comic/{}.html", BASE_URL,_manga_id);
-	let mobile_url = format!("{}/comic/{}.html", MOBILE_URL, _manga_id);
-    
-	let result = parser::get_page_list(base_url, mobile_url).unwrap();
+fn get_page_list(_chapter_id: String, _manga_id: String) -> Result<Vec<Page>> {
+	let base_url = format!("{}/comic/{}.html", BASE_URL, _manga_id);
+
+	let result = parser::get_page_list(base_url).unwrap();
 	Ok(result)
 }
 

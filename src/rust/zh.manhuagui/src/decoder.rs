@@ -1,7 +1,10 @@
 // use core::{iter::Map, ops::{Index, IndexMut}};
 
-use aidoku::{std::{String, Vec, format, json}, prelude::format};
-use alloc::{vec, string::ToString};
+use aidoku::{
+	prelude::format,
+	std::{String, Vec},
+};
+use alloc::vec;
 
 pub struct Decoder {
 	func: String,
@@ -19,137 +22,170 @@ impl Decoder {
 		let func = get_func(script.clone());
 		let a = get_a(script.clone(), func.clone()).parse::<i32>().unwrap();
 		let c = get_c(script.clone(), func.clone()).parse::<i32>().unwrap();
-		let data: Vec<String> = get_data(script.clone(), func.clone());
-
-		aidoku::prelude::println!("data: {:?}", data);
+		let data: Vec<String> = get_data(script, func.clone());
 
 		Decoder { func, a, c, data }
 	}
 
 	fn e(&self, c: i32) -> String {
 		let mut prefix: String = String::new();
-		if (c >= self.a) {prefix = self.e(c / self.a);}
+		if c >= self.a {
+			prefix = self.e(c / self.a);
+		}
 
-        let _vec = vec![self.tr(c % self.a, 36), String::from_utf8(vec![(c % self.a + 29) as u8]).unwrap()];
-        let mut _index =  0; 
-        if c % self.a > 35 {_index = 1;}
-        let suffix = _vec[_index].clone();
+		let _vec = vec![
+			self.tr(c % self.a, 36),
+			String::from_utf8(vec![(c % self.a + 29) as u8]).unwrap(),
+		];
+		let mut _index = 0;
+		if c % self.a > 35 {
+			_index = 1;
+		}
+		let suffix = _vec[_index].clone();
 
-        return format!("{}{}", prefix, suffix);
+		format!("{}{}", prefix, suffix)
 	}
 
-    fn tr(&self, value: i32, num: i32) -> String {
-        let tmp = self.itr(value, num);
-        if tmp.eq("") { return String::from("0"); }
-        return tmp;
-    }
+	fn tr(&self, value: i32, num: i32) -> String {
+		let tmp = Self::itr(value, num);
+		if tmp.eq("") {
+			return String::from("0");
+		}
+		tmp
+	}
 
-    fn itr(&self, value: i32, num: i32) -> String {
-        let d = String::from("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
-        if value <= 0 {
-            return String::from("");
-        }
-        let first = self.itr(value / num, num);
-        let second = d.chars().nth((value % num) as usize).unwrap();
-        return format!("{}{}", first, second);
-    }
+	fn itr(value: i32, num: i32) -> String {
+		let d = String::from("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
+		if value <= 0 {
+			return String::from("");
+		}
+		let first = Self::itr(value / num, num);
+		let second = d.chars().nth((value % num) as usize).unwrap();
+		format!("{}{}", first, second)
+	}
+
+	// fn itr(&self, value: i32, num: i32) -> String {
+	// 	let d = String::from("
+	// 0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"); 	if value <=
+	// 0 { 		return String::from("");
+	// 	}
+	// 	let first = self.itr(value / num, num);
+	// 	let second = d.chars().nth((value % num) as usize).unwrap();
+	// 	format!("{}{}", first, second)
+	// }
 
 	pub fn decode(&self) -> (String, Vec<String>) {
-        let mut c = (self.c - 1).clone();
-        let mut d_key: Vec<String> = vec![];
-        let mut d_value: Vec<String> = vec![];
-        while c > -1 {
-            let key = self.e(c);
-            let mut _value_index = 0;
-            if self.data[c as usize].eq("") {
-                _value_index = 1;
-            }
-            let value = vec![self.data[c as usize].clone(), self.e(c)][_value_index].clone();
+		let mut c = self.c - 1;
+		let mut d_key: Vec<String> = vec![];
+		let mut d_value: Vec<String> = vec![];
+		while c > -1 {
+			let key = self.e(c);
+			let mut _value_index = 0;
+			if self.data[c as usize].eq("") {
+				_value_index = 1;
+			}
+			let value = vec![self.data[c as usize].clone(), self.e(c)][_value_index].clone();
 
-            let index = d_key.clone().iter().position(|r| r.eq(key.as_str())).unwrap_or(999);
-            if index == 999 {
-                d_key.push(key);
-                d_value.push(value);
-            } else {
-                d_key[index] = key;
-                d_value[index] = value;
-            }
-            c -= 1;
-        }
+			let index = d_key
+				.clone()
+				.iter()
+				.position(|r| r.eq(key.as_str()))
+				.unwrap_or(999);
+			if index == 999 {
+				d_key.push(key);
+				d_value.push(value);
+			} else {
+				d_key[index] = key;
+				d_value[index] = value;
+			}
+			c -= 1;
+		}
 
-        let mut func = self.func.clone();
-        let mut result: Vec<String> = vec![];
-        let mut splited: Vec<String> = vec![];
-        let mut skip_next = false;
-        for (a, b) in func.split("").into_iter().zip(func.clone().split("").into_iter().skip(1)) {
-            if skip_next {
-                skip_next = false;
-                continue;
-            }
-            let key = format!("{}{}", a, b);
-            if d_key.contains(&key) {
-                splited.push(key);
-                skip_next = true;
-            } else {
-                splited.push(String::from(a));
-            }
-        }
-        if !skip_next {
-            let last = func.split("").into_iter().last().unwrap();
-            splited.push(String::from(last));
-        }
+		let func = self.func.clone();
+		let mut result: Vec<String> = vec![];
+		let mut splited: Vec<String> = vec![];
+		let mut skip_next = false;
+		for (a, b) in func
+			.split("")
+			.into_iter()
+			.zip(func.clone().split("").into_iter().skip(1))
+		{
+			if skip_next {
+				skip_next = false;
+				continue;
+			}
+			let key = format!("{}{}", a, b);
+			if d_key.contains(&key) {
+				splited.push(key);
+				skip_next = true;
+			} else {
+				splited.push(String::from(a));
+			}
+		}
+		if !skip_next {
+			let last = func.split("").into_iter().last().unwrap();
+			splited.push(String::from(last));
+		}
 
-        for ori in splited {
-            if d_key.contains(&ori) {
-                let index = d_key.clone().iter().position(|r| r.eq(ori.as_str())).unwrap();
-                result.push(d_value[index].clone());
-            } else {
-                result.push(ori);
-            }
-        }
+		for ori in splited {
+			if d_key.contains(&ori) {
+				let index = d_key
+					.clone()
+					.iter()
+					.position(|r| r.eq(ori.as_str()))
+					.unwrap();
+				result.push(d_value[index].clone());
+			} else {
+				result.push(ori);
+			}
+		}
 
-        let js = result.join("");
-        let mut json = String::new();
+		let js = result.join("");
+		let mut json = String::new();
 
-        for (i, s) in js.split(".imgData(").into_iter().enumerate() {
-            if i == 1 {
-                for (j, ss) in String::from(s).clone().split(").preInit();").into_iter().enumerate() {
-                    if j == 0 {
-                        json = String::from(ss);
-                    }
-                }
-            }
-        }
+		for (i, s) in js.split(".imgData(").into_iter().enumerate() {
+			if i == 1 {
+				for (j, ss) in String::from(s)
+					.clone()
+					.split(").preInit();")
+					.into_iter()
+					.enumerate()
+				{
+					if j == 0 {
+						json = String::from(ss);
+					}
+				}
+			}
+		}
 
-        let mut pages: Vec<String> = vec![];
-        let mut path: String = String::new();
+		let mut pages: Vec<String> = vec![];
+		let mut path: String = String::new();
 
-        for (i, s) in json.clone().split("[").into_iter().enumerate() {
-            if i == 1 {
-                for (j, ss) in s.clone().split("]").into_iter().enumerate() {
-                    if j == 0 {
-                        // get files here
-                        for sss in ss.split(",") {
-                            pages.push(String::from(sss).replace("\"", ""));
-                        }
-                    } else if j == 1 {
-                        // get path here
-                        for (k, sss) in ss.split("\"path\":\"").into_iter().enumerate() {
-                            if k == 1 {
-                                for (x, ssss) in sss.split("\",\"").into_iter().enumerate() {
-                                    aidoku::prelude::println!("x:{}, ssss: {}", x, ssss);
-                                    if x == 0 {
-                                        path = String::from(ssss);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        
-        return (path, pages);
+		for (i, s) in json.split('[').into_iter().enumerate() {
+			if i == 1 {
+				for (j, ss) in s.split(']').into_iter().enumerate() {
+					if j == 0 {
+						// get files here
+						for sss in ss.split(',') {
+							pages.push(String::from(sss).replace('\"', ""));
+						}
+					} else if j == 1 {
+						// get path here
+						for (k, sss) in ss.split("\"path\":\"").into_iter().enumerate() {
+							if k == 1 {
+								for (x, ssss) in sss.split("\",\"").into_iter().enumerate() {
+									if x == 0 {
+										path = String::from(ssss);
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		(path, pages)
 	}
 }
 
@@ -165,7 +201,7 @@ fn get_script(document: String) -> String {
 		}
 	}
 
-	return script;
+	script
 }
 
 fn get_func(script: String) -> String {
@@ -173,14 +209,14 @@ fn get_func(script: String) -> String {
 	for splited in script.split(";return p;}") {
 		if splited.starts_with("('") {
 			for s in splited.split("',") {
-				if s.starts_with("(") {
+				if s.starts_with('(') {
 					func.push_str(s.replacen("('", "", 1).as_str());
 				}
 			}
 		}
 	}
 
-	return func;
+	func
 }
 
 fn get_a(script: String, func: String) -> String {
@@ -188,18 +224,16 @@ fn get_a(script: String, func: String) -> String {
 	for splited in script.split(";return p;}") {
 		if splited.starts_with("('") {
 			let s = splited.replace(func.as_str(), "func");
-			let mut index = 0;
-			for ss in s.split(",") {
-				if index == 1 {
+			for (i, ss) in s.split(',').enumerate() {
+				if i == 1 {
 					a.push_str(ss);
 					break;
 				}
-				index += 1;
 			}
 		}
 	}
 
-	return a;
+	a
 }
 
 fn get_c(script: String, func: String) -> String {
@@ -207,52 +241,49 @@ fn get_c(script: String, func: String) -> String {
 	for splited in script.split(";return p;}") {
 		if splited.starts_with("('") {
 			let s = splited.replace(func.as_str(), "func");
-			let mut index = 0;
-			for ss in s.split(",") {
+			// let mut index = 0;
+			for (index, ss) in s.split(',').enumerate() {
 				if index == 2 {
 					c.push_str(ss);
 					break;
 				}
-				index += 1;
+				// index += 1;
 			}
 		}
 	}
 
-	return c;
+	c
 }
 
 fn get_data(script: String, func: String) -> Vec<String> {
 	let mut data: Vec<String> = Vec::new();
-	let mut dataStr: String = String::new();
+	let mut data_str: String = String::new();
 	for splited in script.split(";return p;}") {
 		if splited.starts_with("('") {
 			let s = splited.replace(func.as_str(), "func");
-			let mut i = 0;
-			for ss in s.split(",") {
+			for (i, ss) in s.split(',').enumerate() {
 				if i == 3 {
-					let mut j = 0;
-					for sss in ss.split("'") {
+					for (j, sss) in ss.split('\'').enumerate() {
 						if j == 1 {
-							dataStr.push_str(sss);
+							data_str.push_str(sss);
 						}
-						j += 1;
 					}
 					break;
 				}
-				i += 1;
 			}
 		}
 	}
 
-	dataStr = String::from_utf16(&decompress_from_base64(dataStr.as_str()).unwrap()).unwrap();
-	for str in dataStr.split("|") {
+	data_str = String::from_utf16(&decompress_from_base64(data_str.as_str()).unwrap()).unwrap();
+	for str in data_str.split('|') {
 		data.push(String::from(str));
 	}
-	return data;
+	data
 }
 
 // LZ String
-const URI_KEY: &[u8] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-$";
+// const URI_KEY: &[u8] =
+// b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-$";
 const BASE64_KEY: &[u8] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
 const U8_CODE: u8 = 0;
 const U16_CODE: u8 = 1;
