@@ -43,8 +43,8 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 }
 
 #[get_page_list]
-fn get_page_list(_chapter_id: String, _manga_id: String) -> Result<Vec<Page>> {
-	let base_url = format!("{}/comic/{}.html", BASE_URL, _manga_id);
+fn get_page_list(_chapter_id: String, manga_id: String) -> Result<Vec<Page>> {
+	let base_url = format!("{}/comic/{}.html", BASE_URL, manga_id);
 
 	let result = parser::get_page_list(base_url).unwrap();
 	Ok(result)
