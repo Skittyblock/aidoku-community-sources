@@ -254,7 +254,7 @@ pub fn get_page_list(base_url: String) -> Result<Vec<Page>> {
 		let url = format!("https://i.hamreus.com{}{}", path, str);
 		let encoded_url = helper::encode_uri(&url);
 		let page: Page = Page {
-			index: index.try_into().unwrap(),
+			index: index as i32,
 			url: encoded_url,
 			base64: String::new(),
 			text: String::new(),
