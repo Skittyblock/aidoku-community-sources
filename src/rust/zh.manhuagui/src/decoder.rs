@@ -28,10 +28,7 @@ impl Decoder {
 	}
 
 	fn e(&self, c: i32) -> String {
-		let mut prefix: String = String::new();
-		if c >= self.a {
-			prefix = self.e(c / self.a);
-		}
+		let prefix: String = if c >= self.a { self.e(c / self.a) } else { String::new() };
 
 		let _vec = vec![
 			self.tr(c % self.a, 36),
