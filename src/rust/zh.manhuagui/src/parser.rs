@@ -153,7 +153,6 @@ pub fn parse_search_page(html: Node) -> Result<MangaPageResult> {
 		}
 	}
 
-	html.close();
 
 	Ok(MangaPageResult {
 		manga: mangas,
