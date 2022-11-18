@@ -15,13 +15,12 @@ pub struct Decoder {
 
 impl Decoder {
 	pub fn new(document: String) -> Self {
-		// aidoku::prelude::println!("document: {}", document);
 
 		let script = get_script(document);
 
 		let func = get_func(script.clone());
-		let a = get_a(script.clone(), func.clone()).parse::<i32>().unwrap();
-		let c = get_c(script.clone(), func.clone()).parse::<i32>().unwrap();
+		let a = get_a(script.clone(), func.clone()).parse::<i32>().unwrap_or(-1);
+		let c = get_c(script.clone(), func.clone()).parse::<i32>().unwrap_or(-1);
 		let data: Vec<String> = get_data(script, func.clone());
 
 		Decoder { func, a, c, data }
@@ -30,11 +29,11 @@ impl Decoder {
 	fn e(&self, c: i32) -> String {
 		let prefix: String = if c >= self.a { self.e(c / self.a) } else { String::new() };
 
-		let _vec = vec![
+		let suffix_vec = vec![
 			self.tr(c % self.a, 36),
 			String::from_utf8(vec![(c % self.a + 29) as u8]).unwrap(),
 		];
-		let suffix = _vec[if c % self.a > 35 { 1 } else { 0 }].clone();
+		let suffix = suffix_vec[(c % self.a > 35) as usize].clone();
 
 		format!("{}{}", prefix, suffix)
 	}
@@ -57,27 +56,14 @@ impl Decoder {
 		format!("{}{}", first, second)
 	}
 
-	// fn itr(&self, value: i32, num: i32) -> String {
-	// 	let d = String::from("
-	// 0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"); 	if value <=
-	// 0 { 		return String::from("");
-	// 	}
-	// 	let first = self.itr(value / num, num);
-	// 	let second = d.chars().nth((value % num) as usize).unwrap();
-	// 	format!("{}{}", first, second)
-	// }
-
 	pub fn decode(&self) -> (String, Vec<String>) {
 		let mut c = self.c - 1;
 		let mut d_key: Vec<String> = vec![];
 		let mut d_value: Vec<String> = vec![];
 		while c > -1 {
 			let key = self.e(c);
-			let mut _value_index = 0;
-			if self.data[c as usize].eq("") {
-				_value_index = 1;
-			}
-			let value = vec![self.data[c as usize].clone(), self.e(c)][_value_index].clone();
+			let value_index = self.data[c as usize].eq("") as usize;
+			let value = vec![self.data[c as usize].clone(), self.e(c)][value_index].clone();
 
 			let index = d_key
 				.clone()
@@ -126,7 +112,7 @@ impl Decoder {
 					.clone()
 					.iter()
 					.position(|r| r.eq(ori.as_str()))
-					.unwrap();
+					.unwrap_or(0);
 				result.push(d_value[index].clone());
 			} else {
 				result.push(ori);
@@ -234,13 +220,11 @@ fn get_c(script: String, func: String) -> String {
 	for splited in script.split(";return p;}") {
 		if splited.starts_with("('") {
 			let s = splited.replace(func.as_str(), "func");
-			// let mut index = 0;
 			for (index, ss) in s.split(',').enumerate() {
 				if index == 2 {
 					c.push_str(ss);
 					break;
 				}
-				// index += 1;
 			}
 		}
 	}

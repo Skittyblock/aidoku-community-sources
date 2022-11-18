@@ -1,6 +1,6 @@
 use crate::{
 	decoder::{decompress_from_base64, Decoder},
-	helper::{self, encode_uri, i32_to_string},
+	helper::{self, encode_uri},
 };
 
 use aidoku::{
@@ -12,10 +12,9 @@ use aidoku::{
 	Chapter, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
 	MangaViewer, Page,
 };
-use alloc::vec;
+use alloc::{vec, string::ToString};
 
 const BASE_URL: &str = "https://www.manhuagui.com";
-// const mobileURL: &str = "https://m.manhuagui.com";
 
 const FILTER_REGION: [&str; 7] = [
 	"all", "japan", "hongkong", "other", "europe", "china", "korea",
@@ -70,7 +69,6 @@ pub fn parse_home_page(html: Node) -> Result<MangaPageResult> {
 	let mut mangas: Vec<Manga> = Vec::new();
 
 	let ul = "#contList > li";
-	// let elements = html.select(ul).array();
 
 	for element in html.select(ul).array() {
 		let elem = match element.as_node() {
@@ -102,7 +100,11 @@ pub fn parse_home_page(html: Node) -> Result<MangaPageResult> {
 
 	let mut has_next: bool = false;
 	for page in html.select("#AspNetPager1 > a").array() {
-		if page.as_node().unwrap().text().read() == "尾页" {
+		let elem_node = match page.as_node() {
+			Ok(node) => node,
+			Err(_) => continue,
+		};
+		if elem_node.text().read() == "尾页" {
 			has_next = true;
 			break;
 		}
@@ -122,7 +124,10 @@ pub fn parse_search_page(html: Node) -> Result<MangaPageResult> {
 	let ul = ".cf > .book-cover > a";
 
 	for element in html.select(ul).array() {
-		let elem = element.as_node().unwrap();
+		let elem = match element.as_node() {
+			Ok(node) => node,
+			Err(_) => continue,
+		};
 		let manga_id = elem
 			.attr("href")
 			.read()
@@ -147,7 +152,11 @@ pub fn parse_search_page(html: Node) -> Result<MangaPageResult> {
 
 	let mut has_next: bool = false;
 	for page in html.select("#AspNetPagerResult > a").array() {
-		if page.as_node().unwrap().text().read() == "尾页" {
+		let page_node = match page.as_node() {
+			Ok(node) => node,
+			Err(_) => continue,
+		};
+		if page_node.text().read() == "尾页" {
 			has_next = true;
 			break;
 		}
@@ -198,21 +207,34 @@ pub fn get_chapter_list(html: Node) -> Result<Vec<Chapter>> {
 	if hidden {
 		let compressed = html.select("#__VIEWSTATE").attr("value").read();
 		let decompressed =
-			String::from_utf16(&decompress_from_base64(compressed.as_str()).unwrap()).unwrap();
-		div = Node::new_fragment(decompressed.as_bytes()).unwrap();
+			String::from_utf16(&decompress_from_base64(compressed.as_str()).unwrap_or_default()).unwrap_or_default();
+		div = Node::new_fragment(decompressed.as_bytes()).unwrap_or(div);
 	}
 
 	for element in div.select(".chapter-list").array() {
-		let chapt_list_div = element.as_node().unwrap();
+		let chapt_list_div = match element.as_node() {
+			Ok(node) => node,
+			Err(_) => continue,
+		};
 
 		for ul_ref in chapt_list_div.select("ul").array() {
-			let ul = ul_ref.as_node().unwrap();
+			let ul = match ul_ref.as_node() {
+				Ok(node) => node,
+				Err(_) => continue,
+			};
 
 			for li_ref in ul.select("li").array() {
-				let elem = li_ref.as_node().unwrap();
+				let elem = match li_ref.as_node() {
+					Ok(node) => node,
+					Err(_) => continue,
+				};
 
 				let url = elem.select("a").attr("href").read();
 				let id = url.clone().replace("/comic/", "").replace(".html", "");
+				let chapter_id = match id.split("/").last() {
+					Some(id) => String::from(id),
+					None => String::new(),
+				};
 				let title = elem.select("a").attr("title").read();
 				let mut ch = title
 					.clone()
@@ -224,7 +246,7 @@ pub fn get_chapter_list(html: Node) -> Result<Vec<Chapter>> {
 				}
 
 				let chapter = Chapter {
-					id,
+					id: chapter_id,
 					title,
 					volume: -1.0,
 					chapter: ch,
@@ -251,7 +273,6 @@ pub fn get_page_list(base_url: String) -> Result<Vec<Page>> {
 	let decoder = Decoder::new(html.html().read());
 	let (path, pages_str) = decoder.decode();
 
-	// let mut index = 0;
 	for (index, str) in pages_str.into_iter().enumerate() {
 		let url = format!("https://i.hamreus.com{}{}", path, str);
 		let encoded_url = helper::encode_uri(&url);
@@ -262,7 +283,6 @@ pub fn get_page_list(base_url: String) -> Result<Vec<Page>> {
 			text: String::new(),
 		};
 		pages.push(page);
-		// index += 1;
 	}
 
 	Ok(pages)
@@ -305,7 +325,7 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32, url: &mut String) {
 
 	if is_searching {
 		url.push_str("/s");
-		let search_page_str = format!("/{}_p{}.html", search_string, i32_to_string(page));
+		let search_page_str = format!("/{}_p{}.html", search_string, page.to_string());
 		url.push_str(search_page_str.as_str());
 	} else {
 		url.push_str("/list");
@@ -323,7 +343,7 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32, url: &mut String) {
 			filter_str = format!("/{}", filter_str)
 		}
 
-		let page_str = format!("/index_p{}.html", i32_to_string(page));
+		let page_str = format!("/index_p{}.html", page.to_string());
 
 		url.push_str(filter_str.as_str());
 		url.push_str(page_str.as_str())
