@@ -290,7 +290,7 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32, url: &mut String) {
 				}
 			}
 			FilterType::Select => {
-				let index = filter.value.as_int().unwrap() as usize;
+				let index = filter.value.as_int().unwrap_or(0) as usize;
 				match filter.name.as_str() {
 					"地区" => region = FILTER_REGION[index],
 					"剧情" => genre = FILTER_GENRE[index],
