@@ -37,11 +37,7 @@ impl Decoder {
 			self.tr(c % self.a, 36),
 			String::from_utf8(vec![(c % self.a + 29) as u8]).unwrap(),
 		];
-		let mut _index = 0;
-		if c % self.a > 35 {
-			_index = 1;
-		}
-		let suffix = _vec[_index].clone();
+		let suffix = _vec[if c % self.a > 35 { 1 } else { 0 }].clone();
 
 		format!("{}{}", prefix, suffix)
 	}
