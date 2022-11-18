@@ -21,8 +21,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 
 	let html = Request::new(url.as_str(), HttpMethod::Get).html()?;
 	if url.contains("https://www.manhuagui.com/list/") {
-		let result = parser::parse_home_page(html).unwrap();
-		return Ok(result);
+		return parser::parse_home_page(html);
 	}
 	let result = parser::parse_search_page(html).unwrap();
 	Ok(result)
