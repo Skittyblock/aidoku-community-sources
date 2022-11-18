@@ -73,7 +73,10 @@ pub fn parse_home_page(html: Node) -> Result<MangaPageResult> {
 	// let elements = html.select(ul).array();
 
 	for element in html.select(ul).array() {
-		let elem = element.as_node().unwrap();
+		let elem = match element.as_node() {
+			Ok(node) => node,
+			Err(_) => continue,
+		};
 		let manga_id = elem
 			.select("a")
 			.attr("href")
