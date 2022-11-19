@@ -29,6 +29,7 @@ pub struct MadaraSiteData {
 	pub search_selector: String,
 	pub image_selector: String,
 	pub genre_selector: String,
+	pub description_selector: String,
 
 	pub status_filter_ongoing: String,
 	pub status_filter_completed: String,
@@ -62,6 +63,8 @@ impl Default for MadaraSiteData {
 			// the type of request to perform "post_type={post_type}", some sites (toonily) do not
 			// work with the default
 			post_type: String::from("wp-manga"),
+			// p to select description from
+			description_selector: String::from("div.description-summary div p"),
 			// div to select images from a chapter
 			image_selector: String::from("div.page-break > img"),
 			// div to select all the genres
@@ -259,7 +262,7 @@ pub fn get_manga_details(manga_id: String, data: MadaraSiteData) -> Result<Manga
 	let cover = get_image_url(html.select("div.summary_image img"));
 	let author = html.select("div.author-content a").text().read();
 	let artist = html.select("div.artist-content a").text().read();
-	let description = html.select("div.description-summary div p").text().read();
+	let description = html.select(&data.description_selector).text().read();
 
 	let mut categories: Vec<String> = Vec::new();
 	for item in html.select(data.genre_selector.as_str()).array() {
