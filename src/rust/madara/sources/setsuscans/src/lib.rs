@@ -9,6 +9,7 @@ use madara_template::template;
 fn get_data() -> template::MadaraSiteData {
 	let data: template::MadaraSiteData = template::MadaraSiteData {
 		base_url: String::from("https://setsuscans.com"),
+		description_selector: String::from("div.summary_content_wrap div p"),
 		alt_ajax: true,
 		..Default::default()
 	};
