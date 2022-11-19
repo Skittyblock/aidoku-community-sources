@@ -42,6 +42,7 @@ pub struct MadaraSiteData {
 
 	pub alt_ajax: bool,
 
+	pub get_manga_id: fn(String, String, String) -> String,
 	pub viewer: fn(&Node, &Vec<String>) -> MangaViewer,
 	pub status: fn(&Node) -> MangaStatus,
 	pub nsfw: fn(&Node, &Vec<String>) -> MangaContentRating,
@@ -71,6 +72,7 @@ impl Default for MadaraSiteData {
 			genre_selector: String::from("div.genres-content > a"),
 			// choose between two options for chapter list POST request
 			alt_ajax: false,
+			get_manga_id: get_int_manga_id,
 			// default viewer
 			viewer: |_, _| MangaViewer::Scroll,
 			status: |html| {
@@ -297,7 +299,7 @@ pub fn get_chapter_list(manga_id: String, data: MadaraSiteData) -> Result<Vec<Ch
 			+ "/ajax/chapters";
 	}
 
-	let int_id = get_int_manga_id(manga_id, data.base_url.clone(), data.source_path.clone());
+	let int_id = (data.get_manga_id)(manga_id, data.base_url.clone(), data.source_path.clone());
 	let body_content = format!("action=manga_get_chapters&manga={}", int_id);
 
 	let req = Request::new(url.as_str(), HttpMethod::Post)
