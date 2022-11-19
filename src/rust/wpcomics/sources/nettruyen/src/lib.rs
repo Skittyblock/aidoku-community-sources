@@ -13,7 +13,7 @@ use wpcomics_template::{helper::urlencode, template, template::WPComicsSource};
 
 fn get_instance() -> WPComicsSource {
 	WPComicsSource {
-		base_url: String::from("https://www.nettruyenme.com"),
+		base_url: String::from("https://www.nettruyenin.com"),
 		next_page: "li.active + li > a[title*=\"kết quả\"]",
 		viewer: MangaViewer::Rtl,
 		listing_mapping: |listing| {
