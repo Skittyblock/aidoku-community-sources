@@ -39,6 +39,8 @@ pub fn img_url_encode(string: String) -> String {
 		let curr = *byte;
 		if curr == b'-' {
 			result.push(b'-');
+		} else if curr == b'?' {
+			result.push(b'?');
 		} else if curr == b'%' {
 			result.push(b'%');
 		} else if curr == b'.' {

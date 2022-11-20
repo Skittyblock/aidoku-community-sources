@@ -29,6 +29,7 @@ pub struct MadaraSiteData {
 	pub search_selector: String,
 	pub image_selector: String,
 	pub genre_selector: String,
+	pub description_selector: String,
 
 	pub status_filter_ongoing: String,
 	pub status_filter_completed: String,
@@ -41,6 +42,7 @@ pub struct MadaraSiteData {
 
 	pub alt_ajax: bool,
 
+	pub get_manga_id: fn(String, String, String) -> String,
 	pub viewer: fn(&Node, &Vec<String>) -> MangaViewer,
 	pub status: fn(&Node) -> MangaStatus,
 	pub nsfw: fn(&Node, &Vec<String>) -> MangaContentRating,
@@ -62,12 +64,15 @@ impl Default for MadaraSiteData {
 			// the type of request to perform "post_type={post_type}", some sites (toonily) do not
 			// work with the default
 			post_type: String::from("wp-manga"),
+			// p to select description from
+			description_selector: String::from("div.description-summary div p"),
 			// div to select images from a chapter
 			image_selector: String::from("div.page-break > img"),
 			// div to select all the genres
 			genre_selector: String::from("div.genres-content > a"),
 			// choose between two options for chapter list POST request
 			alt_ajax: false,
+			get_manga_id: get_int_manga_id,
 			// default viewer
 			viewer: |_, _| MangaViewer::Scroll,
 			status: |html| {
@@ -259,7 +264,7 @@ pub fn get_manga_details(manga_id: String, data: MadaraSiteData) -> Result<Manga
 	let cover = get_image_url(html.select("div.summary_image img"));
 	let author = html.select("div.author-content a").text().read();
 	let artist = html.select("div.artist-content a").text().read();
-	let description = html.select("div.description-summary div p").text().read();
+	let description = html.select(&data.description_selector).text().read();
 
 	let mut categories: Vec<String> = Vec::new();
 	for item in html.select(data.genre_selector.as_str()).array() {
@@ -294,7 +299,7 @@ pub fn get_chapter_list(manga_id: String, data: MadaraSiteData) -> Result<Vec<Ch
 			+ "/ajax/chapters";
 	}
 
-	let int_id = get_int_manga_id(manga_id, data.base_url.clone(), data.source_path.clone());
+	let int_id = (data.get_manga_id)(manga_id, data.base_url.clone(), data.source_path.clone());
 	let body_content = format!("action=manga_get_chapters&manga={}", int_id);
 
 	let req = Request::new(url.as_str(), HttpMethod::Post)
