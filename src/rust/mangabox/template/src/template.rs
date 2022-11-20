@@ -47,9 +47,12 @@ pub fn get_manga_list(
 
 	let mut mangas: Vec<Manga> = Vec::new();
 	let url = get_search_url(base_url, title, page, included_tags, excluded_tags, sort);
-	let html = Request::new(url.as_str(), HttpMethod::Get).html();
+	let html = Request::new(url.as_str(), HttpMethod::Get).html()?;
 	for item in html.select(&selector).array() {
-		let item_node = item.as_node();
+		let item_node = match item.as_node() {
+			Ok(node) => node,
+			Err(_) => continue,
+		};
 		let title = item_node.select("a").first().attr("title").read();
 		let id = item_node.select("a").first().attr("href").read();
 		let cover = item_node.select("img").first().attr("src").read();
@@ -64,7 +67,7 @@ pub fn get_manga_list(
 			categories: Vec::new(),
 			status: MangaStatus::Unknown,
 			nsfw: MangaContentRating::Safe,
-			viewer: MangaViewer::Default,
+			viewer: MangaViewer::Rtl,
 		});
 	}
 	let last_page_string = html.select("a.page-last").text().read();
@@ -102,14 +105,15 @@ pub fn get_manga_listing(
 	filters.push(Filter {
 		kind: FilterType::Sort,
 		name: String::from("Sort"),
-		value: selection.0,
+		value: selection.0.clone(),
+		object: ObjectRef(selection.0),
 	});
 
 	get_manga_list(base_url, selector, filters, page)
 }
 
 pub fn get_manga_details(id: String) -> Result<Manga> {
-	let html = Request::new(id.as_str(), HttpMethod::Get).html();
+	let html = Request::new(id.as_str(), HttpMethod::Get).html()?;
 	let details = html.select("div.panel-story-info");
 	let title = details.select("h1").text().read();
 	let cover = details.select("span.info-image > img").attr("src").read();
@@ -123,20 +127,18 @@ pub fn get_manga_details(id: String) -> Result<Manga> {
 		.read();
 	let mut categories = Vec::new();
 	let mut nsfw = MangaContentRating::Safe;
-	let mut viewer = MangaViewer::Default;
+	let mut viewer = MangaViewer::Rtl;
 	for node in details.select("td:contains(Genre) + td a").array() {
-		let category = node.as_node().text().read();
-		if category.clone().as_str() == "Smut"
-			|| category.clone().as_str() == "Mature"
-			|| category.clone().as_str() == "Ecchi"
-			|| category.clone().as_str() == "Adult"
-		{
-			nsfw = MangaContentRating::Nsfw;
+		let category = match node.as_node() {
+			Ok(node) => node.text().read(),
+			Err(_) => continue,
+		};
+		match category.as_str() {
+			"Adult" | "Ecchi" | "Mature" | "Smut" => nsfw = MangaContentRating::Nsfw,
+			"Webtoons" => viewer = MangaViewer::Scroll,
+			_ => (),
 		}
-		if category.clone().as_str() == "Webtoons" {
-			viewer = MangaViewer::Scroll;
-		}
-		categories.push(category.clone());
+		categories.push(category);
 	}
 	let status = status_from_string(details.select("td:contains(Status) + td").text().read());
 	Ok(Manga {
@@ -156,12 +158,15 @@ pub fn get_manga_details(id: String) -> Result<Manga> {
 
 pub fn get_chapter_list(id: String, date_format: String) -> Result<Vec<Chapter>> {
 	let mut chapters: Vec<Chapter> = Vec::new();
-	let html = Request::new(id.as_str(), HttpMethod::Get).html();
+	let html = Request::new(id.as_str(), HttpMethod::Get).html()?;
 	for chapter in html
 		.select("div.panel-story-chapter-list > ul.row-content-chapter > li")
 		.array()
 	{
-		let chapter_node = chapter.as_node();
+		let chapter_node = match chapter.as_node() {
+			Ok(node) => node,
+			Err(_) => continue,
+		};
 		let title = chapter_node.select("a").text().read();
 		let chapter_id = chapter_node.select("a").attr("href").read();
 		let chapter_url = chapter_node.select("a").attr("href").read();
@@ -170,7 +175,7 @@ pub fn get_chapter_list(id: String, date_format: String) -> Result<Vec<Chapter>>
 			.select("span.chapter-time")
 			.attr("title")
 			.0
-			.as_date(date_format.as_str())
+			.as_date(date_format.as_str(), None, None)
 			.unwrap_or(0.0);
 		chapters.push(Chapter {
 			id: chapter_id,
@@ -188,13 +193,16 @@ pub fn get_chapter_list(id: String, date_format: String) -> Result<Vec<Chapter>>
 
 pub fn get_page_list(id: String) -> Result<Vec<Page>> {
 	let mut pages: Vec<Page> = Vec::new();
-	let html = Request::new(id.as_str(), HttpMethod::Get).html();
+	let html = Request::new(id.as_str(), HttpMethod::Get).html()?;
 	for (i, page) in html
 		.select("div.container-chapter-reader > img")
 		.array()
 		.enumerate()
 	{
-		let page_node = page.as_node();
+		let page_node = match page.as_node() {
+			Ok(node) => node,
+			Err(_) => continue,
+		};
 		let page_url = page_node.attr("src").read();
 		pages.push(Page {
 			index: i as i32,
@@ -212,7 +220,7 @@ pub fn modify_image_request(base_url: String, request: Request) {
 
 pub fn handle_url(url: String) -> Result<DeepLink> {
 	Ok(DeepLink {
-		manga: Some(get_manga_details(url)?),
+		manga: get_manga_details(url).ok(),
 		chapter: None,
 	})
 }

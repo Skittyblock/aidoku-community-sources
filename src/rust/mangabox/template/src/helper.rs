@@ -47,10 +47,14 @@ pub fn i32_to_string(mut integer: i32) -> String {
 pub fn join_string_array(array: ArrayRef, delimeter: String) -> String {
 	let mut string = String::new();
 	for (i, item) in array.enumerate() {
+		let node = match item.as_node() {
+			Ok(node) => node,
+			Err(_) => continue,
+		};
 		if i != 0 {
 			string.push_str(&delimeter);
 		}
-		string.push_str(item.as_node().text().read().as_str());
+		string.push_str(node.text().read().as_str());
 	}
 	string
 }
