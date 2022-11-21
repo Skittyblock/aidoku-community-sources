@@ -353,7 +353,7 @@ where
 		U8_CODE | U16_CODE => {
 			let bits_to_read = (code * 8) + 8;
 			// bits_to_read == 8 or 16 <= 16
-			u16::try_from(ctx.read_bits(bits_to_read)?).unwrap()
+			u16::try_from(ctx.read_bits(bits_to_read)?)?```
 		}
 		CLOSE_CODE => return Some(Vec::new()),
 		_ => return None,
