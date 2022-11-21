@@ -4,13 +4,32 @@ use aidoku::{
 	MangaPageResult, Page,
 };
 
+use madara_template::helper;
 use madara_template::template;
 
 fn get_data() -> template::MadaraSiteData {
+	let lang_code = helper::get_lang_code();
+	let base_url;
+	let source_path;
+
+	match lang_code.as_str() {
+		"en" => {
+			base_url = String::from("https://en.leviatanscans.com");
+			source_path = String::from("tkl/manga");
+		}
+		"es" => {
+			base_url = String::from("https://es.leviatanscans.com");
+			source_path = String::from("manga");
+		}
+		_ => {
+			panic!("Language not supported");
+		}
+	}
+
 	let data: template::MadaraSiteData = template::MadaraSiteData {
-		base_url: String::from("https://en.leviatanscans.com"),
-		// TODO: set spanish source_path to the default "manga"
-		source_path: String::from("tkl/manga"),
+		base_url,
+		source_path,
+		chapter_selector: String::from("li.wp-manga-chapter.free-chap"),
 		description_selector: String::from(
 			"div.summary_content div.post-content div.post-content_item div p",
 		),
