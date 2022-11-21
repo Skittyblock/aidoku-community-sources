@@ -75,6 +75,7 @@ impl Default for MadaraSiteData {
 			genre_selector: String::from("div.genres-content > a"),
 			// choose between two options for chapter list POST request
 			alt_ajax: false,
+			// get the manga id from script tag
 			get_manga_id: get_int_manga_id,
 			// default viewer
 			viewer: |_, _| MangaViewer::Scroll,
@@ -312,7 +313,7 @@ pub fn get_chapter_list(manga_id: String, data: MadaraSiteData) -> Result<Vec<Ch
 	let html = req.html();
 
 	let mut chapters: Vec<Chapter> = Vec::new();
-	for item in html.select("li.wp-manga-chapter  ").array() {
+	for item in html.select(&data.chapter_selector).array() {
 		let obj = item.as_node();
 
 		let id = obj
