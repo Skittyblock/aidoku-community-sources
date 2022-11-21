@@ -231,7 +231,7 @@ pub fn get_chapter_list(html: Node) -> Result<Vec<Chapter>> {
 
 				let url = elem.select("a").attr("href").read();
 				let id = url.clone().replace("/comic/", "").replace(".html", "");
-				let chapter_id = match id.split("/").last() {
+				let chapter_id = match id.split('/').last() {
 					Some(id) => String::from(id),
 					None => String::new(),
 				};
