@@ -52,7 +52,7 @@ impl Decoder {
 			return String::from("");
 		}
 		let first = Self::itr(value / num, num);
-		let second = d.chars().nth((value % num) as usize).unwrap();
+		let second = d.chars().nth((value % num) as usize).unwrap_or_default();
 		format!("{}{}", first, second)
 	}
 
