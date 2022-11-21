@@ -195,3 +195,13 @@ pub fn get_int_manga_id(manga_id: String, base_url: String, path: String) -> Str
 	let id = &id_html[id_html.find("manga_id").unwrap() + 11..id_html.find("\"};").unwrap()];
 	String::from(id)
 }
+
+pub fn get_lang_code() -> String {
+	let mut lang_code = String::new();
+	if let Ok(languages) = defaults_get("languages").as_array() {
+		if let Ok(language) = languages.get(0).as_string() {
+			lang_code = language.read();
+		}
+	}
+	lang_code
+}
