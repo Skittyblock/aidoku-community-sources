@@ -181,7 +181,7 @@ pub fn parse_manga_details(html: Node, manga_id: String) -> Result<Manga> {
 	let image = format!("https://cf.hamreus.com/cpic/b/{}.jpg", manga_id);
 	let url = format!("https://www.manhuagui.com/comic/{}/", manga_id);
 
-	let _manga = Manga {
+	let manga = Manga {
 		id: manga_id,
 		cover: image,
 		title,
@@ -195,7 +195,7 @@ pub fn parse_manga_details(html: Node, manga_id: String) -> Result<Manga> {
 		viewer: MangaViewer::Scroll,
 	};
 
-	Ok(_manga)
+	Ok(manga)
 }
 
 pub fn get_chapter_list(html: Node) -> Result<Vec<Chapter>> {
