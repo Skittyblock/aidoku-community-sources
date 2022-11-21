@@ -348,7 +348,7 @@ where
 	}
 
 	// u8::MAX > u2::MAX
-	let code = u8::try_from(ctx.read_bits(START_CODE_BITS)?).unwrap();
+	let code = u8::try_from(ctx.read_bits(START_CODE_BITS)?)?;
 	let first_entry = match code {
 		U8_CODE | U16_CODE => {
 			let bits_to_read = (code * 8) + 8;
