@@ -3,7 +3,6 @@ on:
   push:
     paths:
     - 'src/**'
-    - 'lib/**'
     - '.github/workflows/build.yaml'
 
 jobs:
@@ -76,15 +75,6 @@ jobs:
           ) &
         done
         wait
-    -
-      name: Build C sources
-      run: |
-        for src in ./src/c/*; do
-          (
-            cd "$src"
-            make CC="sccache clang" package.aix
-          )
-        done
     -
       name: Build Rust sources
       run: |
