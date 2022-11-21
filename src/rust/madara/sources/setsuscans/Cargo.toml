@@ -1,5 +1,5 @@
 [package]
-name = "alphascans"
+name = "setsuscans"
 version = "0.1.0"
 edition = "2021"
 publish = false
@@ -9,4 +9,5 @@ crate-type = ["cdylib"]
 
 [dependencies]
 aidoku = { git = "https://github.com/Aidoku/aidoku-rs/" }
-mangastream_template = { path = "../../template" }
+madara_template = { path = "../../template" }
+base64 = { version = "0.13.1", default-features = false, features = ["alloc"] }

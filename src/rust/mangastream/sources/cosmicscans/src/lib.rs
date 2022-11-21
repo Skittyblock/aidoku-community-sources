@@ -8,7 +8,8 @@ use mangastream_template::template::MangaStreamSource;
 
 fn get_instance() -> MangaStreamSource {
 	MangaStreamSource {
-		base_url: String::from("https://alpha-scans.org"),
+		base_url: String::from("https://cosmicscans.com"),
+		manga_details_cover_src: "data-src",
 		..Default::default()
 	}
 }

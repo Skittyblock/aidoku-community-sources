@@ -1,11 +1,11 @@
 {
 	"info": {
-		"id": "en.manhuaplus",
+		"id": "en.setsuscans",
 		"lang": "en",
-		"name": "ManhuaPlus",
-		"version": 6,
-		"url": "https://manhuaplus.com",
-		"nsfw": 0
+		"name": "Setsu Scans",
+		"version": 1,
+		"url": "https://setsuscans.com",
+		"nsfw": 1
 	},
 	"listings": [
 		{
