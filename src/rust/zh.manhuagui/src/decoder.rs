@@ -31,7 +31,7 @@ impl Decoder {
 
 		let suffix_vec = vec![
 			self.tr(c % self.a, 36),
-			String::from_utf8(vec![(c % self.a + 29) as u8]).unwrap(),
+			String::from_utf8(vec![(c % self.a + 29) as u8]).unwrap_or_default(),
 		];
 		let suffix = suffix_vec[(c % self.a > 35) as usize].clone();
 
