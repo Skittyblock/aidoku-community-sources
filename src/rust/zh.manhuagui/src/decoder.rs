@@ -348,12 +348,12 @@ where
 	}
 
 	// u8::MAX > u2::MAX
-	let code = u8::try_from(ctx.read_bits(START_CODE_BITS)?)?;
+	let code = u8::try_from(ctx.read_bits(START_CODE_BITS)?).unwrap_or_default();
 	let first_entry = match code {
 		U8_CODE | U16_CODE => {
 			let bits_to_read = (code * 8) + 8;
 			// bits_to_read == 8 or 16 <= 16
-			u16::try_from(ctx.read_bits(bits_to_read)?)?```
+			u16::try_from(ctx.read_bits(bits_to_read)?).unwrap_or_default()
 		}
 		CLOSE_CODE => return Some(Vec::new()),
 		_ => return None,
@@ -375,7 +375,7 @@ where
 				// }
 
 				// bits_to_read == 8 or 16 <= 16
-				let bits = u16::try_from(ctx.read_bits(bits_to_read)?)?;
+				let bits = u16::try_from(ctx.read_bits(bits_to_read)?).unwrap_or_default();
 				dictionary.push(vec![bits]);
 				code = u32::try_from(dictionary.len() - 1).ok()?;
 				enlarge_in -= 1;
