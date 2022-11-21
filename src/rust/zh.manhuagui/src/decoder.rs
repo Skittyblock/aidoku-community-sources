@@ -375,7 +375,7 @@ where
 				// }
 
 				// bits_to_read == 8 or 16 <= 16
-				let bits = u16::try_from(ctx.read_bits(bits_to_read)?).unwrap();
+				let bits = u16::try_from(ctx.read_bits(bits_to_read)?)?;
 				dictionary.push(vec![bits]);
 				code = u32::try_from(dictionary.len() - 1).ok()?;
 				enlarge_in -= 1;
