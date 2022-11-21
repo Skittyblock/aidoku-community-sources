@@ -30,6 +30,7 @@ pub struct MadaraSiteData {
 	pub image_selector: String,
 	pub genre_selector: String,
 	pub description_selector: String,
+	pub chapter_selector: String,
 
 	pub status_filter_ongoing: String,
 	pub status_filter_completed: String,
@@ -66,6 +67,8 @@ impl Default for MadaraSiteData {
 			post_type: String::from("wp-manga"),
 			// p to select description from
 			description_selector: String::from("div.description-summary div p"),
+			// selector for chapter list
+			chapter_selector: String::from("li.wp-manga-chapter  "),
 			// div to select images from a chapter
 			image_selector: String::from("div.page-break > img"),
 			// div to select all the genres
