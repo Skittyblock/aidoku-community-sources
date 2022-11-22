@@ -236,19 +236,18 @@ pub fn get_chapter_list(html: Node) -> Result<Vec<Chapter>> {
 					None => String::new(),
 				};
 				let title = elem.select("a").attr("title").read();
-				let mut ch = title
+				let chapter_or_volume = title
 					.clone()
 					.replace(['第', '话', '卷'], "")
 					.parse::<f32>()
 					.unwrap_or(index);
-				if title.contains('卷') {
-					ch += 99999.0;
-				}
+				let ch = if title.contains('卷') { -1.0 } else { chapter_or_volume };
+				let vo = if title.contains('卷') { chapter_or_volume } else { -1.0 };
 
 				let chapter = Chapter {
 					id: chapter_id,
 					title,
-					volume: -1.0,
+					volume: vo,
 					chapter: ch,
 					date_updated: -1.0,
 					scanlator: String::new(),
