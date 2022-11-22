@@ -200,7 +200,6 @@ pub fn parse_manga_details(html: Node, manga_id: String) -> Result<Manga> {
 
 pub fn get_chapter_list(html: Node) -> Result<Vec<Chapter>> {
 	let mut chapters: Vec<Chapter> = Vec::new();
-	let mut index = 1.0;
 
 	let mut div = html.clone();
 	let hidden = html.html().read().contains("__VIEWSTATE");
@@ -257,7 +256,6 @@ pub fn get_chapter_list(html: Node) -> Result<Vec<Chapter>> {
 				};
 
 				chapters.push(chapter);
-				index += 1.0;
 			}
 		}
 	}
