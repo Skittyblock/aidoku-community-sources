@@ -250,7 +250,7 @@ pub fn get_chapter_list(html: Node) -> Result<Vec<Chapter>> {
 					title,
 					volume: -1.0,
 					chapter: ch,
-					date_updated: index as f64,
+					date_updated: -1,
 					scanlator: String::new(),
 					url,
 					lang: String::from("zh"),
