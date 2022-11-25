@@ -1,10 +1,14 @@
 #![no_std]
 use aidoku::{
-	error::Result, prelude::*, std::net::{Request, HttpMethod}, std::{String, json::parse}, std::Vec, Chapter, DeepLink, Filter,
-	Listing, Manga, MangaPageResult, Page,
+	error::Result,
+	prelude::*,
+	std::net::{HttpMethod, Request},
+	std::Vec,
+	std::{json::parse, String},
+	Chapter, DeepLink, Filter, Listing, Manga, MangaPageResult, Page,
 };
 
-use mangastream_template::{template::MangaStreamSource, helper::urlencode};
+use mangastream_template::{helper::urlencode, template::MangaStreamSource};
 
 fn get_instance() -> MangaStreamSource {
 	MangaStreamSource {

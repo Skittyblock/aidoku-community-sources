@@ -71,7 +71,7 @@ impl Default for MangaStreamSource {
 			manga_details_categories: "span.mgen a",
 			nsfw_genres: [ "Adult".into(), "Ecchi".into(), "Mature".into(), "Smut".into() ].to_vec(),
 			manga_details_title: "h1.entry-title",
-			manga_details_cover: ".thumb img",
+			manga_details_cover: ".infomanga > div[itemprop=image] img, .thumb img",
 			manga_details_cover_src: "src",
 			manga_details_author: "span:contains(Author:), span:contains(Pengarang:), .fmed b:contains(Author)+span, .imptdt:contains(Author) i, .fmed b:contains(Yazar)+span, .fmed b:contains(Autheur)+span",
 			manga_details_artist: "#last_episode small",
@@ -211,13 +211,10 @@ impl MangaStreamSource {
 	// parse manga details page
 	pub fn parse_manga_details(&self, id: String) -> Result<Manga> {
 		let html = Request::new(id.as_str(), HttpMethod::Get).html();
-		let raw_title = html.select(self.manga_details_title).text().read();
-		let mut title = String::new();
+		let mut title = html.select(self.manga_details_title).text().read();
 		for i in self.manga_title_trim.iter() {
-			if raw_title.clone().contains(i) {
-				title = raw_title.replace(i, "");
-			} else {
-				title = raw_title.clone();
+			if title.contains(i) {
+				title = title.replace(i, "");
 			}
 		}
 		let cover: String = html
@@ -337,6 +334,10 @@ impl MangaStreamSource {
 			for (at, page) in html.select(self.page_selector).array().enumerate() {
 				let page_node = page.as_node();
 				let page_url = urlencode(page_node.attr(self.page_url).read());
+				// avoid svgs
+				if page_url.starts_with("data") {
+					continue;
+				}
 				pages.push(Page {
 					index: at as i32,
 					url: page_url,

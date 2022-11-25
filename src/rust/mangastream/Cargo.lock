@@ -42,14 +42,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "alphascans"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "mangastream_template",
-]
-
-[[package]]
 name = "aresmanga"
 version = "0.1.0"
 dependencies = [
@@ -80,6 +72,14 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4785bdd1c96b2a846b2bd7cc02e86b6b3dbf14e7e53446c4f54c92a361040822"
 
 [[package]]
+name = "cosmicscans"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "mangastream_template",
+]
+
+[[package]]
 name = "flamescans"
 version = "0.1.0"
 dependencies = [
@@ -97,6 +97,14 @@ dependencies = [
 
 [[package]]
 name = "kiryuu"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "mangastream_template",
+]
+
+[[package]]
+name = "komiktap"
 version = "0.1.0"
 dependencies = [
  "aidoku",
@@ -162,6 +170,14 @@ name = "mangastream_template"
 version = "0.1.0"
 dependencies = [
  "aidoku",
+]
+
+[[package]]
+name = "mangasusu"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "mangastream_template",
 ]
 
 [[package]]

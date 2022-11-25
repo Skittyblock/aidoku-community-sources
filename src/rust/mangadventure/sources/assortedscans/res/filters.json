@@ -1,0 +1,170 @@
+[
+	{
+		"type": "title"
+	},
+	{
+		"type": "author"
+	},
+	{
+		"type": "select",
+		"name": "Status",
+		"options": [
+			"Any",
+			"Completed",
+			"Ongoing"
+		]
+	},
+	{
+		"type": "sort",
+		"name": "Sort by",
+		"canAscend": true,
+		"options": [
+			"Title",
+			"Views",
+			"Latest upload",
+			"Chapter count"
+		],
+		"default": {
+			"index": 0,
+			"ascending": true
+		}
+	},
+	{
+		"type": "group",
+		"name": "Categories",
+		"filters": [
+			{
+				"type": "genre",
+				"name": "4-Koma"
+			},
+			{
+				"type": "genre",
+				"name": "Action"
+			},
+			{
+				"type": "genre",
+				"name": "Adventure"
+			},
+			{
+				"type": "genre",
+				"name": "Comedy"
+			},
+			{
+				"type": "genre",
+				"name": "Doujinshi"
+			},
+			{
+				"type": "genre",
+				"name": "Drama"
+			},
+			{
+				"type": "genre",
+				"name": "Ecchi"
+			},
+			{
+				"type": "genre",
+				"name": "Fantasy"
+			},
+			{
+				"type": "genre",
+				"name": "Gender Bender"
+			},
+			{
+				"type": "genre",
+				"name": "Harem"
+			},
+			{
+				"type": "genre",
+				"name": "Hentai"
+			},
+			{
+				"type": "genre",
+				"name": "Historical"
+			},
+			{
+				"type": "genre",
+				"name": "Horror"
+			},
+			{
+				"type": "genre",
+				"name": "Josei"
+			},
+			{
+				"type": "genre",
+				"name": "Martial Arts"
+			},
+			{
+				"type": "genre",
+				"name": "Mecha"
+			},
+			{
+				"type": "genre",
+				"name": "Mystery"
+			},
+			{
+				"type": "genre",
+				"name": "Psychological"
+			},
+			{
+				"type": "genre",
+				"name": "Romance"
+			},
+			{
+				"type": "genre",
+				"name": "School Life"
+			},
+			{
+				"type": "genre",
+				"name": "Sci-Fi"
+			},
+			{
+				"type": "genre",
+				"name": "Seinen"
+			},
+			{
+				"type": "genre",
+				"name": "Shoujo"
+			},
+			{
+				"type": "genre",
+				"name": "Shoujo Ai"
+			},
+			{
+				"type": "genre",
+				"name": "Shounen"
+			},
+			{
+				"type": "genre",
+				"name": "Shounen Ai"
+			},
+			{
+				"type": "genre",
+				"name": "Slice of Life"
+			},
+			{
+				"type": "genre",
+				"name": "Smut"
+			},
+			{
+				"type": "genre",
+				"name": "Sports"
+			},
+			{
+				"type": "genre",
+				"name": "Supernatural"
+			},
+			{
+				"type": "genre",
+				"name": "Tragedy"
+			},
+			{
+				"type": "genre",
+				"name": "Yaoi"
+			},
+			{
+				"type": "genre",
+				"name": "Yuri"
+			}
+		]
+	}
+]

@@ -10,7 +10,7 @@ use aidoku::{
 pub mod helper;
 pub mod parser;
 
-const BASE_URL: &'static str = "https://readm.org";
+const BASE_URL: &str = "https://readm.org";
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
@@ -26,8 +26,8 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 	};
 	parser::parse_manga_listing(
 		String::from(BASE_URL),
-		String::from(url),
-		String::from(listing.name),
+		url,
+		listing.name,
 	)
 }
 

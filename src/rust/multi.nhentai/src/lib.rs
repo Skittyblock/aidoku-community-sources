@@ -1,9 +1,12 @@
 #![no_std]
 use aidoku::{
-	prelude::*, error::Result, std::String, std::ObjectRef, std::Vec, std::net::Request, std::net::HttpMethod,
-	Filter, FilterType, Listing, Manga, MangaPageResult, Page, MangaStatus, MangaContentRating, MangaViewer, Chapter, DeepLink,
-	std::defaults::defaults_get,
+	error::Result, prelude::*, std::defaults::defaults_get, std::net::HttpMethod,
+	std::net::Request, std::ObjectRef, std::String, std::Vec, Chapter, DeepLink, Filter,
+	FilterType, Listing, Manga, MangaContentRating, MangaPageResult, MangaStatus, MangaViewer,
+	Page,
 };
+extern crate alloc;
+use alloc::{string::ToString, vec};
 
 mod helper;
 
@@ -47,9 +50,9 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 					is_sauce_code = true;
 					sauce_code = title.clone();
 				}
-				query.push_str(" ");
+				query.push(' ');
 				query.push_str(&title);
-			},
+			}
 			FilterType::Genre => {
 				match filter.value.as_int().unwrap_or(-1) {
 					0 => query.push_str(" -tag:\""),
@@ -57,8 +60,8 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 					_ => continue,
 				}
 				query.push_str(&filter.name);
-				query.push_str("\"");
-			},
+				query.push('\"');
+			}
 			FilterType::Sort => {
 				let value = match filter.value.as_object() {
 					Ok(value) => value,
@@ -73,7 +76,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 					_ => continue,
 				};
 				sort = String::from(option)
-			},
+			}
 			_ => continue,
 		}
 	}
@@ -89,10 +92,22 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 		let id = helper::get_id(json.get("id"))?;
 
 		let media_id = json.get("media_id").as_string()?.read();
-		let cover_type = json.get("images").as_object()?.get("cover").as_object()?.get("t").as_string()?.read();
+		let cover_type = json
+			.get("images")
+			.as_object()?
+			.get("cover")
+			.as_object()?
+			.get("t")
+			.as_string()?
+			.read();
 		let cover = helper::get_cover_url(media_id, helper::get_file_type(cover_type));
 
-		let title = json.get("title").as_object()?.get("pretty").as_string()?.read();
+		let title = json
+			.get("title")
+			.as_object()?
+			.get("pretty")
+			.as_string()?
+			.read();
 
 		manga_arr.push(Manga {
 			id,
@@ -105,13 +120,13 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 			categories: Vec::new(),
 			status: MangaStatus::Completed,
 			nsfw: MangaContentRating::Nsfw,
-			viewer: MangaViewer::Rtl
+			viewer: MangaViewer::Rtl,
 		});
 	} else {
 		let mut url = String::from("https://nhentai.net/api/galleries/search?query=");
 		url.push_str(&helper::urlencode(query));
 		url.push_str("&page=");
-		url.push_str(&helper::urlencode(helper::i32_to_string(page)));
+		url.push_str(&helper::urlencode(page.to_string()));
 		url.push_str("&sort=");
 		url.push_str(&helper::urlencode(sort));
 
@@ -126,11 +141,23 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 			let id = helper::get_id(manga_obj.get("id"))?;
 
 			let media_id = manga_obj.get("media_id").as_string()?.read();
-			let cover_type = manga_obj.get("images").as_object()?.get("cover").as_object()?.get("t").as_string()?.read();
+			let cover_type = manga_obj
+				.get("images")
+				.as_object()?
+				.get("cover")
+				.as_object()?
+				.get("t")
+				.as_string()?
+				.read();
 			let cover = helper::get_cover_url(media_id, helper::get_file_type(cover_type));
 
-			let title = manga_obj.get("title").as_object()?.get("pretty").as_string()?.read();
-			
+			let title = manga_obj
+				.get("title")
+				.as_object()?
+				.get("pretty")
+				.as_string()?
+				.read();
+
 			manga_arr.push(Manga {
 				id,
 				cover,
@@ -142,7 +169,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 				categories: Vec::new(),
 				status: MangaStatus::Completed,
 				nsfw: MangaContentRating::Nsfw,
-				viewer: MangaViewer::Rtl
+				viewer: MangaViewer::Rtl,
 			});
 		}
 		total = json.get("num_pages").as_int().unwrap_or(0) as i32;
@@ -160,18 +187,21 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 	let mut selection = ObjectRef::new();
 
 	selection.set("ascending", false.into());
-	selection.set("index", match listing.name.as_str() {
-		"Latest" => 0i32.into(),
-		"Popular - Today" => 1i32.into(),
-		"Popular - This Week" => 2i32.into(),
-		"Popular - All Time" => 3i32.into(),
-		&_ => 0i32.into()
-	});
+	selection.set(
+		"index",
+		match listing.name.as_str() {
+			"Latest" => 0i32.into(),
+			"Popular - Today" => 1i32.into(),
+			"Popular - This Week" => 2i32.into(),
+			"Popular - All Time" => 3i32.into(),
+			&_ => 0i32.into(),
+		},
+	);
 
 	filters.push(Filter {
 		kind: FilterType::Sort,
 		name: String::from("Sort"),
-		value: selection.0
+		value: selection.0,
 	});
 
 	get_manga_list(filters, page)
@@ -179,16 +209,29 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 
 #[get_manga_details]
 fn get_manga_details(id: String) -> Result<Manga> {
-	let request = Request::new(helper::get_details_url(id).as_str(), HttpMethod::Get).header("User-Agent", "Aidoku");
+	let request = Request::new(helper::get_details_url(id).as_str(), HttpMethod::Get)
+		.header("User-Agent", "Aidoku");
 	let json = request.json().as_object()?;
 
 	let id = helper::get_id(json.get("id"))?;
 
 	let media_id = json.get("media_id").as_string()?.read();
-	let cover_type = json.get("images").as_object()?.get("cover").as_object()?.get("t").as_string()?.read();
+	let cover_type = json
+		.get("images")
+		.as_object()?
+		.get("cover")
+		.as_object()?
+		.get("t")
+		.as_string()?
+		.read();
 	let cover = helper::get_cover_url(media_id, helper::get_file_type(cover_type));
 
-	let title = json.get("title").as_object()?.get("english").as_string()?.read();
+	let title = json
+		.get("title")
+		.as_object()?
+		.get("english")
+		.as_string()?
+		.read();
 
 	let tags = json.get("tags").as_array()?;
 	let author = String::from(helper::get_tag_names_by_type(tags.clone(), "artist")?[0].as_str());
@@ -213,13 +256,17 @@ fn get_manga_details(id: String) -> Result<Manga> {
 		categories,
 		status: MangaStatus::Completed,
 		nsfw: MangaContentRating::Nsfw,
-		viewer: MangaViewer::Rtl
+		viewer: MangaViewer::Rtl,
 	})
 }
 
 #[get_chapter_list]
 fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
-	let request = Request::new(helper::get_details_url(id.clone()).as_str(), HttpMethod::Get).header("User-Agent", "Aidoku");
+	let request = Request::new(
+		helper::get_details_url(id.clone()).as_str(),
+		HttpMethod::Get,
+	)
+	.header("User-Agent", "Aidoku");
 	let json = request.json().as_object()?;
 
 	let mut url = String::from("https://nhentai.net/g/");
@@ -233,11 +280,10 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 		"english" => String::from("en"),
 		"japanese" => String::from("jp"),
 		"chinese" => String::from("zh"),
-		_ => String::new()
+		_ => String::new(),
 	};
 
-	let mut chapters = Vec::new();
-	chapters.push(Chapter {
+	Ok(vec![Chapter {
 		id,
 		title: String::from("Chapter 1"),
 		volume: -1.0,
@@ -245,24 +291,22 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 		date_updated,
 		scanlator: String::new(),
 		url,
-		lang
-	});
-
-	Ok(chapters)
+		lang,
+	}])
 }
 
 #[get_page_list]
 fn get_page_list(id: String) -> Result<Vec<Page>> {
-	let request = Request::new(helper::get_details_url(id).as_str(), HttpMethod::Get).header("User-Agent", "Aidoku");
+	let request = Request::new(helper::get_details_url(id).as_str(), HttpMethod::Get)
+		.header("User-Agent", "Aidoku");
 	let json = request.json().as_object()?;
 
 	let images = json.get("images").as_object()?;
 	let pages_arr = images.get("pages").as_array()?;
 
 	let mut pages = Vec::new();
-	let mut i = 0;
 
-	for page in pages_arr {
+	for (i, page) in pages_arr.enumerate() {
 		let page_obj = page.as_object()?;
 
 		let media_id = json.get("media_id").as_string()?.read();
@@ -270,19 +314,17 @@ fn get_page_list(id: String) -> Result<Vec<Page>> {
 
 		let mut url = String::from("https://i.nhentai.net/galleries/");
 		url.push_str(&media_id);
-		url.push_str("/");
-		url.push_str(&helper::i32_to_string(i + 1));
-		url.push_str(".");
+		url.push('/');
+		url.push_str(&(i + 1).to_string());
+		url.push('.');
 		url.push_str(&file_type);
 
 		pages.push(Page {
-			index: i,
+			index: i.try_into().unwrap_or(-1),
 			url,
 			base64: String::new(),
-			text: String::new()
+			text: String::new(),
 		});
-
-		i += 1;
 	}
 
 	Ok(pages)
@@ -292,9 +334,8 @@ fn get_page_list(id: String) -> Result<Vec<Page>> {
 pub fn handle_url(url: String) -> Result<DeepLink> {
 	let url = &url[20..]; // remove "https://nhentai.net/"
 
-	if url.starts_with("g/") {
-		let id = &url[2..]; // remove "g/"
-		let end = match id.find("/") {
+	if let Some(id) = url.strip_prefix("g/") {
+		let end = match id.find('/') {
 			Some(end) => end,
 			None => id.len(),
 		};
@@ -307,5 +348,7 @@ pub fn handle_url(url: String) -> Result<DeepLink> {
 		});
 	}
 
-	Err(aidoku::error::AidokuError { reason: aidoku::error::AidokuErrorKind::Unimplemented })
+	Err(aidoku::error::AidokuError {
+		reason: aidoku::error::AidokuErrorKind::Unimplemented,
+	})
 }
