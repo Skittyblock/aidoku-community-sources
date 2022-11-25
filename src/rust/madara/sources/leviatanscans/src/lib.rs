@@ -17,7 +17,8 @@ fn get_data() -> template::MadaraSiteData {
 			base_url = String::from("https://es.leviatanscans.com");
 			source_path = String::from("manga");
 		}
-		Some("en") | _ => {
+		// Default to English
+		_ => {
 			base_url = String::from("https://en.leviatanscans.com");
 			source_path = String::from("tkl/manga");
 		}
