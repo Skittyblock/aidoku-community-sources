@@ -12,17 +12,14 @@ fn get_data() -> template::MadaraSiteData {
 	let base_url;
 	let source_path;
 
-	match lang_code.as_str() {
-		"en" => {
-			base_url = String::from("https://en.leviatanscans.com");
-			source_path = String::from("tkl/manga");
-		}
-		"es" => {
+	match lang_code.as_deref() {
+		Some("es") => {
 			base_url = String::from("https://es.leviatanscans.com");
 			source_path = String::from("manga");
 		}
-		_ => {
-			panic!("Language not supported");
+		Some("en") | _ => {
+			base_url = String::from("https://en.leviatanscans.com");
+			source_path = String::from("tkl/manga");
 		}
 	}
 
