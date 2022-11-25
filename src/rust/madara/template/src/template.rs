@@ -68,7 +68,7 @@ impl Default for MadaraSiteData {
 			// p to select description from
 			description_selector: String::from("div.description-summary div p"),
 			// selector for chapter list
-			chapter_selector: String::from("li.wp-manga-chapter  "),
+			chapter_selector: String::from("li.wp-manga-chapter"),
 			// div to select images from a chapter
 			image_selector: String::from("div.page-break > img"),
 			// div to select all the genres
