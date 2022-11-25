@@ -273,15 +273,14 @@ pub fn get_page_list(base_url: String) -> Result<Vec<Page>> {
 	let (path, pages_str) = decoder.decode();
 
 	for (index, str) in pages_str.into_iter().enumerate() {
-		let url = format!("https://i.hamreus.com{}{}", path, str);
-		let encoded_url = helper::encode_uri(&url);
-		let page: Page = Page {
+		let encoded_path = helper::encode_uri(&path);
+		let url = format!("https://i.hamreus.com{}{}", encoded_path, str);
+		pages.push(Page {
 			index: index as i32,
-			url: encoded_url,
+			url,
 			base64: String::new(),
 			text: String::new(),
-		};
-		pages.push(page);
+		});
 	}
 
 	Ok(pages)
