@@ -34,7 +34,7 @@ pub fn parse_manga_list(
 
 	if !title.is_empty() {
 		let mut mangas: Vec<Manga> = Vec::new();
-		let url = format!("{}/service/search", base_url.clone());
+		let url = format!("{}/service/search", base_url);
 		let request = Request::new(url.as_str(), HttpMethod::Post);
 		let body_data = format!("dataType=json&phrase={}", title);
 		let json = request
@@ -74,13 +74,13 @@ pub fn parse_manga_list(
 	} else if title.is_empty() && tag.is_empty() {
 		parse_manga_listing(
 			base_url.clone(),
-			String::from(format!("{}/latest-releases/{}", base_url, page)),
+			format!("{}/latest-releases/{}", base_url, page),
 			String::from("Latest"),
 		)
 	} else {
 		let mut mangas: Vec<Manga> = Vec::new();
-		let url = format!("{}/category/{}/watch/{}", base_url.clone(), tag, page);
-		let html = Request::new(url.clone().as_str(), HttpMethod::Get).html();
+		let url = format!("{}/category/{}/watch/{}", base_url, tag, page);
+		let html = Request::new(url.as_str(), HttpMethod::Get).html();
 		for manga in html.select(".filter-results .mb-lg").array() {
 			let manga_node = manga.as_node();
 			let title = manga_node.select("h2").text().read();
@@ -101,11 +101,7 @@ pub fn parse_manga_list(
 			});
 		}
 		let last_page = html.select("div.ui.pagination.menu li").text().read();
-		let has_more = if last_page.contains("»") {
-			true
-		} else {
-			false
-		};
+		let has_more = last_page.contains('»');
 		Ok(MangaPageResult {
 			manga: mangas,
 			has_more,
@@ -119,7 +115,7 @@ pub fn parse_manga_listing(
 	list_type: String,
 ) -> Result<MangaPageResult> {
 	let mut mangas: Vec<Manga> = Vec::new();
-	let html = Request::new(url.clone().as_str(), HttpMethod::Get).html();
+	let html = Request::new(url.as_str(), HttpMethod::Get).html();
 	if list_type == "Hot" {
 		for manga in html.select("#manga-hot-updates .item").array() {
 			let manga_node = manga.as_node();
@@ -167,11 +163,7 @@ pub fn parse_manga_listing(
 			});
 		}
 		let last_page = html.select("div.ui.pagination.menu li").text().read();
-		let has_more = if last_page.contains("»") {
-			true
-		} else {
-			false
-		};
+		let has_more = last_page.contains('»');
 		Ok(MangaPageResult {
 			manga: mangas,
 			has_more,
@@ -198,11 +190,7 @@ pub fn parse_manga_listing(
 			});
 		}
 		let last_page = html.select("div.ui.pagination.menu li").text().read();
-		let has_more = if last_page.contains("»") {
-			true
-		} else {
-			false
-		};
+		let has_more = last_page.contains('»');
 		Ok(MangaPageResult {
 			manga: mangas,
 			has_more,
@@ -242,7 +230,7 @@ pub fn parse_manga_listing(
 
 pub fn parse_manga_details(base_url: String, raw_id: String) -> Result<Manga> {
 	let id = get_full_url(raw_id);
-	let html = Request::new(id.clone().as_str(), HttpMethod::Get).html();
+	let html = Request::new(id.as_str(), HttpMethod::Get).html();
 	let title = html.select(".page-title").text().read();
 	let cover = base_url + html.select(".image img").attr("src").read().as_str().trim();
 	let author = html.select("#first_episode small").text().read();
@@ -272,7 +260,7 @@ pub fn parse_manga_details(base_url: String, raw_id: String) -> Result<Manga> {
 		.text()
 		.read()
 		.replace("Type", "")
-		.replace(" ", "");
+		.replace(' ', "");
 	let viewer = match manga_type.as_str() {
 		"Japanese" => MangaViewer::Rtl,
 		"Korean" => MangaViewer::Scroll,
@@ -295,7 +283,7 @@ pub fn parse_manga_details(base_url: String, raw_id: String) -> Result<Manga> {
 
 pub fn parse_chapter_list(id: String) -> Result<Vec<Chapter>> {
 	let mut chapters: Vec<Chapter> = Vec::new();
-	let html = Request::new(id.clone().as_str(), HttpMethod::Get).html();
+	let html = Request::new(id.as_str(), HttpMethod::Get).html();
 	for chapter in html.select(".season_start").array() {
 		let chapter_node = chapter.as_node();
 		let title = String::from(chapter_node.select("h6").text().read().as_str().trim());
@@ -320,17 +308,15 @@ pub fn parse_chapter_list(id: String) -> Result<Vec<Chapter>> {
 pub fn parse_page_list(id: String) -> Result<Vec<Page>> {
 	let mut pages: Vec<Page> = Vec::new();
 	let html = Request::new(id.as_str(), HttpMethod::Get).html();
-	let mut at = 0;
-	for page in html.select("div.ch-images img").array() {
+	for (index, page) in html.select("div.ch-images img").array().enumerate() {
 		let page_node = page.as_node();
 		let page_url = get_full_url(page_node.attr("src").read());
 		pages.push(Page {
-			index: at,
+			index: index.try_into().unwrap_or(-1),
 			url: page_url,
 			base64: String::new(),
 			text: String::new(),
 		});
-		at += 1;
 	}
 	Ok(pages)
 }

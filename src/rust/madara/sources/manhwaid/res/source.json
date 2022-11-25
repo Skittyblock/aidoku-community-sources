@@ -1,0 +1,18 @@
+{
+  "info": {
+    "id": "id.manhwaid",
+    "lang": "id",
+    "name": "ManhwaID",
+    "version": 1,
+    "url": "https://manhwaid.info",
+    "nsfw": 2
+  },
+  "listings": [
+    {
+      "name": "Trending"
+    },
+    {
+      "name": "Popular"
+    }
+  ]
+}

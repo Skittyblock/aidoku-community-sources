@@ -1,0 +1,18 @@
+{
+	"info": {
+		"id": "en.setsuscans",
+		"lang": "en",
+		"name": "Setsu Scans",
+		"version": 1,
+		"url": "https://setsuscans.com",
+		"nsfw": 1
+	},
+	"listings": [
+		{
+			"name": "Trending"
+		},
+		{
+			"name": "Popular"
+		}
+	]
+}

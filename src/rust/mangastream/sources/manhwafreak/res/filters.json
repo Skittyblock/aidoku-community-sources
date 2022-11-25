@@ -1,0 +1,176 @@
+[
+    {
+        "type": "title"
+    },
+    {
+        "type": "group",
+        "name": "Tags",
+        "filters": [
+            {
+                "type": "genre",
+                "name": "Action",
+                "id": "-3",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Adventure",
+                "id": "22",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Comedy",
+                "id": "25",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Drama",
+                "id": "4",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Fantasy",
+                "id": "5",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Gender Bender",
+                "id": "39",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Harem",
+                "id": "35",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Historical",
+                "id": "6",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Horror",
+                "id": "60",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Josei",
+                "id": "30",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Martial Arts",
+                "id": "7",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Mecha",
+                "id": "66",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Mystery",
+                "id": "31",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Psychological",
+                "id": "40",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Romance",
+                "id": "37",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "School Life",
+                "id": "26",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Sci-fi",
+                "id": "67",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Seinen",
+                "id": "41",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Shoujo",
+                "id": "46",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Shounen",
+                "id": "8",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Shounen Ai",
+                "id": "58",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Slice of Life",
+                "id": "27",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Supernatural",
+                "id": "61",
+                "canExclude": true
+            },
+            {
+                "type": "genre",
+                "name": "Tragedy",
+                "id": "44",
+                "canExclude": true
+            }
+        ]
+    },
+    {
+        "type": "select",
+        "name": "Status",
+        "options": [
+            "All",
+            "Ongoing",
+            "Completed",
+            "Hiatus"
+        ]
+    },
+    {
+        "type": "select",
+        "name": "Type",
+        "options": [
+            "All",
+            "Manga",
+            "Manhwa",
+            "Manhua",
+            "Comic"
+        ]
+    }
+]

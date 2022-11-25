@@ -1,6 +1,7 @@
 use aidoku::{
-	prelude::*, error::Result, std::String, std::ObjectRef, std::ArrayRef, std::Vec, std::net::Request, std::net::HttpMethod, std::html::Node,
-	Manga, MangaStatus, MangaContentRating, MangaViewer,
+	error::Result, prelude::*, std::html::Node, std::net::HttpMethod, std::net::Request,
+	std::ArrayRef, std::ObjectRef, std::String, std::Vec, Manga, MangaContentRating, MangaStatus,
+	MangaViewer,
 };
 
 pub fn urlencode(string: String) -> String {
@@ -10,10 +11,11 @@ pub fn urlencode(string: String) -> String {
 
 	for byte in bytes {
 		let curr = *byte;
-		if (b'a' <= curr && curr <= b'z')
-			|| (b'A' <= curr && curr <= b'Z')
-			|| (b'0' <= curr && curr <= b'9') {
-				result.push(curr);
+		if (b'a'..=b'z').contains(&curr)
+			|| (b'A'..=b'Z').contains(&curr)
+			|| (b'0'..=b'9').contains(&curr)
+		{
+			result.push(curr);
 		} else {
 			result.push(b'%');
 			result.push(hex[curr as usize >> 4]);
@@ -21,7 +23,7 @@ pub fn urlencode(string: String) -> String {
 		}
 	}
 
-	String::from_utf8(result).unwrap_or(String::new())
+	String::from_utf8(result).unwrap_or_default()
 }
 
 pub fn i32_to_string(mut integer: i32) -> String {
@@ -46,11 +48,12 @@ pub fn i32_to_string(mut integer: i32) -> String {
 	string
 }
 
-pub fn find_in_array(array: ArrayRef, name: String) -> Result<Vec<ObjectRef>> {
+pub fn find_in_array(array: &ArrayRef, name: String) -> Result<Vec<ObjectRef>> {
 	let mut result: Vec<ObjectRef> = Vec::new();
-	for value in array {
-		if value.clone().as_object()?.get("type").as_string()?.read() == name {
-			result.push(value.clone().as_object()?)
+	for i in 0..array.len() {
+		let item = array.get(i).as_object()?;
+		if item.get("type").as_string()?.read() == name {
+			result.push(item);
 		}
 	}
 	Ok(result)
@@ -73,7 +76,9 @@ pub fn string_after(string: String, after: char) -> String {
 
 pub fn get_manga_details(id: String) -> Result<Manga> {
 	let url = format!("https://dynasty-scans.com/{}.json", &id);
-	let json = Request::new(url.as_str(), HttpMethod::Get).json().as_object()?;
+	let json = Request::new(url.as_str(), HttpMethod::Get)
+		.json()?
+		.as_object()?;
 
 	let cover = match json.get("cover").as_string() {
 		Ok(cover_url) => format!("https://dynasty-scans.com{}", cover_url.read()),
@@ -87,9 +92,9 @@ pub fn get_manga_details(id: String) -> Result<Manga> {
 
 	let tags = json.get("tags").as_array()?;
 
-	let author = match find_in_array(tags.clone(), String::from("Author")) {
+	let author = match find_in_array(&tags, String::from("Author")) {
 		Ok(authors) => {
-			if authors.len() > 0 {
+			if !authors.is_empty() {
 				match authors[0].get("name").as_string() {
 					Ok(author) => author.read(),
 					Err(_) => String::new(),
@@ -101,9 +106,9 @@ pub fn get_manga_details(id: String) -> Result<Manga> {
 		Err(_) => String::new(),
 	};
 
-	let status = match find_in_array(tags.clone(), String::from("Status")) {
+	let status = match find_in_array(&tags, String::from("Status")) {
 		Ok(statuses) => {
-			if statuses.len() > 0 {
+			if !statuses.is_empty() {
 				match statuses[0].get("name").as_string() {
 					Ok(status) => match status.read().as_str() {
 						"Ongoing" => MangaStatus::Ongoing,
@@ -120,7 +125,7 @@ pub fn get_manga_details(id: String) -> Result<Manga> {
 	};
 
 	let mut categories: Vec<String> = Vec::new();
-	if let Ok(category_objects) = find_in_array(tags.clone(), String::from("General")) {
+	if let Ok(category_objects) = find_in_array(&tags, String::from("General")) {
 		for category_object in category_objects {
 			if let Ok(category_name) = category_object.get("name").as_string() {
 				categories.push(category_name.clone().read());
@@ -128,9 +133,12 @@ pub fn get_manga_details(id: String) -> Result<Manga> {
 		}
 	}
 
-	let share_url = format!("https://dynasty-scans.com/{}", id.clone());
+	let share_url = format!("https://dynasty-scans.com/{}", id);
 	let description = match json.get("description").as_string() {
-		Ok(description) => Node::new_fragment(description.read().as_bytes()).text().read(),
+		Ok(description) => match Node::new_fragment(description.read().as_bytes()) {
+			Ok(node) => node.text().read(),
+			Err(_) => String::new(),
+		},
 		Err(_) => String::new(),
 	};
 
@@ -145,7 +153,7 @@ pub fn get_manga_details(id: String) -> Result<Manga> {
 		categories,
 		status,
 		nsfw: MangaContentRating::Nsfw,
-		viewer: MangaViewer::Rtl
+		viewer: MangaViewer::Rtl,
 	})
 }
 

@@ -1,0 +1,461 @@
+[
+	{
+		"type": "title"
+	},
+	{
+		"type": "group",
+		"name": "Status",
+		"filters": [
+			{
+				"type": "check",
+				"name": "Ongoing"
+			},
+			{
+				"type": "check",
+				"name": "On Hold"
+			},
+			{
+				"type": "check",
+				"name": "Cancelled"
+			},
+			{
+				"type": "check",
+				"name": "Completed"
+			}
+		]
+	},
+	{
+		"type": "select",
+		"name": "Genre Condition",
+		"options": [
+			"OR (having one of the selected genre)",
+			"AND (having all of the selected genres)"
+		]
+	},
+	{
+		"type": "group",
+		"name": "Genres",
+		"filters": [
+			{
+				"type": "genre",
+				"name": "4 koma",
+				"id": "4-koma"
+			},
+			{
+				"type": "genre",
+				"name": "Action",
+				"id": "action"
+			},
+			{
+				"type": "genre",
+				"name": "Adventure",
+				"id": "adventure"
+			},
+			{
+				"type": "genre",
+				"name": "Alien",
+				"id": "alien"
+			},
+			{
+				"type": "genre",
+				"name": "Animal",
+				"id": "animal"
+			},
+			{
+				"type": "genre",
+				"name": "Boy's love",
+				"id": "boys-love"
+			},
+			{
+				"type": "genre",
+				"name": "Business",
+				"id": "business"
+			},
+			{
+				"type": "genre",
+				"name": "Comedy",
+				"id": "comedy"
+			},
+			{
+				"type": "genre",
+				"name": "Construction",
+				"id": "construction"
+			},
+			{
+				"type": "genre",
+				"name": "Cooking",
+				"id": "cooking"
+			},
+			{
+				"type": "genre",
+				"name": "Crime",
+				"id": "crime"
+			},
+			{
+				"type": "genre",
+				"name": "Crossdressing",
+				"id": "crossdressing"
+			},
+			{
+				"type": "genre",
+				"name": "Detective",
+				"id": "detective"
+			},
+			{
+				"type": "genre",
+				"name": "Doujinshi",
+				"id": "doujinshi"
+			},
+			{
+				"type": "genre",
+				"name": "Drama",
+				"id": "drama"
+			},
+			{
+				"type": "genre",
+				"name": "Ecchi",
+				"id": "ecchi"
+			},
+			{
+				"type": "genre",
+				"name": "Ecchi 2",
+				"id": "ecchi-2"
+			},
+			{
+				"type": "genre",
+				"name": "Fantasy",
+				"id": "fantasy"
+			},
+			{
+				"type": "genre",
+				"name": "Gambling",
+				"id": "gambling"
+			},
+			{
+				"type": "genre",
+				"name": "Gender bender",
+				"id": "gender-bender"
+			},
+			{
+				"type": "genre",
+				"name": "Genderswap",
+				"id": "genderswap"
+			},
+			{
+				"type": "genre",
+				"name": "Ghost",
+				"id": "ghost"
+			},
+			{
+				"type": "genre",
+				"name": "Girls love",
+				"id": "girls-love"
+			},
+			{
+				"type": "genre",
+				"name": "Gore",
+				"id": "gore"
+			},
+			{
+				"type": "genre",
+				"name": "Gyaru",
+				"id": "gyaru"
+			},
+			{
+				"type": "genre",
+				"name": "Harem",
+				"id": "harem"
+			},
+			{
+				"type": "genre",
+				"name": "Historical",
+				"id": "historical"
+			},
+			{
+				"type": "genre",
+				"name": "Horror",
+				"id": "horror"
+			},
+			{
+				"type": "genre",
+				"name": "Indonesian",
+				"id": "indonesian"
+			},
+			{
+				"type": "genre",
+				"name": "Isekai",
+				"id": "isekai"
+			},
+			{
+				"type": "genre",
+				"name": "Josei",
+				"id": "josei"
+			},
+			{
+				"type": "genre",
+				"name": "Loli",
+				"id": "loli"
+			},
+			{
+				"type": "genre",
+				"name": "Mafia",
+				"id": "mafia"
+			},
+			{
+				"type": "genre",
+				"name": "Magic",
+				"id": "magic"
+			},
+			{
+				"type": "genre",
+				"name": "Manhua",
+				"id": "manhua"
+			},
+			{
+				"type": "genre",
+				"name": "Manhwa",
+				"id": "manhwa"
+			},
+			{
+				"type": "genre",
+				"name": "Martial arts",
+				"id": "martial-arts"
+			},
+			{
+				"type": "genre",
+				"name": "Mature",
+				"id": "mature"
+			},
+			{
+				"type": "genre",
+				"name": "Mature 2",
+				"id": "adult"
+			},
+			{
+				"type": "genre",
+				"name": "Mature 3",
+				"id": "mature-3"
+			},
+			{
+				"type": "genre",
+				"name": "Mecha",
+				"id": "mecha"
+			},
+			{
+				"type": "genre",
+				"name": "Medical",
+				"id": "medical"
+			},
+			{
+				"type": "genre",
+				"name": "Military",
+				"id": "military"
+			},
+			{
+				"type": "genre",
+				"name": "Monster",
+				"id": "monster"
+			},
+			{
+				"type": "genre",
+				"name": "Monster girls",
+				"id": "monster-girls"
+			},
+			{
+				"type": "genre",
+				"name": "Murim",
+				"id": "murim"
+			},
+			{
+				"type": "genre",
+				"name": "Music",
+				"id": "music"
+			},
+			{
+				"type": "genre",
+				"name": "Mystery",
+				"id": "mystery"
+			},
+			{
+				"type": "genre",
+				"name": "NTR",
+				"id": "ntr"
+			},
+			{
+				"type": "genre",
+				"name": "Office worker",
+				"id": "office-worker"
+			},
+			{
+				"type": "genre",
+				"name": "One shot",
+				"id": "one-shot"
+			},
+			{
+				"type": "genre",
+				"name": "Otome",
+				"id": "otome"
+			},
+			{
+				"type": "genre",
+				"name": "Polish Comics",
+				"id": "polish-comics"
+			},
+			{
+				"type": "genre",
+				"name": "Post apocalyptic",
+				"id": "post-apocalyptic"
+			},
+			{
+				"type": "genre",
+				"name": "Psychological",
+				"id": "psychological"
+			},
+			{
+				"type": "genre",
+				"name": "Reincarnation",
+				"id": "reincarnation"
+			},
+			{
+				"type": "genre",
+				"name": "Revenge",
+				"id": "revenge"
+			},
+			{
+				"type": "genre",
+				"name": "Reverse harem",
+				"id": "reverse-harem"
+			},
+			{
+				"type": "genre",
+				"name": "Romance",
+				"id": "romance"
+			},
+			{
+				"type": "genre",
+				"name": "Russian",
+				"id": "russian"
+			},
+			{
+				"type": "genre",
+				"name": "school life",
+				"id": "school-life"
+			},
+			{
+				"type": "genre",
+				"name": "Seinen",
+				"id": "seinen"
+			},
+			{
+				"type": "genre",
+				"name": "Shota",
+				"id": "shota"
+			},
+			{
+				"type": "genre",
+				"name": "Shoujo",
+				"id": "shoujo"
+			},
+			{
+				"type": "genre",
+				"name": "Shoujo ai",
+				"id": "shoujo-ai"
+			},
+			{
+				"type": "genre",
+				"name": "Shounen",
+				"id": "shounen"
+			},
+			{
+				"type": "genre",
+				"name": "Shounen ai",
+				"id": "shounen-ai"
+			},
+			{
+				"type": "genre",
+				"name": "Si-fi",
+				"id": "si-fi"
+			},
+			{
+				"type": "genre",
+				"name": "Slice of life",
+				"id": "slice-of-life"
+			},
+			{
+				"type": "genre",
+				"name": "Sports",
+				"id": "sports"
+			},
+			{
+				"type": "genre",
+				"name": "Superhero",
+				"id": "superhero"
+			},
+			{
+				"type": "genre",
+				"name": "Supernatural",
+				"id": "supernatural"
+			},
+			{
+				"type": "genre",
+				"name": "Survival",
+				"id": "survival"
+			},
+			{
+				"type": "genre",
+				"name": "Time travel",
+				"id": "time-travel"
+			},
+			{
+				"type": "genre",
+				"name": "Tragedy",
+				"id": "tragedy"
+			},
+			{
+				"type": "genre",
+				"name": "Vampire",
+				"id": "vampire"
+			},
+			{
+				"type": "genre",
+				"name": "Villainess",
+				"id": "villainess"
+			},
+			{
+				"type": "genre",
+				"name": "Violence",
+				"id": "violence"
+			},
+			{
+				"type": "genre",
+				"name": "Webtoon",
+				"id": "webtoon"
+			},
+			{
+				"type": "genre",
+				"name": "Wuxia",
+				"id": "wuxia"
+			},
+			{
+				"type": "genre",
+				"name": "Yakuzas",
+				"id": "yakuzas"
+			},
+			{
+				"type": "genre",
+				"name": "Yaoi",
+				"id": "yaoi"
+			},
+			{
+				"type": "genre",
+				"name": "Yuri",
+				"id": "yuri"
+			},
+			{
+				"type": "genre",
+				"name": "Zombies",
+				"id": "zombies"
+			}
+		]
+	}
+]

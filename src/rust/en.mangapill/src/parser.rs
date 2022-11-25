@@ -1,6 +1,6 @@
 use aidoku::{
-	prelude::*, error::Result, std::String, std::Vec, std::html::Node,
-	Filter, FilterType, Manga, Page, MangaStatus, MangaContentRating, MangaViewer, Chapter,
+	error::Result, prelude::*, std::html::Node, std::String, std::Vec, Chapter, Filter, FilterType,
+	Manga, MangaContentRating, MangaStatus, MangaViewer, Page,
 };
 
 pub fn parse_recents(html: Node, result: &mut Vec<Manga>) {
@@ -22,7 +22,7 @@ pub fn parse_recents(html: Node, result: &mut Vec<Manga>) {
 			categories: Vec::new(),
 			status: MangaStatus::Unknown,
 			nsfw: MangaContentRating::Safe,
-			viewer: MangaViewer::Default
+			viewer: MangaViewer::Default,
 		});
 	}
 }
@@ -35,7 +35,7 @@ pub fn parse_search(html: Node, result: &mut Vec<Manga>) {
 		let title = obj.select("div a ").text().read();
 		let img = obj.select("a figure img").attr("data-src").read();
 
-		if id.len() > 0 && title.len() > 0 && img.len() > 0 {
+		if !id.is_empty() && !title.is_empty() && !img.is_empty() {
 			result.push(Manga {
 				id,
 				cover: img,
@@ -47,7 +47,7 @@ pub fn parse_search(html: Node, result: &mut Vec<Manga>) {
 				categories: Vec::new(),
 				status: MangaStatus::Unknown,
 				nsfw: MangaContentRating::Safe,
-				viewer: MangaViewer::Default
+				viewer: MangaViewer::Default,
 			});
 		}
 	}
@@ -57,8 +57,16 @@ pub fn parse_manga(obj: Node, id: String) -> Result<Manga> {
 	let title = obj.select(".lazy").attr("alt").read();
 	let cover = obj.select(".lazy").attr("data-src").read();
 	let description = obj.select(".text-sm.text--secondary").text().read();
-	let type_str = obj.select(".grid.grid-cols-1.gap-3.mb-3 div:first-child div").text().read().to_lowercase();
-	let status_str = obj.select(".grid.grid-cols-1.gap-3.mb-3 div:nth-child(2) div:nth-child(2)").text().read().to_lowercase();
+	let type_str = obj
+		.select(".grid.grid-cols-1.gap-3.mb-3 div:first-child div")
+		.text()
+		.read()
+		.to_lowercase();
+	let status_str = obj
+		.select(".grid.grid-cols-1.gap-3.mb-3 div:nth-child(2) div:nth-child(2)")
+		.text()
+		.read()
+		.to_lowercase();
 
 	let url = format!("https://www.mangapill.com{}", &id);
 
@@ -75,7 +83,12 @@ pub fn parse_manga(obj: Node, id: String) -> Result<Manga> {
 		MangaStatus::Unknown
 	};
 
-	let nsfw = if obj.select(".alert-warning").text().read().contains("Mature") {
+	let nsfw = if obj
+		.select(".alert-warning")
+		.text()
+		.read()
+		.contains("Mature")
+	{
 		MangaContentRating::Nsfw
 	} else if categories.contains(&String::from("Ecchi")) {
 		MangaContentRating::Suggestive
@@ -86,7 +99,7 @@ pub fn parse_manga(obj: Node, id: String) -> Result<Manga> {
 	let viewer = match type_str.as_str() {
 		"manga" => MangaViewer::Rtl,
 		"manhwa" => MangaViewer::Scroll,
-		_ => MangaViewer::Rtl
+		_ => MangaViewer::Rtl,
 	};
 
 	Ok(Manga {
@@ -100,7 +113,7 @@ pub fn parse_manga(obj: Node, id: String) -> Result<Manga> {
 		categories,
 		status,
 		nsfw,
-		viewer
+		viewer,
 	})
 }
 
@@ -111,13 +124,15 @@ pub fn get_chaper_list(obj: Node) -> Result<Vec<Chapter>> {
 		let obj = chapter.as_node();
 		let id = obj.attr("href").read();
 		let url = format!("https://www.mangapill.com{}", &id);
-		if id == "Read Chapters" { continue }
+		if id == "Read Chapters" {
+			continue;
+		}
 
-		let split = id.as_str().split("-");
+		let split = id.as_str().split('-');
 		let vec = split.collect::<Vec<&str>>();
 		let chap_num = vec[vec.len() - 1].parse().unwrap();
 
-		chapters.push(Chapter{
+		chapters.push(Chapter {
 			id,
 			title: String::new(),
 			volume: -1.0,
@@ -134,8 +149,7 @@ pub fn get_chaper_list(obj: Node) -> Result<Vec<Chapter>> {
 pub fn get_page_list(obj: Node) -> Result<Vec<Page>> {
 	let mut pages: Vec<Page> = Vec::new();
 
-	let mut i = 0;
-	for page in obj.select("picture img").array() {
+	for (i, page) in obj.select("picture img").array().enumerate() {
 		let obj = page.as_node();
 		let url = obj.attr("data-src").read();
 
@@ -145,7 +159,6 @@ pub fn get_page_list(obj: Node) -> Result<Vec<Page>> {
 			base64: String::new(),
 			text: String::new(),
 		});
-		i += 1;
 	}
 	Ok(pages)
 }
@@ -164,24 +177,24 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32, url: &mut String) {
 					search_string.push_str(urlencode(filter_value.read().to_lowercase()).as_str());
 					is_searching = true;
 				}
-			},
+			}
 			FilterType::Genre => {
 				query.push_str("&genre=");
 				query.push_str(&urlencode(filter.name.as_str().to_lowercase()));
 				is_searching = true;
-			},
+			}
 			FilterType::Select => {
 				if filter.name.as_str() == "Type" {
 					query.push_str("&type=");
 					match filter.value.as_int().unwrap_or(-1) {
-						0 =>  query.push_str(""),
-						1 =>  query.push_str("manga"),
-						2 =>  query.push_str("novel"),
-						3 =>  query.push_str("one-shot"),
-						4 =>  query.push_str("doujinshi"),
-						5 =>  query.push_str("manhwa"),
-						6 =>  query.push_str("manhua"),
-						7 =>  query.push_str("oel"),
+						0 => query.push_str(""),
+						1 => query.push_str("manga"),
+						2 => query.push_str("novel"),
+						3 => query.push_str("one-shot"),
+						4 => query.push_str("doujinshi"),
+						5 => query.push_str("manhwa"),
+						6 => query.push_str("manhua"),
+						7 => query.push_str("oel"),
 						_ => continue,
 					}
 					if filter.value.as_int().unwrap_or(-1) > 0 {
@@ -191,19 +204,19 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32, url: &mut String) {
 				if filter.name.as_str() == "Status" {
 					query.push_str("&status=");
 					match filter.value.as_int().unwrap_or(-1) {
-						0 =>  query.push_str(""),
-						1 =>  query.push_str("publishing"),
-						2 =>  query.push_str("finished"),
-						3 =>  query.push_str("on+haitus"),
-						4 =>  query.push_str("doujinshi"),
-						5 =>  query.push_str("discontinued"),
+						0 => query.push_str(""),
+						1 => query.push_str("publishing"),
+						2 => query.push_str("finished"),
+						3 => query.push_str("on+haitus"),
+						4 => query.push_str("doujinshi"),
+						5 => query.push_str("discontinued"),
 						_ => continue,
 					}
 					if filter.value.as_int().unwrap_or(-1) > 0 {
 						is_searching = true;
 					}
 				}
-			},
+			}
 			_ => continue,
 		}
 	}
@@ -219,23 +232,23 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32, url: &mut String) {
 }
 
 pub fn parse_incoming_url(url: String) -> String {
-    // https://mangapill.com/manga/6290/one-piece-pirate-recipes
-    // https://mangapill.com/chapters/6290-10006000/one-piece-pirate-recipes-chapter-6
+	// https://mangapill.com/manga/6290/one-piece-pirate-recipes
+	// https://mangapill.com/chapters/6290-10006000/one-piece-pirate-recipes-chapter-6
 
-    let split = url.as_str().split("/");
-    let vec = split.collect::<Vec<&str>>();
-    let mut manga_id = String::from("/manga/");
+	let split = url.as_str().split('/');
+	let vec = split.collect::<Vec<&str>>();
+	let mut manga_id = String::from("/manga/");
 
-    if url.contains("/chapters/") {
-        let split  = vec[vec.len() - 2].split("-");
-        let ch_vec = split.collect::<Vec<&str>>();
-        manga_id.push_str(ch_vec[0]);
-    } else {
-        manga_id.push_str(vec[vec.len() - 2]);
-    }
-    manga_id.push_str("/");
-    manga_id.push_str(vec[vec.len() - 1]);
-    return manga_id;
+	if url.contains("/chapters/") {
+		let split = vec[vec.len() - 2].split('-');
+		let ch_vec = split.collect::<Vec<&str>>();
+		manga_id.push_str(ch_vec[0]);
+	} else {
+		manga_id.push_str(vec[vec.len() - 2]);
+	}
+	manga_id.push('/');
+	manga_id.push_str(vec[vec.len() - 1]);
+	manga_id
 }
 
 // HELPER FUNCTIONS
@@ -259,7 +272,7 @@ pub fn i32_to_string(mut integer: i32) -> String {
 		string.insert(pos, char::from_u32((digit as u32) + ('0' as u32)).unwrap());
 		integer /= 10;
 	}
-	return string;
+	string
 }
 
 pub fn urlencode(string: String) -> String {
@@ -269,10 +282,11 @@ pub fn urlencode(string: String) -> String {
 
 	for byte in bytes {
 		let curr = *byte;
-		if (b'a' <= curr && curr <= b'z')
-			|| (b'A' <= curr && curr <= b'Z')
-			|| (b'0' <= curr && curr <= b'9') {
-				result.push(curr);
+		if (b'a'..=b'z').contains(&curr)
+			|| (b'A'..=b'Z').contains(&curr)
+			|| (b'0'..=b'9').contains(&curr)
+		{
+			result.push(curr);
 		} else {
 			result.push(b'%');
 			result.push(hex[curr as usize >> 4]);
@@ -280,5 +294,5 @@ pub fn urlencode(string: String) -> String {
 		}
 	}
 
-	String::from_utf8(result).unwrap_or(String::new())
+	String::from_utf8(result).unwrap_or_default()
 }

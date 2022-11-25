@@ -82,7 +82,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 							.value
 							.as_string()
 							.unwrap_or_else(|_| StringRef::from(""))
-							.read()
+							.read(),
 					);
 					if !title.is_empty() {
 						return format!(
