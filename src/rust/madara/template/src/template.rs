@@ -30,6 +30,7 @@ pub struct MadaraSiteData {
 	pub image_selector: String,
 	pub genre_selector: String,
 	pub description_selector: String,
+	pub chapter_selector: String,
 
 	pub status_filter_ongoing: String,
 	pub status_filter_completed: String,
@@ -66,12 +67,15 @@ impl Default for MadaraSiteData {
 			post_type: String::from("wp-manga"),
 			// p to select description from
 			description_selector: String::from("div.description-summary div p"),
+			// selector for chapter list
+			chapter_selector: String::from("li.wp-manga-chapter"),
 			// div to select images from a chapter
 			image_selector: String::from("div.page-break > img"),
 			// div to select all the genres
 			genre_selector: String::from("div.genres-content > a"),
 			// choose between two options for chapter list POST request
 			alt_ajax: false,
+			// get the manga id from script tag
 			get_manga_id: get_int_manga_id,
 			// default viewer
 			viewer: |_, _| MangaViewer::Scroll,
@@ -309,7 +313,7 @@ pub fn get_chapter_list(manga_id: String, data: MadaraSiteData) -> Result<Vec<Ch
 	let html = req.html();
 
 	let mut chapters: Vec<Chapter> = Vec::new();
-	for item in html.select("li.wp-manga-chapter  ").array() {
+	for item in html.select(&data.chapter_selector).array() {
 		let obj = item.as_node();
 
 		let id = obj
