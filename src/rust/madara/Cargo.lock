@@ -123,6 +123,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "manhuafast"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "madara_template",
+]
+
+[[package]]
 name = "manhuaplus"
 version = "0.1.0"
 dependencies = [
