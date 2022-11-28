@@ -139,6 +139,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "manhuaus"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "madara_template",
+]
+
+[[package]]
 name = "manhwaid"
 version = "0.1.0"
 dependencies = [
