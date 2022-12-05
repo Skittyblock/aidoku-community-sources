@@ -47,7 +47,7 @@ pub fn parse_search(html: Node, result: &mut Vec<Manga>) {
 		let title = obj.select(".item-title").text().read();
 		let img = obj.select("img").attr("src").read();
 
-		if id.len() > 0 && title.len() > 0 && img.len() > 0 {
+		if !id.is_empty() && !title.is_empty() && !img.is_empty() {
 			result.push(Manga {
 				id,
 				cover: img,
@@ -88,7 +88,7 @@ pub fn parse_manga(obj: Node, id: String) -> Result<Manga> {
 		}
 		if item.select("b").text().read().contains("Genres") {
 			let gen_str = item.select("span").text().read();
-			let split = gen_str.as_str().split(",");
+			let split = gen_str.as_str().split(',');
 			let vec = split.collect::<Vec<&str>>();
 			for item in vec {
 				categories.push(String::from(item.trim()));
@@ -206,12 +206,12 @@ pub fn get_page_list(obj: Node) -> Result<Vec<Page>> {
 		}
 		let img_arr = img_str.split("\",\"").collect::<Vec<&str>>();
 		let tkn_str = batojs_decrypt(String::from(server_token), String::from(bato_js));
-		let t = tkn_str.replace("[", "").replace("]", "");
-		let tkn_arr = t.split(",").collect::<Vec<&str>>();
+		let t = tkn_str.replace('[', "").replace(']', "");
+		let tkn_arr = t.split(',').collect::<Vec<&str>>();
 
 		for (index, _item) in img_arr.iter().enumerate() {
 			let ind = index as i32;
-			let url = String::from(format!("{}?{}", _item, tkn_arr[index]));
+			let url = format!("{}?{}", _item, tkn_arr[index]);
 			pages.push(Page {
 				index: ind,
 				url,
@@ -242,7 +242,7 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32) -> (String, bool) {
 			_ => continue,
 		}
 	}
-	if search == false {
+	if !search {
 		get_list_url(&mut url, "title.az", page);
 	}
 	(url, search)
@@ -254,12 +254,12 @@ pub fn get_list_url(url: &mut String, sort_type: &str, page: i32) {
 		for lang in languages {
 			if let Ok(lang) = lang.as_string() {
 				url.push_str(&lang.read());
-				url.push_str(",");
+				url.push(',');
 			}
 		}
 	}
 	url.push_str("&sort=");
-	url.push_str(&sort_type);
+	url.push_str(sort_type);
 	url.push_str("&page=");
 	url.push_str(&i32_to_string(page));
 }
@@ -267,18 +267,18 @@ pub fn get_list_url(url: &mut String, sort_type: &str, page: i32) {
 pub fn parse_incoming_url(url: String) -> String {
 	//bato.to/series/72873/who-made-me-a-princess-official
 
-	let split = url.as_str().split("/");
+	let split = url.as_str().split('/');
 	let vec = split.collect::<Vec<&str>>();
 	let mut manga_id = String::new();
 
 	if url.contains("/chapters/") {
 	} else {
 		manga_id.push_str(vec[vec.len() - 2]);
-		manga_id.push_str("/");
+		manga_id.push('/');
 		manga_id.push_str(vec[vec.len() - 1]);
 	}
 
-	return manga_id;
+	manga_id
 }
 
 // HELPER FUNCTIONS
@@ -302,7 +302,7 @@ pub fn i32_to_string(mut integer: i32) -> String {
 		string.insert(pos, char::from_u32((digit as u32) + ('0' as u32)).unwrap());
 		integer /= 10;
 	}
-	return string;
+	string
 }
 
 pub fn urlencode(string: String) -> String {
@@ -312,9 +312,9 @@ pub fn urlencode(string: String) -> String {
 
 	for byte in bytes {
 		let curr = *byte;
-		if (b'a' <= curr && curr <= b'z')
-			|| (b'A' <= curr && curr <= b'Z')
-			|| (b'0' <= curr && curr <= b'9')
+		if (b'a'..=b'z').contains(&curr)
+			|| (b'A'..=b'Z').contains(&curr)
+			|| (b'0'..=b'9').contains(&curr)
 		{
 			result.push(curr);
 		} else {
@@ -324,5 +324,5 @@ pub fn urlencode(string: String) -> String {
 		}
 	}
 
-	String::from_utf8(result).unwrap_or(String::new())
+	String::from_utf8(result).unwrap_or_default()
 }

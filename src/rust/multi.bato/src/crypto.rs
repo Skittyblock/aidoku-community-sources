@@ -86,7 +86,7 @@ pub fn cryptojs_aes_decrypt(
 	};
 	if let Ok(cipher) = Aes256CbcDec::new_from_slices(actual_key, actual_iv) {
 		let pt = cipher.decrypt_padded_vec_mut::<Pkcs7>(ciphertext).unwrap();
-		Ok(Vec::from(pt))
+		Ok(pt)
 	} else {
 		Err(DecryptError::InvalidLength)
 	}

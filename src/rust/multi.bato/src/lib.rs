@@ -23,7 +23,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 		parser::parse_listing(html, &mut result);
 	}
 
-	if result.len() >= 1 {
+	if !result.is_empty() {
 		Ok(MangaPageResult {
 			manga: result,
 			has_more: true,
@@ -60,22 +60,22 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 #[get_manga_details]
 fn get_manga_details(manga_id: String) -> Result<Manga> {
 	let url = format!("https://bato.to/series/{}", &manga_id);
-	let html = Request::new(url.clone().as_str(), HttpMethod::Get).html();
-	return parser::parse_manga(html, manga_id);
+	let html = Request::new(url.as_str(), HttpMethod::Get).html();
+	parser::parse_manga(html, manga_id)
 }
 
 #[get_chapter_list]
 fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 	let url = format!("https://bato.to/series/{}", &manga_id);
-	let html = Request::new(url.clone().as_str(), HttpMethod::Get).html();
-	return parser::get_chaper_list(html);
+	let html = Request::new(url.as_str(), HttpMethod::Get).html();
+	parser::get_chaper_list(html)
 }
 
 #[get_page_list]
 fn get_page_list(chapter_id: String) -> Result<Vec<Page>> {
 	let url = format!("https://bato.to/chapter/{}", &chapter_id);
-	let html = Request::new(url.clone().as_str(), HttpMethod::Get).html();
-	return parser::get_page_list(html);
+	let html = Request::new(url.as_str(), HttpMethod::Get).html();
+	parser::get_page_list(html)
 }
 
 #[handle_url]
@@ -83,7 +83,7 @@ pub fn handle_url(url: String) -> Result<DeepLink> {
 	let parsed_manga_id = parser::parse_incoming_url(url);
 
 	Ok(DeepLink {
-		manga: Some(get_manga_details(parsed_manga_id.clone())?),
+		manga: Some(get_manga_details(parsed_manga_id)?),
 		chapter: None,
 	})
 }
