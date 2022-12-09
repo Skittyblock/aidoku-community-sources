@@ -1,0 +1,49 @@
+[
+	{
+		"type": "title"
+	},
+	{
+		"type": "author"
+	},
+	{
+		"type": "group",
+		"name": "A group filter",
+		"filters": [
+			{
+				"type": "check",
+				"name": "A checkbox",
+				"default": true
+			}
+		]
+	},
+	{
+		"type": "group",
+		"name": "Another group filter",
+		"filters": [
+			{
+				"type": "genre",
+				"name": "A genre",
+				"canExclude": true
+			}
+		]
+	},
+	{
+		"type": "select",
+		"name": "A select filter",
+		"options": [
+
+		]
+	},
+	{
+		"type": "sort",
+		"name": "A sorter",
+		"canAscend": true,
+		"options": [
+
+		],
+		"default": {
+			"index": 0,
+			"ascending": false
+		}
+	}
+]
