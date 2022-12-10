@@ -7,5 +7,5 @@
     "url": "https://reaperscans.com",
     "nsfw": 0
   },
-  "listings": []
+  "listings": [{ "name": "Latest" }]
 }
