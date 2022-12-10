@@ -96,7 +96,12 @@ pub fn parse_manga(obj: Node, id: String) -> Result<Manga> {
 		}
 	}
 
-	let url = format!("https://bato.to/series/{}", &id);
+	let mut url = String::new();
+	if let Ok(url_str) = defaults_get("sourceURL").as_string() {
+		url.push_str(url_str.read().as_str());
+		url.push_str("/series/");
+		url.push_str(&id);
+	}
 
 	let status = if status_str.contains("Ongoing") {
 		MangaStatus::Ongoing
@@ -153,19 +158,22 @@ pub fn get_chaper_list(obj: Node) -> Result<Vec<Chapter>> {
 		let _time_str = chapter_node.select(".extra i.ps-3").text().read();
 
 		let chapter = String::from(name.trim()).parse::<f32>().unwrap_or(-1.0);
-		let mut url = String::from("https://bato.to/chapter/");
-		url.push_str(&id);
+		if let Ok(url_str) = defaults_get("sourceURL").as_string() {
+			let mut url = url_str.read();
+			url.push_str("/chapter/");
+			url.push_str(&id);
 
-		chapters.push(Chapter {
-			id,
-			title,
-			volume: -1.0,
-			chapter,
-			date_updated: -1.0,
-			scanlator: String::new(),
-			url,
-			lang: String::from("en"),
-		});
+			chapters.push(Chapter {
+				id,
+				title,
+				volume: -1.0,
+				chapter,
+				date_updated: -1.0,
+				scanlator: String::new(),
+				url,
+				lang: String::from("en"),
+			});
+		}
 	}
 	Ok(chapters)
 }
@@ -224,9 +232,12 @@ pub fn get_page_list(obj: Node) -> Result<Vec<Page>> {
 }
 
 pub fn get_filtered_url(filters: Vec<Filter>, page: i32) -> (String, bool) {
-	let mut url = String::from("https://bato.to");
+	let mut url = String::new();
 	let mut search = false;
 
+	if let Ok(url_str) = defaults_get("sourceURL").as_string() {
+		url.push_str(url_str.read().as_str());
+	}
 	for filter in filters {
 		match filter.kind {
 			FilterType::Title => {
