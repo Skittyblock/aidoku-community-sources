@@ -105,3 +105,89 @@ pub fn parse_manga_listing(
 		has_more,
 	})
 }
+
+pub fn parse_manga_details(base_url: String, id: String) -> Result<Manga> {
+	let url = get_manga_url(id.clone(), base_url);
+
+	let html = Request::new(&url, HttpMethod::Get)
+		.html()
+		.expect("Failed to get html");
+
+	let cover = html
+		.select("main div.grid div.container img")
+		.attr("src")
+		.read();
+	let title = String::from(
+		html.select("main div.grid div.container h1")
+			.text()
+			.read()
+			.trim(),
+	);
+	let description = String::from(
+		html.select("main div.grid section div > div.p-4 > p")
+			.text()
+			.read()
+			.trim(),
+	);
+
+	let mut status = MangaStatus::Unknown;
+	let mut age_rating = String::new();
+	let mut nsfw = MangaContentRating::Safe;
+	let mut language = String::new();
+
+	for node in html
+		.select("main div.grid section div > div.p-4 > div > dl > div")
+		.array()
+	{
+		let info = node
+			.as_node()
+			.expect("Failed to get info node")
+			.text()
+			.read();
+
+		if info.contains("Source Language") {
+			language = info.replace("Source Language", "");
+		} else if info.contains("Age Rating") {
+			age_rating = info.replace("Age Rating", "");
+		} else if info.contains("Release Status") {
+			let release_status = info.replace("Release Status", "");
+
+			if release_status.contains("Ongoing") {
+				status = MangaStatus::Ongoing;
+			} else if release_status.contains("Complete") {
+				status = MangaStatus::Completed;
+			} else if release_status.contains("Dropped") {
+				status = MangaStatus::Cancelled;
+			} else if release_status.contains("On hold") {
+				status = MangaStatus::Hiatus;
+			}
+		}
+	}
+
+	if age_rating.contains("18+") {
+		nsfw = MangaContentRating::Nsfw;
+	} else if age_rating.contains("16+") {
+		nsfw = MangaContentRating::Suggestive;
+	}
+
+	let viewer = match language.as_str() {
+		"Japanese" => MangaViewer::Rtl,
+		"Korean" => MangaViewer::Scroll,
+		"Chinese" => MangaViewer::Scroll,
+		_ => MangaViewer::Rtl,
+	};
+
+	Ok(Manga {
+		id,
+		cover,
+		title,
+		author: String::new(),
+		artist: String::new(),
+		description,
+		url,
+		categories: Vec::new(),
+		status,
+		nsfw,
+		viewer,
+	})
+}
