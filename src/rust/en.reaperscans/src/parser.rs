@@ -199,7 +199,7 @@ pub fn parse_chapter_list(base_url: String, manga_id: String) -> Result<Vec<Chap
 		let chapter_node = chapter.as_node().expect("Failed to get chapter node");
 
 		let mut title = String::new();
-		let mut chapter_number = -1.0;
+		let chapter_number;
 
 		let parsed_title = chapter_node
 			.select("div.min-w-0 div.text-sm p.font-medium")
@@ -210,11 +210,18 @@ pub fn parse_chapter_list(base_url: String, manga_id: String) -> Result<Vec<Chap
 		// they are in the format of "Chapter 1 - Chapter Title" else
 		// it's just "Chapter 1"
 		if parsed_title.contains('-') {
-			title = String::from(parsed_title.split('-').collect::<Vec<&str>>()[1].trim());
+			title = String::from(
+				parsed_title
+					.split('-')
+					.last()
+					.expect("Failed to get chapter title")
+					.trim(),
+			);
 			chapter_number = parsed_title
 				.replace("Chapter", "")
 				.split('-')
-				.collect::<Vec<&str>>()[0]
+				.next()
+				.expect("Failed to get chapter number")
 				.trim()
 				.parse::<f32>()
 				.expect("Failed to parse chapter number");
