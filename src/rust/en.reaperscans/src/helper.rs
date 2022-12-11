@@ -64,6 +64,7 @@ pub fn text_with_newlines(node: Node) -> String {
 				.replace("<br>", "{{ .LINEBREAK }}")
 				.as_bytes(),
 		)
+		.expect("Failed to create new fragment")
 		.text()
 		.read()
 		.replace("{{ .LINEBREAK }}", "\n")
