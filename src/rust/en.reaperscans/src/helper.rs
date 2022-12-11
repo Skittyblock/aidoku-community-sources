@@ -1,6 +1,6 @@
 use aidoku::{
 	prelude::format,
-	std::{current_date, format, html::Node, String, Vec},
+	std::{current_date, String, Vec},
 };
 
 /// Returns an array of f32s contained within a string.
@@ -23,18 +23,6 @@ pub fn extract_f32_from_string(text: String) -> Vec<f32> {
 		.collect::<Vec<f32>>()
 }
 
-/// Adds https: to the start of a URL if it is missing.
-///
-/// Mostly useful for URLs such as `//www.google.com` where the intent is
-/// to use the current protocol.
-pub fn append_protocol(url: String) -> String {
-	if !url.starts_with("http") {
-		return format!("{}{}", "https:", url);
-	} else {
-		return url;
-	}
-}
-
 /// Percent-encode any non-ASCII characters in a string.
 pub fn urlencode(string: String) -> String {
 	let mut result: Vec<u8> = Vec::with_capacity(string.len() * 3);
@@ -52,25 +40,6 @@ pub fn urlencode(string: String) -> String {
 		}
 	}
 	String::from_utf8(result).unwrap_or_default()
-}
-
-/// Converts `<br>` into newlines.
-pub fn text_with_newlines(node: Node) -> String {
-	let html = node.html().read();
-	if !String::from(html.trim()).is_empty() {
-		Node::new_fragment(
-			node.html()
-				.read()
-				.replace("<br>", "{{ .LINEBREAK }}")
-				.as_bytes(),
-		)
-		.expect("Failed to create new fragment")
-		.text()
-		.read()
-		.replace("{{ .LINEBREAK }}", "\n")
-	} else {
-		String::new()
-	}
 }
 
 /// Returns the ID of a manga from a URL.
