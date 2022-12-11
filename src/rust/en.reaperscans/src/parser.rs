@@ -190,6 +190,10 @@ pub fn parse_manga_details(base_url: String, manga_id: String) -> Result<Manga> 
 	})
 }
 
+// TODO: Add pagination support, reaper uses an api call for paginating chapters
+// that uses a weird url that could possibly change at any time
+// need to figure out a good way to deal with that, or steal tachiyomi's implementation
+// https://reaperscans.com/livewire/message/frontend.wejnfgho-schqakzu
 pub fn parse_chapter_list(base_url: String, manga_id: String) -> Result<Vec<Chapter>> {
 	let url = get_manga_url(manga_id.clone(), base_url);
 
@@ -258,6 +262,7 @@ pub fn parse_chapter_list(base_url: String, manga_id: String) -> Result<Vec<Chap
 			lang: String::from("en"),
 		});
 	}
+
 	Ok(chapters)
 }
 
