@@ -72,3 +72,26 @@ pub fn text_with_newlines(node: Node) -> String {
 		String::new()
 	}
 }
+
+/// Returns the ID of a manga from a URL.
+/// *NOTE: This was written by GitHub Copilot.
+pub fn get_manga_id(url: String) -> String {
+	// Example Url: https://reaperscans.com/comics/4921-demonic-emperor/chapters/64343350-chapter-324
+	// parse "4921-demonic-emperor" from the url
+
+	if url.contains("comics") {
+		// Split the url by "/"
+		let split_url = url.split("/").collect::<Vec<&str>>();
+		// Get the index of "comics"
+		let comics_index = split_url.iter().position(|&r| r == "comics").unwrap();
+		// Get the index of the manga id
+		let manga_id_index = comics_index + 1;
+		// Get the manga id
+		let manga_id = split_url[manga_id_index];
+		// Return the manga id
+		String::from(manga_id)
+	} else {
+		// Return an empty string
+		String::new()
+	}
+}
