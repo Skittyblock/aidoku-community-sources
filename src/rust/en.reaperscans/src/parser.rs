@@ -8,8 +8,8 @@ use crate::helper::*;
 
 // TODO: Add search support, reaper uses an api call for searching that
 // uses a weird url that could possibly change at any time
-// need to figure out a good way to deal with that, or steal tachiyomi's implementation
-// https://reaperscans.com/livewire/message/frontend.dtddzhx-ghvjlgrpt
+// need to figure out a good way to deal with that, or steal tachiyomi's
+// implementation https://reaperscans.com/livewire/message/frontend.dtddzhx-ghvjlgrpt
 pub fn parse_manga_list(
 	base_url: String,
 	_filters: Vec<Filter>,
@@ -190,8 +190,8 @@ pub fn parse_manga_details(base_url: String, manga_id: String) -> Result<Manga> 
 
 // TODO: Add pagination support, reaper uses an api call for paginating chapters
 // that uses a weird url that could possibly change at any time
-// need to figure out a good way to deal with that, or steal tachiyomi's implementation
-// https://reaperscans.com/livewire/message/frontend.wejnfgho-schqakzu
+// need to figure out a good way to deal with that, or steal tachiyomi's
+// implementation https://reaperscans.com/livewire/message/frontend.wejnfgho-schqakzu
 pub fn parse_chapter_list(base_url: String, manga_id: String) -> Result<Vec<Chapter>> {
 	let url = get_manga_url(manga_id, base_url);
 

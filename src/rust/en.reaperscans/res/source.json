@@ -1,11 +1,15 @@
 {
-  "info": {
-    "id": "en.reaperscans",
-    "lang": "en",
-    "name": "Reaper Scans",
-    "version": 1,
-    "url": "https://reaperscans.com",
-    "nsfw": 0
-  },
-  "listings": [{ "name": "Latest" }]
+	"info": {
+		"id": "en.reaperscans",
+		"lang": "en",
+		"name": "Reaper Scans",
+		"version": 5,
+		"url": "https://reaperscans.com",
+		"nsfw": 0
+	},
+	"listings": [
+		{
+			"name": "Latest"
+		}
+	]
 }
