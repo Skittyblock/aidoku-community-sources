@@ -1,6 +1,6 @@
 use aidoku::{
 	prelude::format,
-	std::{html::Node, String, Vec},
+	std::{format, html::Node, String, Vec},
 };
 
 /// Returns an array of f32s contained within a string.
@@ -117,4 +117,23 @@ pub fn get_chapter_id(url: String) -> String {
 		// Return an empty string
 		String::new()
 	}
+}
+
+/// Returns full URL of a manga from a manga ID.
+// *NOTE: This was written by GitHub Copilot.
+pub fn get_manga_url(manga_id: String, base_url: String) -> String {
+	// Example manga id: 4921-demonic-emperor
+	// return "https://reaperscans.com/comics/4921-demonic-emperor"
+
+	format!("{}/comics/{}", base_url, manga_id)
+}
+
+/// Returns full URL of a chapter from a chapter ID and manga ID.
+// *NOTE: This was written by GitHub Copilot.
+pub fn get_chapter_url(chapter_id: String, manga_id: String, base_url: String) -> String {
+	// Example chapter id: 64343350-chapter-324
+	// Example manga id: 4921-demonic-emperor
+	// return "https://reaperscans.com/comics/4921-demonic-emperor/chapters/64343350-chapter-324"
+
+	format!("{}/comics/{}/chapters/{}", base_url, manga_id, chapter_id)
 }
