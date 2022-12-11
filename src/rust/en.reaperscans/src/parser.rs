@@ -255,3 +255,47 @@ pub fn parse_chapter_list(base_url: String, id: String) -> Result<Vec<Chapter>> 
 	}
 	Ok(chapters)
 }
+
+pub fn parse_page_list(
+	base_url: String,
+	manga_id: String,
+	chapter_id: String,
+) -> Result<Vec<Page>> {
+	let url = get_chapter_url(chapter_id, manga_id, base_url);
+
+	let html = Request::new(&url, HttpMethod::Get)
+		.html()
+		.expect("Failed to get html");
+
+	let mut pages: Vec<Page> = Vec::new();
+
+	for page in html.select("main div img.max-w-full").array() {
+		let page_node = page.as_node().expect("Failed to get page node");
+
+		let url = page_node.attr("src").read();
+
+		let image_name = url
+			.split('/')
+			.last()
+			.expect("Failed to get image name from url")
+			.split('.')
+			.next()
+			.expect("Failed to get image name from url");
+
+		let index = *extract_f32_from_string(String::from(image_name))
+			.first()
+			.expect("Failed to get index") as i32;
+
+		let encoded_image_name = urlencode(String::from(image_name));
+		let encoded_url = url.replace(&image_name, &encoded_image_name);
+
+		pages.push(Page {
+			index,
+			url: encoded_url,
+			base64: String::new(),
+			text: String::new(),
+		});
+	}
+
+	Ok(pages)
+}

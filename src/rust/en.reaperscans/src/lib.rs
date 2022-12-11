@@ -35,6 +35,11 @@ fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 	parser::parse_chapter_list(String::from(BASE_URL), manga_id)
 }
 
+#[get_page_list]
+fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
+	parser::parse_page_list(String::from(BASE_URL), manga_id, chapter_id)
+}
+
 #[modify_image_request]
 fn modify_image_request(request: Request) {
 	todo!()
