@@ -1,13 +1,7 @@
-#![no_std]
 use aidoku::{
-	error::Result,
-	prelude::format,
-	std::net::HttpMethod,
-	std::net::Request,
-	std::Vec,
-	std::{print, String},
-	Chapter, DeepLink, Filter, FilterType, Listing, Manga, MangaContentRating, MangaPageResult,
-	MangaStatus, MangaViewer, Page,
+	error::Result, prelude::format, std::net::HttpMethod, std::net::Request, std::String, std::Vec,
+	Chapter, Filter, Listing, Manga, MangaContentRating, MangaPageResult, MangaStatus, MangaViewer,
+	Page,
 };
 
 use crate::helper::*;

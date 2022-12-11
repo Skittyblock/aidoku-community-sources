@@ -2,9 +2,8 @@
 use aidoku::{
 	error::Result,
 	prelude::*,
-	std::{net::HttpMethod, net::Request, print, String, Vec},
-	Chapter, DeepLink, Filter, Listing, Manga, MangaContentRating, MangaPageResult, MangaStatus,
-	MangaViewer,
+	std::{net::Request, String, Vec},
+	Chapter, DeepLink, Filter, Listing, Manga, MangaPageResult, Page,
 };
 
 mod helper;
