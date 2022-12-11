@@ -26,8 +26,8 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 }
 
 #[get_manga_details]
-fn get_manga_details(id: String) -> Result<Manga> {
-	parser::parse_manga_details(String::from(BASE_URL), id)
+fn get_manga_details(manga_id: String) -> Result<Manga> {
+	parser::parse_manga_details(String::from(BASE_URL), manga_id)
 }
 
 #[get_chapter_list]

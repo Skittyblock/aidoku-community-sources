@@ -106,8 +106,8 @@ pub fn parse_manga_listing(
 	})
 }
 
-pub fn parse_manga_details(base_url: String, id: String) -> Result<Manga> {
-	let url = get_manga_url(id.clone(), base_url);
+pub fn parse_manga_details(base_url: String, manga_id: String) -> Result<Manga> {
+	let url = get_manga_url(manga_id.clone(), base_url);
 
 	let html = Request::new(&url, HttpMethod::Get)
 		.html()
@@ -178,7 +178,7 @@ pub fn parse_manga_details(base_url: String, id: String) -> Result<Manga> {
 	};
 
 	Ok(Manga {
-		id,
+		id: manga_id,
 		cover,
 		title,
 		author: String::new(),
@@ -192,8 +192,8 @@ pub fn parse_manga_details(base_url: String, id: String) -> Result<Manga> {
 	})
 }
 
-pub fn parse_chapter_list(base_url: String, id: String) -> Result<Vec<Chapter>> {
-	let url = get_manga_url(id.clone(), base_url);
+pub fn parse_chapter_list(base_url: String, manga_id: String) -> Result<Vec<Chapter>> {
+	let url = get_manga_url(manga_id.clone(), base_url);
 
 	let html = Request::new(&url, HttpMethod::Get)
 		.html()
