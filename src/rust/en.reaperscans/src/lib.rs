@@ -31,54 +31,8 @@ fn get_manga_details(id: String) -> Result<Manga> {
 }
 
 #[get_chapter_list]
-fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
-	let mut chapters: Vec<Chapter> = Vec::new();
-	let html = Request::new(id.as_str(), HttpMethod::Get)
-		.html()
-		.expect("i brokey");
-	for chapter in html.select("main div[wire:id] div > ul > li").array() {
-		let chapter_node = chapter.as_node().expect("now i brokey");
-		let mut title = String::new();
-		let parsed_title = chapter_node
-			.select("div.min-w-0 div.text-sm p.font-medium")
-			.text()
-			.read();
-
-		let mut chapter_number = -1.0;
-
-		if parsed_title.contains('-') {
-			title = String::from(parsed_title.split('-').collect::<Vec<&str>>()[1].trim());
-			chapter_number = parsed_title
-				.replace("Chapter", "")
-				.split('-')
-				.collect::<Vec<&str>>()[0]
-				.trim()
-				.parse::<f32>()
-				.expect("i brokey");
-		} else {
-			chapter_number = parsed_title
-				.replace("Chapter", "")
-				.trim()
-				.parse::<f32>()
-				.expect("i brokey");
-		}
-
-		let chapter_id = chapter_node.select("a").attr("href").read();
-		let chapter_url = chapter_node.select("a").attr("href").read();
-
-		// let date = get_date(chapter_node.select(".episode-date").text().read());
-		chapters.push(Chapter {
-			id: chapter_id,
-			title,
-			volume: -1.0,
-			chapter: chapter_number,
-			date_updated: -1.0,
-			scanlator: String::new(),
-			url: chapter_url,
-			lang: String::from("en"),
-		});
-	}
-	Ok(chapters)
+fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
+	parser::parse_chapter_list(String::from(BASE_URL), manga_id)
 }
 
 #[modify_image_request]

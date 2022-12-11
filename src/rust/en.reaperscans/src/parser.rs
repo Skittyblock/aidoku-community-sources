@@ -191,3 +191,67 @@ pub fn parse_manga_details(base_url: String, id: String) -> Result<Manga> {
 		viewer,
 	})
 }
+
+pub fn parse_chapter_list(base_url: String, id: String) -> Result<Vec<Chapter>> {
+	let url = get_manga_url(id.clone(), base_url);
+
+	let html = Request::new(&url, HttpMethod::Get)
+		.html()
+		.expect("Failed to get html");
+
+	let mut chapters: Vec<Chapter> = Vec::new();
+
+	for chapter in html.select("main div[wire:id] div > ul > li").array() {
+		let chapter_node = chapter.as_node().expect("Failed to get chapter node");
+
+		let mut title = String::new();
+		let mut chapter_number = -1.0;
+
+		let parsed_title = chapter_node
+			.select("div.min-w-0 div.text-sm p.font-medium")
+			.text()
+			.read();
+
+		// Only some titles have a chapter titles if they do
+		// they are in the format of "Chapter 1 - Chapter Title" else
+		// it's just "Chapter 1"
+		if parsed_title.contains('-') {
+			title = String::from(parsed_title.split('-').collect::<Vec<&str>>()[1].trim());
+			chapter_number = parsed_title
+				.replace("Chapter", "")
+				.split('-')
+				.collect::<Vec<&str>>()[0]
+				.trim()
+				.parse::<f32>()
+				.expect("Failed to parse chapter number");
+		} else {
+			chapter_number = parsed_title
+				.replace("Chapter", "")
+				.trim()
+				.parse::<f32>()
+				.expect("Failed to parse chapter number");
+		}
+
+		let chapter_id = get_chapter_id(chapter_node.select("a").attr("href").read());
+		let chapter_url = chapter_node.select("a").attr("href").read();
+
+		let date_updated = get_date(
+			chapter_node
+				.select("div.min-w-0 div.text-xs p")
+				.text()
+				.read(),
+		);
+
+		chapters.push(Chapter {
+			id: chapter_id,
+			title,
+			volume: -1.0,
+			chapter: chapter_number,
+			date_updated,
+			scanlator: String::new(),
+			url: chapter_url,
+			lang: String::from("en"),
+		});
+	}
+	Ok(chapters)
+}
