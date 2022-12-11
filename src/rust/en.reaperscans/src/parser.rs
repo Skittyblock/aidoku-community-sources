@@ -12,7 +12,7 @@ use crate::helper::*;
 // https://reaperscans.com/livewire/message/frontend.dtddzhx-ghvjlgrpt
 pub fn parse_manga_list(
 	base_url: String,
-	filters: Vec<Filter>,
+	_filters: Vec<Filter>,
 	page: i32,
 ) -> Result<MangaPageResult> {
 	let url = format!("{}/comics?page={}", base_url, page);
