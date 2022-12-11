@@ -42,7 +42,7 @@ fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 
 #[modify_image_request]
 fn modify_image_request(request: Request) {
-	todo!()
+	parser::modify_image_request(String::from(BASE_URL), request)
 }
 
 #[handle_url]

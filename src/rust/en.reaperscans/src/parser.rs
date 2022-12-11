@@ -299,3 +299,7 @@ pub fn parse_page_list(
 
 	Ok(pages)
 }
+
+pub fn modify_image_request(base_url: String, request: Request) {
+	request.header("Referer", &base_url);
+}
