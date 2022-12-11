@@ -95,3 +95,26 @@ pub fn get_manga_id(url: String) -> String {
 		String::new()
 	}
 }
+
+/// Returns the ID of a chapter from a URL.
+/// *NOTE: This was written by GitHub Copilot.
+pub fn get_chapter_id(url: String) -> String {
+	// Example Url: https://reaperscans.com/comics/4921-demonic-emperor/chapters/64343350-chapter-324
+	// parse "64343350-chapter-324" from the url
+
+	if url.contains("chapters") {
+		// Split the url by "/"
+		let split_url = url.split("/").collect::<Vec<&str>>();
+		// Get the index of "chapters"
+		let chapters_index = split_url.iter().position(|&r| r == "chapters").unwrap();
+		// Get the index of the chapter id
+		let chapter_id_index = chapters_index + 1;
+		// Get the chapter id
+		let chapter_id = split_url[chapter_id_index];
+		// Return the chapter id
+		String::from(chapter_id)
+	} else {
+		// Return an empty string
+		String::new()
+	}
+}
