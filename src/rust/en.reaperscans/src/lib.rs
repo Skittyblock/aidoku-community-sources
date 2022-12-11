@@ -11,9 +11,6 @@ mod parser;
 
 const BASE_URL: &str = "https://reaperscans.com";
 
-// TODO: Add search support, reaper uses a rest api for searching that uses a weird url format that could change at any time
-// need to figure out a good way to deal with that, or steal tachiyomi's implementation
-// https://reaperscans.com/livewire/message/frontend.dtddzhx-ghvjlgrpt
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	parser::parse_manga_list(String::from(BASE_URL), filters, page)
