@@ -146,7 +146,7 @@ pub fn parse_manga_details(base_url: String, manga_id: String) -> Result<Manga> 
 			.read();
 
 		if info.contains("Source Language") {
-			language = info.replace("Source Language", "");
+			language = String::from(info.replace("Source Language", "").trim());
 		} else if info.contains("Age Rating") {
 			age_rating = info.replace("Age Rating", "");
 		} else if info.contains("Release Status") {
