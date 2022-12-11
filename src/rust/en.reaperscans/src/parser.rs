@@ -56,13 +56,11 @@ pub fn parse_manga_list(
 
 pub fn parse_manga_listing(
 	base_url: String,
-	listing: Listing,
+	_listing: Listing,
 	page: i32,
 ) -> Result<MangaPageResult> {
 	// The only alternate listing that reaper has is latest
-	let url = match listing.name.as_str() {
-		_ => format!("{}/latest/comics?page={}", base_url, page),
-	};
+	let url = format!("{}/latest/comics?page={}", base_url, page);
 
 	let html = Request::new(&url, HttpMethod::Get)
 		.html()
@@ -195,7 +193,7 @@ pub fn parse_manga_details(base_url: String, manga_id: String) -> Result<Manga> 
 // need to figure out a good way to deal with that, or steal tachiyomi's implementation
 // https://reaperscans.com/livewire/message/frontend.wejnfgho-schqakzu
 pub fn parse_chapter_list(base_url: String, manga_id: String) -> Result<Vec<Chapter>> {
-	let url = get_manga_url(manga_id.clone(), base_url);
+	let url = get_manga_url(manga_id, base_url);
 
 	let html = Request::new(&url, HttpMethod::Get)
 		.html()
@@ -297,7 +295,7 @@ pub fn parse_page_list(
 			.expect("Failed to get index") as i32;
 
 		let encoded_image_name = urlencode(String::from(image_name));
-		let encoded_url = url.replace(&image_name, &encoded_image_name);
+		let encoded_url = url.replace(image_name, &encoded_image_name);
 
 		pages.push(Page {
 			index,

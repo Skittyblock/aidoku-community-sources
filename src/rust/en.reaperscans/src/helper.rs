@@ -50,7 +50,7 @@ pub fn get_manga_id(url: String) -> String {
 
 	if url.contains("comics") {
 		// Split the url by "/"
-		let split_url = url.split("/").collect::<Vec<&str>>();
+		let split_url = url.split('/').collect::<Vec<&str>>();
 		// Get the index of "comics"
 		let comics_index = split_url.iter().position(|&r| r == "comics").unwrap();
 		// Get the index of the manga id
@@ -73,7 +73,7 @@ pub fn get_chapter_id(url: String) -> String {
 
 	if url.contains("chapters") {
 		// Split the url by "/"
-		let split_url = url.split("/").collect::<Vec<&str>>();
+		let split_url = url.split('/').collect::<Vec<&str>>();
 		// Get the index of "chapters"
 		let chapters_index = split_url.iter().position(|&r| r == "chapters").unwrap();
 		// Get the index of the chapter id
