@@ -47,8 +47,8 @@ pub fn parse_manga_list(
 		});
 	}
 
-	let last_page = html.select("main div[wire:id] div nav span").text().read();
-	let has_more = last_page.contains("Next");
+	let pagination = html.select("main div[wire:id] div nav span").text().read();
+	let has_more = pagination.contains("Next");
 
 	Ok(MangaPageResult {
 		manga: mangas,
