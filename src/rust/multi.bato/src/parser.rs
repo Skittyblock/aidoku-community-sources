@@ -1,5 +1,7 @@
 use aidoku::{
-	error::Result, prelude::*, std::defaults::defaults_get, std::html::Node, std::String, std::Vec,
+	error::Result,
+	prelude::*,
+	std::{current_date, defaults::defaults_get, html::Node, String, Vec},
 	Chapter, Filter, FilterType, Manga, MangaContentRating, MangaStatus, MangaViewer, Page,
 };
 
@@ -172,7 +174,16 @@ pub fn get_chaper_list(obj: Node) -> Result<Vec<Chapter>> {
 			.replace("Chapter", "");
 
 		let scanlator = chapter_node.select("div a span").text().read();
-		let _time_str = chapter_node.select(".extra i.ps-3").text().read();
+		let time_str = chapter_node.select(".extra i.ps-3").text().read();
+		let mut date_updated = current_date();
+		// if date is in minutes/hours, then the date is current_date(), no higher
+		// denomination that days exist.
+		if time_str.contains("days") {
+			let date_num = time_str.split(" ").collect::<Vec<&str>>()[0]
+				.parse::<f64>()
+				.unwrap();
+			date_updated -= date_num * 24.0 * 60.0 * 60.0;
+		}
 
 		let chapter = String::from(name.trim()).parse::<f32>().unwrap_or(-1.0);
 		if let Ok(url_str) = defaults_get("sourceURL").as_string() {
@@ -185,7 +196,7 @@ pub fn get_chaper_list(obj: Node) -> Result<Vec<Chapter>> {
 				title,
 				volume: -1.0,
 				chapter,
-				date_updated: -1.0,
+				date_updated,
 				scanlator,
 				url,
 				lang: String::from("en"),
