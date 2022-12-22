@@ -1,0 +1,18 @@
+{
+  "info": {
+    "id": "ru.mangalib",
+    "lang": "ru",
+    "name": "Mangalib",
+    "version": 1,
+    "url": "https://mangalib.me/",
+    "urls": [
+      "https://mangalib.org/"
+    ],
+    "nsfw": 1
+  },
+  "listings": [
+    {
+      "name": "Обновления"
+    }
+  ]
+}
