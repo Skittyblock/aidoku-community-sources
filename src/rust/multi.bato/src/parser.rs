@@ -180,7 +180,7 @@ pub fn get_chaper_list(obj: Node) -> Result<Vec<Chapter>> {
 		// if date is in minutes/hours, then the date is current_date(), no higher
 		// denomination that days exist.
 		if time_str.contains("days") {
-			let date_num = time_str.split(" ").collect::<Vec<&str>>()[0]
+			let date_num = time_str.split(' ').collect::<Vec<&str>>()[0]
 				.parse::<f64>()
 				.unwrap();
 			date_updated -= date_num * 24.0 * 60.0 * 60.0;

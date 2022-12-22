@@ -55,7 +55,7 @@ pub fn lang_encoder(lang: String) -> String {
 		"georgian" => String::from("ka"),
 		"german" => String::from("de"),
 		"greek, modern" => String::from("el"),
-		"guaranã­" => String::from("gn"),
+		"guaranã\u{AD}" => String::from("gn"),
 		"gujarati" => String::from("gu"),
 		"haitian; haitian creole" => String::from("ht"),
 		"hausa" => String::from("ha"),
@@ -106,7 +106,7 @@ pub fn lang_encoder(lang: String) -> String {
 		"malayalam" => String::from("ml"),
 		"maltese" => String::from("mt"),
 		"mäori" => String::from("mi"),
-		"marathi (maräá¹­hä«)" => String::from("mr"),
+		"marathi (maräá¹\u{AD}hä«)" => String::from("mr"),
 		"marshallese" => String::from("mh"),
 		"mongolian" => String::from("mn"),
 		"nauru" => String::from("na"),
@@ -190,5 +190,5 @@ pub fn lang_encoder(lang: String) -> String {
 		"zulu" => String::from("zu"),
 		_ => String::new(),
 	};
-	return lang;
+	lang
 }
