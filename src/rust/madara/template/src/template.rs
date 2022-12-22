@@ -259,10 +259,7 @@ pub fn get_manga_details(manga_id: String, data: MadaraSiteData) -> Result<Manga
 	let html = Request::new(url.as_str(), HttpMethod::Get).html();
 
 	// These are useless badges that are added to the title like "HOT", "NEW", etc.
-	let title_badges = html
-		.select("div.post-title h1 span.manga-title-badges")
-		.text()
-		.read();
+	let title_badges = html.select("span.manga-title-badges").text().read();
 	let mut title = html.select("div.post-title h1").text().read();
 	if title.contains(&title_badges) {
 		title = title.replace(&title_badges, "");
