@@ -74,6 +74,9 @@ pub fn parse_manga(obj: Node, id: String) -> Result<Manga> {
 	let mut artist = String::new();
 	let mut status_str = String::new();
 	let mut categories: Vec<String> = Vec::new();
+	let mut viewer = MangaViewer::Scroll;
+
+	let mut is_webtoon = false;
 
 	for i in obj.select(".attr-item").array() {
 		let item = i.as_node();
@@ -92,8 +95,21 @@ pub fn parse_manga(obj: Node, id: String) -> Result<Manga> {
 			let vec = split.collect::<Vec<&str>>();
 			for item in vec {
 				categories.push(String::from(item.trim()));
+				if item.trim() == "Webtoon" {
+					is_webtoon = true;
+				}
 			}
 		}
+		if item.select("b").text().read().contains("Read direction") {
+			let view_string = item.select("span").text().read();
+			if view_string.contains("Left to Right") || view_string.contains("Right to Left") {
+				viewer = MangaViewer::Rtl;
+			}
+		}
+	}
+	// Webtoon titles may be improperly set to Rtl or Ltr by the source.
+	if is_webtoon {
+		viewer = MangaViewer::Scroll;
 	}
 
 	let mut url = String::new();
@@ -136,7 +152,7 @@ pub fn parse_manga(obj: Node, id: String) -> Result<Manga> {
 		categories,
 		status,
 		nsfw,
-		viewer: MangaViewer::Scroll,
+		viewer,
 	})
 }
 
