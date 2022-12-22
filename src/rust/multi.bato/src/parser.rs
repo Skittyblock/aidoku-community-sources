@@ -6,6 +6,7 @@ use aidoku::{
 };
 
 use crate::crypto::batojs_decrypt;
+use crate::helper::lang_encoder;
 use crate::substring::Substring;
 // use alloc::string::String;
 
@@ -185,6 +186,16 @@ pub fn get_chaper_list(obj: Node) -> Result<Vec<Chapter>> {
 			date_updated -= date_num * 24.0 * 60.0 * 60.0;
 		}
 
+		let mut lang = String::from("en");
+		for i in obj.select(".attr-item").array() {
+			let item = i.as_node();
+			let label_title = item.select("b").text().read();
+			if label_title.contains("Translated") {
+				let lang_str = item.select("span").text().read();
+				lang = lang_encoder(lang_str);
+			}
+		}
+
 		let chapter = String::from(name.trim()).parse::<f32>().unwrap_or(-1.0);
 		if let Ok(url_str) = defaults_get("sourceURL").as_string() {
 			let mut url = url_str.read();
@@ -199,7 +210,7 @@ pub fn get_chaper_list(obj: Node) -> Result<Vec<Chapter>> {
 				date_updated,
 				scanlator,
 				url,
-				lang: String::from("en"),
+				lang,
 			});
 		}
 	}

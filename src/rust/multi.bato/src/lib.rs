@@ -9,6 +9,7 @@ use aidoku::{
 
 mod crypto;
 mod evpkdf;
+mod helper;
 mod parser;
 mod substring;
 
