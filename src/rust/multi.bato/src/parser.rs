@@ -80,27 +80,26 @@ pub fn parse_manga(obj: Node, id: String) -> Result<Manga> {
 
 	for i in obj.select(".attr-item").array() {
 		let item = i.as_node();
-		if item.select("b").text().read().contains("Author") {
+		let label_title = item.select("b").text().read();
+		if label_title.contains("Author") {
 			author = item.select("span").text().read();
 		}
-		if item.select("b").text().read().contains("Artist") {
+		if label_title.contains("Artist") {
 			artist = item.select("span").text().read();
 		}
-		if item.select("b").text().read().contains("Original") {
+		if label_title.contains("Original") {
 			status_str = item.select("span").text().read();
 		}
-		if item.select("b").text().read().contains("Genres") {
-			let gen_str = item.select("span").text().read();
-			let split = gen_str.as_str().split(',');
-			let vec = split.collect::<Vec<&str>>();
-			for item in vec {
-				categories.push(String::from(item.trim()));
-				if item.trim() == "Webtoon" {
+		if label_title.contains("Genre") {
+			for genre_span in item.select("span span").array() {
+				let genre_string = genre_span.as_node();
+				categories.push(genre_string.text().read());
+				if genre_string.text().read() == "Webtoon" {
 					is_webtoon = true;
 				}
 			}
 		}
-		if item.select("b").text().read().contains("Read direction") {
+		if label_title.contains("Read direction") {
 			let view_string = item.select("span").text().read();
 			if view_string.contains("Left to Right") || view_string.contains("Right to Left") {
 				viewer = MangaViewer::Rtl;
