@@ -173,7 +173,7 @@ pub fn get_chaper_list(obj: Node) -> Result<Vec<Chapter>> {
 			.read()
 			.replace("Chapter", "");
 
-		let scanlator = chapter_node.select("div a span").text().read();
+		let scanlator = chapter_node.select("div.extra a.ps-3 span").text().read();
 		let time_str = chapter_node.select(".extra i.ps-3").text().read();
 		let mut date_updated = current_date();
 		// if date is in minutes/hours, then the date is current_date(), no higher
