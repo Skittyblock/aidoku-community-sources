@@ -216,7 +216,13 @@ pub fn get_series_page(data: MadaraSiteData, listing: &str, page: i32) -> Result
 			.unwrap_or(final_path)
 			.to_string();
 
-		let title = obj.select(&data.base_id_selector).text().read();
+		// These are useless badges that are added to the title like "HOT", "NEW", etc.
+		let title_badges = obj.select("span.manga-title-badges").text().read();
+		let mut title = obj.select(&data.base_id_selector).text().read();
+		if title.contains(&title_badges) {
+			title = title.replace(&title_badges, "");
+			title = String::from(title.trim());
+		}
 
 		let cover = get_image_url(obj.select("img"));
 
