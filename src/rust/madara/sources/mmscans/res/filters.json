@@ -1,8 +1,5 @@
 [
 	{
-		"type": "title"
-	},
-	{
 		"type": "group",
 		"name": "Status",
 		"filters": [
