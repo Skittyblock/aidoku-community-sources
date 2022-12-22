@@ -155,6 +155,8 @@ pub fn get_chaper_list(obj: Node) -> Result<Vec<Chapter>> {
 			.text()
 			.read()
 			.replace("Chapter", "");
+
+		let scanlator = chapter_node.select("div a span").text().read();
 		let _time_str = chapter_node.select(".extra i.ps-3").text().read();
 
 		let chapter = String::from(name.trim()).parse::<f32>().unwrap_or(-1.0);
@@ -169,7 +171,7 @@ pub fn get_chaper_list(obj: Node) -> Result<Vec<Chapter>> {
 				volume: -1.0,
 				chapter,
 				date_updated: -1.0,
-				scanlator: String::new(),
+				scanlator,
 				url,
 				lang: String::from("en"),
 			});
