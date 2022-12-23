@@ -40,11 +40,8 @@ impl LibGroup {
             .header("x-csrf-token", &self.token()?))
     }
 
-    pub fn get_manga_list_request(&self, filters: Vec<Filter>, page: i32) -> Result<Request> {
-        let mut buffer = itoa::Buffer::new();
-        let mut parameters = QueryParameters::new();
-        parameters.push("page", Some(buffer.format(page)));
-        let url = format!("{}/filterlist?{}", self.base_url, parameters);
+    pub fn get_manga_list_request(&self, params: QueryParameters) -> Result<Request> {
+        let url = format!("{}/filterlist?{}", self.base_url, params);
         println!("Mangalib list url {}", url);
         self.base_request(url, HttpMethod::Post)
     }
