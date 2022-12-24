@@ -10,7 +10,7 @@ use crate::helper::{i32_to_string, lang_encoder, urlencode};
 use crate::substring::Substring;
 // use alloc::string::String;
 
-pub fn parse_listing(html: Node, result: &mut Vec<Manga>) {
+pub fn parse_listing(html: &Node, result: &mut Vec<Manga>) {
 	for page in html.select(".col.item").array() {
 		let obj = page.as_node();
 
@@ -38,7 +38,7 @@ pub fn parse_listing(html: Node, result: &mut Vec<Manga>) {
 	}
 }
 
-pub fn parse_search(html: Node, result: &mut Vec<Manga>) {
+pub fn parse_search(html: &Node, result: &mut Vec<Manga>) {
 	for page in html.select("#series-list .item").array() {
 		let obj = page.as_node();
 
@@ -329,4 +329,14 @@ pub fn parse_incoming_url(url: String) -> String {
 	}
 
 	manga_id
+}
+
+pub fn is_last_page(html: Node) -> bool {
+	// how does this work
+	// return html.select(".page-item").last().has_class("disabled");
+	let mut classes = String::new();
+	for i in html.select(".page-item").array() {
+		classes = String::from(&i.as_node().class_name().read());
+	}
+	classes.contains("disabled")
 }

@@ -20,22 +20,16 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	let (url, search) = parser::get_filtered_url(filters, page);
 	let html = Request::new(url.as_str(), HttpMethod::Get).html();
 	if search {
-		parser::parse_search(html, &mut result);
+		parser::parse_search(&html, &mut result);
 	} else {
-		parser::parse_listing(html, &mut result);
+		parser::parse_listing(&html, &mut result);
 	}
 
-	if !result.is_empty() {
-		Ok(MangaPageResult {
-			manga: result,
-			has_more: true,
-		})
-	} else {
-		Ok(MangaPageResult {
-			manga: result,
-			has_more: false,
-		})
-	}
+	let has_more: bool = !parser::is_last_page(html);
+	Ok(MangaPageResult {
+		manga: result,
+		has_more,
+	})
 }
 
 #[get_manga_listing]
@@ -55,10 +49,12 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 		parser::get_list_url(&mut url, "create.za", page);
 	}
 	let html = Request::new(url.as_str(), HttpMethod::Get).html();
-	parser::parse_listing(html, &mut result);
+	parser::parse_listing(&html, &mut result);
+
+	let has_more: bool = !parser::is_last_page(html);
 	Ok(MangaPageResult {
 		manga: result,
-		has_more: true,
+		has_more,
 	})
 }
 
