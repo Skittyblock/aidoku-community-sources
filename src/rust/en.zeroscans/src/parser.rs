@@ -138,12 +138,77 @@ pub fn parse_manga_list(
 	})
 }
 
+// The only alternative listing Zero Scans has is new chapters
 pub fn parse_manga_listing(
 	base_url: String,
-	listing: Listing,
-	page: i32,
+	_listing: Listing,
+	_page: i32,
 ) -> Result<MangaPageResult> {
-	todo!()
+	let url = format!("{}/swordflake/new-chapters", base_url);
+
+	let json = Request::new(url, HttpMethod::Get)
+		.json()
+		.expect("Failed to load JSON")
+		.as_object()
+		.expect("Failed to get JSON as object");
+
+	let comics = json
+		.get("all")
+		.as_array()
+		.expect("Failed to get manga as array");
+
+	let mut mangas: Vec<Manga> = Vec::new();
+
+	for manga in comics {
+		let manga = manga.as_object().expect("Failed to get manga as object");
+
+		// let id = manga
+		// 	.get("id")
+		// 	.as_int()
+		// 	.expect("Failed to get manga id as int");
+
+		let title = manga
+			.get("name")
+			.as_string()
+			.expect("Failed to get manga title as str")
+			.read();
+
+		let slug = manga
+			.get("slug")
+			.as_string()
+			.expect("Failed to get manga slug as str")
+			.read();
+
+		let url = format!("{}/comics/{}", base_url, slug);
+
+		let cover = manga
+			.get("cover")
+			.as_object()
+			.expect("Failed to get manga cover as object")
+			.get("vertical")
+			.as_string()
+			.expect("Failed to get manga cover as str")
+			.read();
+
+		mangas.push(Manga {
+			id: slug,
+			cover,
+			title,
+			author: String::new(),
+			artist: String::new(),
+			description: String::new(),
+			url,
+			categories: Vec::new(),
+			status: MangaStatus::Unknown,
+			nsfw: MangaContentRating::Safe,
+			viewer: MangaViewer::Scroll,
+		})
+	}
+
+	Ok(MangaPageResult {
+		manga: mangas,
+		has_more: false,
+	})
 }
 
 pub fn parse_manga_details(base_url: String, manga_id: String) -> Result<Manga> {
