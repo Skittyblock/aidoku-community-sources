@@ -320,8 +320,114 @@ pub fn parse_manga_details(base_url: String, manga_id: String) -> Result<Manga> 
 	})
 }
 
+// TODO: Find a way to pass the manga int id to this function instead of making
+// another http request just to get the id, currently the manga_id is the slug
+// which is used everywhere else BUT here >:(
 pub fn parse_chapter_list(base_url: String, manga_id: String) -> Result<Vec<Chapter>> {
-	todo!()
+	// Get manga id from slug
+	let manga_int_id = {
+		let url = format!("{}/swordflake/comic/{}", base_url, manga_id);
+
+		let json = Request::new(url, HttpMethod::Get)
+			.json()
+			.expect("Failed to load JSON")
+			.as_object()
+			.expect("Failed to get JSON as object");
+
+		let data = json
+			.get("data")
+			.as_object()
+			.expect("Failed to get data as object");
+
+		data.get("id")
+			.as_int()
+			.expect("Failed to get manga id as int")
+	};
+
+	if manga_int_id == 0 {
+		return Ok(Vec::new());
+	}
+
+	let mut all_chapters: Vec<Chapter> = Vec::new();
+	let mut page = 1;
+
+	loop {
+		let url = format!(
+			"{}/swordflake/comic/{}/chapters?sort=desc&page={}",
+			base_url, manga_int_id, &page
+		);
+
+		let json = Request::new(url, HttpMethod::Get)
+			.json()
+			.expect("Failed to load JSON")
+			.as_object()
+			.expect("Failed to get JSON as object");
+
+		let data = json
+			.get("data")
+			.as_object()
+			.expect("Failed to get data as object");
+
+		let chapters = data
+			.get("data")
+			.as_array()
+			.expect("Failed to get chapters as array");
+
+		let last_page = data
+			.get("last_page")
+			.as_int()
+			.expect("Failed to get last page as int");
+
+		if !chapters.is_empty() {
+			chapters.for_each(|chapter| {
+				let chapter = chapter
+					.as_object()
+					.expect("Failed to get chapter as object");
+
+				let id = chapter
+					.get("id")
+					.as_int()
+					.expect("Failed to get chapter id as int");
+				let id = format!("{}", id);
+
+				let chapter_number = chapter
+					.get("name")
+					.as_float()
+					.expect("Failed to get chapter number as float") as f32;
+
+				let date_updated = chapter
+					.get("created_at")
+					.as_string()
+					.expect("Failed to get chapter date as str")
+					.read();
+
+				let date_updated = get_date(date_updated);
+
+				let scanlator = chapter.get("group").as_string().unwrap_or("".into()).read();
+
+				let chapter_url = format!("{}/comics/{}/chapters/{}", base_url, manga_id, id);
+
+				all_chapters.push(Chapter {
+					id,
+					title: String::new(),
+					volume: -1.0,
+					chapter: chapter_number,
+					date_updated,
+					scanlator,
+					url: chapter_url,
+					lang: String::from("en"),
+				});
+			});
+		}
+
+		if page == last_page {
+			break;
+		} else {
+			page += 1;
+		}
+	}
+
+	Ok(all_chapters)
 }
 
 pub fn parse_page_list(
