@@ -478,5 +478,5 @@ pub fn parse_page_list(
 }
 
 pub fn modify_image_request(base_url: String, request: Request) {
-	todo!()
+	request.header("Referer", &base_url);
 }
