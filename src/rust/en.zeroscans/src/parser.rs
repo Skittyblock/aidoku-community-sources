@@ -212,7 +212,112 @@ pub fn parse_manga_listing(
 }
 
 pub fn parse_manga_details(base_url: String, manga_id: String) -> Result<Manga> {
-	todo!()
+	let url = format!("{}/swordflake/comic/{}", base_url, manga_id);
+
+	let json = Request::new(url, HttpMethod::Get)
+		.json()
+		.expect("Failed to load JSON")
+		.as_object()
+		.expect("Failed to get JSON as object");
+
+	let data = json
+		.get("data")
+		.as_object()
+		.expect("Failed to get data as object");
+
+	// let id = data
+	// 	.get("id")
+	// 	.as_int()
+	// 	.expect("Failed to get manga id as int");
+	// let id = format!("{}", id);
+
+	let cover = data
+		.get("cover")
+		.as_object()
+		.expect("Failed to get manga cover as object")
+		.get("full")
+		.as_string()
+		.expect("Failed to get manga cover as str")
+		.read();
+
+	let title = data
+		.get("name")
+		.as_string()
+		.expect("Failed to get manga name as str")
+		.read();
+
+	let description = data
+		.get("summary")
+		.as_string()
+		.expect("Failed to get manga summary as str")
+		.read();
+
+	let slug = data
+		.get("slug")
+		.as_string()
+		.expect("Failed to get manga slug as str")
+		.read();
+
+	let url = format!("{}/comics/{}", base_url, slug);
+
+	let generes = data
+		.get("genres")
+		.as_array()
+		.expect("Failed to get manga genres as array");
+
+	let mut categories: Vec<String> = Vec::new();
+
+	generes.for_each(|genere| {
+		let genere = genere.as_object().expect("Failed to get genere as object");
+
+		let name = genere
+			.get("name")
+			.as_string()
+			.expect("Failed to get genere name as str")
+			.read();
+
+		categories.push(name);
+	});
+
+	let statuses = data
+		.get("statuses")
+		.as_array()
+		.expect("Failed to get manga statuses as array");
+
+	let mut manga_status = MangaStatus::Unknown;
+
+	statuses.for_each(|status| {
+		let status = status.as_object().expect("Failed to get status as object");
+
+		let name = status
+			.get("name")
+			.as_string()
+			.expect("Failed to get genere name as str")
+			.read();
+
+		match name.as_str() {
+			"New" => {}
+			"Ongoing" => manga_status = MangaStatus::Ongoing,
+			"Completed" => manga_status = MangaStatus::Completed,
+			"Dropped" => manga_status = MangaStatus::Cancelled,
+			"Hiatus" => manga_status = MangaStatus::Hiatus,
+			_ => manga_status = MangaStatus::Unknown,
+		};
+	});
+
+	Ok(Manga {
+		id: slug,
+		cover,
+		title,
+		author: String::new(),
+		artist: String::new(),
+		description,
+		url,
+		categories,
+		status: manga_status,
+		nsfw: MangaContentRating::Safe,
+		viewer: MangaViewer::Scroll,
+	})
 }
 
 pub fn parse_chapter_list(base_url: String, manga_id: String) -> Result<Vec<Chapter>> {
