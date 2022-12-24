@@ -435,7 +435,46 @@ pub fn parse_page_list(
 	manga_id: String,
 	chapter_id: String,
 ) -> Result<Vec<Page>> {
-	todo!()
+	let url = format!(
+		"{}/swordflake/comic/{}/chapters/{}",
+		base_url, manga_id, chapter_id
+	);
+
+	let json = Request::new(url, HttpMethod::Get)
+		.json()
+		.expect("Failed to load JSON")
+		.as_object()
+		.expect("Failed to get JSON object");
+
+	let data = json
+		.get("data")
+		.as_object()
+		.expect("Failed to get data as object");
+
+	let chapter = data
+		.get("chapter")
+		.as_object()
+		.expect("Failed to get chapter as object");
+
+	let pages = chapter
+		.get("high_quality")
+		.as_array()
+		.expect("Failed to get pages as array");
+
+	let mut page_list: Vec<Page> = Vec::new();
+
+	for (index, page) in pages.enumerate() {
+		let page = page.as_string().expect("Failed to get page as str").read();
+
+		page_list.push(Page {
+			index: index as i32,
+			url: page,
+			text: String::new(),
+			base64: String::new(),
+		});
+	}
+
+	Ok(page_list)
 }
 
 pub fn modify_image_request(base_url: String, request: Request) {
