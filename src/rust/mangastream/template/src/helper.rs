@@ -261,8 +261,8 @@ pub fn urlencode<T: AsRef<[u8]>>(url: T) -> String {
 ///
 /// This is done by removing the random number near the end of the url
 ///
-/// This will work for most if not all sources for the manga url,
-/// but for the chapter url it will only work for some sources
+/// This will work for most if not all sources that use randomized url's for the `manga url`,
+/// but for the `chapter url` it will only work for some sources
 pub fn get_permanet_url(original_url: String) -> String {
 	let mut original_url = original_url;
 
