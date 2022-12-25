@@ -34,7 +34,7 @@ pub fn parse_manga_list(
 
 	let mut mangas: Vec<Manga> = Vec::new();
 
-	comics.for_each(|manga| {
+	for manga in comics {
 		let manga = manga.as_object().expect("Failed to get manga as object");
 
 		// let id = manga
@@ -79,7 +79,7 @@ pub fn parse_manga_list(
 
 		let mut categories: Vec<String> = Vec::new();
 
-		generes.for_each(|genere| {
+		for genere in generes {
 			let genere = genere.as_object().expect("Failed to get genere as object");
 
 			let name = genere
@@ -89,7 +89,7 @@ pub fn parse_manga_list(
 				.read();
 
 			categories.push(name);
-		});
+		}
 
 		let statuses = manga
 			.get("statuses")
@@ -98,7 +98,7 @@ pub fn parse_manga_list(
 
 		let mut manga_status = MangaStatus::Unknown;
 
-		statuses.for_each(|status| {
+		for status in statuses {
 			let status = status.as_object().expect("Failed to get status object");
 
 			let name = status
@@ -115,7 +115,7 @@ pub fn parse_manga_list(
 				"Hiatus" => manga_status = MangaStatus::Hiatus,
 				_ => manga_status = MangaStatus::Unknown,
 			};
-		});
+		}
 
 		mangas.push(Manga {
 			id: slug,
@@ -130,7 +130,7 @@ pub fn parse_manga_list(
 			nsfw: MangaContentRating::Safe,
 			viewer: MangaViewer::Scroll,
 		});
-	});
+	}
 
 	Ok(MangaPageResult {
 		manga: mangas,
@@ -267,7 +267,7 @@ pub fn parse_manga_details(base_url: String, manga_id: String) -> Result<Manga> 
 
 	let mut categories: Vec<String> = Vec::new();
 
-	generes.for_each(|genere| {
+	for genere in generes {
 		let genere = genere.as_object().expect("Failed to get genere as object");
 
 		let name = genere
@@ -277,7 +277,7 @@ pub fn parse_manga_details(base_url: String, manga_id: String) -> Result<Manga> 
 			.read();
 
 		categories.push(name);
-	});
+	}
 
 	let statuses = data
 		.get("statuses")
@@ -286,7 +286,7 @@ pub fn parse_manga_details(base_url: String, manga_id: String) -> Result<Manga> 
 
 	let mut manga_status = MangaStatus::Unknown;
 
-	statuses.for_each(|status| {
+	for status in statuses {
 		let status = status.as_object().expect("Failed to get status as object");
 
 		let name = status
@@ -303,7 +303,7 @@ pub fn parse_manga_details(base_url: String, manga_id: String) -> Result<Manga> 
 			"Hiatus" => manga_status = MangaStatus::Hiatus,
 			_ => manga_status = MangaStatus::Unknown,
 		};
-	});
+	}
 
 	Ok(Manga {
 		id: slug,
@@ -379,7 +379,7 @@ pub fn parse_chapter_list(base_url: String, manga_id: String) -> Result<Vec<Chap
 			.expect("Failed to get last page as int");
 
 		if !chapters.is_empty() {
-			chapters.for_each(|chapter| {
+			for chapter in chapters {
 				let chapter = chapter
 					.as_object()
 					.expect("Failed to get chapter as object");
@@ -417,7 +417,7 @@ pub fn parse_chapter_list(base_url: String, manga_id: String) -> Result<Vec<Chap
 					url: chapter_url,
 					lang: String::from("en"),
 				});
-			});
+			}
 		}
 
 		if page == last_page {
