@@ -4,33 +4,12 @@ use aidoku::{
 	MangaPageResult, Page,
 };
 
-use madara_template::helper;
 use madara_template::template;
 
 fn get_data() -> template::MadaraSiteData {
-	let lang_code = helper::get_lang_code();
-	let base_url;
-	let source_path;
-
-	match lang_code.as_deref() {
-		Some("es") => {
-			base_url = String::from("https://es.leviatanscans.com");
-			source_path = String::from("manga");
-		}
-		// Default to English
-		_ => {
-			base_url = String::from("https://en.leviatanscans.com");
-			source_path = String::from("home/manga");
-		}
-	}
-
 	let data: template::MadaraSiteData = template::MadaraSiteData {
-		base_url,
-		source_path,
-		chapter_selector: String::from("li.wp-manga-chapter.free-chap"),
-		description_selector: String::from(
-			"div.summary_content div.post-content div.post-content_item div p",
-		),
+		base_url: String::from("https://hscans.com"),
+		description_selector: String::from("div.post-content > .post-content_item > div > p"),
 		alt_ajax: true,
 		..Default::default()
 	};

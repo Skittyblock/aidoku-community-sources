@@ -1,36 +1,30 @@
 #![no_std]
 use aidoku::{
-	error::Result, prelude::*, std::String, std::Vec, Chapter, DeepLink, Filter, Listing, Manga,
-	MangaPageResult, Page,
+	error::Result, prelude::*, std::net::Request, std::String, std::Vec, Chapter, DeepLink, Filter,
+	Listing, Manga, MangaPageResult, MangaStatus, Page,
 };
 
-use madara_template::helper;
 use madara_template::template;
 
 fn get_data() -> template::MadaraSiteData {
-	let lang_code = helper::get_lang_code();
-	let base_url;
-	let source_path;
-
-	match lang_code.as_deref() {
-		Some("es") => {
-			base_url = String::from("https://es.leviatanscans.com");
-			source_path = String::from("manga");
-		}
-		// Default to English
-		_ => {
-			base_url = String::from("https://en.leviatanscans.com");
-			source_path = String::from("home/manga");
-		}
-	}
-
 	let data: template::MadaraSiteData = template::MadaraSiteData {
-		base_url,
-		source_path,
-		chapter_selector: String::from("li.wp-manga-chapter.free-chap"),
-		description_selector: String::from(
-			"div.summary_content div.post-content div.post-content_item div p",
-		),
+		base_url: String::from("https://neoxscans.net"),
+		lang: String::from("pt-br"),
+		status: |html| {
+			let status_str = html
+				.select("div.post-content_item:contains(Status) div.summary-content")
+				.text()
+				.read()
+				.to_lowercase();
+			match status_str.as_str() {
+				"em lançamento" => MangaStatus::Ongoing,
+				"completo" => MangaStatus::Completed,
+				"cancelado" => MangaStatus::Cancelled,
+				"em pausa" => MangaStatus::Hiatus,
+				_ => MangaStatus::Unknown,
+			}
+		},
+		description_selector: String::from("div.manga-excerpt p"),
 		alt_ajax: true,
 		..Default::default()
 	};
@@ -65,4 +59,9 @@ fn get_page_list(id: String) -> Result<Vec<Page>> {
 #[handle_url]
 pub fn handle_url(url: String) -> Result<DeepLink> {
 	template::handle_url(url, get_data())
+}
+
+#[modify_image_request]
+fn modify_image_request(request: Request) {
+	template::modify_image_request(String::from("https://neoxscans.net"), request);
 }

@@ -31,6 +31,7 @@ pub struct MadaraSiteData {
 	pub genre_selector: String,
 	pub description_selector: String,
 	pub chapter_selector: String,
+	pub base_id_selector: String,
 
 	pub status_filter_ongoing: String,
 	pub status_filter_completed: String,
@@ -69,6 +70,8 @@ impl Default for MadaraSiteData {
 			description_selector: String::from("div.description-summary div p"),
 			// selector for chapter list
 			chapter_selector: String::from("li.wp-manga-chapter"),
+			// a to get the base id from requests to admin-ajax.php
+			base_id_selector: String::from("h3.h5 > a"),
 			// div to select images from a chapter
 			image_selector: String::from("div.page-break > img"),
 			// div to select all the genres
@@ -198,7 +201,7 @@ pub fn get_series_page(data: MadaraSiteData, listing: &str, page: i32) -> Result
 			continue;
 		}
 
-		let base_id = obj.select("h3.h5 > a").attr("href").read();
+		let base_id = obj.select(&data.base_id_selector).attr("href").read();
 		let final_path = base_id
 			.strip_prefix(&data.base_url)
 			.unwrap_or(&base_id)
@@ -213,7 +216,13 @@ pub fn get_series_page(data: MadaraSiteData, listing: &str, page: i32) -> Result
 			.unwrap_or(final_path)
 			.to_string();
 
-		let title = obj.select("h3.h5 > a").text().read();
+		// These are useless badges that are added to the title like "HOT", "NEW", etc.
+		let title_badges = obj.select("span.manga-title-badges").text().read();
+		let mut title = obj.select(&data.base_id_selector).text().read();
+		if title.contains(&title_badges) {
+			title = title.replace(&title_badges, "");
+			title = String::from(title.trim());
+		}
 
 		let cover = get_image_url(obj.select("img"));
 
@@ -256,10 +265,7 @@ pub fn get_manga_details(manga_id: String, data: MadaraSiteData) -> Result<Manga
 	let html = Request::new(url.as_str(), HttpMethod::Get).html();
 
 	// These are useless badges that are added to the title like "HOT", "NEW", etc.
-	let title_badges = html
-		.select("div.post-title h1 span.manga-title-badges")
-		.text()
-		.read();
+	let title_badges = html.select("span.manga-title-badges").text().read();
 	let mut title = html.select("div.post-title h1").text().read();
 	if title.contains(&title_badges) {
 		title = title.replace(&title_badges, "");

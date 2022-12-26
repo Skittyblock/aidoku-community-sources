@@ -54,6 +54,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "disasterscans"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "madara_template",
+]
+
+[[package]]
 name = "fecomic"
 version = "0.1.0"
 dependencies = [
@@ -63,6 +71,14 @@ dependencies = [
 
 [[package]]
 name = "hentaicb"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "madara_template",
+]
+
+[[package]]
+name = "hscans"
 version = "0.1.0"
 dependencies = [
  "aidoku",
@@ -123,7 +139,23 @@ dependencies = [
 ]
 
 [[package]]
+name = "manhuafast"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "madara_template",
+]
+
+[[package]]
 name = "manhuaplus"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "madara_template",
+]
+
+[[package]]
+name = "manhuaus"
 version = "0.1.0"
 dependencies = [
  "aidoku",
@@ -143,6 +175,22 @@ name = "memory_units"
 version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8452105ba047068f40ff7093dd1d9da90898e63dd61736462e9cdda6a90ad3c3"
+
+[[package]]
+name = "mmscans"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "madara_template",
+]
+
+[[package]]
+name = "neoxscans"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "madara_template",
+]
 
 [[package]]
 name = "nightcomic"

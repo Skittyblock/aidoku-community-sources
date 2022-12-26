@@ -4,7 +4,7 @@ pub fn get_base_url() -> String {
 	let code = get_lang_code();
 	match code.as_str() {
 		"tr" => String::from("https://asurascanstr.com"),
-		_ => String::from("https://asurascans.com"),
+		_ => String::from("https://asura.gg"),
 	}
 }
 
