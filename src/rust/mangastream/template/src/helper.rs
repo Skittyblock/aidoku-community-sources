@@ -280,9 +280,13 @@ pub fn get_permanet_url(original_url: String) -> String {
 		.next()
 		.expect("Failed to split url by -");
 
-	// remove the garbage from the url
-	// example https://luminousscans.com/series/1671729411-a-bad-person/
-	// will return https://luminousscans.com/series/-a-bad-person
-	// note the leading dash doesn't matter
-	original_url.replace(garbage, "")
+	// check if the garbage is a number to prevent removing the wrong part of the url
+	if garbage.parse::<u32>().is_ok() {
+		// remove the garbage from the url
+		// example https://luminousscans.com/series/1671729411-a-bad-person/
+		// will return https://luminousscans.com/series/a-bad-person
+		original_url.replace(&format!("{}{}", garbage, "-"), "")
+	} else {
+		original_url
+	}
 }
