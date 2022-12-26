@@ -16,10 +16,10 @@ pub fn get_date(time_ago: String) -> f64 {
 		.last()
 		.unwrap_or("")
 	{
-		"YEAR" | "YEARS" => current_date() - (number * 31556926.0),
-		"MONTH" | "MONTHS" => current_date() - (number * 2629743.0),
-		"WEEK" | "WEEKS" => current_date() - (number * 604800.0),
-		"DAY" | "DAYS" => current_date() - (number * 86400.0),
+		"YEAR" | "YEARS" => current_date() - (number * 60.0 * 60.0 * 24.0 * 365.0),
+		"MONTH" | "MONTHS" => current_date() - (number * 60.0 * 60.0 * 24.0 * 30.0),
+		"WEEK" | "WEEKS" => current_date() - (number * 60.0 * 60.0 * 24.0 * 7.0),
+		"DAY" | "DAYS" => current_date() - (number * 60.0 * 60.0 * 24.0),
 		_ => current_date(),
 	}
 }
