@@ -192,7 +192,8 @@ pub fn get_int_manga_id(manga_id: String, base_url: String, path: String) -> Str
 	let url = base_url + "/" + path.as_str() + "/" + manga_id.as_str();
 	let html = Request::new(url.as_str(), HttpMethod::Get).html();
 	let id_html = html.select("script#wp-manga-js-extra").html().read();
-	let id = &id_html[id_html.find("manga_id").unwrap() + 11..id_html.find("\"};").unwrap()];
+	let id = &id_html[id_html.find("manga_id").expect("Could not find manga_id") + 11
+		..id_html.find("\"}").expect("Could not find end of manga_id")];
 	String::from(id)
 }
 
