@@ -1,19 +1,29 @@
 use aidoku::{
 	error::Result, prelude::format, std::net::HttpMethod, std::net::Request, std::String, std::Vec,
-	Chapter, Filter, Listing, Manga, MangaContentRating, MangaPageResult, MangaStatus, MangaViewer,
-	Page,
+	Chapter, Filter, FilterType, Listing, Manga, MangaContentRating, MangaPageResult, MangaStatus,
+	MangaViewer, Page,
 };
 
 use crate::helper::*;
 
-// TODO: Zero Scans does not have a search api, they just filter JSON client side
-// I tried to implement fuzzy title matching, but rust was being a pain and not
-// letting me use the sublime_fuzzy crate, so I gave up
 pub fn parse_manga_list(
 	base_url: String,
-	_filters: Vec<Filter>,
+	filters: Vec<Filter>,
 	_page: i32,
 ) -> Result<MangaPageResult> {
+	let mut search_query = String::new();
+
+	for filter in filters {
+		if filter.kind == FilterType::Title {
+			search_query = filter
+				.value
+				.as_string()
+				.expect("Failed to get search filter value")
+				.read()
+				.to_lowercase();
+		}
+	}
+
 	let url = format!("{}/swordflake/comics", base_url);
 
 	let json = Request::new(url, HttpMethod::Get)
@@ -43,6 +53,16 @@ pub fn parse_manga_list(
 		// 	.expect("Failed to get manga id as int");
 		// let id = format!("{}", id);
 
+		let title = manga
+			.get("name")
+			.as_string()
+			.expect("Failed to get manga name as str")
+			.read();
+
+		if !search_query.is_empty() && !title.to_lowercase().contains(&search_query) {
+			continue;
+		}
+
 		let cover = manga
 			.get("cover")
 			.as_object()
@@ -50,12 +70,6 @@ pub fn parse_manga_list(
 			.get("horizontal")
 			.as_string()
 			.expect("Failed to get manga cover as str")
-			.read();
-
-		let title = manga
-			.get("name")
-			.as_string()
-			.expect("Failed to get manga name as str")
 			.read();
 
 		let description = manga
