@@ -168,10 +168,7 @@ pub fn img_url_encode(string: String) -> String {
 			result.push(b'.');
 		} else if curr == b'_' {
 			result.push(b'_');
-		} else if (b'a'..=b'z').contains(&curr)
-			|| (b'A'..=b'Z').contains(&curr)
-			|| (b'0'..=b'9').contains(&curr)
-		{
+		} else if curr.is_ascii_lowercase() || curr.is_ascii_uppercase() || curr.is_ascii_digit() {
 			result.push(curr);
 		} else {
 			result.push(b'%');
@@ -267,7 +264,7 @@ pub fn get_permanet_url(original_url: String) -> String {
 	let mut original_url = original_url;
 
 	// remove trailing slash
-	if original_url.ends_with("/") {
+	if original_url.ends_with('/') {
 		original_url.pop();
 	};
 
