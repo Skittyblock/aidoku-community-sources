@@ -9,6 +9,7 @@ use madara_template::template;
 fn get_data() -> template::MadaraSiteData {
 	let data: template::MadaraSiteData = template::MadaraSiteData {
 		base_url: String::from("https://manhuaus.com"),
+		image_selector: String::from("div.reading-content img"),
 		alt_ajax: true,
 		..Default::default()
 	};
