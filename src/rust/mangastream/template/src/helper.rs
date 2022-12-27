@@ -280,8 +280,9 @@ pub fn get_permanet_url(original_url: String) -> String {
 		.next()
 		.expect("Failed to split url by -");
 
-	// check if the garbage is a number to prevent removing the wrong part of the url
-	if garbage.parse::<u32>().is_ok() {
+	// check if the garbage is a 10 digit number to prevent removing the wrong part of the url
+	// the garbage should always be a 10 digit number
+	if garbage.parse::<u32>().is_ok() && garbage.len() == 10 {
 		// remove the garbage from the url
 		// example https://luminousscans.com/series/1671729411-a-bad-person/
 		// will return https://luminousscans.com/series/a-bad-person
