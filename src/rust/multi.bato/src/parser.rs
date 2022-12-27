@@ -260,9 +260,9 @@ pub fn get_page_list(obj: Node) -> Result<Vec<Page>> {
 		let t = tkn_str.replace(['[', ']'], "");
 		let tkn_arr = t.split(',').collect::<Vec<&str>>();
 
-		for (index, _item) in img_arr.iter().enumerate() {
+		for (index, item) in img_arr.iter().enumerate() {
 			let ind = index as i32;
-			let url = format!("{}?{}", _item, tkn_arr[index]);
+			let url = format!("{}?{}", item, tkn_arr[index]);
 			pages.push(Page {
 				index: ind,
 				url,
