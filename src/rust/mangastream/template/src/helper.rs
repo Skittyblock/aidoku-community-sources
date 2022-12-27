@@ -168,10 +168,7 @@ pub fn img_url_encode(string: String) -> String {
 			result.push(b'.');
 		} else if curr == b'_' {
 			result.push(b'_');
-		} else if (b'a'..=b'z').contains(&curr)
-			|| (b'A'..=b'Z').contains(&curr)
-			|| (b'0'..=b'9').contains(&curr)
-		{
+		} else if curr.is_ascii_lowercase() || curr.is_ascii_uppercase() || curr.is_ascii_digit() {
 			result.push(curr);
 		} else {
 			result.push(b'%');
@@ -255,4 +252,42 @@ pub fn urlencode<T: AsRef<[u8]>>(url: T) -> String {
 		}
 	}
 	String::from_utf8(result).unwrap_or_default()
+}
+
+/// This function is used to get the permanent url of a manga or chapter
+///
+/// This is done by removing the random number near the end of the url
+///
+/// This will work for most if not all sources that use randomized url's for the `manga url`,
+/// but for the `chapter url` it will only work for some sources
+pub fn get_permanet_url(original_url: String) -> String {
+	let mut original_url = original_url;
+
+	// remove trailing slash
+	if original_url.ends_with('/') {
+		original_url.pop();
+	};
+
+	// get the leading garbage from end of url
+	// example https://luminousscans.com/series/1671729411-a-bad-person/
+	// will return 1671729411, this random number is completely useless and
+	// only exists to stop scrapers
+	let garbage = original_url
+		.split('/')
+		.last()
+		.expect("Failed to split url by /")
+		.split('-')
+		.next()
+		.expect("Failed to split url by -");
+
+	// check if the garbage is a 10 digit number to prevent removing the wrong part of the url
+	// the garbage should always be a 10 digit number
+	if garbage.parse::<u32>().is_ok() && garbage.len() == 10 {
+		// remove the garbage from the url
+		// example https://luminousscans.com/series/1671729411-a-bad-person/
+		// will return https://luminousscans.com/series/a-bad-person
+		original_url.replace(&format!("{}{}", garbage, "-"), "")
+	} else {
+		original_url
+	}
 }
