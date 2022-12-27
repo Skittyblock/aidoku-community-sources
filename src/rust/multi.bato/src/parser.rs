@@ -167,7 +167,11 @@ pub fn get_chaper_list(obj: Node) -> Result<Vec<Chapter>> {
 			.attr("href")
 			.read()
 			.replace("/chapter/", "");
-		let title = chapter_node.select(".chapt span").text().read();
+		let title = chapter_node
+			.select(".chapt span")
+			.text()
+			.read()
+			.replace(": ", "");
 		let name = chapter_node
 			.select("a b")
 			.text()
