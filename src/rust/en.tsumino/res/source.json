@@ -1,0 +1,19 @@
+{
+  "info": {
+    "id": "en.tsumino",
+    "lang": "en",
+    "name": "Tsumino",
+    "version": 1,
+    "url": "https://www.tsumino.com/",
+    "nsfw": 2
+  },
+  "listings": [
+    { "name": "Latest" },
+    { "name": "Oldest" },
+    { "name": "Alphabetical" },
+    { "name": "Rating" },
+    { "name": "Pages" },
+    { "name": "Views" },
+    { "name": "Popularity" }
+  ]
+}
