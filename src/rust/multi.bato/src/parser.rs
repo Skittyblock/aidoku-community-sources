@@ -162,24 +162,32 @@ pub fn get_chaper_list(obj: Node) -> Result<Vec<Chapter>> {
 	let mut chapters: Vec<Chapter> = Vec::new();
 	for item in obj.select(".item").array() {
 		let chapter_node = item.as_node();
+		// Id
 		let id = chapter_node
 			.select("a")
 			.attr("href")
 			.read()
 			.replace("/chapter/", "");
+		// Title
 		let title = chapter_node
 			.select(".chapt span")
 			.text()
 			.read()
 			.replace(": ", "");
-		let name = chapter_node
-			.select("a b")
-			.text()
-			.read()
-			.replace("Chapter", "");
 
-		let scanlator = chapter_node.select("div.extra a.ps-3 span").text().read();
+		let name = chapter_node.select(".chapt b").text().read();
+		let vol_and_chap = name.split("Chapter").collect::<Vec<&str>>();
+
+		// Volume & Chapter
+		let volume = String::from(vol_and_chap[0].replace("Volume", "").trim())
+			.parse::<f32>()
+			.unwrap_or(-1.0);
+		let chapter = String::from(vol_and_chap[1].trim())
+			.parse::<f32>()
+			.unwrap_or(-1.0);
+
 		let time_str = chapter_node.select(".extra i.ps-3").text().read();
+		// Date_updated
 		let mut date_updated = current_date();
 		// if date is in minutes/hours, then the date is current_date(), no higher
 		// denomination that days exist.
@@ -189,6 +197,8 @@ pub fn get_chaper_list(obj: Node) -> Result<Vec<Chapter>> {
 				.unwrap();
 			date_updated -= date_num * 24.0 * 60.0 * 60.0;
 		}
+		// Scanlator
+		let scanlator = chapter_node.select("div.extra a.ps-3 span").text().read();
 
 		let mut lang = String::from("en");
 		for i in obj.select(".attr-item").array() {
@@ -200,7 +210,7 @@ pub fn get_chaper_list(obj: Node) -> Result<Vec<Chapter>> {
 			}
 		}
 
-		let chapter = String::from(name.trim()).parse::<f32>().unwrap_or(-1.0);
+		// Url
 		if let Ok(url_str) = defaults_get("sourceURL").as_string() {
 			let mut url = url_str.read();
 			url.push_str("/chapter/");
@@ -209,7 +219,7 @@ pub fn get_chaper_list(obj: Node) -> Result<Vec<Chapter>> {
 			chapters.push(Chapter {
 				id,
 				title,
-				volume: -1.0,
+				volume,
 				chapter,
 				date_updated,
 				scanlator,
