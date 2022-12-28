@@ -198,7 +198,7 @@ pub fn get_chaper_list(obj: Node) -> Result<Vec<Chapter>> {
 			date_updated -= date_num * 24.0 * 60.0 * 60.0;
 		}
 		// Scanlator
-		let scanlator = chapter_node.select("div.extra a.ps-3 span").text().read();
+		let scanlator = chapter_node.select("div.extra a").text().read();
 
 		let mut lang = String::from("en");
 		for i in obj.select(".attr-item").array() {
