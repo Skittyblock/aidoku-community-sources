@@ -4,7 +4,10 @@
 		"lang": "multi",
 		"name": "BatoTo",
 		"version": 1,
-		"url": "https://bato.to",
+		"urls": [
+			"https://bato.to",
+			"https://wto.to"
+		],
 		"nsfw": 1
 	},
 	"languages": [
