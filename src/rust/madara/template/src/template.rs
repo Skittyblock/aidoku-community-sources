@@ -352,7 +352,13 @@ pub fn get_chapter_list(manga_id: String, data: MadaraSiteData) -> Result<Vec<Ch
 		let mut is_decimal = false;
 		let mut chapter = 0.0;
 		for obj in dash_vec {
-			let mut item = obj.replace('/', "").parse::<f32>().unwrap_or(-1.0);
+			let mut item = {
+				let mut obj = obj;
+				if obj.contains('_') {
+					obj = obj.split('_').next().unwrap_or(obj);
+				}
+				obj.replace('/', "").parse::<f32>().unwrap_or(-1.0)
+			};
 			if item == -1.0 {
 				item = String::from(obj.chars().next().unwrap())
 					.parse::<f32>()
