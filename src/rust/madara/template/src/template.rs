@@ -81,7 +81,7 @@ impl Default for MadaraSiteData {
 			// get the manga id from script tag
 			get_manga_id: get_int_manga_id,
 			// default viewer
-			viewer: |html, catagories| {
+			viewer: |html, categories| {
 				let series_type = html
 					.select("div.post-content_item:contains(Type) div.summary-content")
 					.text()
@@ -109,13 +109,13 @@ impl Default for MadaraSiteData {
 					MangaViewer::Default
 				} else {
 					for tag in webtoon_tags {
-						if catagories.iter().any(|v| v.to_lowercase() == tag) {
+						if categories.iter().any(|v| v.to_lowercase() == tag) {
 							return MangaViewer::Scroll;
 						}
 					}
 
 					for tag in rtl_tags {
-						if catagories.iter().any(|v| v.to_lowercase() == tag) {
+						if categories.iter().any(|v| v.to_lowercase() == tag) {
 							return MangaViewer::Rtl;
 						}
 					}
@@ -137,7 +137,7 @@ impl Default for MadaraSiteData {
 					_ => MangaStatus::Unknown,
 				}
 			},
-			nsfw: |html, catagories| {
+			nsfw: |html, categories| {
 				if !html
 					.select(".manga-title-badges.adult")
 					.text()
@@ -150,13 +150,13 @@ impl Default for MadaraSiteData {
 					let suggestive_tags = ["ecchi"];
 
 					for tag in nsfw_tags {
-						if catagories.iter().any(|v| v.to_lowercase() == tag) {
+						if categories.iter().any(|v| v.to_lowercase() == tag) {
 							return MangaContentRating::Nsfw;
 						}
 					}
 
 					for tag in suggestive_tags {
-						if catagories.iter().any(|v| v.to_lowercase() == tag) {
+						if categories.iter().any(|v| v.to_lowercase() == tag) {
 							return MangaContentRating::Suggestive;
 						}
 					}
