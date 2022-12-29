@@ -137,7 +137,7 @@ impl Default for MadaraSiteData {
 					_ => MangaStatus::Unknown,
 				}
 			},
-			nsfw: |html, _| {
+			nsfw: |html, catagories| {
 				if !html
 					.select(".manga-title-badges.adult")
 					.text()
@@ -146,6 +146,21 @@ impl Default for MadaraSiteData {
 				{
 					MangaContentRating::Nsfw
 				} else {
+					let nsfw_tags = ["adult", "mature"];
+					let suggestive_tags = ["ecchi"];
+
+					for tag in nsfw_tags {
+						if catagories.iter().any(|v| v.to_lowercase() == tag) {
+							return MangaContentRating::Nsfw;
+						}
+					}
+
+					for tag in suggestive_tags {
+						if catagories.iter().any(|v| v.to_lowercase() == tag) {
+							return MangaContentRating::Suggestive;
+						}
+					}
+
 					MangaContentRating::Safe
 				}
 			},
