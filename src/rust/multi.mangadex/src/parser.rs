@@ -228,7 +228,7 @@ pub fn parse_chapter(chapter_object: ObjectRef) -> Result<Chapter> {
 
 	let date_updated = attributes
 		.get("publishAt")
-		.as_date("yyyy-MM-dd'T'HH:mm:ss+ss:ss", None, None)
+		.as_date("yyyy-MM-dd'T'HH:mm:ss+ss:ss", None, Some("UTC"))
 		.unwrap_or(-1.0);
 
 	// Fix for Skittyblock/aidoku-community-sources#25
