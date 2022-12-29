@@ -1,20 +1,13 @@
 use aidoku::{
-	error::Result, prelude::format, std::net::HttpMethod, std::net::Request, std::String, std::Vec,
-	Chapter, Filter, Listing, Manga, MangaContentRating, MangaPageResult, MangaStatus, MangaViewer,
-	Page,
+	error::Result, prelude::format, std::html::Node, std::net::HttpMethod, std::net::Request,
+	std::String, std::Vec, Chapter, Listing, Manga, MangaContentRating, MangaPageResult,
+	MangaStatus, MangaViewer, Page,
 };
 
 use crate::helper::*;
+use crate::request_helper::*;
 
-// TODO: Add search support, reaper uses an api call for searching that
-// uses a weird url that could possibly change at any time
-// need to figure out a good way to deal with that, or steal tachiyomi's
-// implementation https://reaperscans.com/livewire/message/frontend.dtddzhx-ghvjlgrpt
-pub fn parse_manga_list(
-	base_url: String,
-	_filters: Vec<Filter>,
-	page: i32,
-) -> Result<MangaPageResult> {
+pub fn parse_manga_list(base_url: String, page: i32) -> Result<MangaPageResult> {
 	let url = format!("{}/comics?page={}", base_url, page);
 
 	let html = Request::new(url, HttpMethod::Get)
@@ -51,6 +44,49 @@ pub fn parse_manga_list(
 	Ok(MangaPageResult {
 		manga: mangas,
 		has_more,
+	})
+}
+
+pub fn parse_search(base_url: String, query: String) -> Result<MangaPageResult> {
+	let html: Node = create_search_request_object(String::from(&base_url), query)
+		.expect("Error: Search POST request was unsuccesful.");
+
+	let mut mangas: Vec<Manga> = Vec::new();
+	for i in html.select("ul li").array() {
+		let item = i.as_node().expect("");
+		// Search displays both Comics and Novels in that order.
+		if &item.text().read() == "Novels" {
+			break;
+		}
+		let id = item
+			.select("a")
+			.attr("href")
+			.read()
+			.replace(&base_url, "")
+			.replace("/comics/", "");
+		if id.is_empty() {
+			continue;
+		}
+		let cover = item.select("a img").attr("src").read();
+		let title = item.select("a img").attr("alt").read();
+		mangas.push(Manga {
+			id,
+			cover,
+			title,
+			author: String::new(),
+			artist: String::new(),
+			description: String::new(),
+			url: String::new(),
+			categories: Vec::new(),
+			status: MangaStatus::Unknown,
+			nsfw: MangaContentRating::Safe,
+			viewer: MangaViewer::Scroll,
+		});
+	}
+
+	Ok(MangaPageResult {
+		manga: mangas,
+		has_more: false,
 	})
 }
 
@@ -168,9 +204,7 @@ pub fn parse_manga_details(base_url: String, manga_id: String) -> Result<Manga> 
 
 	let viewer = match language.as_str() {
 		"Japanese" => MangaViewer::Rtl,
-		"Korean" => MangaViewer::Scroll,
-		"Chinese" => MangaViewer::Scroll,
-		_ => MangaViewer::Rtl,
+		_ => MangaViewer::Scroll,
 	};
 
 	Ok(Manga {
@@ -188,20 +222,39 @@ pub fn parse_manga_details(base_url: String, manga_id: String) -> Result<Manga> 
 	})
 }
 
-// TODO: Add pagination support, reaper uses an api call for paginating chapters
-// that uses a weird url that could possibly change at any time
-// need to figure out a good way to deal with that, or steal tachiyomi's
-// implementation https://reaperscans.com/livewire/message/frontend.wejnfgho-schqakzu
 pub fn parse_chapter_list(base_url: String, manga_id: String) -> Result<Vec<Chapter>> {
-	let url = get_manga_url(manga_id, base_url);
-
-	let html = Request::new(&url, HttpMethod::Get)
+	let mut chapters: Vec<Chapter> = Vec::new();
+	let url = get_manga_url(manga_id, base_url.clone());
+	let initial_request = Request::new(url, HttpMethod::Get)
 		.html()
 		.expect("Failed to get html");
 
-	let mut chapters: Vec<Chapter> = Vec::new();
+	parse_chapter_list_helper(initial_request.clone(), &mut chapters);
 
-	for chapter in html.select("main div[wire:id] div > ul > li").array() {
+	let mut page = 2;
+	loop {
+		let response_html = create_chapter_request_object(
+			initial_request.clone(),
+			base_url.clone(),
+			i32_to_string(page),
+		)
+		.expect("Error: Chapter POST request was unsuccesful.");
+		parse_chapter_list_helper(response_html.clone(), &mut chapters);
+		// checks if next-page button exists.
+		if response_html
+			.select("button[wire:click*=nextPage]")
+			.html()
+			.read()
+			.is_empty()
+		{
+			break;
+		}
+		page += 1;
+	}
+	Ok(chapters)
+}
+pub fn parse_chapter_list_helper(html: Node, chapters: &mut Vec<Chapter>) {
+	for chapter in html.select("div[wire:id] div > ul > li").array() {
 		let chapter_node = chapter.as_node().expect("Failed to get chapter node");
 
 		let mut title = String::new();
@@ -260,8 +313,6 @@ pub fn parse_chapter_list(base_url: String, manga_id: String) -> Result<Vec<Chap
 			lang: String::from("en"),
 		});
 	}
-
-	Ok(chapters)
 }
 
 pub fn parse_page_list(

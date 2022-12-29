@@ -8,12 +8,18 @@ use aidoku::{
 
 mod helper;
 mod parser;
+mod request_helper;
 
 const BASE_URL: &str = "https://reaperscans.com";
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
-	parser::parse_manga_list(String::from(BASE_URL), filters, page)
+	let (query, search) = helper::check_for_search(filters);
+	if search {
+		parser::parse_search(String::from(BASE_URL), query)
+	} else {
+		parser::parse_manga_list(String::from(BASE_URL), page)
+	}
 }
 
 #[get_manga_listing]
