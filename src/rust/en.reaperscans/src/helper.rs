@@ -1,6 +1,7 @@
 use aidoku::{
 	prelude::format,
 	std::{current_date, String, Vec},
+	Filter, FilterType,
 };
 
 /// Returns an array of f32s contained within a string.
@@ -129,4 +130,45 @@ pub fn get_date(time_ago: String) -> f64 {
 		"DAY" | "DAYS" => current_date() - (number * 86400.0),
 		_ => current_date(),
 	}
+}
+
+pub fn check_for_search(filters: Vec<Filter>) -> (String, bool) {
+	let mut search_string = String::new();
+	let mut search = false;
+
+	for filter in filters {
+		match filter.kind {
+			FilterType::Title => {
+				if let Ok(filter_value) = filter.value.as_string() {
+					search_string.push_str(urlencode(filter_value.read().to_lowercase()).as_str());
+					search = true;
+					break;
+				}
+			}
+			_ => continue,
+		}
+	}
+	(search_string, search)
+}
+
+pub fn i32_to_string(mut integer: i32) -> String {
+	if integer == 0 {
+		return String::from("0");
+	}
+	let mut string = String::with_capacity(11);
+	let pos = if integer < 0 {
+		string.insert(0, '-');
+		1
+	} else {
+		0
+	};
+	while integer != 0 {
+		let mut digit = integer % 10;
+		if pos == 1 {
+			digit *= -1;
+		}
+		string.insert(pos, char::from_u32((digit as u32) + ('0' as u32)).unwrap());
+		integer /= 10;
+	}
+	string
 }
