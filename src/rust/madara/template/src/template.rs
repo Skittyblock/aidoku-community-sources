@@ -81,7 +81,48 @@ impl Default for MadaraSiteData {
 			// get the manga id from script tag
 			get_manga_id: get_int_manga_id,
 			// default viewer
-			viewer: |_, _| MangaViewer::Scroll,
+			viewer: |html, catagories| {
+				let series_type = html
+					.select("div.post-content_item:contains(Type) div.summary-content")
+					.text()
+					.read()
+					.to_lowercase();
+
+				let webtoon_tags = [
+					"manhwa", "manhua", "webtoon", "vertical", "korean", "chinese",
+				];
+				let rtl_tags = ["manga", "japan"];
+
+				if !series_type.is_empty() {
+					for tag in webtoon_tags {
+						if series_type.contains(tag) {
+							return MangaViewer::Scroll;
+						}
+					}
+
+					for tag in rtl_tags {
+						if series_type.contains(tag) {
+							return MangaViewer::Rtl;
+						}
+					}
+
+					MangaViewer::Default
+				} else {
+					for tag in webtoon_tags {
+						if catagories.iter().any(|v| v.to_lowercase() == tag) {
+							return MangaViewer::Scroll;
+						}
+					}
+
+					for tag in rtl_tags {
+						if catagories.iter().any(|v| v.to_lowercase() == tag) {
+							return MangaViewer::Rtl;
+						}
+					}
+
+					MangaViewer::Default
+				}
+			},
 			status: |html| {
 				let status_str = html
 					.select("div.post-content_item:contains(Status) div.summary-content")
@@ -172,7 +213,7 @@ pub fn get_search_result(data: MadaraSiteData, url: String) -> Result<MangaPageR
 			categories: Vec::new(),
 			status: MangaStatus::Unknown,
 			nsfw: MangaContentRating::Safe,
-			viewer: (data.viewer)(&Node::new("<p></p>".as_bytes()), &Vec::new()),
+			viewer: MangaViewer::Default,
 		});
 		has_more = true;
 	}
@@ -237,7 +278,7 @@ pub fn get_series_page(data: MadaraSiteData, listing: &str, page: i32) -> Result
 			categories: Vec::new(),
 			status: MangaStatus::Unknown,
 			nsfw: MangaContentRating::Safe,
-			viewer: (data.viewer)(&Node::new("<p></p>".as_bytes()), &Vec::new()),
+			viewer: MangaViewer::Default,
 		});
 		has_more = true;
 	}
