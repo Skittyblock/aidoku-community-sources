@@ -1,7 +1,7 @@
 #![no_std]
 use aidoku::{
 	error::Result, prelude::*, std::String, std::Vec, Chapter, DeepLink, Filter, Listing, Manga,
-	MangaContentRating, MangaPageResult, Page,
+	MangaPageResult, Page,
 };
 
 use madara_template::template;
@@ -10,16 +10,6 @@ fn get_data() -> template::MadaraSiteData {
 	let data: template::MadaraSiteData = template::MadaraSiteData {
 		base_url: String::from("https://lhtranslation.net"),
 		alt_ajax: true,
-		nsfw: |html, _| {
-			let tags = html.select("div.genres-content > a").text().read();
-			if tags.contains("Adult") || tags.contains("Mature") {
-				MangaContentRating::Nsfw
-			} else if tags.contains("Ecchi") {
-				MangaContentRating::Suggestive
-			} else {
-				MangaContentRating::Safe
-			}
-		},
 		..Default::default()
 	};
 	data
