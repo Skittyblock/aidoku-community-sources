@@ -3,12 +3,18 @@
 		"id": "ar.swatmanga",
 		"lang": "ar",
 		"name": "SwatManga",
-		"version": 1,
+		"version": 2,
 		"url": "https://swatmanga.co"
 	},
 	"listings": [
-		{ "name": "الرائج" },
-		{ "name": "آخر" },
-        { "name": "جَديد" }
+		{
+			"name": "الرائج"
+		},
+		{
+			"name": "آخر"
+		},
+		{
+			"name": "جَديد"
+		}
 	]
 }
