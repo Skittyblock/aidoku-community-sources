@@ -1,0 +1,10 @@
+{
+	"info": {
+		"id": "en.readcomicsonline",
+		"lang": "en",
+		"name": "Read Comics Online",
+		"version": 1,
+		"url": "https://readcomicsonline.ru",
+		"nsfw": 1
+	}
+}

@@ -34,6 +34,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "base64"
+version = "0.13.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9e1b586273c5702936fe7b7d6896644d8be71e6314cfe09d3167c95f712589e8"
+
+[[package]]
 name = "cfg-if"
 version = "0.1.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -57,6 +63,22 @@ dependencies = [
 
 [[package]]
 name = "hentaicb"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "madara_template",
+]
+
+[[package]]
+name = "isekaiscan"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "madara_template",
+]
+
+[[package]]
+name = "lhtranslation"
 version = "0.1.0"
 dependencies = [
  "aidoku",
@@ -101,6 +123,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "manhwaid"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "madara_template",
+]
+
+[[package]]
 name = "memory_units"
 version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -125,7 +155,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "reaperscans"
+name = "reaperscansid"
 version = "0.1.0"
 dependencies = [
  "aidoku",
@@ -137,6 +167,15 @@ name = "resetscans"
 version = "0.1.0"
 dependencies = [
  "aidoku",
+ "madara_template",
+]
+
+[[package]]
+name = "setsuscans"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "base64",
  "madara_template",
 ]
 
@@ -153,6 +192,14 @@ dependencies = [
 
 [[package]]
 name = "toonily"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "madara_template",
+]
+
+[[package]]
+name = "twilightscans"
 version = "0.1.0"
 dependencies = [
  "aidoku",

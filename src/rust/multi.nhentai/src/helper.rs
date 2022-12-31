@@ -1,4 +1,4 @@
-use aidoku::{ error::Result, std::Vec, std::String, std::ValueRef, std::ArrayRef };
+use aidoku::{error::Result, std::ArrayRef, std::String, std::ValueRef, std::Vec};
 
 pub fn urlencode(string: String) -> String {
 	let mut result: Vec<u8> = Vec::with_capacity(string.len() * 3);
@@ -7,10 +7,11 @@ pub fn urlencode(string: String) -> String {
 
 	for byte in bytes {
 		let curr = *byte;
-		if (b'a' <= curr && curr <= b'z')
-			|| (b'A' <= curr && curr <= b'Z')
-			|| (b'0' <= curr && curr <= b'9') {
-				result.push(curr);
+		if (b'a'..=b'z').contains(&curr)
+			|| (b'A'..=b'Z').contains(&curr)
+			|| (b'0'..=b'9').contains(&curr)
+		{
+			result.push(curr);
 		} else {
 			result.push(b'%');
 			result.push(hex[curr as usize >> 4]);
@@ -18,7 +19,7 @@ pub fn urlencode(string: String) -> String {
 		}
 	}
 
-	String::from_utf8(result).unwrap_or(String::new())
+	String::from_utf8(result).unwrap_or_default()
 }
 
 pub fn i32_to_string(mut integer: i32) -> String {
@@ -40,7 +41,7 @@ pub fn i32_to_string(mut integer: i32) -> String {
 		string.insert(pos, char::from_u32((digit as u32) + ('0' as u32)).unwrap());
 		integer /= 10;
 	}
-	return string;
+	string
 }
 
 pub fn get_cover_url(id: String, filetype: String) -> String {
@@ -48,13 +49,13 @@ pub fn get_cover_url(id: String, filetype: String) -> String {
 	string.push_str(&id);
 	string.push_str("/cover.");
 	string.push_str(&filetype);
-	return string;
+	string
 }
 
 pub fn get_details_url(id: String) -> String {
 	let mut string = String::from("https://nhentai.net/api/gallery/");
 	string.push_str(&id);
-	return string;
+	string
 }
 
 pub fn get_file_type(filetype: String) -> String {
@@ -82,7 +83,11 @@ pub fn get_tag_names_by_type(tags: ArrayRef, tag_type: &str) -> Result<Vec<Strin
 
 pub fn get_id(value: ValueRef) -> Result<String> {
 	let id = value.as_int().unwrap_or(0) as i32;
-	Ok(if id != 0 { i32_to_string(id) } else { value.as_string()?.read() })
+	Ok(if id != 0 {
+		i32_to_string(id)
+	} else {
+		value.as_string()?.read()
+	})
 }
 
 pub fn is_number(s: &str) -> bool {

@@ -1,12 +1,12 @@
 #![no_std]
 
 mod helper;
-
+extern crate alloc;
 use aidoku::{
-	error::Result, prelude::*, std::net::HttpMethod, std::net::Request, std::String, std::Vec,
-	Chapter, DeepLink, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
-	MangaViewer, Page,
+	error::Result, prelude::*, std::net::HttpMethod, std::net::Request, std::*, Chapter, DeepLink,
+	Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus, MangaViewer, Page,
 };
+use alloc::vec;
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
@@ -55,14 +55,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 		}
 	}
 
-	let url = helper::build_search_url(
-		query,
-		sort,
-		included_tags,
-		excluded_tags,
-		ascending,
-		page.clone(),
-	);
+	let url = helper::build_search_url(query, sort, included_tags, excluded_tags, ascending, page);
 
 	let html = Request::new(url.as_str(), HttpMethod::Get).html();
 
@@ -75,12 +68,8 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 
 		let title = result_node.select(".metadata h3.title span").text().read();
 
-		let cover = result_node
-			.select("figure.thumbnail img")
-			.attr("src")
-			.read();
-
-		let manga_id = helper::get_manga_id_from_path(manga_url);
+		let manga_id = helper::get_manga_id_from_path(&manga_url);
+		let cover = helper::get_cover_url(&manga_id);
 
 		manga_arr.push(Manga {
 			id: manga_id,
@@ -89,15 +78,15 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 			author: String::new(),
 			artist: String::new(),
 			description: String::new(),
-			url: String::new(),
+			url: manga_url,
 			categories: Vec::new(),
 			status: MangaStatus::Completed,
 			nsfw: MangaContentRating::Nsfw,
 			viewer: MangaViewer::Rtl,
 		});
 	}
-	// check if paging node exists
 
+	// check if paging node exists
 	let paging = html.select("nav.pagination ul li.last a");
 	if !paging.html().read().is_empty() {
 		let last_page = helper::get_page(paging.last().attr("href").read());
@@ -115,32 +104,38 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 
 #[get_manga_details]
 fn get_manga_details(id: String) -> Result<Manga> {
-	let url = format!("https://koushoku.org/archive/{}/index.json", &id);
+	let url = format!("https://koushoku.org/archive/{}", id);
+	let html = Request::new(url.as_str(), HttpMethod::Get).html();
 
-	let json = Request::new(url.as_str(), HttpMethod::Get)
-		.json()
-		.as_object()?;
+	let title = html
+		.select("main#archive .wrapper section.metadata h1.title")
+		.first()
+		.text()
+		.read();
 
-	let cover = helper::get_cover_url(id.clone());
-	let title = json.get("title").as_string()?.read();
-	let artists = json.get("artists").as_array()?;
-	let artist = artists.get(0).as_object()?;
-	let author = artist.get("name").as_string()?.read();
-	let tag_list = json.get("tags").as_array()?;
-	let mut categories: Vec<String> = Vec::new();
-	for tag in tag_list {
-		let tag = tag.as_object()?;
-		let name = tag.get("name").as_string()?.read();
-		categories.push(name);
-	}
+	let cover = html
+		.select("main#archive .wrapper aside figure.thumbnail a img")
+		.attr("src")
+		.read();
+
+	let author = html
+		.select("main#archive .wrapper section.metadata .artists td a")
+		.text()
+		.read();
+
+	let categories = html
+		.select("main#archive .wrapper section.metadata .tags a")
+		.array()
+		.map(|tag| tag.as_node().text().read())
+		.collect::<Vec<String>>();
 
 	let share_url = format!("https://koushoku.org/archive/{}", &id);
 
-	let manga = Manga {
+	Ok(Manga {
 		id,
-		cover,
 		title,
 		author,
+		cover,
 		artist: String::new(),
 		description: String::new(),
 		url: share_url,
@@ -148,23 +143,23 @@ fn get_manga_details(id: String) -> Result<Manga> {
 		status: MangaStatus::Completed,
 		nsfw: MangaContentRating::Nsfw,
 		viewer: MangaViewer::Rtl,
-	};
-
-	Ok(manga)
+	})
 }
 
 #[get_chapter_list]
 fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
-	let url = format!("https://koushoku.org/archive/{}/index.json", id.clone());
+	let url = format!("https://koushoku.org/archive/{}", id);
+	let html = Request::new(url.as_str(), HttpMethod::Get).html();
 
-	let json = Request::new(url.as_str(), HttpMethod::Get)
-		.json()
-		.as_object()?;
+	let created_at = html
+		.select("main#archive .wrapper section.metadata .createdAt td[data-unix]")
+		.first()
+		.attr("data-unix")
+		.read();
 
-	let date_updated = json.get("updatedAt").as_float()?;
+	let date_updated = created_at.parse::<f64>().unwrap_or(-1.0);
 
-	let mut chapters: Vec<Chapter> = Vec::new();
-	chapters.push(Chapter {
+	Ok(vec![Chapter {
 		id,
 		title: String::new(),
 		volume: -1.0,
@@ -173,25 +168,29 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 		date_updated,
 		scanlator: String::new(),
 		lang: String::from("en"),
-	});
-
-	Ok(chapters)
+	}])
 }
 
 #[get_page_list]
 fn get_page_list(id: String) -> Result<Vec<Page>> {
-	let url = format!("https://koushoku.org/archive/{}/index.json", id.clone());
+	let url = format!("https://koushoku.org/archive/{}", id);
 
 	let mut pages: Vec<Page> = Vec::new();
 
-	let json = Request::new(url.as_str(), HttpMethod::Get)
-		.json()
-		.as_object()?;
+	let html = Request::new(url.as_str(), HttpMethod::Get).html();
 
-	let pages_total = json.get("pages").as_int()?;
+	let pages_total_str = html
+		.select("main#archive .wrapper section.metadata .pages td")
+		.array()
+		.nth(1)
+		.unwrap()
+		.as_node()
+		.text()
+		.read();
+	let pages_total = pages_total_str.parse::<i32>().unwrap_or(0);
 
 	for i in 1..=pages_total {
-		let img_url = format!("https://cdn.koushoku.org/data/{}/{}/512.png", id, i);
+		let img_url = format!("https://ksk-h7glm2.xyz/data/{}/{}/512.png", id, i);
 
 		pages.push(Page {
 			index: i as i32,
@@ -207,9 +206,9 @@ fn get_page_list(id: String) -> Result<Vec<Page>> {
 #[handle_url]
 pub fn handle_url(url: String) -> Result<DeepLink> {
 	let id = helper::get_manga_id(url);
-	let manga = get_manga_details(id.clone())?;
-	return Ok(DeepLink {
+	let manga = get_manga_details(id)?;
+	Ok(DeepLink {
 		manga: Some(manga),
 		chapter: None,
-	});
+	})
 }

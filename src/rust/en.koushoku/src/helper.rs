@@ -7,9 +7,9 @@ pub fn urlencode(string: String) -> String {
 
 	for byte in bytes {
 		let curr = *byte;
-		if (b'a' <= curr && curr <= b'z')
-			|| (b'A' <= curr && curr <= b'Z')
-			|| (b'0' <= curr && curr <= b'9')
+		if (b'a'..=b'z').contains(&curr)
+			|| (b'A'..=b'Z').contains(&curr)
+			|| (b'0'..=b'9').contains(&curr)
 		{
 			result.push(curr);
 		} else {
@@ -19,7 +19,7 @@ pub fn urlencode(string: String) -> String {
 		}
 	}
 
-	String::from_utf8(result).unwrap_or(String::new())
+	String::from_utf8(result).unwrap_or_default()
 }
 
 pub fn i32_to_string(mut integer: i32) -> String {
@@ -42,23 +42,23 @@ pub fn i32_to_string(mut integer: i32) -> String {
 		string.insert(pos, char::from_u32((digit as u32) + ('0' as u32)).unwrap());
 		integer /= 10;
 	}
-	return string;
+	string
 }
 
-pub fn get_cover_url(id: String) -> String {
-	return format!("https://cdn.koushoku.org/data/{}/1/512.png", id);
+pub fn get_cover_url(id: &String) -> String {
+	return format!("https://ksk-h7glm2.xyz/data/{}/1/512.png", id);
 }
 
 pub fn get_manga_id(link: String) -> String {
 	// https://koushoku.org/archive/8918
-	let str = link.split("/").nth(4).unwrap_or("");
-	return String::from(str);
+	let str = link.split('/').nth(4).unwrap_or("");
+	String::from(str)
 }
 
-pub fn get_manga_id_from_path(path: String) -> String {
+pub fn get_manga_id_from_path(path: &str) -> String {
 	// /archive/8918
-	let str = path.split("/").nth(2).unwrap_or("");
-	return String::from(str);
+	let str = path.split('/').nth(2).unwrap_or("");
+	String::from(str)
 }
 
 pub fn build_search_url(
@@ -71,13 +71,13 @@ pub fn build_search_url(
 ) -> String {
 	let mut url = String::new();
 
-	if query.len() > 0 || included_tags.len() > 0 || excluded_tags.len() > 0 {
+	if !query.is_empty() || !included_tags.is_empty() || !excluded_tags.is_empty() {
 		// search page
 		url.push_str(format!("https://koushoku.org/search").as_str());
-		url.push_str("?");
+		url.push('?');
 	} else {
 		url.push_str(format!("https://koushoku.org/").as_str());
-		url.push_str("?");
+		url.push('?');
 	}
 	url.push_str(
 		format!(
@@ -105,13 +105,13 @@ pub fn build_search_url(
 }
 
 pub fn get_page(url: String) -> i32 {
-	let mut params = url.split("&");
+	let params = url.split('&');
 	let mut page = 1;
-	while let Some(param) = params.next() {
-		if param.starts_with("page=") {
-			page = param[5..].parse::<i32>().unwrap_or(1);
+	for param in params {
+		if let Some(data) = param.strip_prefix("page=") {
+			page = data.parse::<i32>().unwrap_or(1);
 			break;
 		}
 	}
-	return page;
+	page
 }

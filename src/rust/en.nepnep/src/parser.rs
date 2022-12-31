@@ -1,18 +1,19 @@
 use aidoku::{
-	error::Result, std::String, std::Vec, std::ObjectRef, std::html::Node,
-	Manga, MangaStatus, MangaContentRating, MangaViewer, Chapter,
+	error::Result, std::defaults::defaults_get, std::html::Node, std::ObjectRef, std::String,
+	std::Vec, Chapter, Manga, MangaContentRating, MangaStatus, MangaViewer,
 };
 
-use super::helper::{chapter_url_encode, chapter_image};
+use super::helper::{chapter_image, chapter_url_encode};
 
 // Parse manga with title and cover
-pub fn parse_basic_manga(manga_object: ObjectRef) -> Result<Manga> {
+pub fn parse_basic_manga(manga_object: ObjectRef, cover_url: String) -> Result<Manga> {
 	let id = manga_object.get("i").as_string()?.read();
 	let title = manga_object.get("s").as_string()?.read();
+	let cover = cover_url.replace("{{Result.i}}", &id);
 
-	let mut cover = String::from("https://cover.nep.li/cover/");
-	cover.push_str(&id);
-	cover.push_str(".jpg");
+	let mut url = defaults_get("sourceURL").as_string()?.read();
+	url.push_str("/manga/");
+	url.push_str(&id);
 
 	Ok(Manga {
 		id,
@@ -21,7 +22,7 @@ pub fn parse_basic_manga(manga_object: ObjectRef) -> Result<Manga> {
 		author: String::new(),
 		artist: String::new(),
 		description: String::new(),
-		url: String::new(),
+		url,
 		categories: Vec::new(),
 		status: MangaStatus::Unknown,
 		nsfw: MangaContentRating::Safe,
@@ -31,20 +32,36 @@ pub fn parse_basic_manga(manga_object: ObjectRef) -> Result<Manga> {
 
 // Parse complete manga info
 pub fn parse_full_manga(id: String, url: String, manga_node: Node) -> Result<Manga> {
-	let cover = manga_node.select("div.BoxBody > div.row img").attr("src").read();
+	let cover = manga_node
+		.select("div.BoxBody > div.row img")
+		.attr("src")
+		.read();
 	let title = manga_node.select("div.BoxBody > div.row h1").text().read();
-	let author = manga_node.select("div.BoxBody > div.row li.list-group-item:has(span:contains(Author)) a")
-					.first()
-					.text()
-					.read();
-	let description = manga_node.select("div.BoxBody > div.row div.Content").text().read();
+	let author = manga_node
+		.select("div.BoxBody > div.row li.list-group-item:has(span:contains(Author)) a")
+		.first()
+		.text()
+		.read();
+	let description = manga_node
+		.select("div.BoxBody > div.row div.Content")
+		.text()
+		.read();
 
 	let mut categories: Vec<String> = Vec::new();
-	manga_node.select("li.list-group-item:has(span:contains(Genre)) a")
-				.array()
-				.for_each(|tag| categories.push(tag.as_node().text().read()));
+	manga_node
+		.select("li.list-group-item:has(span:contains(Genre)) a")
+		.array()
+		.for_each(|tag| categories.push(tag.as_node().text().read()));
 
-	let status = match manga_node.select("div.BoxBody > div.row li.list-group-item:has(span:contains(Status)) a:contains(Scan)").first().text().read().as_str() {
+	let status = match manga_node
+		.select(
+			"div.BoxBody > div.row li.list-group-item:has(span:contains(Status)) a:contains(Scan)",
+		)
+		.first()
+		.text()
+		.read()
+		.as_str()
+	{
 		"Ongoing (Scan)" => MangaStatus::Ongoing,
 		"Complete (Scan)" => MangaStatus::Completed,
 		"Hiatus (Scan)" => MangaStatus::Hiatus,
@@ -53,7 +70,10 @@ pub fn parse_full_manga(id: String, url: String, manga_node: Node) -> Result<Man
 		_ => MangaStatus::Unknown,
 	};
 
-	let nsfw = if categories.iter().any(|e| e == "Adult" || e == "Hentai" || e == "Mature") {
+	let nsfw = if categories
+		.iter()
+		.any(|e| e == "Adult" || e == "Hentai" || e == "Mature")
+	{
 		MangaContentRating::Nsfw
 	} else if categories.iter().any(|e| e == "Ecchi") {
 		MangaContentRating::Suggestive
@@ -61,7 +81,13 @@ pub fn parse_full_manga(id: String, url: String, manga_node: Node) -> Result<Man
 		MangaContentRating::Safe
 	};
 
-	let viewer = match manga_node.select("li.list-group-item:has(span:contains(Type)) a").first().text().read().as_str() {
+	let viewer = match manga_node
+		.select("li.list-group-item:has(span:contains(Type)) a")
+		.first()
+		.text()
+		.read()
+		.as_str()
+	{
 		"Manhua" => MangaViewer::Scroll,
 		"Manhwa" => MangaViewer::Scroll,
 		_ => MangaViewer::Rtl,
@@ -97,11 +123,14 @@ pub fn parse_chapter(manga_id: &str, chapter_object: ObjectRef) -> Result<Chapte
 	};
 	if title.is_empty() {
 		title = chapter_object.get("Type").as_string()?.read();
-		title.push_str(" ");
+		title.push(' ');
 		title.push_str(&chapter_image(&id, false));
 	}
 
-	let date_updated = chapter_object.get("Date").as_date("yyyy-MM-dd HH:mm:SS").unwrap_or(-1.0);
+	let date_updated = chapter_object
+		.get("Date")
+		.as_date("yyyy-MM-dd HH:mm:SS", None, None)
+		.unwrap_or(-1.0);
 
 	let mut url = String::from("https://mangasee123.com/read-online/");
 	url.push_str(&path);
