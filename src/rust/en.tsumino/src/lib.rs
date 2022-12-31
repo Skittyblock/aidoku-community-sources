@@ -146,10 +146,10 @@ fn get_page_list(_: String, _: String) -> Result<Vec<Page>> {
 	todo!()
 }
 
-#[modify_image_request]
-fn modify_image_request(_: Request) {
-	todo!()
-}
+// #[modify_image_request]
+// fn modify_image_request(_: Request) {
+// 	todo!()
+// }
 
 #[handle_url]
 fn handle_url(_: String) -> Result<DeepLink> {
