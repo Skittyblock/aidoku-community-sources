@@ -1,18 +1,18 @@
 {
-    "info": {
-        "id": "en.manhuafast",
-        "lang": "en",
-        "name": "ManhuaFast",
-        "version": 1,
-        "url": "https://manhuafast.com",
-        "nsfw": 0
-    },
-    "listings": [
-        {
-            "name": "Trending"
-        },
-        {
-            "name": "Popular"
-        }
-    ]
+	"info": {
+		"id": "en.manhuafast",
+		"lang": "en",
+		"name": "ManhuaFast",
+		"version": 2,
+		"url": "https://manhuafast.com",
+		"nsfw": 0
+	},
+	"listings": [
+		{
+			"name": "Trending"
+		},
+		{
+			"name": "Popular"
+		}
+	]
 }
