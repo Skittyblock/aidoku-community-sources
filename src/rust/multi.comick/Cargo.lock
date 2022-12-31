@@ -4,8 +4,8 @@ version = 3
 
 [[package]]
 name = "aidoku"
-version = "0.1.2"
-source = "git+https://github.com/Aidoku/aidoku-rs#55765f385b064521d5c2b3d79af1d0ac2bbdd3fb"
+version = "0.2.0"
+source = "git+https://github.com/Aidoku/aidoku-rs#5a68a5507a78716c2eb327eb2c12cdb1700a4bf3"
 dependencies = [
  "aidoku_imports",
  "aidoku_macros",
@@ -15,18 +15,18 @@ dependencies = [
 
 [[package]]
 name = "aidoku_imports"
-version = "0.1.2"
-source = "git+https://github.com/Aidoku/aidoku-rs#55765f385b064521d5c2b3d79af1d0ac2bbdd3fb"
+version = "0.2.0"
+source = "git+https://github.com/Aidoku/aidoku-rs#5a68a5507a78716c2eb327eb2c12cdb1700a4bf3"
 
 [[package]]
 name = "aidoku_macros"
 version = "0.1.0"
-source = "git+https://github.com/Aidoku/aidoku-rs#55765f385b064521d5c2b3d79af1d0ac2bbdd3fb"
+source = "git+https://github.com/Aidoku/aidoku-rs#5a68a5507a78716c2eb327eb2c12cdb1700a4bf3"
 
 [[package]]
 name = "aidoku_proc_macros"
-version = "0.1.0"
-source = "git+https://github.com/Aidoku/aidoku-rs#55765f385b064521d5c2b3d79af1d0ac2bbdd3fb"
+version = "0.2.0"
+source = "git+https://github.com/Aidoku/aidoku-rs#5a68a5507a78716c2eb327eb2c12cdb1700a4bf3"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -48,9 +48,9 @@ dependencies = [
 
 [[package]]
 name = "libc"
-version = "0.2.126"
+version = "0.2.139"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "349d5a591cd28b49e1d1037471617a32ddcda5731b99419008085f72d5a53836"
+checksum = "201de327520df007757c1f0adce6e827fe8562fbc28bfd9c15571c66ca1f5f79"
 
 [[package]]
 name = "memory_units"
@@ -60,27 +60,27 @@ checksum = "8452105ba047068f40ff7093dd1d9da90898e63dd61736462e9cdda6a90ad3c3"
 
 [[package]]
 name = "proc-macro2"
-version = "1.0.40"
+version = "1.0.49"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dd96a1e8ed2596c337f8eae5f24924ec83f5ad5ab21ea8e455d3566c69fbcaf7"
+checksum = "57a8eca9f9c4ffde41714334dee777596264c7825420f521abc92b5b5deb63a5"
 dependencies = [
  "unicode-ident",
 ]
 
 [[package]]
 name = "quote"
-version = "1.0.20"
+version = "1.0.23"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3bcdf212e9776fbcb2d23ab029360416bb1706b1aea2d1a5ba002727cbcab804"
+checksum = "8856d8364d252a14d474036ea1358d63c9e6965c8e5c1885c18f73d70bff9c7b"
 dependencies = [
  "proc-macro2",
 ]
 
 [[package]]
 name = "syn"
-version = "1.0.98"
+version = "1.0.107"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c50aef8a904de4c23c788f104b7dddc7d6f79c647c7c8ce4cc8f73eb0ca773dd"
+checksum = "1f4064b5b16e03ae50984a5a8ed5d4f8803e6bc1fd170a3cda91a1be4b18e3f5"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -89,9 +89,9 @@ dependencies = [
 
 [[package]]
 name = "unicode-ident"
-version = "1.0.1"
+version = "1.0.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5bd2fe26506023ed7b5e1e315add59d6f584c621d037f9368fea9cfb988f368c"
+checksum = "84a22b9f218b40614adcb3f4ff08b703773ad44fa9423e4e0d346d5db86e4ebc"
 
 [[package]]
 name = "wee_alloc"

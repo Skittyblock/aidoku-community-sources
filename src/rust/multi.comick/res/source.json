@@ -3,7 +3,7 @@
 		"id": "multi.comick",
 		"lang": "multi",
 		"name": "ComicK",
-		"version": 1,
+		"version": 2,
 		"url": "https://comick.fun",
 		"nsfw": 1
 	},
@@ -52,7 +52,7 @@
 	],
 	"languageSelectType": "single",
 	"listings": [
-		{ "name": "Hot"},
-		{ "name": "New"}
+		{ "name": "Hot" },
+		{ "name": "New" }
 	]
 }
