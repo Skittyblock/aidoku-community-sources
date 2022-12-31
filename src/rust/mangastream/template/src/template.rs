@@ -296,7 +296,29 @@ impl MangaStreamSource {
 		let html = Request::new(id.as_str(), HttpMethod::Get).html();
 		for chapter in html.select(self.chapter_selector).array() {
 			let chapter_node = chapter.as_node();
-			let title = chapter_node.select(self.chapter_title).text().read();
+			let raw_title = chapter_node.select(self.chapter_title).text().read();
+			let title = {
+				// Because every mangastream source likes to be different and not have a consistent
+				// chapter naming scheme we have to do some hacky stuff to get the chapter title because
+				// we can't use regex
+
+				let mut title = raw_title.split_whitespace().collect::<Vec<&str>>();
+				if title.len() >= 2 {
+					if title[0] == "Chapter" && title[1].parse::<f64>().is_ok() {
+						title.remove(0);
+						title.remove(0);
+					}
+				}
+
+				// Remove any leading hyphens
+				if title.len() >= 1 {
+					if title[0] == "-" {
+						title.remove(0);
+					}
+				}
+
+				title.join(" ")
+			};
 			let chapter_url = {
 				let original_url = chapter_node.select(self.chapter_url).attr("href").read();
 
@@ -307,7 +329,7 @@ impl MangaStreamSource {
 				}
 			};
 			let chapter_id = chapter_url.clone();
-			let chapter_number = get_chapter_number(title.clone());
+			let chapter_number = get_chapter_number(raw_title.clone());
 			let date_updated = get_date(self, chapter_node.select(self.chapter_date).text());
 			chapters.push(Chapter {
 				id: chapter_id,
