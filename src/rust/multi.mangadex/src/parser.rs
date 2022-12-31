@@ -243,7 +243,7 @@ pub fn parse_chapter(chapter_object: ObjectRef) -> Result<Chapter> {
 	}
 
 	let id = chapter_object.get("id").as_string()?.read();
-	let title = attributes
+	let mut title = attributes
 		.get("title")
 		.as_string()
 		.map(|v| v.read())
@@ -251,6 +251,13 @@ pub fn parse_chapter(chapter_object: ObjectRef) -> Result<Chapter> {
 
 	let volume = attributes.get("volume").as_float().unwrap_or(-1.0) as f32;
 	let chapter = attributes.get("chapter").as_float().unwrap_or(-1.0) as f32;
+
+	// As per MangaDex upload guidelines, if the volume and chapter are both null or for serialized
+	// entries, the volume is 0 and chapter is null, it's a oneshot. They should have a title of
+	// "Oneshot" but some don't, so we'll add it if it's missing.
+	if (volume == -1.0 || volume == 0.0) && chapter == -1.0 && title.is_empty() {
+		title = String::from("Oneshot");
+	}
 
 	let mut scanlator = String::new();
 
