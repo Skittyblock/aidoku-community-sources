@@ -106,7 +106,7 @@ impl Default for MadaraSiteData {
 						}
 					}
 
-					MangaViewer::Default
+					MangaViewer::Scroll
 				} else {
 					for tag in webtoon_tags {
 						if categories.iter().any(|v| v.to_lowercase() == tag) {
@@ -120,7 +120,7 @@ impl Default for MadaraSiteData {
 						}
 					}
 
-					MangaViewer::Default
+					MangaViewer::Scroll
 				}
 			},
 			status: |html| {
@@ -228,7 +228,7 @@ pub fn get_search_result(data: MadaraSiteData, url: String) -> Result<MangaPageR
 			categories: Vec::new(),
 			status: MangaStatus::Unknown,
 			nsfw: MangaContentRating::Safe,
-			viewer: MangaViewer::Default,
+			viewer: MangaViewer::Scroll,
 		});
 		has_more = true;
 	}
@@ -293,7 +293,7 @@ pub fn get_series_page(data: MadaraSiteData, listing: &str, page: i32) -> Result
 			categories: Vec::new(),
 			status: MangaStatus::Unknown,
 			nsfw: MangaContentRating::Safe,
-			viewer: MangaViewer::Default,
+			viewer: MangaViewer::Scroll,
 		});
 		has_more = true;
 	}
