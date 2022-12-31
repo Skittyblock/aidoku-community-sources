@@ -10,8 +10,8 @@ use aidoku::{
 pub mod helper;
 pub mod parser;
 
-const BASE_URL: &str = "https://comick.fun";
-const API_URL: &str = "https://api.comick.fun";
+const BASE_URL: &str = "https://comick.app";
+const API_URL: &str = "https://api.comick.app";
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
@@ -34,8 +34,8 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 }
 
 #[get_page_list]
-fn get_page_list(id: String) -> Result<Vec<Page>> {
-	parser::parse_page_list(String::from(API_URL), id)
+fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
+	parser::parse_page_list(String::from(API_URL), chapter_id)
 }
 
 #[modify_image_request]

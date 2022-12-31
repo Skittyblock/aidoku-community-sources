@@ -6,17 +6,18 @@ use aidoku::{
 	MangaStatus,
 };
 
-pub fn get_lang_code() -> String {
-	let mut code = String::new();
-	if let Ok(languages) = defaults_get("languages").as_array() {
-		if let Ok(language) = languages.get(0).as_string() {
-			code = language.read();
+pub fn get_lang_code() -> Option<String> {
+	if let Ok(lang) = defaults_get("languages") {
+		if let Ok(languages) = lang.as_array() {
+			if let Ok(language) = languages.get(0).as_string() {
+				return Some(language.read());
+			}
 		}
 	}
-	code
+	None
 }
 
-pub fn data_from_json(data: ObjectRef, key: &str) -> String {
+pub fn data_from_json(data: &ObjectRef, key: &str) -> String {
 	match data.get(key).as_string() {
 		Ok(str) => str.read(),
 		Err(_) => String::new(),
@@ -76,7 +77,7 @@ pub fn get_search_url(
 }
 
 pub fn get_listing_url(api_url: String, list_name: String, page: i32) -> String {
-	let lang_code = get_lang_code();
+	let lang_code = get_lang_code().unwrap_or_else(|| String::from("en"));
 	let url = match list_name.as_str() {
 		"Hot" => format!(
 			"{}/chapter?lang={}&page={}&order=hot&tachiyomi=true",
