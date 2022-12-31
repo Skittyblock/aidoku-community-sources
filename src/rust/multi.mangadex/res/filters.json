@@ -8,11 +8,13 @@
 	{
 		"type": "group",
 		"name": "Chapters",
-		"filters": [{
-			"type": "check",
-			"name": "Has available chapters",
-			"default": true
-		}]
+		"filters": [
+			{
+				"type": "check",
+				"name": "Has available chapters",
+				"default": true
+			}
+		]
 	},
 	{
 		"type": "group",

@@ -7,8 +7,16 @@
 				"type": "select",
 				"key": "coverQuality",
 				"title": "Cover Quality",
-				"values": ["", ".512.jpg", ".256.jpg"],
-				"titles": ["Original", "Medium", "Low"],
+				"values": [
+					"",
+					".512.jpg",
+					".256.jpg"
+				],
+				"titles": [
+					"Original",
+					"Medium",
+					"Low"
+				],
 				"default": ".512.jpg"
 			},
 			{
