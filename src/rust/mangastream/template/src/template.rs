@@ -303,18 +303,14 @@ impl MangaStreamSource {
 				// we can't use regex
 
 				let mut title = raw_title.split_whitespace().collect::<Vec<&str>>();
-				if title.len() >= 2 {
-					if title[0] == "Chapter" && title[1].parse::<f64>().is_ok() {
-						title.remove(0);
-						title.remove(0);
-					}
+				if title.len() >= 2 && title[0] == "Chapter" && title[1].parse::<f64>().is_ok() {
+					title.remove(0);
+					title.remove(0);
 				}
 
 				// Remove any leading hyphens
-				if title.len() >= 1 {
-					if title[0] == "-" {
-						title.remove(0);
-					}
+				if !title.is_empty() && title[0] == "-" {
+					title.remove(0);
 				}
 
 				title.join(" ")
