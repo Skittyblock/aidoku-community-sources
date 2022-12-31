@@ -1,4 +1,10 @@
-use aidoku::{error::Result, std::String, std::ValueRef, std::Vec};
+use aidoku::{
+	error::Result,
+	std::String,
+	std::Vec,
+	std::{ObjectRef, ValueRef},
+	Manga, MangaContentRating, MangaStatus, MangaViewer,
+};
 
 pub fn urlencode(string: String) -> String {
 	let mut result: Vec<u8> = Vec::with_capacity(string.len() * 3);
@@ -50,5 +56,25 @@ pub fn get_id(value: ValueRef) -> Result<String> {
 		i32_to_string(id)
 	} else {
 		value.as_string()?.read()
+	})
+}
+
+pub fn parse_manga(manga_obj: ObjectRef) -> Result<Manga> {
+	let main = manga_obj.get("entry").as_object()?;
+	let id = get_id(main.get("id"))?;
+	let title = main.get("title").as_string()?.read();
+	let cover = main.get("thumbnailUrl").as_string()?.read();
+	Ok(Manga {
+		id,
+		title,
+		cover,
+		author: String::new(),
+		artist: String::new(),
+		description: String::new(),
+		url: String::new(),
+		categories: Vec::new(),
+		status: MangaStatus::Completed,
+		nsfw: MangaContentRating::Nsfw,
+		viewer: MangaViewer::Rtl,
 	})
 }

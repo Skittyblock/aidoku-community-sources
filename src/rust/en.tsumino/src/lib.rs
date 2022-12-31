@@ -6,8 +6,7 @@ use aidoku::{
 	std::net::HttpMethod,
 	std::net::Request,
 	std::{String, Vec},
-	Chapter, DeepLink, Filter, FilterType, Listing, Manga, MangaContentRating, MangaPageResult,
-	MangaStatus, MangaViewer, Page,
+	Chapter, DeepLink, Filter, FilterType, Listing, Manga, MangaPageResult, Page,
 };
 extern crate alloc;
 use alloc::string::ToString;
@@ -16,7 +15,6 @@ mod helper;
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	aidoku::prelude::println!("here");
-	let base_url = String::from("https://www.tsumino.com");
 	let mut sort = String::from("Newest");
 	let mut tags: String = String::new();
 	let mut i = 0;
@@ -37,6 +35,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 				}
 				i += 1;
 			}
+			// might remove this later in favor of the page listing
 			FilterType::Sort => {
 				let value = match filter.value.as_object() {
 					Ok(value) => value,
@@ -60,9 +59,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 			_ => continue,
 		}
 	}
-	aidoku::prelude::println!("tags: {}", tags);
-
-	let url = String::from(base_url + "/search/operate/");
+	let url = String::from("https://www.tsumino.com/search/operate/");
 	let mut parameters = String::new();
 	parameters.push_str("PageNumber=");
 	parameters.push_str(&helper::urlencode(page.to_string()));
@@ -71,54 +68,21 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	parameters.push_str(&tags);
 	aidoku::prelude::println!("url: {}", url);
 	aidoku::prelude::println!("parameters: {}", parameters);
-
 	let request = Request::new(&url, HttpMethod::Post)
 		.header("User-Agent", "Aidoku")
 		.body(format!("{}", parameters));
 	let json = request.json()?.as_object()?;
 	let data = json.get("data").as_array()?;
-	aidoku::prelude::println!("data: {}", data.len());
+
 	let mut manga_arr: Vec<Manga> = Vec::new();
 	let total: i32;
 	for manga in data {
-		aidoku::prelude::println!("a manga");
 		let obj = manga.as_object()?;
-		let md = obj.get("entry").as_object()?;
-		let id = helper::get_id(md.get("id"))?;
-		aidoku::prelude::println!("id: {}", id);
-		let f = md.get("title");
-		aidoku::prelude::println!("executed title thingy: {:?}", f);
-		let title = f.as_string()?;
-		aidoku::prelude::println!("title len: {}", title.len());
-		let string = title.read();
-		aidoku::prelude::println!("string: {}", string);
-
-		aidoku::prelude::println!("asnnwkdankjwndka");
-		aidoku::prelude::println!("{}", string.is_empty());
-		if string.is_empty() {
-			aidoku::prelude::println!("empty title");
-			continue;
+		if let Ok(manga) = helper::parse_manga(obj) {
+			manga_arr.push(manga);
 		}
-		aidoku::prelude::println!("title: {}", string);
-		let cover = md.get("thumbnailUrl").as_string()?.read();
-		manga_arr.push(Manga {
-			id,
-			cover,
-			title: string,
-			author: String::new(),
-			artist: String::new(),
-			description: String::new(),
-			url: String::new(),
-			categories: Vec::new(),
-			status: MangaStatus::Completed,
-			nsfw: MangaContentRating::Nsfw,
-			viewer: MangaViewer::Rtl,
-		})
 	}
-	aidoku::prelude::println!("manga_arr: {}", manga_arr.len());
 	total = json.get("pageCount").as_int().unwrap_or(0) as i32;
-	aidoku::prelude::println!("total: {}", total);
-	aidoku::prelude::println!("page: {}", page);
 
 	Ok(MangaPageResult {
 		manga: manga_arr,
@@ -127,8 +91,33 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 }
 
 #[get_manga_listing]
-fn get_manga_listing(_: Listing, _: i32) -> Result<MangaPageResult> {
-	todo!()
+fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
+	let url = String::from("https://www.tsumino.com/search/operate/");
+	let mut parameters = String::new();
+	parameters.push_str("PageNumber=");
+	parameters.push_str(&helper::urlencode(page.to_string()));
+	parameters.push_str("&Sort=");
+	parameters.push_str(&helper::urlencode(listing.name));
+	let request = Request::new(&url, HttpMethod::Post)
+		.header("User-Agent", "Aidoku")
+		.body(format!("{}", parameters));
+	let json = request.json()?.as_object()?;
+	let data = json.get("data").as_array()?;
+
+	let mut manga_arr: Vec<Manga> = Vec::new();
+	let total: i32;
+	for manga in data {
+		let obj = manga.as_object()?;
+		if let Ok(manga) = helper::parse_manga(obj) {
+			manga_arr.push(manga);
+		}
+	}
+	total = json.get("pageCount").as_int().unwrap_or(0) as i32;
+
+	Ok(MangaPageResult {
+		manga: manga_arr,
+		has_more: page < total,
+	})
 }
 
 #[get_manga_details]
