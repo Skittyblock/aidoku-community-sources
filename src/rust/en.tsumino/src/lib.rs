@@ -14,11 +14,16 @@ mod helper;
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
-	let mut sort = String::from("Newest");
+	let mut query: String = String::new();
+	let mut sort: String = String::from("Newest");
 	let mut tags: String = String::new();
 	let mut i = 0;
 	for filter in filters {
 		match filter.kind {
+			FilterType::Title => {
+				query.push_str("&Text=");
+				query.push_str(&helper::urlencode(filter.value.as_string()?.read()));
+			}
 			FilterType::Genre => {
 				let tpe = 1;
 				tags.push_str(&format!(
@@ -62,11 +67,10 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	let mut parameters = String::new();
 	parameters.push_str("PageNumber=");
 	parameters.push_str(&helper::urlencode(page.to_string()));
+	parameters.push_str(&query);
 	parameters.push_str("&Sort=");
 	parameters.push_str(&helper::urlencode(sort));
 	parameters.push_str(&tags);
-	aidoku::prelude::println!("url: {}", url);
-	aidoku::prelude::println!("parameters: {}", parameters);
 	let request = Request::new(&url, HttpMethod::Post)
 		.header("User-Agent", "Aidoku")
 		.body(format!("{}", parameters));
@@ -201,7 +205,6 @@ fn get_page_list(id: String, _: String) -> Result<Vec<Page>> {
 				.attr("data-cdn")
 				.read()
 				.replace("[PAGE]", &i.to_string());
-			aidoku::prelude::println!("{}", url);
 			pages.push(Page {
 				index: i.try_into().unwrap_or(-1),
 				url,
