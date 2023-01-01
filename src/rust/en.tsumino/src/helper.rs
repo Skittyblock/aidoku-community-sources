@@ -82,9 +82,7 @@ pub fn parse_manga(html: Node) -> Result<Manga> {
 		.attr("content")
 		.read();
 	let author = html
-		.select("div.book-page-container")
-		.select("#Artist")
-		.select("a")
+		.select("div.book-page-container #Artist a")
 		.array()
 		.map(|val| val.as_node().expect("Failed to get author").text().read())
 		.collect::<Vec<String>>()
@@ -92,9 +90,7 @@ pub fn parse_manga(html: Node) -> Result<Manga> {
 	let thumbnail = html.select("img").attr("src").read();
 	let description = get_description(html.select("div.book-info-container"));
 	let tags = html
-		.select("div.book-info-container")
-		.select("#Tag")
-		.select("a")
+		.select("div.book-info-container #Tag a")
 		.array()
 		.map(|val| val.as_node().expect("Failed to get tags").text().read())
 		.collect::<Vec<String>>();
@@ -114,8 +110,8 @@ pub fn parse_manga(html: Node) -> Result<Manga> {
 fn get_description(info_element: Node) -> String {
 	let mut description = String::new();
 	let pages = info_element.select("#Pages").text().read();
-	let parodies = info_element.select("#Parody > a").array();
-	let characters = info_element.select("#Characters > a").array();
+	let parodies = info_element.select("#Parody a").array();
+	let characters = info_element.select("#Characters a").array();
 	description.push_str(format!("Pages: {}", pages).as_str());
 	if !parodies.is_empty() {
 		description.push_str("\n\nParodies: ");

@@ -148,8 +148,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 	let request = Request::new(&url, HttpMethod::Get).header("User-Agent", "Aidoku");
 	let html = request.html()?;
 	let date_uploaded = html
-		.select("div.book-info-container")
-		.select("#Uploaded")
+		.select("div.book-info-container #Uploaded")
 		.text()
 		.0
 		.as_date("yyyy MMMM d", Some("en_US"), None)
