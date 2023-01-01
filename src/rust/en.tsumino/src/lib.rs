@@ -14,7 +14,6 @@ mod helper;
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
-	aidoku::prelude::println!("here");
 	let mut sort = String::from("Newest");
 	let mut tags: String = String::new();
 	let mut i = 0;
@@ -78,7 +77,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	let total: i32;
 	for manga in data {
 		let obj = manga.as_object()?;
-		if let Ok(manga) = helper::parse_manga(obj) {
+		if let Ok(manga) = helper::parse_list(obj) {
 			manga_arr.push(manga);
 		}
 	}
@@ -108,7 +107,7 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 	let total: i32;
 	for manga in data {
 		let obj = manga.as_object()?;
-		if let Ok(manga) = helper::parse_manga(obj) {
+		if let Ok(manga) = helper::parse_list(obj) {
 			manga_arr.push(manga);
 		}
 	}
@@ -121,8 +120,24 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 }
 
 #[get_manga_details]
-fn get_manga_details(_: String) -> Result<Manga> {
-	todo!()
+fn get_manga_details(id: String) -> Result<Manga> {
+	let url = format!("https://www.tsumino.com/entry/{}", id);
+	let request = Request::new(&url, HttpMethod::Get).header("User-Agent", "Aidoku");
+	let html = request.html()?;
+	let manga = helper::parse_manga(html)?;
+	Ok(Manga {
+		id,
+		title: manga.title,
+		cover: manga.cover,
+		author: manga.author,
+		artist: String::new(),
+		description: manga.description,
+		url,
+		categories: manga.categories,
+		status: manga.status,
+		nsfw: manga.nsfw,
+		viewer: manga.viewer,
+	})
 }
 
 #[get_chapter_list]
