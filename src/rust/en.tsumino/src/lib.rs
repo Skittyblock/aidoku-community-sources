@@ -194,29 +194,42 @@ fn get_page_list(id: String, _: String) -> Result<Vec<Page>> {
 		.unwrap()
 		.parse::<i32>()
 		.ok();
-	for i in 1..(num_pages.unwrap_or(0) + 1) {
-		let url = html
-			.select("#image-container")
-			.attr("data-cdn")
-			.read()
-			.replace("[PAGE]", &i.to_string());
-		aidoku::prelude::println!("{}", url);
-		pages.push(Page {
-			index: i.try_into().unwrap_or(-1),
-			url,
-			base64: String::new(),
-			text: String::new(),
-		});
+	if num_pages.is_some() {
+		for i in 1..(num_pages.unwrap_or(0) + 1) {
+			let url = html
+				.select("#image-container")
+				.attr("data-cdn")
+				.read()
+				.replace("[PAGE]", &i.to_string());
+			aidoku::prelude::println!("{}", url);
+			pages.push(Page {
+				index: i.try_into().unwrap_or(-1),
+				url,
+				base64: String::new(),
+				text: String::new(),
+			});
+		}
+		return Ok(pages);
+	} else {
+		Err(aidoku::error::AidokuError {
+			reason: aidoku::error::AidokuErrorKind::NodeError(aidoku::error::NodeError::ParseError),
+		})
 	}
-	Ok(pages)
 }
 
-// #[modify_image_request]
-// fn modify_image_request(_: Request) {
-// 	todo!()
-// }
-
 #[handle_url]
-fn handle_url(_: String) -> Result<DeepLink> {
-	todo!()
+fn handle_url(url: String) -> Result<DeepLink> {
+	let numbers: Vec<&str> = url.rsplitn(2, '/').collect();
+	let id = numbers[0].parse::<i32>().ok();
+	if id.is_some() {
+		let manga = get_manga_details(id.unwrap().to_string());
+		Ok(DeepLink {
+			manga: Some(manga?),
+			chapter: None,
+		})
+	} else {
+		Err(aidoku::error::AidokuError {
+			reason: aidoku::error::AidokuErrorKind::Unimplemented,
+		})
+	}
 }
