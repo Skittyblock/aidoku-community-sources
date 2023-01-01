@@ -9,7 +9,7 @@ use aidoku::{
 	Chapter, DeepLink, Filter, FilterType, Listing, Manga, MangaPageResult, Page,
 };
 extern crate alloc;
-use alloc::string::ToString;
+use alloc::{string::ToString, vec};
 mod helper;
 
 #[get_manga_list]
@@ -141,8 +141,39 @@ fn get_manga_details(id: String) -> Result<Manga> {
 }
 
 #[get_chapter_list]
-fn get_chapter_list(_: String) -> Result<Vec<Chapter>> {
-	todo!()
+fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
+	let url = format!("https://www.tsumino.com/entry/{}", id);
+	let request = Request::new(&url, HttpMethod::Get).header("User-Agent", "Aidoku");
+	let html = request.html()?;
+	let date_uploaded = html
+		.select("div.book-info-container")
+		.select("#Uploaded")
+		.text()
+		.0
+		.as_date("yyyy MMMM d", Some("en_US"), None)
+		.unwrap_or(-1.0);
+	/* I dunno how much this is needed, as its the uploader name and theres usually only a few guys who upload
+	let scanlator = html
+		.select("div.book-info-container")
+		.select("#Uploader")
+		.select("a")
+		.array()
+		.get(0)
+		.as_node()
+		.expect("Failed to get uploader")
+		.text()
+		.read(); */
+
+	Ok(vec![Chapter {
+		id,
+		title: String::from("Chapter 1"),
+		volume: -1.0,
+		chapter: 1.0,
+		date_updated: date_uploaded,
+		scanlator: String::new(),
+		url,
+		lang: String::from("en"),
+	}])
 }
 
 #[get_page_list]
