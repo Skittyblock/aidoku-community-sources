@@ -177,8 +177,38 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 }
 
 #[get_page_list]
-fn get_page_list(_: String, _: String) -> Result<Vec<Page>> {
-	todo!()
+fn get_page_list(id: String, _: String) -> Result<Vec<Page>> {
+	let request = Request::new(
+		format!("https://www.tsumino.com/Read/Index/{}", id),
+		HttpMethod::Get,
+	)
+	.header("User-Agent", "Aidoku");
+	let mut pages: Vec<Page> = Vec::new();
+	let html = request.html()?;
+	let num_pages = html
+		.select("h1")
+		.text()
+		.read()
+		.split(" ")
+		.last()
+		.unwrap()
+		.parse::<i32>()
+		.ok();
+	for i in 1..(num_pages.unwrap_or(0) + 1) {
+		let url = html
+			.select("#image-container")
+			.attr("data-cdn")
+			.read()
+			.replace("[PAGE]", &i.to_string());
+		aidoku::prelude::println!("{}", url);
+		pages.push(Page {
+			index: i.try_into().unwrap_or(-1),
+			url,
+			base64: String::new(),
+			text: String::new(),
+		});
+	}
+	Ok(pages)
 }
 
 // #[modify_image_request]
