@@ -78,14 +78,13 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	let data = json.get("data").as_array()?;
 
 	let mut manga_arr: Vec<Manga> = Vec::new();
-	let total: i32;
 	for manga in data {
 		let obj = manga.as_object()?;
 		if let Ok(manga) = helper::parse_list(obj) {
 			manga_arr.push(manga);
 		}
 	}
-	total = json.get("pageCount").as_int().unwrap_or(0) as i32;
+	let total = json.get("pageCount").as_int().unwrap_or(0) as i32;
 
 	Ok(MangaPageResult {
 		manga: manga_arr,
@@ -108,14 +107,13 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 	let data = json.get("data").as_array()?;
 
 	let mut manga_arr: Vec<Manga> = Vec::new();
-	let total: i32;
 	for manga in data {
 		let obj = manga.as_object()?;
 		if let Ok(manga) = helper::parse_list(obj) {
 			manga_arr.push(manga);
 		}
 	}
-	total = json.get("pageCount").as_int().unwrap_or(0) as i32;
+	let total = json.get("pageCount").as_int().unwrap_or(0) as i32;
 
 	Ok(MangaPageResult {
 		manga: manga_arr,
@@ -193,7 +191,7 @@ fn get_page_list(id: String, _: String) -> Result<Vec<Page>> {
 		.select("h1")
 		.text()
 		.read()
-		.split(" ")
+		.split(' ')
 		.last()
 		.unwrap()
 		.parse::<i32>()
@@ -206,13 +204,13 @@ fn get_page_list(id: String, _: String) -> Result<Vec<Page>> {
 				.read()
 				.replace("[PAGE]", &i.to_string());
 			pages.push(Page {
-				index: i.try_into().unwrap_or(-1),
+				index: i,
 				url,
 				base64: String::new(),
 				text: String::new(),
 			});
 		}
-		return Ok(pages);
+		Ok(pages)
 	} else {
 		Err(aidoku::error::AidokuError {
 			reason: aidoku::error::AidokuErrorKind::NodeError(aidoku::error::NodeError::ParseError),
@@ -224,15 +222,16 @@ fn get_page_list(id: String, _: String) -> Result<Vec<Page>> {
 fn handle_url(url: String) -> Result<DeepLink> {
 	let numbers: Vec<&str> = url.rsplitn(2, '/').collect();
 	let id = numbers[0].parse::<i32>().ok();
-	if id.is_some() {
-		let manga = get_manga_details(id.unwrap().to_string());
-		Ok(DeepLink {
-			manga: Some(manga?),
-			chapter: None,
-		})
-	} else {
-		Err(aidoku::error::AidokuError {
+	match id {
+		Some(id) => {
+			let manga = get_manga_details(id.to_string());
+			Ok(DeepLink {
+				manga: Some(manga?),
+				chapter: None,
+			})
+		}
+		None => Err(aidoku::error::AidokuError {
 			reason: aidoku::error::AidokuErrorKind::Unimplemented,
-		})
+		}),
 	}
 }

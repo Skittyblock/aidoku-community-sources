@@ -123,14 +123,14 @@ fn get_description(info_element: Node) -> String {
 	let parodies = info_element.select("#Parody").select("a").array();
 	let characters = info_element.select("#Characters").select("a").array();
 	description.push_str(format!("Pages: {}", pages).as_str());
-	if parodies.len() > 0 {
+	if !parodies.is_empty() {
 		description.push_str("\n\nParodies: ");
 		let p: Vec<String> = parodies
 			.map(|val| val.as_node().expect("Failed to get parodies").text().read())
 			.collect::<Vec<String>>();
 		description.push_str(p.join(", ").as_str());
 	}
-	if characters.len() > 0 {
+	if !characters.is_empty() {
 		description.push_str("\n\nCharacters: ");
 		let characters: Vec<String> = characters
 			.map(|val| {
