@@ -132,13 +132,13 @@ fn get_manga_details(id: String) -> Result<Manga> {
 		title: manga.title,
 		cover: manga.cover,
 		author: manga.author,
-		artist: String::new(),
 		description: manga.description,
 		url,
 		categories: manga.categories,
 		status: manga.status,
 		nsfw: manga.nsfw,
 		viewer: manga.viewer,
+		..Default::default()
 	})
 }
 
@@ -172,9 +172,9 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 		volume: -1.0,
 		chapter: 1.0,
 		date_updated: date_uploaded,
-		scanlator: String::new(),
 		url,
 		lang: String::from("en"),
+		..Default::default()
 	}])
 }
 
@@ -206,8 +206,7 @@ fn get_page_list(id: String, _: String) -> Result<Vec<Page>> {
 			pages.push(Page {
 				index: i,
 				url,
-				base64: String::new(),
-				text: String::new(),
+				..Default::default()
 			});
 		}
 		Ok(pages)

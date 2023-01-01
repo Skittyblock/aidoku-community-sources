@@ -69,14 +69,10 @@ pub fn parse_list(manga_obj: ObjectRef) -> Result<Manga> {
 		id,
 		title,
 		cover,
-		author: String::new(),
-		artist: String::new(),
-		description: String::new(),
-		url: String::new(),
-		categories: Vec::new(),
 		status: MangaStatus::Completed,
 		nsfw: MangaContentRating::Nsfw,
 		viewer: MangaViewer::Rtl,
+		..Default::default()
 	})
 }
 
@@ -103,25 +99,23 @@ pub fn parse_manga(html: Node) -> Result<Manga> {
 		.map(|val| val.as_node().expect("Failed to get tags").text().read())
 		.collect::<Vec<String>>();
 	Ok(Manga {
-		id: String::new(),
 		title,
 		cover: thumbnail,
 		author,
-		artist: String::new(),
 		description,
-		url: String::new(),
 		categories: tags,
 		status: MangaStatus::Completed,
 		nsfw: MangaContentRating::Nsfw,
 		viewer: MangaViewer::Rtl,
+		..Default::default()
 	})
 }
 
 fn get_description(info_element: Node) -> String {
 	let mut description = String::new();
 	let pages = info_element.select("#Pages").text().read();
-	let parodies = info_element.select("#Parody").select("a").array();
-	let characters = info_element.select("#Characters").select("a").array();
+	let parodies = info_element.select("#Parody > a").array();
+	let characters = info_element.select("#Characters > a").array();
 	description.push_str(format!("Pages: {}", pages).as_str());
 	if !parodies.is_empty() {
 		description.push_str("\n\nParodies: ");
