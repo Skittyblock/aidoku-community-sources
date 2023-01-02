@@ -5,10 +5,11 @@ mod parser;
 mod search;
 use aidoku::{
 	error::{AidokuError, Result},
-	prelude::*,
-	std::{net::Request, String, Vec, defaults::defaults_get},
 	helpers::uri::encode_uri,
-	Chapter, DeepLink, Filter, Listing, Manga, MangaPageResult, Page, helpers::uri::QueryParameters,
+	helpers::uri::QueryParameters,
+	prelude::*,
+	std::{defaults::defaults_get, net::Request, String, Vec},
+	Chapter, DeepLink, Filter, Listing, Manga, MangaPageResult, Page,
 };
 use alloc::string::ToString;
 use parser::{
@@ -57,7 +58,8 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 	qs.push("idchapshow", Some(id_split[0]));
 	qs.push("idlinkanime", Some(&id_split[1].replace(".html", "")));
 
-	let req = Request::get(format!("{BASE_URL}/list-showchapter.php?{qs}")).header("Referer", BASE_URL);
+	let req =
+		Request::get(format!("{BASE_URL}/list-showchapter.php?{qs}")).header("Referer", BASE_URL);
 	parse_chapter_list(req.html()?)
 }
 
@@ -68,7 +70,6 @@ fn get_page_list(_: String, id: String) -> Result<Vec<Page>> {
 
 	let url = encode_uri(format!("{BASE_URL}/{id}"));
 	if page_quality == "1200" {
-		
 		let req = Request::get(url).header("Referer", BASE_URL);
 		parse_page_list(req.html()?, None)
 	} else {

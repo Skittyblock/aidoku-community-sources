@@ -199,7 +199,9 @@ pub fn parse_chapter_list(document: Node) -> Result<Vec<Chapter>> {
 			let title_elem = node.select("h2.chuong_t");
 			let title_raw = title_elem.text().read();
 
-			let mut chapter: f32 = if title_raw.to_lowercase().contains("Oneshot") || title_raw.to_lowercase().contains("1shot") {
+			let mut chapter: f32 = if title_raw.to_lowercase().contains("Oneshot")
+				|| title_raw.to_lowercase().contains("1shot")
+			{
 				-1.0
 			} else {
 				idx as f32
