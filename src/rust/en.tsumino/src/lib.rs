@@ -2,6 +2,7 @@
 
 use aidoku::{
 	error::Result,
+	helpers::uri::encode_uri,
 	prelude::*,
 	std::net::HttpMethod,
 	std::net::Request,
@@ -23,7 +24,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 		match filter.kind {
 			FilterType::Title => {
 				query.push_str("&Text=");
-				query.push_str(&helper::urlencode(filter.value.as_string()?.read()));
+				query.push_str(&encode_uri(filter.value.as_string()?.read()));
 			}
 			FilterType::Genre => {
 				let tpe = 1;
@@ -67,10 +68,10 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	let url = String::from("https://www.tsumino.com/search/operate/");
 	let mut parameters = String::new();
 	parameters.push_str("PageNumber=");
-	parameters.push_str(&helper::urlencode(page.to_string()));
+	parameters.push_str(&encode_uri(page.to_string()));
 	parameters.push_str(&query);
 	parameters.push_str("&Sort=");
-	parameters.push_str(&helper::urlencode(sort));
+	parameters.push_str(&encode_uri(sort));
 	parameters.push_str(&tags);
 	let request = Request::new(&url, HttpMethod::Post)
 		.header("User-Agent", "Aidoku")
@@ -98,9 +99,9 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 	let url = String::from("https://www.tsumino.com/search/operate/");
 	let mut parameters = String::new();
 	parameters.push_str("PageNumber=");
-	parameters.push_str(&helper::urlencode(page.to_string()));
+	parameters.push_str(&encode_uri(page.to_string()));
 	parameters.push_str("&Sort=");
-	parameters.push_str(&helper::urlencode(listing.name));
+	parameters.push_str(&encode_uri(listing.name));
 	let request = Request::new(&url, HttpMethod::Post)
 		.header("User-Agent", "Aidoku")
 		.body(parameters);
