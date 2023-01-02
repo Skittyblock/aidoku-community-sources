@@ -10,12 +10,6 @@
 	"listings": [
 		{ "name": "Newest" },
 		{ "name": "Oldest" },
-		{ "name": "Alphabetical" },
-		{ "name": "Rating" },
-		{ "name": "Pages" },
-		{ "name": "Views" },
-		{ "name": "Random" },
-		{ "name": "Comments" },
 		{ "name": "Popularity" }
 	]
 }
