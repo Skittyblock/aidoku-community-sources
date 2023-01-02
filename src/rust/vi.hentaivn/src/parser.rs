@@ -108,18 +108,6 @@ pub fn parse_manga_details(id: String, document: Node) -> Result<Manga> {
 	let cover_elem = document.select("div.page-ava img");
 	let cover = cover_elem.attr("abs:src").read();
 
-	let category_elems = document.select("a.tag");
-	let categories = category_elems
-		.array()
-		.filter_map(|elem| {
-			if let Ok(node) = elem.as_node() {
-				Some(node.text().read())
-			} else {
-				None
-			}
-		})
-		.collect::<Vec<_>>();
-
 	let status_elem = document.select("span.info:contains(Tình Trạng) + span");
 	let status = if status_elem.text().read() == "Đã hoàn thành" {
 		MangaStatus::Completed
@@ -127,20 +115,26 @@ pub fn parse_manga_details(id: String, document: Node) -> Result<Manga> {
 		MangaStatus::Ongoing
 	};
 
-	let nsfw = if categories.iter().any(|v| v == "Non-hen") {
-		MangaContentRating::Suggestive
-	} else {
-		MangaContentRating::Nsfw
-	};
-
-	let viewer = if categories
-		.iter()
-		.any(|v| v == "Manhua" || v == "Manhwa" || v == "Webtoon")
-	{
-		MangaViewer::Scroll
-	} else {
-		MangaViewer::Rtl
-	};
+	let mut nsfw = MangaContentRating::Nsfw;
+	let mut viewer = MangaViewer::Rtl;
+	let category_elems = document.select("a.tag");
+	let categories = category_elems
+		.array()
+		.filter_map(|elem| {
+			if let Ok(node) = elem.as_node() {
+				let category = node.text().read();
+				if category == "Non-hen" {
+					nsfw = MangaContentRating::Suggestive
+				}
+				if category == "Manhua" || category == "Manhwa" || category == "Webtoon" {
+					viewer = MangaViewer::Scroll
+				}
+				Some(category)
+			} else {
+				None
+			}
+		})
+		.collect::<Vec<_>>();
 
 	let mut description = String::new();
 	let kvp_lines = document.select("div.page-info p:has(span.info)");
