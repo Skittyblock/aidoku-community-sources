@@ -195,24 +195,25 @@ fn get_page_list(id: String, _: String) -> Result<Vec<Page>> {
 		.unwrap()
 		.parse::<i32>()
 		.ok();
-	if num_pages.is_some() {
-		for i in 1..(num_pages.unwrap_or(0) + 1) {
-			let url = html
-				.select("#image-container")
-				.attr("data-cdn")
-				.read()
-				.replace("[PAGE]", &i.to_string());
-			pages.push(Page {
-				index: i,
-				url,
-				..Default::default()
-			});
+	match num_pages {
+		Some(num_pages) => {
+			for i in 1..(num_pages + 1) {
+				let url = html
+					.select("#image-container")
+					.attr("data-cdn")
+					.read()
+					.replace("[PAGE]", &i.to_string());
+				pages.push(Page {
+					index: i,
+					url,
+					..Default::default()
+				});
+			}
+			Ok(pages)
 		}
-		Ok(pages)
-	} else {
-		Err(aidoku::error::AidokuError {
+		None => Err(aidoku::error::AidokuError {
 			reason: aidoku::error::AidokuErrorKind::NodeError(aidoku::error::NodeError::ParseError),
-		})
+		}),
 	}
 }
 
