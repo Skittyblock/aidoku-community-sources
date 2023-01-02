@@ -1,21 +1,21 @@
 {
-  "info": {
-    "id": "en.tsumino",
-    "lang": "en",
-    "name": "Tsumino",
-    "version": 1,
-    "url": "https://www.tsumino.com/",
-    "nsfw": 2
-  },
-  "listings": [
-    { "name": "Newest" },
-    { "name": "Oldest" },
-    { "name": "Alphabetical" },
-    { "name": "Rating" },
-    { "name": "Pages" },
-    { "name": "Views" },
-    { "name": "Random" },
-    { "name": "Comments" },
-    { "name": "Popularity" }
-  ]
+	"info": {
+		"id": "en.tsumino",
+		"lang": "en",
+		"name": "Tsumino",
+		"version": 1,
+		"url": "https://www.tsumino.com/",
+		"nsfw": 2
+	},
+	"listings": [
+		{ "name": "Newest" },
+		{ "name": "Oldest" },
+		{ "name": "Alphabetical" },
+		{ "name": "Rating" },
+		{ "name": "Pages" },
+		{ "name": "Views" },
+		{ "name": "Random" },
+		{ "name": "Comments" },
+		{ "name": "Popularity" }
+	]
 }
