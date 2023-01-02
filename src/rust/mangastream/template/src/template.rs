@@ -226,12 +226,7 @@ impl MangaStreamSource {
 
 	// parse manga details page
 	pub fn parse_manga_details(&self, id: String) -> Result<Manga> {
-		let url = format!(
-			"{}/{}/{}",
-			self.base_url,
-			self.traverse_pathname,
-			id.clone()
-		);
+		let url = format!("{}/{}/{}", self.base_url, self.traverse_pathname, id);
 		let html = Request::new(&url, HttpMethod::Get).html();
 		let mut title = html.select(self.manga_details_title).text().read();
 		for i in self.manga_title_trim.iter() {
@@ -302,12 +297,7 @@ impl MangaStreamSource {
 
 	// parse the chapters list present on manga details page
 	pub fn parse_chapter_list(&self, id: String) -> Result<Vec<Chapter>> {
-		let url = format!(
-			"{}/{}/{}",
-			self.base_url,
-			self.traverse_pathname,
-			id.clone()
-		);
+		let url = format!("{}/{}/{}", self.base_url, self.traverse_pathname, id);
 		let mut chapters: Vec<Chapter> = Vec::new();
 		let html = Request::new(&url, HttpMethod::Get).html();
 		for chapter in html.select(self.chapter_selector).array() {
@@ -359,7 +349,7 @@ impl MangaStreamSource {
 
 	//parse the maga chapter images list
 	pub fn parse_page_list(&self, id: String) -> Result<Vec<Page>> {
-		let url = format!("{}/{}", self.base_url, id.clone());
+		let url = format!("{}/{}", self.base_url, id);
 		let mut pages: Vec<Page> = Vec::new();
 		let html = Request::new(&url, HttpMethod::Get)
 			.header("Referer", &self.base_url)
