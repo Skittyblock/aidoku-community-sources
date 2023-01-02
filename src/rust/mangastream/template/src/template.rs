@@ -1,7 +1,7 @@
 use aidoku::{
-	error::Result, std::json::parse, std::net::HttpMethod, std::net::Request, std::String,
-	std::Vec, Chapter, DeepLink, Filter, FilterType, Manga, MangaContentRating, MangaPageResult,
-	MangaStatus, MangaViewer, Page,
+	error::Result, prelude::format, std::json::parse, std::net::HttpMethod, std::net::Request,
+	std::String, std::Vec, Chapter, DeepLink, Filter, FilterType, Manga, MangaContentRating,
+	MangaPageResult, MangaStatus, MangaViewer, Page,
 };
 
 use crate::helper::*;
@@ -183,7 +183,8 @@ impl MangaStreamSource {
 			{
 				continue;
 			}
-			let id = {
+
+			let url = {
 				let original_url = manga_node.select("a").attr("href").read();
 
 				if self.has_permanent_manga_url {
@@ -192,6 +193,9 @@ impl MangaStreamSource {
 					original_url
 				}
 			};
+
+			let id = get_id_from_url(url.clone());
+
 			let cover = get_image_src(manga_node);
 			mangas.push(Manga {
 				id,
@@ -200,7 +204,7 @@ impl MangaStreamSource {
 				author: String::new(),
 				artist: String::new(),
 				description: String::new(),
-				url: String::new(),
+				url,
 				categories: Vec::new(),
 				status: MangaStatus::Unknown,
 				nsfw: MangaContentRating::Safe,
@@ -222,7 +226,13 @@ impl MangaStreamSource {
 
 	// parse manga details page
 	pub fn parse_manga_details(&self, id: String) -> Result<Manga> {
-		let html = Request::new(id.as_str(), HttpMethod::Get).html();
+		let url = format!(
+			"{}/{}/{}",
+			self.base_url,
+			self.traverse_pathname,
+			id.clone()
+		);
+		let html = Request::new(&url, HttpMethod::Get).html();
 		let mut title = html.select(self.manga_details_title).text().read();
 		for i in self.manga_title_trim.iter() {
 			if title.contains(i) {
@@ -276,13 +286,13 @@ impl MangaStreamSource {
 			MangaViewer::Scroll
 		};
 		Ok(Manga {
-			id: id.clone(),
+			id,
 			cover: append_protocol(cover),
 			title,
 			author,
 			artist,
 			description,
-			url: id,
+			url,
 			categories,
 			status,
 			nsfw,
@@ -292,8 +302,14 @@ impl MangaStreamSource {
 
 	// parse the chapters list present on manga details page
 	pub fn parse_chapter_list(&self, id: String) -> Result<Vec<Chapter>> {
+		let url = format!(
+			"{}/{}/{}",
+			self.base_url,
+			self.traverse_pathname,
+			id.clone()
+		);
 		let mut chapters: Vec<Chapter> = Vec::new();
-		let html = Request::new(id.as_str(), HttpMethod::Get).html();
+		let html = Request::new(&url, HttpMethod::Get).html();
 		for chapter in html.select(self.chapter_selector).array() {
 			let chapter_node = chapter.as_node();
 			let raw_title = chapter_node.select(self.chapter_title).text().read();
@@ -324,7 +340,7 @@ impl MangaStreamSource {
 					original_url
 				}
 			};
-			let chapter_id = chapter_url.clone();
+			let chapter_id = get_id_from_url(chapter_url.clone());
 			let chapter_number = get_chapter_number(raw_title.clone());
 			let date_updated = get_date(self, chapter_node.select(self.chapter_date).text());
 			chapters.push(Chapter {
@@ -343,8 +359,9 @@ impl MangaStreamSource {
 
 	//parse the maga chapter images list
 	pub fn parse_page_list(&self, id: String) -> Result<Vec<Page>> {
+		let url = format!("{}/{}", self.base_url, id.clone());
 		let mut pages: Vec<Page> = Vec::new();
-		let html = Request::new(&id, HttpMethod::Get)
+		let html = Request::new(&url, HttpMethod::Get)
 			.header("Referer", &self.base_url)
 			.html();
 		if self.alt_pages {
@@ -397,8 +414,9 @@ impl MangaStreamSource {
 	}
 
 	pub fn handle_url(&self, url: String) -> Result<DeepLink> {
+		let id = get_id_from_url(url);
 		Ok(DeepLink {
-			manga: Self::parse_manga_details(self, url).ok(),
+			manga: Self::parse_manga_details(self, id).ok(),
 			chapter: None,
 		})
 	}
