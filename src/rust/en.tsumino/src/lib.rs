@@ -153,7 +153,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 		.0
 		.as_date("yyyy MMMM d", Some("en_US"), None)
 		.unwrap_or(-1.0);
-	/* I dunno how much this is needed, as its the uploader name and theres usually only a few guys who upload
+	// skitty wants this to be put in
 	let scanlator = html
 		.select("div.book-info-container")
 		.select("#Uploader")
@@ -163,7 +163,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 		.as_node()
 		.expect("Failed to get uploader")
 		.text()
-		.read(); */
+		.read();
 
 	Ok(vec![Chapter {
 		id,
@@ -172,8 +172,8 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 		chapter: 1.0,
 		date_updated: date_uploaded,
 		url,
+		scanlator,
 		lang: String::from("en"),
-		..Default::default()
 	}])
 }
 
