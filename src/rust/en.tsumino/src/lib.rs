@@ -73,7 +73,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	parameters.push_str(&tags);
 	let request = Request::new(&url, HttpMethod::Post)
 		.header("User-Agent", "Aidoku")
-		.body(format!("{}", parameters));
+		.body(parameters);
 	let json = request.json()?.as_object()?;
 	let data = json.get("data").as_array()?;
 
@@ -102,7 +102,7 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 	parameters.push_str(&helper::urlencode(listing.name));
 	let request = Request::new(&url, HttpMethod::Post)
 		.header("User-Agent", "Aidoku")
-		.body(format!("{}", parameters));
+		.body(parameters);
 	let json = request.json()?.as_object()?;
 	let data = json.get("data").as_array()?;
 
