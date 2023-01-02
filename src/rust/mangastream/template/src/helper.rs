@@ -291,3 +291,24 @@ pub fn get_permanet_url(original_url: String) -> String {
 		original_url
 	}
 }
+
+/// This function is used to get the id from a url
+///
+/// The id is the last part of the url
+pub fn get_id_from_url(url: String) -> String {
+	let mut url = url;
+
+	// remove trailing slash
+	if url.ends_with('/') {
+		url.pop();
+	};
+
+	// this will get the last part of the url
+	// example https://flamescans.org/series/the-world-after-the-fall
+	// will return the-world-after-the-fall
+	// example https://flamescans.org/the-world-after-the-fall-chapter-55
+	// will return the-world-after-the-fall-chapter-55
+	let id = url.split('/').last().expect("Failed to parse id from url");
+
+	String::from(id)
+}
