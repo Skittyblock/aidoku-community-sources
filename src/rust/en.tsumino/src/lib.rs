@@ -219,17 +219,10 @@ fn get_page_list(id: String, _: String) -> Result<Vec<Page>> {
 #[handle_url]
 fn handle_url(url: String) -> Result<DeepLink> {
 	let numbers: Vec<&str> = url.rsplitn(2, '/').collect();
-	let id = numbers[0].parse::<i32>().ok();
-	match id {
-		Some(id) => {
-			let manga = get_manga_details(id.to_string());
-			Ok(DeepLink {
-				manga: Some(manga?),
-				chapter: None,
-			})
-		}
-		None => Err(aidoku::error::AidokuError {
-			reason: aidoku::error::AidokuErrorKind::Unimplemented,
-		}),
-	}
+	let id = numbers[0].parse::<i32>().ok().unwrap();
+	let manga = get_manga_details(id.to_string());
+	Ok(DeepLink {
+		manga: Some(manga?),
+		chapter: None,
+	})
 }
