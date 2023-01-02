@@ -11,6 +11,7 @@ use aidoku::{
 extern crate alloc;
 use alloc::{string::ToString, vec};
 mod helper;
+mod parser;
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
@@ -80,7 +81,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	let mut manga_arr: Vec<Manga> = Vec::new();
 	for manga in data {
 		let obj = manga.as_object()?;
-		if let Ok(manga) = helper::parse_list(obj) {
+		if let Ok(manga) = parser::parse_list(obj) {
 			manga_arr.push(manga);
 		}
 	}
@@ -109,7 +110,7 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 	let mut manga_arr: Vec<Manga> = Vec::new();
 	for manga in data {
 		let obj = manga.as_object()?;
-		if let Ok(manga) = helper::parse_list(obj) {
+		if let Ok(manga) = parser::parse_list(obj) {
 			manga_arr.push(manga);
 		}
 	}
@@ -126,7 +127,7 @@ fn get_manga_details(id: String) -> Result<Manga> {
 	let url = format!("https://www.tsumino.com/entry/{}", id);
 	let request = Request::new(&url, HttpMethod::Get).header("User-Agent", "Aidoku");
 	let html = request.html()?;
-	let manga = helper::parse_manga(html)?;
+	let manga = parser::parse_manga(html)?;
 	Ok(Manga {
 		id,
 		title: manga.title,
