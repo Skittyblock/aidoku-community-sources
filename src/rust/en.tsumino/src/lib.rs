@@ -51,7 +51,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 				let option = match index {
 					0 => "Newest",
 					1 => "Oldest",
-					2 => "Alpabetical",
+					2 => "Alphabetical",
 					3 => "Rating",
 					4 => "Pages",
 					5 => "Views",
