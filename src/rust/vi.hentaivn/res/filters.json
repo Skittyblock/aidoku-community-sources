@@ -4,7 +4,7 @@
     },
     {
         "type": "group",
-        "name": "Genres",
+        "name": "Thể loại",
         "filters": [
             {
                 "type": "genre",
