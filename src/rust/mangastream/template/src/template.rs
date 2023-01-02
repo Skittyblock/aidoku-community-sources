@@ -245,7 +245,7 @@ impl MangaStreamSource {
 				.trim(),
 		);
 		if author == "-" {
-			author = String::from("No Author");
+			author = String::new();
 		}
 		let artist = html.select(self.manga_details_artist).text().read();
 		let description = html.select(self.manga_details_description).text().read();
