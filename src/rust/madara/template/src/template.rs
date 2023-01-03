@@ -81,7 +81,48 @@ impl Default for MadaraSiteData {
 			// get the manga id from script tag
 			get_manga_id: get_int_manga_id,
 			// default viewer
-			viewer: |_, _| MangaViewer::Scroll,
+			viewer: |html, categories| {
+				let series_type = html
+					.select("div.post-content_item:contains(Type) div.summary-content")
+					.text()
+					.read()
+					.to_lowercase();
+
+				let webtoon_tags = [
+					"manhwa", "manhua", "webtoon", "vertical", "korean", "chinese",
+				];
+				let rtl_tags = ["manga", "japan"];
+
+				if !series_type.is_empty() {
+					for tag in webtoon_tags {
+						if series_type.contains(tag) {
+							return MangaViewer::Scroll;
+						}
+					}
+
+					for tag in rtl_tags {
+						if series_type.contains(tag) {
+							return MangaViewer::Rtl;
+						}
+					}
+
+					MangaViewer::Scroll
+				} else {
+					for tag in webtoon_tags {
+						if categories.iter().any(|v| v.to_lowercase() == tag) {
+							return MangaViewer::Scroll;
+						}
+					}
+
+					for tag in rtl_tags {
+						if categories.iter().any(|v| v.to_lowercase() == tag) {
+							return MangaViewer::Rtl;
+						}
+					}
+
+					MangaViewer::Scroll
+				}
+			},
 			status: |html| {
 				let status_str = html
 					.select("div.post-content_item:contains(Status) div.summary-content")
@@ -96,7 +137,7 @@ impl Default for MadaraSiteData {
 					_ => MangaStatus::Unknown,
 				}
 			},
-			nsfw: |html, _| {
+			nsfw: |html, categories| {
 				if !html
 					.select(".manga-title-badges.adult")
 					.text()
@@ -105,6 +146,21 @@ impl Default for MadaraSiteData {
 				{
 					MangaContentRating::Nsfw
 				} else {
+					let nsfw_tags = ["adult", "mature"];
+					let suggestive_tags = ["ecchi"];
+
+					for tag in nsfw_tags {
+						if categories.iter().any(|v| v.to_lowercase() == tag) {
+							return MangaContentRating::Nsfw;
+						}
+					}
+
+					for tag in suggestive_tags {
+						if categories.iter().any(|v| v.to_lowercase() == tag) {
+							return MangaContentRating::Suggestive;
+						}
+					}
+
 					MangaContentRating::Safe
 				}
 			},
@@ -172,7 +228,7 @@ pub fn get_search_result(data: MadaraSiteData, url: String) -> Result<MangaPageR
 			categories: Vec::new(),
 			status: MangaStatus::Unknown,
 			nsfw: MangaContentRating::Safe,
-			viewer: (data.viewer)(&Node::new("<p></p>".as_bytes()), &Vec::new()),
+			viewer: MangaViewer::Scroll,
 		});
 		has_more = true;
 	}
@@ -237,7 +293,7 @@ pub fn get_series_page(data: MadaraSiteData, listing: &str, page: i32) -> Result
 			categories: Vec::new(),
 			status: MangaStatus::Unknown,
 			nsfw: MangaContentRating::Safe,
-			viewer: (data.viewer)(&Node::new("<p></p>".as_bytes()), &Vec::new()),
+			viewer: MangaViewer::Scroll,
 		});
 		has_more = true;
 	}
@@ -352,7 +408,13 @@ pub fn get_chapter_list(manga_id: String, data: MadaraSiteData) -> Result<Vec<Ch
 		let mut is_decimal = false;
 		let mut chapter = 0.0;
 		for obj in dash_vec {
-			let mut item = obj.replace('/', "").parse::<f32>().unwrap_or(-1.0);
+			let mut item = {
+				let mut obj = obj;
+				if obj.contains('_') {
+					obj = obj.split('_').next().unwrap_or(obj);
+				}
+				obj.replace('/', "").parse::<f32>().unwrap_or(-1.0)
+			};
 			if item == -1.0 {
 				item = String::from(obj.chars().next().unwrap())
 					.parse::<f32>()
