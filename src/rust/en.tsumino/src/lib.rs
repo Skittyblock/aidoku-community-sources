@@ -193,14 +193,14 @@ fn get_page_list(id: String, _: String) -> Result<Vec<Page>> {
 		.ok();
 	match num_pages {
 		Some(num_pages) => {
-			for i in 1..(num_pages + 1) {
+			for index in 1..(num_pages + 1) {
 				let url = html
 					.select("#image-container")
 					.attr("data-cdn")
 					.read()
-					.replace("[PAGE]", &i.to_string());
+					.replace("[PAGE]", &index.to_string());
 				pages.push(Page {
-					index: i,
+					index,
 					url,
 					..Default::default()
 				});
