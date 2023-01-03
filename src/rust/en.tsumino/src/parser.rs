@@ -12,7 +12,10 @@ pub fn parse_list(manga_obj: ObjectRef) -> Result<Manga> {
 	let main = manga_obj.get("entry").as_object()?;
 	let id = get_id(main.get("id"))?;
 	let title = main.get("title").as_string()?.read();
-	let cover = main.get("thumbnailUrl").as_string()?.read();
+	let cover = match main.get("thumbnailUrl").as_string() {
+		Ok(cover) => cover.read(),
+		Err(_) => String::new(),
+	};
 	Ok(Manga {
 		id,
 		title,
