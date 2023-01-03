@@ -18,8 +18,8 @@
 			"Popularity"
 		],
 		"default": {
-		"index": 0,
-		"ascending": false
+			"index": 0,
+			"ascending": false
 		}
 	},
 	{
