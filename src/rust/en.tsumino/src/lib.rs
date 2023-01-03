@@ -75,7 +75,10 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 
 	let mut manga_arr: Vec<Manga> = Vec::new();
 	for manga in data {
-		let obj = manga.as_object()?;
+		let obj = match manga.as_object() {
+			Ok(obj) => obj,
+			Err(_) => continue,
+		};
 		if let Ok(manga) = parser::parse_list(obj) {
 			manga_arr.push(manga);
 		}
