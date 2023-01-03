@@ -1,0 +1,426 @@
+[
+	{
+		"type": "title"
+	},
+	{
+		"type": "author"
+	},
+	{
+		"type": "select",
+		"name": "Status",
+		"options": [
+			"All",
+			"Ongoing",
+			"Completed"
+		],
+		"default": 0
+	},
+	{
+		"type": "select",
+		"name": "Order by",
+		"options": [
+			"Views",
+			"Updated at",
+			"Created at",
+			"Name",
+			"Rating"
+		],
+		"default": 1
+	},
+	{
+		"type": "group",
+		"name": "Genres",
+		"filters": [
+			{
+				"type": "genre",
+				"name": "Action",
+				"id": "action",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Adaptation",
+				"id": "adaptation",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Adult",
+				"id": "adult",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Adventure",
+				"id": "adventure",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Anime",
+				"id": "anime",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Comedy",
+				"id": "comedy",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Comic",
+				"id": "comic",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Cooking",
+				"id": "cooking",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Crime",
+				"id": "crime",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Demons",
+				"id": "demons",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Drama",
+				"id": "drama",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Ecchi",
+				"id": "ecchi",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Fantasy",
+				"id": "fantasy",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Full Color",
+				"id": "full-color",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Game",
+				"id": "game",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Games",
+				"id": "games",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Gender Bender",
+				"id": "gender-bender",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Ghosts",
+				"id": "ghosts",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Harem",
+				"id": "harem",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Historical",
+				"id": "historical",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Horror",
+				"id": "horror",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Isekai",
+				"id": "isekai",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Josei",
+				"id": "josei",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Mafia",
+				"id": "mafia",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Magic",
+				"id": "magic",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Manga",
+				"id": "manga",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Manhua",
+				"id": "manhua",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Manhwa",
+				"id": "manhwa",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Martial Arts",
+				"id": "martial-arts",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Mature",
+				"id": "mature",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Mecha",
+				"id": "mecha",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Medical",
+				"id": "medical",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Military",
+				"id": "military",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Moder",
+				"id": "moder",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Monster",
+				"id": "monster",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Monsters",
+				"id": "monsters",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Music",
+				"id": "music",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Office Workers",
+				"id": "office-workers",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "One shot",
+				"id": "one-shot",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Psychological",
+				"id": "psychological",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Reincarnation",
+				"id": "reincarnation",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Romance",
+				"id": "romance",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "School Life",
+				"id": "school-life",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Sci-fi",
+				"id": "sci-fi",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Seinen",
+				"id": "seinen",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Shoujo",
+				"id": "shoujo",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Shoujo Ai",
+				"id": "shoujo-ai",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Shounen",
+				"id": "shounen",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Shounen Ai",
+				"id": "shounen-ai",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Slice of Life",
+				"id": "slice-of-life",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Smut",
+				"id": "smut",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Soft Yaoi",
+				"id": "soft-yaoi",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Sports",
+				"id": "sports",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Super power",
+				"id": "super-power",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Superhero",
+				"id": "superhero",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Supernatural",
+				"id": "supernatural",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Survival",
+				"id": "survival",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Thriller",
+				"id": "thriller",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Time Travel",
+				"id": "time-travel",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Tragedy",
+				"id": "tragedy",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Vampire",
+				"id": "vampire",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Webtoons",
+				"id": "webtoons",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Yaoi",
+				"id": "yaoi",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Yuri",
+				"id": "yuri",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"name": "Zombies",
+				"id": "zombies",
+				"canExclude": false
+			}
+		]
+	}
+]

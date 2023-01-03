@@ -1,0 +1,10 @@
+{
+	"info": {
+		"id": "en.mangaxyz",
+		"lang": "en",
+		"name": "MangaXYZ",
+		"version": 1,
+		"url": "https://mangaxyz.com",
+		"nsfw": 2
+	}
+}
