@@ -262,21 +262,23 @@ pub trait MadTheme {
 		if !html.contains("var mainServer = \"") {
 			let document = Node::new_with_uri(html, url)?;
 			let page_nodes = document.select("#chapter-images img");
-			return Ok(page_nodes
+
+			let page_list = page_nodes
 				.array()
 				.enumerate()
 				.filter_map(|(idx, v)| {
 					if let Ok(v) = v.as_node() {
 						Some(Page {
 							index: idx as i32 + 1,
-							url: v.attr("abs:src").read(),
+							url: v.attr("abs:data-src").read(),
 							..Default::default()
 						})
 					} else {
 						None
 					}
 				})
-				.collect::<Vec<_>>());
+				.collect::<Vec<_>>();
+			return Ok(page_list);
 		}
 
 		let scheme = self
@@ -284,7 +286,7 @@ pub trait MadTheme {
 			.split("://")
 			.next()
 			.expect("base_url should have a scheme")
-			.to_string() + "://";
+			.to_string() + ":";
 		let main_cdn = scheme
 			+ html
 				.substring_after("var mainServer = \"")
@@ -292,7 +294,7 @@ pub trait MadTheme {
 				.substring_before("\"")
 				.expect("mainServer should have closing quote");
 
-		Ok(html
+		let page_list = html
 			.substring_after("var chapImages = '")
 			.expect("chapImages should exist if mainServer exist")
 			.substring_before("'")
@@ -304,7 +306,8 @@ pub trait MadTheme {
 				url: main_cdn.clone() + v,
 				..Default::default()
 			})
-			.collect::<Vec<_>>())
+			.collect::<Vec<_>>();
+		Ok(page_list)
 	}
 
 	fn modify_image_request(&self, request: Request) {
