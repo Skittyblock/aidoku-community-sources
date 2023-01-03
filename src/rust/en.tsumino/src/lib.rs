@@ -27,12 +27,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 				query.push_str(&encode_uri(filter.value.as_string()?.read()));
 			}
 			FilterType::Genre => {
-				let tpe = 1;
-				tags.push_str(&format!(
-					"&Tags[{}][Type]={}",
-					i.to_string(),
-					tpe.to_string()
-				));
+				tags.push_str(&format!("&Tags[{i}][Type]=1"));
 				tags.push_str(&format!("&Tags[{}][Text]={}", i.to_string(), filter.name));
 				match filter.value.as_int().unwrap_or(-1) {
 					0 => tags.push_str(&format!("&Tags[{}][Exclude]=true", i.to_string())),
