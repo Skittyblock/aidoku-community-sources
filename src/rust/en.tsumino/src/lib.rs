@@ -18,8 +18,8 @@ mod parser;
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	let mut query: String = String::new();
 	let mut sort: String = String::from("Newest");
-	let mut tag_params: String = String::new();
-	let mut i = 0;
+	let mut tags: String = String::new();
+	let mut tags_index = 0;
 	for filter in filters {
 		match filter.kind {
 			FilterType::Title => {
@@ -27,14 +27,20 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 				query.push_str(&encode_uri(filter.value.as_string()?.read()));
 			}
 			FilterType::Genre => {
-				tag_params.push_str(&format!("&Tags[{i}][Type]=1"));
-				tag_params.push_str(&format!("&Tags[{}][Text]={}", i.to_string(), filter.name));
+				tags.push_str(&format!("&Tags[{tags_index}][Type]=1"));
+				tags.push_str(&format!(
+					"&Tags[{}][Text]={}",
+					tags_index.to_string(),
+					filter.name
+				));
 				match filter.value.as_int().unwrap_or(-1) {
-					0 => tag_params.push_str(&format!("&Tags[{}][Exclude]=true", i.to_string())),
-					1 => tag_params.push_str(&format!("&Tags[{}][Exclude]=false", i.to_string())),
+					0 => tags.push_str(&format!("&Tags[{}][Exclude]=true", tags_index.to_string())),
+					1 => {
+						tags.push_str(&format!("&Tags[{}][Exclude]=false", tags_index.to_string()))
+					}
 					_ => continue,
 				}
-				i += 1;
+				tags_index += 1;
 			}
 			FilterType::Sort => {
 				let value = match filter.value.as_object() {
@@ -66,7 +72,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	parameters.push_str(&query);
 	parameters.push_str("&Sort=");
 	parameters.push_str(&encode_uri(sort));
-	parameters.push_str(&tag_params);
+	parameters.push_str(&tags);
 	let request = Request::new(&url, HttpMethod::Post)
 		.header("User-Agent", "Aidoku")
 		.body(parameters);
