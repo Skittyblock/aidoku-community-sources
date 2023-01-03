@@ -36,7 +36,6 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 				}
 				i += 1;
 			}
-			// might remove this later in favor of the page listing
 			FilterType::Sort => {
 				let value = match filter.value.as_object() {
 					Ok(value) => value,
