@@ -8,7 +8,7 @@ use mangastream_template::template::MangaStreamSource;
 
 fn get_instance() -> MangaStreamSource {
 	MangaStreamSource {
-		base_url: String::from("https://sushiscan.su"),
+		base_url: String::from("https://sushiscan.net"),
 		listing: ["Dernières", "Populaire", "Nouveau"],
 		..Default::default()
 	}
