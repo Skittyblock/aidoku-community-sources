@@ -8,6 +8,8 @@ use aidoku::{
 };
 use alloc::{string::ToString, vec};
 
+use crate::helper::extract_f32_from_string;
+
 pub trait MadTheme {
 	fn base_url(&self) -> &'static str;
 
@@ -232,15 +234,18 @@ pub trait MadTheme {
 					let date_updated =
 						self.parse_chapter_date(node.select(".chapter-update").text());
 
-					let chapter = title
-						.split(char::is_whitespace)
-						.last()
-						.expect("should have whitespace in chapter title")
-						.parse::<f32>()
-						.unwrap_or(-1.0);
+					let numbers = extract_f32_from_string(title.clone());
+					let (volume, chapter) = if title.to_lowercase().starts_with("vol") {
+						(numbers[0], numbers[1])
+					} else if !numbers.is_empty() {
+						(-1.0, numbers[0])
+					} else {
+						(-1.0, -1.0)
+					};
 
 					Some(Chapter {
 						id,
+						volume,
 						chapter,
 						date_updated,
 						title,
