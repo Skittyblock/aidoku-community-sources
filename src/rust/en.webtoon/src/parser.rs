@@ -257,7 +257,7 @@ pub fn get_chapter_list(obj: Node, manga_id: String) -> Result<Vec<Chapter>> {
 			id: format!("{}|{}", manga_id, id),
 			title,
 			chapter,
-			volume: 1.0,
+			volume: -1.0,
 			date_updated,
 			scanlator: String::new(),
 			url: String::new(),
