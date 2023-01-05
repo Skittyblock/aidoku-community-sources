@@ -10,7 +10,11 @@
 		"version": 3
 	},
 	"listings": [
-		{ "name": "Popular" },
-		{ "name": "Trending" }
+		{
+			"name": "Popular"
+		},
+		{
+			"name": "Trending"
+		}
 	]
 }
