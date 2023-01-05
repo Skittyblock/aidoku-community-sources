@@ -1,6 +1,6 @@
 use aidoku::{
 	error::Result,
-	std::{net::Request, Vec, net::HttpMethod, String},
+	std::{net::Request, Vec, net::HttpMethod, String, html::unescape_html_entities},
 	Chapter, DeepLink, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
 	MangaViewer, Page, prelude::format,
 };
@@ -225,7 +225,7 @@ pub fn parse_manga_listing(
 
 pub fn parse_manga_details(api_url: String, id: String) -> Result<Manga> {
 	let url = format!("{}/comic/{}?tachiyomi=true", api_url, id.split(' ').next().unwrap_or(""));
-	let json = Request::new(&url, HttpMethod::Get)
+	let json = Request::new(url, HttpMethod::Get)
 		.json()
 		.expect("Failed to load JSON")
 		.as_object()
@@ -260,7 +260,7 @@ pub fn parse_manga_details(api_url: String, id: String) -> Result<Manga> {
 		.as_string()
 		.expect("Failed to get artist as str")
 		.read();
-	let description = data_from_json(&data, "desc");
+	let description = unescape_html_entities(data_from_json(&data, "desc"));
 	let status = manga_status(data.get("status").as_int().unwrap_or(0));
 	let genres = json
 		.get("genres")
