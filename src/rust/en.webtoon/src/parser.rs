@@ -233,8 +233,8 @@ pub fn get_chapter_list(obj: Node, manga_id: String) -> Result<Vec<Chapter>> {
 		let chapter = id.parse::<f32>().unwrap();
 
 		// The mobile website sucks so we need to manually replace some chars
-		let title = obj
-			.select(".sub_title span")
+		let raw_title = obj
+			.select(".sub_title .ellipsis")
 			.text()
 			.read()
 			.trim()
@@ -245,6 +245,27 @@ pub fn get_chapter_list(obj: Node, manga_id: String) -> Result<Vec<Chapter>> {
 			.replace("&lt;", "<")
 			.replace("&gt;", ">")
 			.replace("&nbsp;", " ");
+
+		let title = {
+			let mut title = raw_title.split_whitespace().collect::<Vec<&str>>();
+
+			if title.len() >= 2
+				&& (title[0] == "Chapter"
+					|| title[0] == "Episode"
+					|| title[0] == "Ch." || title[0] == "Ep.")
+				&& title[1].replace(':', "").parse::<f64>().is_ok()
+			{
+				title.remove(0);
+				title.remove(0);
+			}
+
+			// Remove leading symbols
+			if !title.is_empty() && (title[0] == "-" || title[0] == ":") {
+				title.remove(0);
+			}
+
+			title.join(" ")
+		};
 
 		let date_updated = obj
 			.select(".date")
