@@ -1,0 +1,15 @@
+{
+	"info": {
+		"id": "en.zeroscans",
+		"lang": "en",
+		"name": "Zero Scans",
+		"version": 1,
+		"url": "https://zeroscans.com",
+		"nsfw": 0
+	},
+	"listings": [
+		{
+			"name": "Latest"
+		}
+	]
+}

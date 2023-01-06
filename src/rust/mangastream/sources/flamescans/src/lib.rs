@@ -9,6 +9,8 @@ use mangastream_template::template::MangaStreamSource;
 pub mod helper;
 fn get_instance() -> MangaStreamSource {
 	MangaStreamSource {
+		has_permanent_manga_url: true,
+		has_permanent_chapter_url: true,
 		tagid_mapping: get_tag_id,
 		base_url: get_base_url(),
 		traverse_pathname: "series",

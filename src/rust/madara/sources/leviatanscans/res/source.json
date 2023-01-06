@@ -1,0 +1,27 @@
+{
+	"info": {
+		"id": "multi.leviatanscans",
+		"lang": "multi",
+		"name": "LeviatanScans",
+		"version": 3,
+		"url": "https://leviatanscans.com",
+		"nsfw": 0
+	},
+	"listings": [
+		{
+			"name": "Trending"
+		},
+		{
+			"name": "Popular"
+		}
+	],
+	"languages": [
+		{
+			"code": "en"
+		},
+		{
+			"code": "es"
+		}
+	],
+	"languageSelectType": "single"
+}

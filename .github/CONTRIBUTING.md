@@ -22,10 +22,7 @@ This guide is not definitive by any means. If you find any issue, report it by [
 
 ## Prerequisites
 Before you start, please note that basic knowledge in these technologies is **required**.
-- One of these programming languages:
-  - [Rust](https://doc.rust-lang.org/book/) (preferred)
-  - [AssemblyScript](https://www.assemblyscript.org/introduction.html), a variant of TypeScript
-  - The C programming language
+- The [Rust](https://doc.rust-lang.org/book/) programming language
 - Web scraping:
   - [HTML](https://developer.mozilla.org/en-US/docs/Web/HTML)
   - [CSS selectors](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors)
@@ -102,7 +99,7 @@ Read more on [partial clone](https://github.blog/2020-12-21-get-up-to-speed-with
 The fastest way to get started is to either copy an existing source and renaming as needed, or using `aidoku init` from [aidoku-cli](https://github.com/Aidoku/aidoku-cli). You should also read through a few existing sources' code before you start.
 
 Each source should be in `src/<lang>/<source-language>.<source-name>`:
-- The `<lang>` part is the programming language your source is developed in, so `as` for AssemblyScript, `rust` for Rust, and so on. 
+- The `<lang>` part is the programming language your source is developed in, so `rust` for Rust.
 - `<source-language>`: Use `multi` if your source supports multiple languages, or omit if it's a template source.
 `<source-language>` should contain the full locale string in lowercase. For example, if you're creating a Portugese (Brazilian) source, use `pt-br`.
 
@@ -169,10 +166,7 @@ Expose user settings by declaring them in this file. See this [gist](https://gis
 Aidoku supports search filters which are declared in this file. 
 
 ### Dependencies
-Sources rely on bindings for their respective languages:
-- Rust: [aidoku-rs](https://github.com/Aidoku/aidoku-rs)
-- AssemblyScript: [aidoku-as](https://github.com/Aidoku/aidoku-as)
-- C bindings are [here](https://github.com/Skittyblock/aidoku-community-sources/tree/main/lib/c)
+Sources rely on bindings which are in the [aidoku-rs](https://github.com/Aidoku/aidoku-rs) crate. Detailed documentation can be found [here](https://aidoku.github.io/aidoku-rs/aidoku/).
 
 ### Exported functions
 #### `initialize`
