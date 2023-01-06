@@ -1,21 +1,43 @@
 use aidoku::{
 	error::Result, prelude::*, std::net::HttpMethod, std::net::Request, std::String, std::Vec,
-	Filter, Manga, MangaContentRating, MangaPageResult, MangaStatus, MangaViewer,
+	Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus, MangaViewer,
 };
+use alloc::string::ToString;
 extern crate alloc;
 
 pub struct GuyaSiteData {
 	pub base_url: String,
+	pub nsfw: MangaContentRating,
 }
 
-pub fn get_manga_list(
-	data: GuyaSiteData,
-	filters: Vec<Filter>,
-	page: i32,
-) -> Result<MangaPageResult> {
+impl Default for GuyaSiteData {
+	fn default() -> GuyaSiteData {
+		GuyaSiteData {
+			base_url: String::new(),
+			nsfw: MangaContentRating::Safe,
+		}
+	}
+}
+
+pub fn get_manga_list(data: GuyaSiteData, filters: Vec<Filter>, _: i32) -> Result<MangaPageResult> {
 	let url = format!("{}/api/get_all_series/", &data.base_url);
 	let request = Request::new(url, HttpMethod::Get).header("User-Agent", "Aidoku");
-	let json = request.json()?.as_object()?;
+	let mut json = request.json()?.as_object()?;
+
+	for filter in filters {
+		match filter.kind {
+			FilterType::Title => {
+				let query = filter.value.as_string()?.read();
+				for manga in json.keys() {
+					let title = manga.as_string()?.read();
+					if !title.to_lowercase().contains(&query.to_lowercase()) {
+						json.remove(&title);
+					}
+				}
+			}
+			_ => continue,
+		}
+	}
 
 	let mut manga_arr: Vec<Manga> = Vec::new();
 	for manga in json.keys() {
@@ -31,7 +53,7 @@ pub fn get_manga_list(
 			title,
 			cover,
 			status: MangaStatus::Unknown,
-			nsfw: MangaContentRating::Safe,
+			nsfw: data.nsfw,
 			viewer: MangaViewer::Rtl,
 			..Default::default()
 		})

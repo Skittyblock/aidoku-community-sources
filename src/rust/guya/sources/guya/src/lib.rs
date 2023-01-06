@@ -10,6 +10,7 @@ use guya_template::template;
 fn data() -> template::GuyaSiteData {
 	template::GuyaSiteData {
 		base_url: String::from("https://guya.cubari.moe"),
+		..Default::default()
 	}
 }
 
