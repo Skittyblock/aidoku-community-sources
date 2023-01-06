@@ -38,142 +38,142 @@
 		"filters": [
 			{
 				"type": "genre",
-				"name": " آلات ",
+				"name": "آلات",
 				"id": "mecha"
 			},
 			{
 				"type": "genre",
-				"name": " أكشن ",
+				"name": "أكشن",
 				"id": "action"
 			},
 			{
 				"type": "genre",
-				"name": " تاريخي ",
+				"name": "تاريخي",
 				"id": "historical"
 			},
 			{
 				"type": "genre",
-				"name": " تحقيق ",
+				"name": "تحقيق",
 				"id": "detective"
 			},
 			{
 				"type": "genre",
-				"name": " حياة مدرسية ",
+				"name": "حياة مدرسية",
 				"id": "school-life"
 			},
 			{
 				"type": "genre",
-				"name": " خيال ",
+				"name": "خيال",
 				"id": "fantasy"
 			},
 			{
 				"type": "genre",
-				"name": " خيال علمي ",
+				"name": "خيال علمي",
 				"id": "sci-fi"
 			},
 			{
 				"type": "genre",
-				"name": " دراما ",
+				"name": "دراما",
 				"id": "drama"
 			},
 			{
 				"type": "genre",
-				"name": " رعب ",
+				"name": "رعب",
 				"id": "horror"
 			},
 			{
 				"type": "genre",
-				"name": " رياضة ",
+				"name": "رياضة",
 				"id": "sports"
 			},
 			{
 				"type": "genre",
-				"name": " سينين ",
+				"name": "سينين",
 				"id": "seinen"
 			},
 			{
 				"type": "genre",
-				"name": " شريحة من الحياة ",
+				"name": "شريحة من الحياة",
 				"id": "slice-of-life"
 			},
 			{
 				"type": "genre",
-				"name": " شوجو ",
+				"name": "شوجو",
 				"id": "shoujo"
 			},
 			{
 				"type": "genre",
-				"name": " شونين ",
+				"name": "شونين",
 				"id": "shounen"
 			},
 			{
 				"type": "genre",
-				"name": " طبخ ",
+				"name": "طبخ",
 				"id": "cooking"
 			},
 			{
 				"type": "genre",
-				"name": " طبيعة خارقة ",
+				"name": "طبيعة خارقة",
 				"id": "supernatural"
 			},
 			{
 				"type": "genre",
-				"name": " عاطفي ",
+				"name": "عاطفي",
 				"id": "romance"
 			},
 			{
 				"type": "genre",
-				"name": " غموض ",
+				"name": "غموض",
 				"id": "mystery"
 			},
 			{
 				"type": "genre",
-				"name": " فنون قتالية ",
+				"name": "فنون قتالية",
 				"id": "martial-arts"
 			},
 			{
 				"type": "genre",
-				"name": " كوميدي ",
+				"name": "كوميدي",
 				"id": "comedy"
 			},
 			{
 				"type": "genre",
-				"name": " مأساوي ",
+				"name": "مأساوي",
 				"id": "tragedy"
 			},
 			{
 				"type": "genre",
-				"name": " مانجا ",
+				"name": "مانجا",
 				"id": "manga"
 			},
 			{
 				"type": "genre",
-				"name": " مانها ",
+				"name": "مانها",
 				"id": "manhua"
 			},
 			{
 				"type": "genre",
-				"name": " مانهوا ",
+				"name": "مانهوا",
 				"id": "manhwa"
 			},
 			{
 				"type": "genre",
-				"name": " مغامرات ",
+				"name": "مغامرات",
 				"id": "adventure"
 			},
 			{
 				"type": "genre",
-				"name": " نفسي ",
+				"name": "نفسي",
 				"id": "psychological"
 			},
 			{
 				"type": "genre",
-				"name": " ون شوت ",
+				"name": "ون شوت",
 				"id": "one-shot"
 			},
 			{
 				"type": "genre",
-				"name": " ويبتون ",
+				"name": "ويبتون",
 				"id": "webtoon"
 			}
 		]
