@@ -11,6 +11,10 @@ fn get_data() -> template::MadaraSiteData {
 		base_url: String::from("https://reaperscansar.com"),
 		source_path: String::from("series"),
 		alt_ajax: true,
+		status_filter_ongoing: String::from("مستمر"),
+		status_filter_completed: String::from("مكتمل"),
+		status_filter_cancelled: String::from("ملغى"),
+		status_filter_on_hold: String::from("On Hold"),
 		..Default::default()
 	};
 	data

@@ -8,19 +8,19 @@
 		"filters": [
 			{
 				"type": "check",
-				"name": "Ongoing"
+				"name": "مكتمل"
+			},
+			{
+				"type": "check",
+				"name": "مستمر"
+			},
+			{
+				"type": "check",
+				"name": "ملغى"
 			},
 			{
 				"type": "check",
 				"name": "On Hold"
-			},
-			{
-				"type": "check",
-				"name": "Cancelled"
-			},
-			{
-				"type": "check",
-				"name": "Completed"
 			}
 		]
 	},
