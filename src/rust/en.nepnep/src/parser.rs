@@ -127,6 +127,25 @@ pub fn parse_chapter(manga_id: &str, chapter_object: ObjectRef) -> Result<Chapte
 		title.push_str(&chapter_image(&id, false));
 	}
 
+	let cleaned_title = {
+		let mut cleaned_title = title.split_whitespace().collect::<Vec<&str>>();
+
+		if cleaned_title.len() >= 2
+			&& (cleaned_title[0] == "Chapter" || cleaned_title[0] == "Episode")
+			&& cleaned_title[1].parse::<f64>().is_ok()
+		{
+			cleaned_title.remove(0);
+			cleaned_title.remove(0);
+		}
+
+		// Remove leading symbols
+		if !cleaned_title.is_empty() && cleaned_title[0] == "-" {
+			cleaned_title.remove(0);
+		}
+
+		cleaned_title.join(" ")
+	};
+
 	let date_updated = chapter_object
 		.get("Date")
 		.as_date("yyyy-MM-dd HH:mm:SS", None, None)
@@ -137,7 +156,7 @@ pub fn parse_chapter(manga_id: &str, chapter_object: ObjectRef) -> Result<Chapte
 
 	Ok(Chapter {
 		id: path,
-		title,
+		title: cleaned_title,
 		volume: -1.0,
 		chapter,
 		date_updated,
