@@ -3,7 +3,7 @@
 
 # *Aidoku Sources*
 
-> Load sources for [Aidoku](https://github.com/Aidoku/Aidoku)
+Load sources for [Aidoku](https://github.com/Aidoku/Aidoku)
 
 <a href="https://aidoku.app/add-source-list/?url=https://raw.githubusercontent.com/Skittyblock/aidoku-community-sources/gh-pages/">
  <img src="https://img.shields.io/badge/-DOWNLOAD%20EXTENSION-brightgreen" alt="download"/>
