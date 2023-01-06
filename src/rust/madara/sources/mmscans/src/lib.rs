@@ -11,7 +11,8 @@ fn get_data() -> template::MadaraSiteData {
 		// TODO: Fix search
 		// The problem is mm-scans wants search queries like this https://mm-scans.org/?s=
 		// get_filtered_url in the helper wants it to be like this https://mm-scans.org/SEARCHPATH/PAGE/?s=
-		// So some overriding will be necessary, and the search selector possibly needs to be changed as well
+		// So some overriding will be necessary, and the search selector possibly needs to be
+		// changed as well
 		base_url: String::from("https://mm-scans.org"),
 		base_id_selector: String::from("div.item-summary > a"),
 		description_selector: String::from("div#summary > .summary-text > p"),
