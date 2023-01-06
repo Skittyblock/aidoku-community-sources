@@ -46,12 +46,20 @@ pub fn get_manga_list(data: GuyaSiteData, filters: Vec<Filter>, _: i32) -> Resul
 			Ok(obj) => obj,
 			Err(_) => continue,
 		};
-		let id = obj.get("slug").as_string()?.read();
+		let slug = obj.get("slug").as_string()?.read();
 		let cover = format!("{}{}", &data.base_url, obj.get("cover").as_string()?.read());
+		let description = obj.get("description").as_string()?.read();
+		let author = obj.get("author").as_string()?.read();
+		let artist = obj.get("artist").as_string()?.read();
+		let user_url = format!("{}/read/manga/{}/", &data.base_url, slug);
 		manga_arr.push(Manga {
-			id,
+			id: slug,
 			title,
 			cover,
+			description,
+			author,
+			artist,
+			url: user_url,
 			status: MangaStatus::Unknown,
 			nsfw: data.nsfw,
 			viewer: MangaViewer::Rtl,
@@ -69,9 +77,11 @@ pub fn get_manga_list(data: GuyaSiteData, filters: Vec<Filter>, _: i32) -> Resul
 // 	todo!()
 // }
 
-// pub fn get_manga_details(todo!()) -> Result<Manga> {
-// 	todo!()
-// }
+pub fn get_manga_details(_: GuyaSiteData, _: String) -> Result<Manga> {
+	Ok(Manga {
+		..Default::default()
+	})
+}
 
 // pub fn get_chapter_list(todo!()) -> Result<Vec<Chapter>> {
 // 	todo!()

@@ -25,8 +25,8 @@ pub fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult>
 }
 
 #[get_manga_details]
-pub fn get_manga_details(id: String) -> Result<Manga> {
-	todo!()
+pub fn get_manga_details(slug: String) -> Result<Manga> {
+	template::get_manga_details(data(), slug)
 }
 
 #[get_chapter_list]
