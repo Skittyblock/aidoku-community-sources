@@ -93,7 +93,6 @@ pub fn get_chapter_list(data: GuyaSiteData, slug: String) -> Result<Vec<Chapter>
 	let mut chapter_arr: Vec<Chapter> = Vec::new();
 	let slug = json.get("slug").as_string()?.read();
 	let chapter_obj = json.get("chapters").as_object()?;
-	aidoku::prelude::println!("be: {}", chapter_obj.len());
 	let mut chapters: Vec<f32> = chapter_obj
 		.keys()
 		.map(|k| k.as_string().unwrap().read().parse::<f32>().unwrap())
@@ -101,12 +100,11 @@ pub fn get_chapter_list(data: GuyaSiteData, slug: String) -> Result<Vec<Chapter>
 	chapters.sort_by(|a, b| b.partial_cmp(a).unwrap());
 	for chapter in chapters {
 		let chapter = chapter.to_string();
-		aidoku::prelude::println!("Chapter: {}", chapter);
 		let obj = match chapter_obj.get(&chapter).as_object() {
 			Ok(obj) => obj,
 			Err(_) => continue,
 		};
-		let title = format!("Chapter {}", chapter);
+		let title = obj.get("title").as_string()?.read();
 		let volume = obj
 			.get("volume")
 			.as_string()?
