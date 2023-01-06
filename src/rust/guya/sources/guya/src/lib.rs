@@ -1,6 +1,11 @@
 #![no_std]
 use aidoku::{
-	error::Result, prelude::*, std::net::HttpMethod, std::net::Request, std::String, std::Vec,
+	error::Result,
+	prelude::*,
+	std::net::HttpMethod,
+	std::net::Request,
+	std::String,
+	std::{ObjectRef, Vec},
 	Chapter, DeepLink, Filter, Listing, Manga, MangaContentRating, MangaPageResult, MangaStatus,
 	MangaViewer, Page,
 };
@@ -34,9 +39,28 @@ pub fn get_chapter_list(slug: String) -> Result<Vec<Chapter>> {
 	template::get_chapter_list(data(), slug)
 }
 
-#[get_page_list]
-pub fn get_page_list(id: String, _: String) -> Result<Vec<Page>> {
-	todo!()
+#[no_mangle]
+#[export_name = "get_page_list"]
+pub unsafe extern "C" fn __wasm_get_page_list(rid: i32) -> i32 {
+	let obj = aidoku::std::ObjectRef(aidoku::std::ValueRef::new(rid));
+	let resp: Result<Vec<Page>> = get_page_list(obj);
+	match resp {
+		Ok(resp) => {
+			let mut arr = aidoku::std::ArrayRef::new();
+			for item in resp {
+				let rid = item.create();
+				arr.insert(aidoku::std::ValueRef::new(rid));
+			}
+			let rid = arr.0 .0;
+			core::mem::forget(arr.0);
+			rid
+		}
+		Err(_) => -1,
+	}
+}
+
+pub fn get_page_list(chapter: ObjectRef) -> Result<Vec<Page>> {
+	template::get_page_list(data(), chapter)
 }
 
 #[handle_url]

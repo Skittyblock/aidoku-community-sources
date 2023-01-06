@@ -1,7 +1,12 @@
 use aidoku::{
-	error::Result, prelude::*, std::net::HttpMethod, std::net::Request, std::String, std::Vec,
+	error::Result,
+	prelude::*,
+	std::net::HttpMethod,
+	std::net::Request,
+	std::String,
+	std::{ObjectRef, Vec},
 	Chapter, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
-	MangaViewer,
+	MangaViewer, Page,
 };
 use alloc::string::ToString;
 extern crate alloc;
@@ -91,7 +96,6 @@ pub fn get_chapter_list(data: GuyaSiteData, slug: String) -> Result<Vec<Chapter>
 	let request = Request::new(url, HttpMethod::Get).header("User-Agent", "Aidoku");
 	let json = request.json()?.as_object()?;
 	let mut chapter_arr: Vec<Chapter> = Vec::new();
-	let slug = json.get("slug").as_string()?.read();
 	let chapter_obj = json.get("chapters").as_object()?;
 	let mut chapters: Vec<f32> = chapter_obj
 		.keys()
@@ -113,6 +117,7 @@ pub fn get_chapter_list(data: GuyaSiteData, slug: String) -> Result<Vec<Chapter>
 			.unwrap_or(-1.0);
 		let chapter_int = chapter.parse().unwrap_or(1.0);
 		let user_url = format!("{}/read/manga/{}/{}/", &data.base_url, &slug, chapter);
+		let folder = obj.get("folder").as_string()?.read();
 		for groups in obj.get("groups").as_object()?.keys() {
 			let group_id = groups.as_string()?.read();
 			let mut group_name = String::new();
@@ -131,12 +136,12 @@ pub fn get_chapter_list(data: GuyaSiteData, slug: String) -> Result<Vec<Chapter>
 					date_updated = date_list.get(&dl_id).as_float()?;
 				}
 			}
-			let slug = &slug;
 			let title = &title;
 			let url = &user_url;
+			let id = format!("{}|{}", &folder, &group_id);
 			let language = &data.language;
 			chapter_arr.push(Chapter {
-				id: slug.to_string(),
+				id,
 				title: title.to_string(),
 				volume,
 				chapter: chapter_int,
@@ -144,16 +149,49 @@ pub fn get_chapter_list(data: GuyaSiteData, slug: String) -> Result<Vec<Chapter>
 				date_updated,
 				url: url.to_string(),
 				lang: language.to_string(),
-			})
+			});
 		}
 	}
 
 	Ok(chapter_arr)
 }
 
-// pub fn get_page_list(todo!()) -> Result<Vec<Page>> {
-// 	todo!()
-// }
+pub fn get_page_list(data: GuyaSiteData, chapter: ObjectRef) -> Result<Vec<Page>> {
+	let slug = chapter.get("mangaId").as_string()?.read();
+	let url = format!("{}/api/series/{}/", &data.base_url, &slug);
+	let request = Request::new(url, HttpMethod::Get).header("User-Agent", "Aidoku");
+	let json = request.json()?.as_object()?;
+	let chapter_num = chapter.get("chapterNum").as_float()?;
+	let chapter_num = format!("{:.1}", chapter_num)
+		.trim_end_matches(".0")
+		.to_string();
+
+	let ids = chapter.get("id").as_string()?.read();
+	let group_id = ids.split("|").collect::<Vec<&str>>()[1].to_string();
+	println!("group_id: {}", group_id);
+	let chapters_obj = json.get("chapters").as_object()?;
+	let chapter_obj = chapters_obj.get(chapter_num.as_str()).as_object()?;
+	let folder = chapter_obj.get("folder").as_string()?.read();
+	aidoku::prelude::println!("{}", folder);
+	let groups_obj = chapter_obj.get("groups").as_object()?;
+	let chapter_array = groups_obj.get(group_id.as_str()).as_array()?;
+	let mut pages: Vec<Page> = Vec::new();
+	for (idx, page) in chapter_array.enumerate() {
+		let page_string = page.as_string()?.read();
+		let page_url = format!(
+			"{}/media/manga/{}/chapters/{}/{}/{}",
+			&data.base_url, &slug, folder, group_id, page_string
+		);
+		println!("{}", page_url);
+		pages.push(Page {
+			index: idx as i32,
+			url: page_url,
+			..Default::default()
+		});
+	}
+
+	Ok(pages)
+}
 
 // pub fn modify_image_request(todo!(), request: Request) {
 // 	todo!()
