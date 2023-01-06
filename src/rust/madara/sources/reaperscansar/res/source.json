@@ -1,0 +1,18 @@
+{
+	"info": {
+		"id": "ar.reaperscansar",
+		"lang": "ar",
+		"name": "Reaper Scans Arab",
+		"version": 2,
+		"url": "https://reaperscansar.com",
+		"nsfw": 0
+	},
+	"listings": [
+		{
+			"name": "Trending"
+		},
+		{
+			"name": "Popular"
+		}
+	]
+}
