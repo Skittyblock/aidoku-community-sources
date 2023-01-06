@@ -1,7 +1,7 @@
 #![no_std]
 use aidoku::{
 	error::Result, prelude::*, std::String, std::Vec, Chapter, DeepLink, Filter, Listing, Manga,
-	MangaPageResult, Page,
+	MangaPageResult, MangaStatus, Page,
 };
 
 use madara_template::template;
@@ -15,6 +15,20 @@ fn get_data() -> template::MadaraSiteData {
 		status_filter_completed: String::from("مكتمل"),
 		status_filter_cancelled: String::from("ملغى"),
 		status_filter_on_hold: String::from("On Hold"),
+		status: |html| {
+			let status_str = html
+				.select("div.post-content_item:contains(الحالة) div.summary-content")
+				.text()
+				.read()
+				.to_lowercase();
+			match status_str.as_str() {
+				"مستمر" => MangaStatus::Ongoing,
+				"مكتمل" => MangaStatus::Completed,
+				"ملغى" => MangaStatus::Cancelled,
+				"On Hold" => MangaStatus::Hiatus,
+				_ => MangaStatus::Unknown,
+			}
+		},
 		..Default::default()
 	};
 	data
