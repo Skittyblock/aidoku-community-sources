@@ -30,8 +30,8 @@ pub fn get_manga_details(slug: String) -> Result<Manga> {
 }
 
 #[get_chapter_list]
-pub fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
-	todo!()
+pub fn get_chapter_list(slug: String) -> Result<Vec<Chapter>> {
+	template::get_chapter_list(data(), slug)
 }
 
 #[get_page_list]

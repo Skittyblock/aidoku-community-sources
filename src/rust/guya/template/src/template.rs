@@ -1,6 +1,7 @@
 use aidoku::{
 	error::Result, prelude::*, std::net::HttpMethod, std::net::Request, std::String, std::Vec,
-	Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus, MangaViewer,
+	Chapter, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
+	MangaViewer,
 };
 use alloc::string::ToString;
 extern crate alloc;
@@ -8,6 +9,7 @@ extern crate alloc;
 pub struct GuyaSiteData {
 	pub base_url: String,
 	pub nsfw: MangaContentRating,
+	pub language: String,
 }
 
 impl Default for GuyaSiteData {
@@ -15,6 +17,7 @@ impl Default for GuyaSiteData {
 		GuyaSiteData {
 			base_url: String::new(),
 			nsfw: MangaContentRating::Safe,
+			language: String::from("en"),
 		}
 	}
 }
@@ -83,9 +86,72 @@ pub fn get_manga_details(_: GuyaSiteData, _: String) -> Result<Manga> {
 	})
 }
 
-// pub fn get_chapter_list(todo!()) -> Result<Vec<Chapter>> {
-// 	todo!()
-// }
+pub fn get_chapter_list(data: GuyaSiteData, slug: String) -> Result<Vec<Chapter>> {
+	let url = format!("{}/api/series/{}/", &data.base_url, slug);
+	let request = Request::new(url, HttpMethod::Get).header("User-Agent", "Aidoku");
+	let json = request.json()?.as_object()?;
+	let mut chapter_arr: Vec<Chapter> = Vec::new();
+	let slug = json.get("slug").as_string()?.read();
+	let chapter_obj = json.get("chapters").as_object()?;
+	aidoku::prelude::println!("be: {}", chapter_obj.len());
+	let mut chapters: Vec<f32> = chapter_obj
+		.keys()
+		.map(|k| k.as_string().unwrap().read().parse::<f32>().unwrap())
+		.collect();
+	chapters.sort_by(|a, b| b.partial_cmp(a).unwrap());
+	for chapter in chapters {
+		let chapter = chapter.to_string();
+		aidoku::prelude::println!("Chapter: {}", chapter);
+		let obj = match chapter_obj.get(&chapter).as_object() {
+			Ok(obj) => obj,
+			Err(_) => continue,
+		};
+		let title = format!("Chapter {}", chapter);
+		let volume = obj
+			.get("volume")
+			.as_string()?
+			.read()
+			.parse()
+			.unwrap_or(-1.0);
+		let chapter_int = chapter.parse().unwrap_or(1.0);
+		let user_url = format!("{}/read/manga/{}/{}/", &data.base_url, &slug, chapter);
+		for groups in obj.get("groups").as_object()?.keys() {
+			let group_id = groups.as_string()?.read();
+			let mut group_name = String::new();
+			let group_list = json.get("groups").as_object()?;
+			for gl_index in group_list.keys() {
+				let gl_id = gl_index.as_string()?.read();
+				if gl_id == group_id {
+					group_name = group_list.get(&gl_id).as_string()?.read();
+				}
+			}
+			let mut date_updated = 0.0;
+			let date_list = obj.get("release_date").as_object()?;
+			for dl_index in date_list.keys() {
+				let dl_id = dl_index.as_string()?.read();
+				if dl_id == group_id {
+					date_updated = date_list.get(&dl_id).as_float()?;
+				}
+			}
+			let slug = &slug;
+			let title = &title;
+			let url = &user_url;
+			let language = &data.language;
+			chapter_arr.push(Chapter {
+				id: slug.to_string(),
+				title: title.to_string(),
+				volume,
+				chapter: chapter_int,
+				scanlator: group_name,
+				date_updated,
+				url: url.to_string(),
+				lang: language.to_string(),
+			})
+		}
+	}
+
+	Ok(chapter_arr)
+}
 
 // pub fn get_page_list(todo!()) -> Result<Vec<Page>> {
 // 	todo!()
