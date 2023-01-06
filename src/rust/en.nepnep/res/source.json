@@ -11,6 +11,8 @@
 		"nsfw": 1
 	},
 	"filters": [
-		{ "type": "title" }
+		{
+			"type": "title"
+		}
 	]
 }
