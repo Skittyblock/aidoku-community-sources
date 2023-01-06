@@ -14,7 +14,7 @@ fn get_data() -> template::MadaraSiteData {
 		status_filter_ongoing: String::from("مستمر"),
 		status_filter_completed: String::from("مكتمل"),
 		status_filter_cancelled: String::from("ملغى"),
-		status_filter_on_hold: String::from("On Hold"),
+		status_filter_on_hold: String::from("متوقفة"),
 		status: |html| {
 			let status_str = html
 				.select("div.post-content_item:contains(الحالة) div.summary-content")

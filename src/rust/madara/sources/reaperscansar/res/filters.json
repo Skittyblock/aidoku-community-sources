@@ -20,16 +20,16 @@
 			},
 			{
 				"type": "check",
-				"name": "On Hold"
+				"name": "متوقفة"
 			}
 		]
 	},
 	{
 		"type": "select",
-		"name": "Genre Condition",
+		"name": "حالة التصنيف",
 		"options": [
-			"OR (having one of the selected genre)",
-			"AND (having all of the selected genres)"
+			"أو (وجود أحد نوع التصنيف)",
+			"و (وجود كل انواع التصنيف)"
 		]
 	},
 	{
