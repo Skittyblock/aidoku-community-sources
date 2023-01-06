@@ -4,7 +4,7 @@
 	},
 	{
 		"type": "group",
-		"name": "Status",
+		"name": "الحالة",
 		"filters": [
 			{
 				"type": "check",
@@ -34,7 +34,7 @@
 	},
 	{
 		"type": "group",
-		"name": "Genres",
+		"name": "التصنيف",
 		"filters": [
 			{
 				"type": "genre",
