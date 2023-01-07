@@ -172,9 +172,9 @@ impl MangaStreamSource {
 			base_url
 		};
 		let mut mangas: Vec<Manga> = Vec::new();
-		let html = Request::new(&url, HttpMethod::Get).html();
+		let html = Request::new(&url, HttpMethod::Get).html()?;
 		for manga in html.select(self.manga_selector).array() {
-			let manga_node = manga.as_node();
+			let manga_node = manga.as_node().expect("Failed to get manga as node");
 			let title = manga_node.select(self.manga_title).attr("title").read();
 			if self
 				.manga_title_trim
@@ -227,7 +227,7 @@ impl MangaStreamSource {
 	// parse manga details page
 	pub fn parse_manga_details(&self, id: String) -> Result<Manga> {
 		let url = format!("{}/{}/{}", self.base_url, self.traverse_pathname, id);
-		let html = Request::new(&url, HttpMethod::Get).html();
+		let html = Request::new(&url, HttpMethod::Get).html()?;
 		let mut title = html.select(self.manga_details_title).text().read();
 		for i in self.manga_title_trim.iter() {
 			if title.contains(i) {
@@ -266,7 +266,11 @@ impl MangaStreamSource {
 			MangaContentRating::Safe
 		};
 		for node in html.select(self.manga_details_categories).array() {
-			let category = node.as_node().text().read();
+			let category = node
+				.as_node()
+				.expect("Failed to get category as node")
+				.text()
+				.read();
 			for genre in self.nsfw_genres.iter() {
 				if *genre == category {
 					nsfw = MangaContentRating::Nsfw
@@ -299,9 +303,9 @@ impl MangaStreamSource {
 	pub fn parse_chapter_list(&self, id: String) -> Result<Vec<Chapter>> {
 		let url = format!("{}/{}/{}", self.base_url, self.traverse_pathname, id);
 		let mut chapters: Vec<Chapter> = Vec::new();
-		let html = Request::new(&url, HttpMethod::Get).html();
+		let html = Request::new(&url, HttpMethod::Get).html()?;
 		for chapter in html.select(self.chapter_selector).array() {
-			let chapter_node = chapter.as_node();
+			let chapter_node = chapter.as_node().expect("Failed to get chapter as node");
 			let raw_title = chapter_node.select(self.chapter_title).text().read();
 			let title = {
 				// Because every mangastream source likes to be different and not have a consistent
@@ -353,7 +357,7 @@ impl MangaStreamSource {
 		let mut pages: Vec<Page> = Vec::new();
 		let html = Request::new(&url, HttpMethod::Get)
 			.header("Referer", &self.base_url)
-			.html();
+			.html()?;
 		if self.alt_pages {
 			let raw_text = html.select("script").html().read();
 			let trimmed_json = &raw_text[raw_text.find(r#":[{"s"#).unwrap_or(0) + 2
@@ -363,7 +367,7 @@ impl MangaStreamSource {
 			} else {
 				trimmed_json
 			};
-			let json = parse(trimmed_text.as_bytes()).as_object()?;
+			let json = parse(trimmed_text.as_bytes())?.as_object()?;
 			let images = json.get("images").as_array()?;
 			for (index, page) in images.enumerate() {
 				let page_url = urlencode(page.as_string()?.read());
@@ -377,7 +381,7 @@ impl MangaStreamSource {
 			Ok(pages)
 		} else {
 			for (at, page) in html.select(self.page_selector).array().enumerate() {
-				let page_node = page.as_node();
+				let page_node = page.as_node().expect("Failed to get page as node");
 				let page_url = urlencode(page_node.attr(self.page_url).read());
 				// avoid svgs
 				if page_url.starts_with("data") {

@@ -44,9 +44,11 @@ pub fn get_listing_url(source: &MangaStreamSource, listing_name: String, page: i
 
 pub fn get_lang_code() -> String {
 	let mut code = String::new();
-	if let Ok(languages) = defaults_get("languages").as_array() {
-		if let Ok(language) = languages.get(0).as_string() {
-			code = language.read();
+	if let Ok(languages) = defaults_get("languages") {
+		if let Ok(arr) = languages.as_array() {
+			if let Ok(language) = arr.get(0).as_string() {
+				code = language.read();
+			}
 		}
 	}
 	code
