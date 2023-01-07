@@ -1,6 +1,6 @@
 use aidoku::{
 	prelude::format,
-	std::{html::Node, String, StringRef, Vec},
+	std::{defaults::defaults_get, html::Node, String, StringRef, Vec},
 	MangaStatus,
 };
 
@@ -311,4 +311,16 @@ pub fn get_id_from_url(url: String) -> String {
 	let id = url.split('/').last().expect("Failed to parse id from url");
 
 	String::from(id)
+}
+
+pub fn get_lang_code() -> String {
+	let mut code = String::new();
+	if let Ok(languages) = defaults_get("languages") {
+		if let Ok(arr) = languages.as_array() {
+			if let Ok(language) = arr.get(0).as_string() {
+				code = language.read();
+			}
+		}
+	}
+	code
 }
