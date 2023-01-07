@@ -2,12 +2,9 @@
 use aidoku::{
 	error::Result,
 	prelude::*,
-	std::net::HttpMethod,
-	std::net::Request,
 	std::String,
 	std::{ObjectRef, Vec},
-	Chapter, DeepLink, Filter, Listing, Manga, MangaContentRating, MangaPageResult, MangaStatus,
-	MangaViewer, Page,
+	Chapter, DeepLink, Filter, Manga, MangaPageResult, Page,
 };
 
 use guya_template::template;
@@ -24,10 +21,10 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	template::get_manga_list(data(), filters, page)
 }
 
-#[get_manga_listing]
-pub fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
-	todo!()
-}
+// #[get_manga_listing]
+// pub fn get_manga_listing(listing: Listing, page: i32) ->
+// Result<MangaPageResult> { 	todo!()
+// }
 
 #[get_manga_details]
 pub fn get_manga_details(slug: String) -> Result<Manga> {
@@ -39,6 +36,10 @@ pub fn get_chapter_list(slug: String) -> Result<Vec<Chapter>> {
 	template::get_chapter_list(data(), slug)
 }
 
+/// # Safety
+///
+/// I have no clue why this is unsafe tbh, took this from aidoku-rs as I needed
+/// the full chapter obj. Clippy making me put a safety comment here.
 #[no_mangle]
 #[export_name = "get_page_list"]
 pub unsafe extern "C" fn __wasm_get_page_list(rid: i32) -> i32 {
@@ -65,5 +66,5 @@ pub fn get_page_list(chapter: ObjectRef) -> Result<Vec<Page>> {
 
 #[handle_url]
 pub fn handle_url(url: String) -> Result<DeepLink> {
-	todo!()
+	template::handle_url(data(), url)
 }

@@ -5,7 +5,7 @@ pub fn extract_f32_from_string(title: String, text: String) -> f32 {
 		.chars()
 		.filter(|a| (*a >= '0' && *a <= '9') || *a == ' ' || *a == '.')
 		.collect::<String>()
-		.split(" ")
+		.split(' ')
 		.collect::<Vec<&str>>()
 		.into_iter()
 		.map(|a| a.parse::<f32>().unwrap_or(0.0))
@@ -15,14 +15,14 @@ pub fn extract_f32_from_string(title: String, text: String) -> f32 {
 
 pub fn append_protocol(url: String) -> String {
 	if !url.starts_with("http") {
-		return format!("{}{}", "https:", url);
+		format!("{}{}", "https:", url)
 	} else {
-		return url;
+		url
 	}
 }
 
 pub fn https_upgrade(url: String) -> String {
-	return url.replacen("http://", "https://", 1);
+	url.replacen("http://", "https://", 1)
 }
 
 pub fn urlencode(string: String) -> String {
@@ -32,9 +32,9 @@ pub fn urlencode(string: String) -> String {
 
 	for byte in bytes {
 		let curr = *byte;
-		if (b'a' <= curr && curr <= b'z')
-			|| (b'A' <= curr && curr <= b'Z')
-			|| (b'0' <= curr && curr <= b'9')
+		if (b'a'..=b'z').contains(&curr)
+			|| (b'A'..=b'Z').contains(&curr)
+			|| (b'0'..=b'9').contains(&curr)
 		{
 			result.push(curr);
 		} else {
@@ -66,13 +66,12 @@ pub fn i32_to_string(mut integer: i32) -> String {
 		string.insert(pos, char::from_u32((digit as u32) + ('0' as u32)).unwrap());
 		integer /= 10;
 	}
-	return string;
+	string
 }
 
 pub fn join_string_array(array: ArrayRef, delimeter: String) -> String {
 	let mut string = String::new();
-	let mut at = 0;
-	for item in array {
+	for (at, item) in array.enumerate() {
 		if at != 0 {
 			string.push_str(&delimeter);
 		}
@@ -83,27 +82,26 @@ pub fn join_string_array(array: ArrayRef, delimeter: String) -> String {
 				.read()
 				.as_str(),
 		);
-		at += 1;
 	}
-	return string;
+	string
 }
 
 pub fn status_from_string(status: String) -> MangaStatus {
 	if status == "Ongoing" {
-		return MangaStatus::Ongoing;
+		MangaStatus::Ongoing
 	} else if status == "Completed" {
-		return MangaStatus::Completed;
+		MangaStatus::Completed
 	} else if status == "Hiatus" {
-		return MangaStatus::Hiatus;
+		MangaStatus::Hiatus
 	} else if status == "Cancelled" {
-		return MangaStatus::Cancelled;
+		MangaStatus::Cancelled
 	} else {
-		return MangaStatus::Unknown;
+		MangaStatus::Unknown
 	}
 }
 
 pub fn is_numeric_char(c: char) -> bool {
-	return (c >= '0' && c <= '9') || c == '.';
+	('0'..='9').contains(&c) || c == '.'
 }
 
 pub fn get_chapter_number(id: String) -> f32 {
@@ -116,10 +114,10 @@ pub fn get_chapter_number(id: String) -> f32 {
 		}
 		i -= 1;
 	}
-	if number_string.len() == 0 {
+	if number_string.is_empty() {
 		return 0.0;
 	}
-	return number_string.parse::<f32>().unwrap_or(0.0);
+	number_string.parse::<f32>().unwrap_or(0.0)
 }
 
 pub fn string_replace(string: String, search: String, replace: String) -> String {
@@ -138,7 +136,7 @@ pub fn string_replace(string: String, search: String, replace: String) -> String
 		}
 		at += 1;
 	}
-	return result;
+	result
 }
 
 pub fn stupidencode(string: String) -> String {
@@ -150,5 +148,5 @@ pub fn stupidencode(string: String) -> String {
 			result.push('_');
 		}
 	}
-	return result;
+	result
 }

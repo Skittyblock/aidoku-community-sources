@@ -5,7 +5,7 @@ use aidoku::{
 	std::net::Request,
 	std::String,
 	std::{ObjectRef, Vec},
-	Chapter, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
+	Chapter, DeepLink, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
 	MangaViewer, Page,
 };
 use alloc::string::ToString;
@@ -48,26 +48,19 @@ pub fn get_manga_list(data: GuyaSiteData, filters: Vec<Filter>, _: i32) -> Resul
 	}
 
 	let mut manga_arr: Vec<Manga> = Vec::new();
-	for manga in json.keys() {
-		let title = manga.as_string()?.read();
+	let mut titles: Vec<String> = json.keys().map(|k| k.as_string().unwrap().read()).collect();
+	titles.sort();
+	for title in titles {
 		let obj = match json.get(&title).as_object() {
 			Ok(obj) => obj,
 			Err(_) => continue,
 		};
 		let slug = obj.get("slug").as_string()?.read();
 		let cover = format!("{}{}", &data.base_url, obj.get("cover").as_string()?.read());
-		let description = obj.get("description").as_string()?.read();
-		let author = obj.get("author").as_string()?.read();
-		let artist = obj.get("artist").as_string()?.read();
-		let user_url = format!("{}/read/manga/{}/", &data.base_url, slug);
 		manga_arr.push(Manga {
 			id: slug,
 			title,
 			cover,
-			description,
-			author,
-			artist,
-			url: user_url,
 			status: MangaStatus::Unknown,
 			nsfw: data.nsfw,
 			viewer: MangaViewer::Rtl,
@@ -85,8 +78,31 @@ pub fn get_manga_list(data: GuyaSiteData, filters: Vec<Filter>, _: i32) -> Resul
 // 	todo!()
 // }
 
-pub fn get_manga_details(_: GuyaSiteData, _: String) -> Result<Manga> {
+pub fn get_manga_details(data: GuyaSiteData, slug: String) -> Result<Manga> {
+	let url = format!("{}/api/series/{}/", &data.base_url, slug);
+	let request = Request::new(url, HttpMethod::Get).header("User-Agent", "Aidoku");
+	let json = request.json()?.as_object()?;
+	let title = json.get("title").as_string()?.read();
+	let cover = format!(
+		"{}{}",
+		&data.base_url,
+		json.get("cover").as_string()?.read()
+	);
+	let description = json.get("description").as_string()?.read();
+	let user_url = format!("{}/read/manga/{}/", &data.base_url, slug);
+	let author = json.get("author").as_string()?.read();
+	let artist = json.get("artist").as_string()?.read();
 	Ok(Manga {
+		id: slug,
+		title,
+		cover,
+		description,
+		author,
+		artist,
+		url: user_url,
+		status: MangaStatus::Unknown,
+		nsfw: data.nsfw,
+		viewer: MangaViewer::Rtl,
 		..Default::default()
 	})
 }
@@ -167,12 +183,10 @@ pub fn get_page_list(data: GuyaSiteData, chapter: ObjectRef) -> Result<Vec<Page>
 		.to_string();
 
 	let ids = chapter.get("id").as_string()?.read();
-	let group_id = ids.split("|").collect::<Vec<&str>>()[1].to_string();
-	println!("group_id: {}", group_id);
+	let group_id = ids.split('|').collect::<Vec<&str>>()[1].to_string();
 	let chapters_obj = json.get("chapters").as_object()?;
 	let chapter_obj = chapters_obj.get(chapter_num.as_str()).as_object()?;
 	let folder = chapter_obj.get("folder").as_string()?.read();
-	aidoku::prelude::println!("{}", folder);
 	let groups_obj = chapter_obj.get("groups").as_object()?;
 	let chapter_array = groups_obj.get(group_id.as_str()).as_array()?;
 	let mut pages: Vec<Page> = Vec::new();
@@ -182,7 +196,6 @@ pub fn get_page_list(data: GuyaSiteData, chapter: ObjectRef) -> Result<Vec<Page>
 			"{}/media/manga/{}/chapters/{}/{}/{}",
 			&data.base_url, &slug, folder, group_id, page_string
 		);
-		println!("{}", page_url);
 		pages.push(Page {
 			index: idx as i32,
 			url: page_url,
@@ -193,10 +206,12 @@ pub fn get_page_list(data: GuyaSiteData, chapter: ObjectRef) -> Result<Vec<Page>
 	Ok(pages)
 }
 
-// pub fn modify_image_request(todo!(), request: Request) {
-// 	todo!()
-// }
-
-// pub fn handle_url(todo!()) -> Result<DeepLink> {
-// 	todo!()
-// }
+pub fn handle_url(data: GuyaSiteData, url: String) -> Result<DeepLink> {
+	let parts = url.split('/').collect::<Vec<&str>>();
+	let slug = parts[5].to_string();
+	let manga = get_manga_details(data, slug).ok();
+	Ok(DeepLink {
+		manga,
+		chapter: None,
+	})
+}
