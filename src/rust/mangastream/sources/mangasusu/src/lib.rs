@@ -8,7 +8,7 @@ use mangastream_template::template::MangaStreamSource;
 
 fn get_instance() -> MangaStreamSource {
 	MangaStreamSource {
-		base_url: String::from("https://194.233.87.209"),
+		base_url: String::from("https://92.84.132.251"),
 		traverse_pathname: "komik",
 		is_nsfw: true,
 		manga_details_author: "td:contains(Author)+td",
