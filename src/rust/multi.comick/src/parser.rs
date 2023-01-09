@@ -1,8 +1,9 @@
 use aidoku::{
 	error::Result,
-	std::{net::Request, Vec, net::HttpMethod, String, html::unescape_html_entities},
+	prelude::format,
+	std::{html::unescape_html_entities, net::HttpMethod, net::Request, String, Vec},
 	Chapter, DeepLink, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
-	MangaViewer, Page, prelude::format,
+	MangaViewer, Page,
 };
 use alloc::string::ToString;
 extern crate alloc;
@@ -94,7 +95,7 @@ pub fn parse_manga_list(
 		parse_manga_listing(api_url, String::from("Hot"), page)
 	} else {
 		let url = get_search_url(
-			api_url,
+			api_url.clone(),
 			title,
 			included_tags,
 			excluded_tags,
@@ -104,7 +105,7 @@ pub fn parse_manga_list(
 			completed,
 			page,
 		);
-		
+
 		let mut mangas: Vec<Manga> = Vec::new();
 		let json = Request::new(&url, HttpMethod::Get)
 			.json()
@@ -117,16 +118,33 @@ pub fn parse_manga_list(
 					Ok(node) => node.read(),
 					Err(_) => continue,
 				};
-				let id = match data_obj.get("slug").as_string() {
+				let mut id = match data_obj.get("slug").as_string() {
 					Ok(node) => node.read(),
 					Err(_) => continue,
 				};
+
+				let manga_url = format!(
+					"{}/comic/{}?tachiyomi=true",
+					api_url,
+					id.split('|').next().unwrap_or("")
+				);
+				id += "|";
+				let json = Request::new(manga_url, HttpMethod::Get)
+					.json()
+					.expect("Failed to load JSON")
+					.as_object()
+					.expect("Failed to get JSON as object");
+				let data = json
+					.get("comic")
+					.as_object()
+					.expect("Failed to get JSON as object");
+				id += &data.get("id").as_int().unwrap_or(-1).to_string();
 				let cover = match data_obj.get("cover_url").as_string() {
 					Ok(node) => node.read(),
 					Err(_) => continue,
 				};
 				mangas.push(Manga {
-					id,
+					id: id.clone(),
 					cover,
 					title,
 					author: String::new(),
@@ -171,8 +189,9 @@ pub fn parse_manga_listing(
 					Ok(node) => node.read(),
 					Err(_) => continue,
 				};
-				id+= " ";
+				id += "|";
 				id += &manga_obj.get("id").as_int().unwrap_or(-1).to_string();
+
 				let cover = match manga_obj.get("cover_url").as_string() {
 					Ok(node) => node.read(),
 					Err(_) => continue,
@@ -224,7 +243,11 @@ pub fn parse_manga_listing(
 }
 
 pub fn parse_manga_details(api_url: String, id: String) -> Result<Manga> {
-	let url = format!("{}/comic/{}?tachiyomi=true", api_url, id.split(' ').next().unwrap_or(""));
+	let url = format!(
+		"{}/comic/{}?tachiyomi=true",
+		api_url,
+		id.split('|').next().unwrap_or("")
+	);
 	let json = Request::new(url, HttpMethod::Get)
 		.json()
 		.expect("Failed to load JSON")
@@ -307,7 +330,10 @@ pub fn parse_manga_details(api_url: String, id: String) -> Result<Manga> {
 		author,
 		artist,
 		description,
-		url: format!("https://comick.app/comic/{}", id.split(' ').next().unwrap_or("")),
+		url: format!(
+			"https://comick.app/comic/{}",
+			id.split('|').next().unwrap_or("")
+		),
 		categories,
 		status,
 		nsfw,
@@ -316,13 +342,15 @@ pub fn parse_manga_details(api_url: String, id: String) -> Result<Manga> {
 }
 
 pub fn parse_chapter_list(api_url: String, id: String) -> Result<Vec<Chapter>> {
+
 	let mut chapters: Vec<Chapter> = Vec::new();
 	let mut chapter_limit = 100;
 	let page = 1;
+	let cid = id.split('|').nth(1).unwrap_or("");
 	let url = format!(
 		"{}/comic/{}/chapter?limit={}&page={}&lang={}",
 		api_url,
-		id.split(' ').nth(1).unwrap_or(""),
+		cid,
 		100,
 		page,
 		get_lang_code().unwrap_or_else(|| String::from("en"))
@@ -339,7 +367,7 @@ pub fn parse_chapter_list(api_url: String, id: String) -> Result<Vec<Chapter>> {
 	let url = format!(
 		"{}/comic/{}/chapter?limit={}&page={}&lang={}",
 		api_url,
-		id.split(' ').nth(1).unwrap_or(""),
+		cid,
 		chapter_limit,
 		page,
 		get_lang_code().unwrap_or_else(|| String::from("en"))
