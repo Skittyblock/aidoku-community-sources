@@ -181,6 +181,19 @@ pub fn parse_manga(obj: Node, id: String) -> Result<Manga> {
 	let url = format!("{}/en/{}", BASE_URL, &id);
 	let title = obj.select(".subj").first().text().read().trim().to_string();
 	let description = obj.select("p.summary").text().read().trim().to_string();
+	let mut cover = obj
+		.select(".background_pic")
+		.select("img")
+		.attr("src")
+		.read();
+
+	if cover.trim().is_empty() {
+		cover = obj
+			.select(".detail_chal_pic")
+			.select("img")
+			.attr("src")
+			.read();
+	}
 
 	let author = obj
 		.select(".author")
@@ -193,7 +206,7 @@ pub fn parse_manga(obj: Node, id: String) -> Result<Manga> {
 
 	Ok(Manga {
 		id,
-		cover: String::new(),
+		cover,
 		title,
 		author,
 		description,
