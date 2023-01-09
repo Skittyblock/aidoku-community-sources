@@ -1,24 +1,34 @@
 #![no_std]
 use aidoku::{
 	error::Result, prelude::*, std::String, std::Vec, Chapter, DeepLink, Filter, Listing, Manga,
-	MangaPageResult, Page,
+	MangaPageResult, MangaStatus, Page,
 };
 
 use madara_template::template;
 
 fn get_data() -> template::MadaraSiteData {
 	let data: template::MadaraSiteData = template::MadaraSiteData {
-		// TODO: Fix search
-		// The problem is mm-scans wants search queries like this https://mm-scans.org/?s=
-		// get_filtered_url in the helper wants it to be like this https://mm-scans.org/SEARCHPATH/PAGE/?s=
-		// So some overriding will be necessary, and the search selector possibly needs to be
-		// changed as well
-		base_url: String::from("https://mm-scans.org"),
-		base_id_selector: String::from("div.item-summary > a"),
-		description_selector: String::from("div#summary > .summary-text > p"),
-		genre_selector: String::from("div.genres-content"),
-		chapter_selector: String::from("li.chapter-li"),
+		base_url: String::from("https://reaperscansar.com"),
+		source_path: String::from("series"),
 		alt_ajax: true,
+		status_filter_ongoing: String::from("مستمر"),
+		status_filter_completed: String::from("مكتمل"),
+		status_filter_cancelled: String::from("ملغى"),
+		status_filter_on_hold: String::from("متوقفة"),
+		status: |html| {
+			let status_str = html
+				.select("div.post-content_item:contains(الحالة) div.summary-content")
+				.text()
+				.read()
+				.to_lowercase();
+			match status_str.as_str() {
+				"مستمر" => MangaStatus::Ongoing,
+				"مكتمل" => MangaStatus::Completed,
+				"ملغى" => MangaStatus::Cancelled,
+				"On Hold" => MangaStatus::Hiatus,
+				_ => MangaStatus::Unknown,
+			}
+		},
 		..Default::default()
 	};
 	data

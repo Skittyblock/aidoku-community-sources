@@ -181,19 +181,6 @@ pub fn parse_manga(obj: Node, id: String) -> Result<Manga> {
 	let url = format!("{}/en/{}", BASE_URL, &id);
 	let title = obj.select(".subj").first().text().read().trim().to_string();
 	let description = obj.select("p.summary").text().read().trim().to_string();
-	let mut cover = obj
-		.select(".background_pic")
-		.select("img")
-		.attr("src")
-		.read();
-
-	if cover.trim().is_empty() {
-		cover = obj
-			.select(".detail_chal_pic")
-			.select("img")
-			.attr("src")
-			.read();
-	}
 
 	let author = obj
 		.select(".author")
@@ -206,7 +193,7 @@ pub fn parse_manga(obj: Node, id: String) -> Result<Manga> {
 
 	Ok(Manga {
 		id,
-		cover,
+		cover: String::new(),
 		title,
 		author,
 		description,
@@ -233,8 +220,8 @@ pub fn get_chapter_list(obj: Node, manga_id: String) -> Result<Vec<Chapter>> {
 		let chapter = id.parse::<f32>().unwrap();
 
 		// The mobile website sucks so we need to manually replace some chars
-		let title = obj
-			.select(".sub_title span")
+		let raw_title = obj
+			.select(".sub_title .ellipsis")
 			.text()
 			.read()
 			.trim()
@@ -245,6 +232,27 @@ pub fn get_chapter_list(obj: Node, manga_id: String) -> Result<Vec<Chapter>> {
 			.replace("&lt;", "<")
 			.replace("&gt;", ">")
 			.replace("&nbsp;", " ");
+
+		let title = {
+			let mut title = raw_title.split_whitespace().collect::<Vec<&str>>();
+
+			if title.len() >= 2
+				&& (title[0] == "Chapter"
+					|| title[0] == "Episode"
+					|| title[0] == "Ch." || title[0] == "Ep.")
+				&& title[1].replace(':', "").parse::<f64>().is_ok()
+			{
+				title.remove(0);
+				title.remove(0);
+			}
+
+			// Remove leading symbols
+			if !title.is_empty() && (title[0] == "-" || title[0] == ":") {
+				title.remove(0);
+			}
+
+			title.join(" ")
+		};
 
 		let date_updated = obj
 			.select(".date")
@@ -257,7 +265,7 @@ pub fn get_chapter_list(obj: Node, manga_id: String) -> Result<Vec<Chapter>> {
 			id: format!("{}|{}", manga_id, id),
 			title,
 			chapter,
-			volume: 1.0,
+			volume: -1.0,
 			date_updated,
 			scanlator: String::new(),
 			url: String::new(),
