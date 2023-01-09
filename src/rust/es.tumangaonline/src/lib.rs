@@ -250,7 +250,6 @@ fn get_manga_details(id: String) -> Result<Manga> {
 		status,
 		nsfw,
 		viewer,
-		..Default::default()
 	})
 }
 
@@ -281,7 +280,7 @@ fn parse_chapter(element: Node) -> Chapter {
 #[get_chapter_list]
 fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 	let url = if id.starts_with("http") {
-		id.clone()
+		id
 	} else {
 		format!("{BASE_URL}{id}")
 	};
@@ -339,7 +338,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 #[get_page_list]
 fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 	let url = if chapter_id.starts_with("http") {
-		chapter_id.clone()
+		chapter_id
 	} else {
 		format!("{BASE_URL}{chapter_id}")
 	};
