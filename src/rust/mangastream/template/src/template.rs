@@ -119,12 +119,7 @@ impl MangaStreamSource {
 					let input = filter.value.as_string()?.read();
 					// replace characters that mess up search with spaces
 					// without using spaces search will possibly not find accurate matches
-					title = input
-						.replace('’', " ")
-						.replace('‘', " ")
-						.replace('“', " ")
-						.replace('”', " ")
-						.replace('–', " ");
+					title = input.replace(['’', '‘', '“', '”', '–'], " ");
 				}
 				FilterType::Genre => match filter.value.as_int().unwrap_or(-1) {
 					0 => match !self.language_2.is_empty() {
