@@ -1,6 +1,7 @@
 #![no_std]
 use aidoku::{
 	error::Result,
+	helpers::substring::Substring,
 	prelude::*,
 	std::{defaults::defaults_get, html::Node, net::HttpMethod, net::Request, String, Vec},
 	Chapter, Filter, FilterType, Listing, Manga, MangaContentRating, MangaPageResult, MangaStatus,
@@ -10,7 +11,6 @@ use aidoku::{
 extern crate alloc;
 use alloc::{borrow::ToOwned, string::ToString};
 
-mod helper;
 mod parser;
 
 static USER_AGENT: &str = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36";
@@ -313,10 +313,14 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 				.as_node()
 				.expect("html array element should be a node");
 			let title = element.select("div.col-10.text-truncate").text().read();
-			let num_text = element.select("a.btn-collapse").text().read();
-			let chapter_num = helper::string_between(&num_text, "Capítulo ", ":", 0)
-				.parse::<f32>()
-				.unwrap_or(0.0);
+			let chapter_num = {
+				let num_text = element.select("a.btn-collapse").text().read();
+				let half = num_text.substring_after("Capítulo ").unwrap_or(&num_text);
+				half.substring_before(":")
+					.unwrap_or(half)
+					.parse::<f32>()
+					.unwrap_or(0.0)
+			};
 
 			let scanlations = element.select("ul.chapter-list > li");
 			for scanlation in scanlations.array() {

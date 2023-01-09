@@ -1,5 +1,6 @@
 use aidoku::{
 	error::AidokuError,
+	helpers::substring::Substring,
 	std::{net::HttpMethod, net::Request, String, Vec},
 	Manga, MangaPageResult,
 };
@@ -24,15 +25,15 @@ pub fn parse_manga_list(url: String) -> Result<MangaPageResult, AidokuError> {
 		let url = item.attr("href").read().trim_start().to_owned();
 		let id = url.strip_prefix(BASE_URL).unwrap_or(&url).to_owned();
 		let title = item.select("h4.text-truncate").text().read();
-		let style = item.select("style").html().read();
-		let cover = if let Some(start) = style.find("('") {
-			if let Some(offset) = &style[start + 2..].find("')") {
-				style[start + 2..start + offset + 2].to_string()
-			} else {
-				String::new()
-			}
-		} else {
-			String::new()
+
+		let cover = {
+			let style = item.select("style").html().read();
+			style
+				.substring_after("('")
+				.unwrap_or_default()
+				.substring_before("')")
+				.unwrap_or_default()
+				.to_string()
 		};
 
 		manga.push(Manga {
