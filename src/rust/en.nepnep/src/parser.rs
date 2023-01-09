@@ -148,7 +148,7 @@ pub fn parse_chapter(manga_id: &str, chapter_object: ObjectRef) -> Result<Chapte
 
 	let date_updated = chapter_object
 		.get("Date")
-		.as_date("yyyy-MM-dd HH:mm:SS", None, None)
+		.as_date("yyyy-MM-dd HH:mm:SS", Some("en-US"), Some("UTC"))
 		.unwrap_or(-1.0);
 
 	let mut url = String::from("https://mangasee123.com/read-online/");
