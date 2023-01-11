@@ -246,9 +246,22 @@ pub fn get_chapter_list(obj: Node, manga_id: String) -> Result<Vec<Chapter>> {
 			.replace("&gt;", ">")
 			.replace("&nbsp;", " ");
 
+		let mut volume = -1.0;
+
 		let title = {
 			let mut title = raw_title.split_whitespace().collect::<Vec<&str>>();
 
+			// Remove leading season text and set volume accordingly
+			if title.len() >= 2
+				&& (title[0] == "[Season")
+				&& title[1].replace(']', "").parse::<f64>().is_ok()
+			{
+				volume = title[1].replace(']', "").parse::<f32>().unwrap();
+				title.remove(0);
+				title.remove(0);
+			}
+
+			// Remove leading chapter/episode text
 			if title.len() >= 2
 				&& (title[0] == "Chapter"
 					|| title[0] == "Episode"
@@ -278,7 +291,7 @@ pub fn get_chapter_list(obj: Node, manga_id: String) -> Result<Vec<Chapter>> {
 			id: format!("{}|{}", manga_id, id),
 			title,
 			chapter,
-			volume: -1.0,
+			volume,
 			date_updated,
 			scanlator: String::new(),
 			url: String::new(),
