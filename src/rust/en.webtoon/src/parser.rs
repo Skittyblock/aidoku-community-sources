@@ -185,7 +185,7 @@ pub fn parse_manga(obj: Node, id: String) -> Result<Manga> {
 		.select(".background_pic")
 		.select("img")
 		.attr("src")
-		.read();
+		.read() + "?type=crop540_540";
 
 	if cover.trim().is_empty() {
 		cover = obj
