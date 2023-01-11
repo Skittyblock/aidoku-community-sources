@@ -257,7 +257,7 @@ pub fn get_chapter_list(obj: Node, manga_id: String) -> Result<Vec<Chapter>> {
 				let title_chars = title[0].chars().collect::<Vec<char>>();
 
 				if title_chars[1] == 'S' && title_chars[2].to_string().parse::<f64>().is_ok() {
-					volume = title_chars[2].to_string().parse::<f32>().unwrap();
+					volume = title_chars[2].to_string().parse::<f32>().unwrap_or(-1.0);
 					title.remove(0);
 				}
 			}
@@ -268,7 +268,7 @@ pub fn get_chapter_list(obj: Node, manga_id: String) -> Result<Vec<Chapter>> {
 				&& (title[0] == "[Season")
 				&& title[1].replace(']', "").parse::<f64>().is_ok()
 			{
-				volume = title[1].replace(']', "").parse::<f32>().unwrap();
+				volume = title[1].replace(']', "").parse::<f32>().unwrap_or(-1.0);
 				title.remove(0);
 				title.remove(0);
 			}
