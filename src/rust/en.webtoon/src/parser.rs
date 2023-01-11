@@ -251,7 +251,19 @@ pub fn get_chapter_list(obj: Node, manga_id: String) -> Result<Vec<Chapter>> {
 		let title = {
 			let mut title = raw_title.split_whitespace().collect::<Vec<&str>>();
 
+			// Remove leading volume text and set volume accordingly
+			// This is for titles like "(S1) Chapter 1 - PeePeePooPoo)"
+			if title.len() >= 2 {
+				let title_chars = title[0].chars().collect::<Vec<char>>();
+
+				if title_chars[1] == 'S' && title_chars[2].to_string().parse::<f64>().is_ok() {
+					volume = title_chars[2].to_string().parse::<f32>().unwrap();
+					title.remove(0);
+				}
+			}
+
 			// Remove leading season text and set volume accordingly
+			// This is for titles like "[Season 1] Chapter 1 - PeePeePooPoo)"
 			if title.len() >= 2
 				&& (title[0] == "[Season")
 				&& title[1].replace(']', "").parse::<f64>().is_ok()
