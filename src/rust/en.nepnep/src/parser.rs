@@ -141,7 +141,7 @@ pub fn parse_chapter(manga_id: &str, chapter_object: ObjectRef) -> Result<Chapte
 			let title_chars = cleaned_title[0].chars().collect::<Vec<char>>();
 
 			if title_chars[0] == 'S' && title_chars[1].to_string().parse::<f64>().is_ok() {
-				volume = title_chars[1].to_string().parse::<f32>().unwrap();
+				volume = title_chars[1].to_string().parse::<f32>().unwrap_or(-1.0);
 				cleaned_title.remove(0);
 			}
 
@@ -156,7 +156,7 @@ pub fn parse_chapter(manga_id: &str, chapter_object: ObjectRef) -> Result<Chapte
 			&& (cleaned_title[0] == "Volume")
 			&& cleaned_title[1].parse::<f64>().is_ok()
 		{
-			volume = cleaned_title[1].parse::<f32>().unwrap();
+			volume = cleaned_title[1].parse::<f32>().unwrap_or(-1.0);
 			cleaned_title.remove(0);
 			cleaned_title.remove(0);
 		}
