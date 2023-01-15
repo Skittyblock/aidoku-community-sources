@@ -1,0 +1,15 @@
+[
+	{
+		"type": "group",
+		"title": "Settings",
+		"items": [
+			{
+				"type": "switch",
+				"key": "optionalPages",
+				"title": "Show optional pages",
+				"subtitle": "Enable to see warning pages, notes, etc...",
+				"default": true
+			}
+		]
+	}
+]
