@@ -86,9 +86,9 @@ pub fn get_manga_id(url: String) -> String {
 	// Example Url: https://www.webtoons.com/episodeList?titleNo=3581
 	// parse "3581" from the url
 
-	// Webtoons also has a different category called "Canvas" titles which are in a different format.
-	// They contain "challenge" in the url, so we have to account for that
-	// Simple solution, append "challenge" to the id if it's a canvas title
+	// Webtoons also has a different category called "Canvas" titles which are in a
+	// different format. They contain "challenge" in the url, so we have to account
+	// for that; simple solution, append "challenge" to the id if it's a canvas title
 	// Example Url: https://www.webtoons.com/en/challenge/meme-girls/list?title_no=304446
 	// Example Url: https://www.webtoons.com/challenge/episodeList?titleNo=304446
 	// parse "304446-challenge" from the url
@@ -127,9 +127,9 @@ pub fn get_chapter_id(url: String) -> String {
 	// Example Url: https://www.webtoons.com/viewer?titleNo=3581&episodeNo=1
 	// parse "1" from the url
 
-	// Webtoons also has a different category called "Canvas" titles which are in a different format.
-	// They contain "challenge" in the url, so we have to account for that
-	// Simple solution, append "challenge" to the id if it's a canvas title
+	// Webtoons also has a different category called "Canvas" titles which are in a
+	// different format. They contain "challenge" in the url, so we have to account
+	// for that; simple solution, append "challenge" to the id if it's a canvas title
 	// Example Url: https://www.webtoons.com/en/challenge/meme-girls/duolingo-chan/viewer?title_no=304446&episode_no=1
 	// Example Url: https://www.webtoons.com/challenge/viewer?titleNo=304446&episodeNo=1
 	// parse "1-challenge" from the url
@@ -167,7 +167,8 @@ pub fn get_manga_url(manga_id: String, base_url: String) -> String {
 	// Example manga id: 3581
 	// return "https://www.webtoons.com/episodeList?titleNo=3581"
 
-	// For canvas titles, we have to remove the "challenge" from the id and append it to the url
+	// For canvas titles, we have to remove the "challenge" from the id
+	// and append it to the url
 	// Example manga id: 304446-challenge
 	// return "https://www.webtoons.com/challenge/episodeList?titleNo=304446"
 
@@ -177,7 +178,8 @@ pub fn get_manga_url(manga_id: String, base_url: String) -> String {
 
 	let base_url = split_url.join("/");
 
-	// Removing the "challenge" from the id if it's a canvas title and appending it to the url
+	// Removing the "challenge" from the id if it's a canvas title
+	// and appending it to the url
 	if manga_id.contains("-challenge") {
 		let manga_id = manga_id.replace("-challenge", "");
 		format!("{}/challenge/episodeList?titleNo={}", base_url, manga_id)
@@ -192,8 +194,8 @@ pub fn get_chapter_url(chapter_id: String, manga_id: String, base_url: String) -
 	// Example manga id: 3581
 	// return "https://www.webtoons.com/viewer?titleNo=3581&episodeNo=1"
 
-	// For canvas titles, we have to remove the "challenge" from the id's and append it to the url
-	// Example chapter id: 1-challenge
+	// For canvas titles, we have to remove the "challenge" from the id's
+	// and append it to the url Example chapter id: 1-challenge
 	// Example manga id: 304446-challenge
 	// return "https://www.webtoons.com/challenge/viewer?titleNo=304446&episodeNo=1"
 
@@ -203,7 +205,8 @@ pub fn get_chapter_url(chapter_id: String, manga_id: String, base_url: String) -
 
 	let base_url = split_url.join("/");
 
-	// Removing the "challenge" from the id's if it's a canvas title and appending it to the url
+	// Removing the "challenge" from the id's if it's a canvas title
+	// and appending it to the url
 	if manga_id.contains("-challenge") && chapter_id.contains("-challenge") {
 		let manga_id = manga_id.replace("-challenge", "");
 		let chapter_id = chapter_id.replace("-challenge", "");

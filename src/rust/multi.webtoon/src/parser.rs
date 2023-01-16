@@ -30,7 +30,8 @@ pub fn parse_manga_list(base_url: String, filters: Vec<Filter>) -> Result<MangaP
 
 	let mut mangas: Vec<Manga> = Vec::new();
 
-	// Canvas series are series uploaded by individual artists, aka unlicensed series
+	// Canvas series are series uploaded by individual artists,
+	// aka unlicensed series
 	let canvas_series = defaults_get("canvasSeries")?.as_bool().unwrap_or(true);
 
 	let selector = {
@@ -80,7 +81,8 @@ pub fn parse_manga_list(base_url: String, filters: Vec<Filter>) -> Result<MangaP
 }
 
 pub fn parse_canvas_list(url: String, page: i32) -> Result<MangaPageResult> {
-	// Canvas series are series uploaded by individual artists, aka unlicensed series
+	// Canvas series are series uploaded by individual artists,
+	// aka unlicensed series
 	let canvas_series = defaults_get("canvasSeries")?.as_bool().unwrap_or(true);
 	// If canvas series are disabled, return an empty result
 	if !canvas_series {
