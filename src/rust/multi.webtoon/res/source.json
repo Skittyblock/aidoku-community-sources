@@ -50,6 +50,15 @@
 		},
 		{
 			"name": "Top"
+		},
+		{
+			"name": "Canvas Latest"
+		},
+		{
+			"name": "Canvas Popular"
+		},
+		{
+			"name": "Canvas Top"
 		}
 	]
 }

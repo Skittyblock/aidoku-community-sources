@@ -18,8 +18,8 @@ fn get_manga_list(filters: Vec<Filter>, _page: i32) -> Result<MangaPageResult> {
 }
 
 #[get_manga_listing]
-fn get_manga_listing(listing: Listing, _page: i32) -> Result<MangaPageResult> {
-	parser::parse_manga_listing(get_base_url(false), listing)
+fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
+	parser::parse_manga_listing(get_base_url(false), listing, page)
 }
 
 #[get_manga_details]

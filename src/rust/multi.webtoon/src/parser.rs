@@ -79,17 +79,83 @@ pub fn parse_manga_list(base_url: String, filters: Vec<Filter>) -> Result<MangaP
 	})
 }
 
-pub fn parse_manga_listing(base_url: String, listing: Listing) -> Result<MangaPageResult> {
+pub fn parse_canvas_list(url: String, page: i32) -> Result<MangaPageResult> {
+	// Canvas series are series uploaded by individual artists, aka unlicensed series
+	let canvas_series = defaults_get("canvasSeries")?.as_bool().unwrap_or(true);
+	// If canvas series are disabled, return an empty result
+	if !canvas_series {
+		return Ok(MangaPageResult {
+			..Default::default()
+		});
+	};
+
+	let url = format!("{}&page={}", url, page);
+
+	let html = request(&url, false).html().expect("Failed to get html");
+
+	let mut mangas: Vec<Manga> = Vec::new();
+
+	for manga in html
+		.select("#content div.challenge_lst > ul > li > a")
+		.array()
+	{
+		let manga_node = manga.as_node().expect("Failed to get manga node");
+		let id = get_manga_id(manga_node.attr("href").read());
+		let cover = manga_node.select("img").attr("src").read();
+		let title = manga_node.select(".subj").text().read();
+		let categories = [manga_node.select(".genre").text().read()].to_vec();
+		let author = manga_node.select(".author").text().read();
+
+		let url = manga_node.attr("href").read();
+
+		mangas.push(Manga {
+			id,
+			cover,
+			title,
+			author,
+			url,
+			categories,
+			viewer: MangaViewer::Scroll,
+			..Default::default()
+		});
+	}
+
+	let has_more = html
+		.select("#content > div.cont_box > div.challenge_cont_area > div.paginate > a.pg_next")
+		.text()
+		.read() != "";
+
+	Ok(MangaPageResult {
+		manga: mangas,
+		has_more,
+	})
+}
+
+pub fn parse_manga_listing(
+	base_url: String,
+	listing: Listing,
+	page: i32,
+) -> Result<MangaPageResult> {
 	let url = {
 		match listing.name.as_str() {
 			"Latest" => format!("{}/genre?sortOrder=UPDATE", base_url),
 			"Popular" => format!("{}/genre?sortOrder=READ_COUNT", base_url),
 			"Top" => format!("{}/genre?sortOrder=LIKEIT", base_url),
+			"Canvas Latest" => format!("{}/challenge/list?genreTab=ALL&sortOrder=UPDATE", base_url),
+			"Canvas Popular" => format!(
+				"{}/challenge/list?genreTab=ALL&sortOrder=READ_COUNT",
+				base_url
+			),
+			"Canvas Top" => format!("{}/challenge/list?genreTab=ALL&sortOrder=LIKEIT", base_url),
 			_ => format!("{}/genre", base_url),
 		}
 	};
 
-	parse_manga_list(url, Vec::new())
+	if url.contains("challenge") {
+		parse_canvas_list(url, page)
+	} else {
+		parse_manga_list(url, Vec::new())
+	}
 }
 
 pub fn parse_manga_details(base_url: String, manga_id: String) -> Result<Manga> {
