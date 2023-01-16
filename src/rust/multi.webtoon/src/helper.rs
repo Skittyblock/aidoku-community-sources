@@ -86,11 +86,18 @@ pub fn get_manga_id(url: String) -> String {
 	// Example Url: https://www.webtoons.com/episodeList?titleNo=3581
 	// parse "3581" from the url
 
-	if url.contains("title_no") || url.contains("titleNo") {
+	// Webtoons also has a different category called "Canvas" titles which are in a different format.
+	// They contain "challenge" in the url, so we have to account for that
+	// Simple solution, append "challenge" to the id if it's a canvas title
+	// Example Url: https://www.webtoons.com/en/challenge/meme-girls/list?title_no=304446
+	// Example Url: https://www.webtoons.com/challenge/episodeList?titleNo=304446
+	// parse "304446-challenge" from the url
+
+	if url.contains("title_no=") || url.contains("titleNo=") {
 		let split_url = {
-			if url.contains("title_no") {
+			if url.contains("title_no=") {
 				url.split("title_no=").collect::<Vec<&str>>()
-			} else if url.contains("titleNo") {
+			} else if url.contains("titleNo=") {
 				url.split("titleNo=").collect::<Vec<&str>>()
 			} else {
 				Vec::new()
@@ -99,7 +106,13 @@ pub fn get_manga_id(url: String) -> String {
 
 		if !split_url.is_empty() {
 			let manga_id = split_url[1];
+
+			// Append "challenge" to the id if it's a canvas title
+			if url.contains("challenge") {
+				format!("{}-challenge", manga_id)
+			} else {
 			String::from(manga_id)
+			}
 		} else {
 			String::new()
 		}
