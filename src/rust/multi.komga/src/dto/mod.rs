@@ -89,7 +89,7 @@ impl SeriesDto<'_> {
 				"LEFT_TO_RIGHT" => aidoku::MangaViewer::Ltr,
 				"RIGHT_TO_LEFT" => aidoku::MangaViewer::Rtl,
 				"VERTICAL" => aidoku::MangaViewer::Vertical,
-				"SCROLL" => aidoku::MangaViewer::Scroll,
+				"SCROLL" | "WEBTOON" => aidoku::MangaViewer::Scroll,
 				_ => aidoku::MangaViewer::Rtl,
 			},
 		}
