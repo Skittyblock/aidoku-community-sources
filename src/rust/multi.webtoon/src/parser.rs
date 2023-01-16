@@ -58,12 +58,9 @@ pub fn parse_manga_list(base_url: String, filters: Vec<Filter>) -> Result<MangaP
 			title,
 			author,
 			artist,
-			description: String::new(),
 			url,
-			categories: Vec::new(),
-			status: MangaStatus::Unknown,
-			nsfw: MangaContentRating::Safe,
 			viewer: MangaViewer::Scroll,
+			..Default::default()
 		});
 	}
 
@@ -167,8 +164,8 @@ pub fn parse_manga_details(base_url: String, manga_id: String) -> Result<Manga> 
 		url,
 		categories,
 		status,
-		nsfw: MangaContentRating::Safe,
 		viewer: MangaViewer::Scroll,
+		..Default::default()
 	})
 }
 
@@ -283,9 +280,9 @@ pub fn parse_chapter_list(base_url: String, manga_id: String) -> Result<Vec<Chap
 			volume,
 			chapter: chapter_number,
 			date_updated,
-			scanlator: String::new(),
 			url: chapter_url,
 			lang,
+			..Default::default()
 		});
 	}
 
@@ -319,8 +316,7 @@ pub fn parse_page_list(
 		pages.push(Page {
 			index: index as i32,
 			url,
-			base64: String::new(),
-			text: String::new(),
+			..Default::default()
 		});
 	}
 
