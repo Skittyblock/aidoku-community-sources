@@ -98,6 +98,12 @@ pub fn parse_manga_details(base_url: String, manga_id: String) -> Result<Manga> 
 	let html = request(&url, false).html().expect("Failed to get html");
 
 	let cover = {
+		// Canvas series have different cover images
+		if url.contains("challenge") {
+			html.select("#content > div.cont_box > div.detail_header.challenge > span.thmb > img")
+				.attr("src")
+				.read()
+		} else {
 		// Cover is set as background image using inline css
 		// Example: background:#fff url(https://webtoon-phinf.pstatic.net/20211111_3/1636569655006lMyqV_JPEG/6UltraAlternateCharacter_desktop_thumbnail.jpg?type=a306) no-repeat 100% 100%;background-size:306px
 		// This parses the styles and gets the image url
@@ -108,6 +114,7 @@ pub fn parse_manga_details(base_url: String, manga_id: String) -> Result<Manga> 
 
 		let split_styles = style_attr.split(['(', ')']).collect::<Vec<&str>>();
 		String::from(split_styles[1])
+		}
 	};
 
 	let title = html
@@ -157,11 +164,15 @@ pub fn parse_manga_details(base_url: String, manga_id: String) -> Result<Manga> 
 		}
 	};
 
-	let categories = [html
-		.select("#content > div.cont_box > div.detail_header > div.info > .genre")
-		.text()
-		.read()]
-	.to_vec();
+	let mut categories: Vec<String> = Vec::new();
+	let categories_selector =
+		html.select("#content > div.cont_box > div.detail_header > div.info > .genre");
+
+	for category in categories_selector.array() {
+		let category_node = category.as_node().expect("Failed to get category node");
+		let category = category_node.text().read();
+		categories.push(category);
+	}
 
 	Ok(Manga {
 		id: manga_id,
