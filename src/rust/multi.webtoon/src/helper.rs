@@ -127,11 +127,18 @@ pub fn get_chapter_id(url: String) -> String {
 	// Example Url: https://www.webtoons.com/viewer?titleNo=3581&episodeNo=1
 	// parse "1" from the url
 
-	if url.contains("episode_no") || url.contains("episodeNo") {
+	// Webtoons also has a different category called "Canvas" titles which are in a different format.
+	// They contain "challenge" in the url, so we have to account for that
+	// Simple solution, append "challenge" to the id if it's a canvas title
+	// Example Url: https://www.webtoons.com/en/challenge/meme-girls/duolingo-chan/viewer?title_no=304446&episode_no=1
+	// Example Url: https://www.webtoons.com/challenge/viewer?titleNo=304446&episodeNo=1
+	// parse "1-challenge" from the url
+
+	if url.contains("episode_no=") || url.contains("episodeNo=") {
 		let split_url = {
-			if url.contains("episode_no") {
+			if url.contains("episode_no=") {
 				url.split("episode_no=").collect::<Vec<&str>>()
-			} else if url.contains("episodeNo") {
+			} else if url.contains("episodeNo=") {
 				url.split("episodeNo=").collect::<Vec<&str>>()
 			} else {
 				Vec::new()
@@ -140,7 +147,13 @@ pub fn get_chapter_id(url: String) -> String {
 
 		if !split_url.is_empty() {
 			let chapter_id = split_url[1];
+
+			// Append "challenge" to the id if it's a canvas title
+			if url.contains("challenge") {
+				format!("{}-challenge", chapter_id)
+			} else {
 			String::from(chapter_id)
+			}
 		} else {
 			String::new()
 		}
