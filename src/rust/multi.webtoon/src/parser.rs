@@ -104,16 +104,16 @@ pub fn parse_manga_details(base_url: String, manga_id: String) -> Result<Manga> 
 				.attr("src")
 				.read()
 		} else {
-		// Cover is set as background image using inline css
-		// Example: background:#fff url(https://webtoon-phinf.pstatic.net/20211111_3/1636569655006lMyqV_JPEG/6UltraAlternateCharacter_desktop_thumbnail.jpg?type=a306) no-repeat 100% 100%;background-size:306px
-		// This parses the styles and gets the image url
-		let style_attr = html
-			.select("#content > div.cont_box > div.detail_body.banner")
-			.attr("style")
-			.read();
+			// Cover is set as background image using inline css
+			// Example: background:#fff url(https://webtoon-phinf.pstatic.net/20211111_3/1636569655006lMyqV_JPEG/6UltraAlternateCharacter_desktop_thumbnail.jpg?type=a306) no-repeat 100% 100%;background-size:306px
+			// This parses the styles and gets the image url
+			let style_attr = html
+				.select("#content > div.cont_box > div.detail_body.banner")
+				.attr("style")
+				.read();
 
-		let split_styles = style_attr.split(['(', ')']).collect::<Vec<&str>>();
-		String::from(split_styles[1])
+			let split_styles = style_attr.split(['(', ')']).collect::<Vec<&str>>();
+			String::from(split_styles[1])
 		}
 	};
 
@@ -211,7 +211,7 @@ pub fn parse_chapter_list(base_url: String, manga_id: String) -> Result<Vec<Chap
 			if !title.is_empty() {
 				let title_chars = title[0].chars().collect::<Vec<char>>();
 
-				if title_chars.len() >= 2
+				if title_chars.len() >= 3
 					&& (title_chars[1] == 'S' || title_chars[1] == 'T')
 					&& String::from(title_chars[2]).parse::<f64>().is_ok()
 				{
@@ -221,7 +221,7 @@ pub fn parse_chapter_list(base_url: String, manga_id: String) -> Result<Vec<Chap
 
 				// Remove leading episode text
 				// This is for titles like "Ep.1 - PeePeePooPoo"
-				if title_chars.len() >= 3
+				if title_chars.len() >= 4
 					&& (title_chars[0] == 'E'
 						&& (title_chars[1] == 'p' || title_chars[1] == 'P')
 						&& title_chars[2] == '.')
