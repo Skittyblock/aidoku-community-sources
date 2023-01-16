@@ -7,7 +7,7 @@
 				"type": "switch",
 				"key": "optionalPages",
 				"title": "Show optional pages",
-				"subtitle": "Enable to see warning pages, notes, etc...",
+				"subtitle": "Warning pages, author notes, etc...",
 				"default": true
 			}
 		]
