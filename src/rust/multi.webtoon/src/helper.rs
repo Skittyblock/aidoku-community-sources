@@ -111,7 +111,7 @@ pub fn get_manga_id(url: String) -> String {
 			if url.contains("challenge") {
 				format!("{}-challenge", manga_id)
 			} else {
-			String::from(manga_id)
+				String::from(manga_id)
 			}
 		} else {
 			String::new()
@@ -152,7 +152,7 @@ pub fn get_chapter_id(url: String) -> String {
 			if url.contains("challenge") {
 				format!("{}-challenge", chapter_id)
 			} else {
-			String::from(chapter_id)
+				String::from(chapter_id)
 			}
 		} else {
 			String::new()
@@ -182,7 +182,7 @@ pub fn get_manga_url(manga_id: String, base_url: String) -> String {
 		let manga_id = manga_id.replace("-challenge", "");
 		format!("{}/challenge/episodeList?titleNo={}", base_url, manga_id)
 	} else {
-	format!("{}/episodeList?titleNo={}", base_url, manga_id)
+		format!("{}/episodeList?titleNo={}", base_url, manga_id)
 	}
 }
 
@@ -192,16 +192,31 @@ pub fn get_chapter_url(chapter_id: String, manga_id: String, base_url: String) -
 	// Example manga id: 3581
 	// return "https://www.webtoons.com/viewer?titleNo=3581&episodeNo=1"
 
+	// For canvas titles, we have to remove the "challenge" from the id's and append it to the url
+	// Example chapter id: 1-challenge
+	// Example manga id: 304446-challenge
+	// return "https://www.webtoons.com/challenge/viewer?titleNo=304446&episodeNo=1"
+
 	// Removing the language tag from the url, because it is not required
 	let mut split_url = base_url.split('/').collect::<Vec<&str>>();
 	split_url.pop();
 
 	let base_url = split_url.join("/");
 
-	format!(
-		"{}/viewer?titleNo={}&episodeNo={}",
-		base_url, manga_id, chapter_id
-	)
+	// Removing the "challenge" from the id's if it's a canvas title and appending it to the url
+	if manga_id.contains("-challenge") && chapter_id.contains("-challenge") {
+		let manga_id = manga_id.replace("-challenge", "");
+		let chapter_id = chapter_id.replace("-challenge", "");
+		format!(
+			"{}/challenge/viewer?titleNo={}&episodeNo={}",
+			base_url, manga_id, chapter_id
+		)
+	} else {
+		format!(
+			"{}/viewer?titleNo={}&episodeNo={}",
+			base_url, manga_id, chapter_id
+		)
+	}
 }
 
 /// Returns the search status as a boolean and the search string if there is one
