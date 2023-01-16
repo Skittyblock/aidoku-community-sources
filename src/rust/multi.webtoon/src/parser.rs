@@ -268,8 +268,7 @@ pub fn parse_chapter_list(base_url: String, manga_id: String) -> Result<Vec<Chap
 			match lang.as_str() {
 				"en" => date.text().as_date("MMM dd, yyyy", Some("en-US"), None),
 				"zh-hant" => date.text().as_date("yyyy/mm/dd", Some("zh-Hant"), None),
-				// FIXME: Can't parse thai dates
-				"th" => date.text().as_date("dd MM yyyy", Some("th-TH"), None),
+				"th" => date.text().as_date("dd MMM YYYY", Some("th-TH"), None),
 				"id" => date.text().as_date("yyyy MMM dd", Some("id-ID"), None),
 				"es" => date.text().as_date("dd-MMM-yyyy", Some("es-ES"), None),
 				"fr" => date.text().as_date("dd MMM yyyy", Some("fr-FR"), None),
