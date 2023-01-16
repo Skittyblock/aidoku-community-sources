@@ -30,16 +30,25 @@ pub fn parse_manga_list(base_url: String, filters: Vec<Filter>) -> Result<MangaP
 
 	let mut mangas: Vec<Manga> = Vec::new();
 
-	for manga in html
-		.select("#content > div.card_wrap > ul > li > a")
-		.array()
-	{
+	// Canvas series are series uploaded by individual artists, aka unlicensed series
+	let canvas_series = defaults_get("canvasSeries")?.as_bool().unwrap_or(true);
+
+	let selector = {
+		if canvas_series {
+			"#content > div.card_wrap ul > li > a"
+		} else {
+			"#content > div.card_wrap ul.card_lst li > a"
+		}
+	};
+
+	for manga in html.select(selector).array() {
 		let manga_node = manga.as_node().expect("Failed to get manga node");
 		let id = get_manga_id(manga_node.attr("href").read());
 		let cover = manga_node.select("img").attr("src").read();
-		let title = manga_node.select(".info > .subj").text().read();
+		let title = manga_node.select(".subj").text().read();
+		let genere = [manga_node.select(".genre").text().read()].to_vec();
 
-		let author_artist = manga_node.select(".info > .author").text().read();
+		let author_artist = manga_node.select(".author").text().read();
 		let author_artist = author_artist.split('/').collect::<Vec<&str>>();
 
 		let author = String::from(author_artist[0].trim());
@@ -58,6 +67,7 @@ pub fn parse_manga_list(base_url: String, filters: Vec<Filter>) -> Result<MangaP
 			author,
 			artist,
 			url,
+			categories: genere,
 			viewer: MangaViewer::Scroll,
 			..Default::default()
 		});
