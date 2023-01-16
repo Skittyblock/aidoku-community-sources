@@ -6,7 +6,7 @@ use aidoku::{
 	Filter, FilterType,
 };
 
-/// Returns the correct url for the selected language
+/// Returns the correct url for the selected language and mobile/desktop
 pub fn get_base_url(mobile: bool) -> String {
 	let desktop_base_url = "https://www.webtoons.com";
 	let mobile_base_url = "https://m.webtoons.com";
@@ -81,7 +81,6 @@ pub fn urlencode(string: String) -> String {
 }
 
 /// Returns the ID of a manga from a URL.
-// *NOTE: This was written by GitHub Copilot.
 pub fn get_manga_id(url: String) -> String {
 	// Example Url: https://www.webtoons.com/en/action/ultra-alternate-character/list?title_no=3581
 	// Example Url: https://www.webtoons.com/episodeList?titleNo=3581
@@ -110,7 +109,6 @@ pub fn get_manga_id(url: String) -> String {
 }
 
 /// Returns the ID of a chapter from a URL.
-// *NOTE: This was written by GitHub Copilot.
 pub fn get_chapter_id(url: String) -> String {
 	// Example Url: https://www.webtoons.com/en/action/ultra-alternate-character/ep-1-healer-servant/viewer?title_no=3581&episode_no=1
 	// Example Url: https://www.webtoons.com/viewer?titleNo=3581&episodeNo=1
@@ -139,7 +137,6 @@ pub fn get_chapter_id(url: String) -> String {
 }
 
 /// Returns full URL of a manga from a manga ID.
-// *NOTE: This was written by GitHub Copilot.
 pub fn get_manga_url(manga_id: String, base_url: String) -> String {
 	// Example manga id: 3581
 	// return "https://www.webtoons.com/episodeList?titleNo=3581"
@@ -154,7 +151,6 @@ pub fn get_manga_url(manga_id: String, base_url: String) -> String {
 }
 
 /// Returns full URL of a chapter from a chapter ID and manga ID.
-// *NOTE: This was written by GitHub Copilot.
 pub fn get_chapter_url(chapter_id: String, manga_id: String, base_url: String) -> String {
 	// Example chapter id: 1
 	// Example manga id: 3581
