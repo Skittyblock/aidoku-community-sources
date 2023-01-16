@@ -45,5 +45,5 @@ fn modify_image_request(request: Request) {
 
 #[handle_url]
 pub fn handle_url(url: String) -> Result<DeepLink> {
-	parser::handle_url(url)
+	parser::handle_url(get_base_url(false), url)
 }

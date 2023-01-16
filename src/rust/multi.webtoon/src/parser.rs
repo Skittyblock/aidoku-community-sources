@@ -7,7 +7,7 @@ use aidoku::{
 	Chapter, DeepLink, Filter, Listing, Manga, MangaPageResult, MangaStatus, MangaViewer, Page,
 };
 
-use crate::{get_manga_details, helper::*};
+use crate::helper::*;
 
 pub fn parse_manga_list(base_url: String, filters: Vec<Filter>) -> Result<MangaPageResult> {
 	let (query, search) = check_for_search(filters);
@@ -347,9 +347,9 @@ pub fn modify_image_request(base_url: String, request: Request) {
 	request.header("Referer", &base_url);
 }
 
-pub fn handle_url(url: String) -> Result<DeepLink> {
+pub fn handle_url(base_url: String, url: String) -> Result<DeepLink> {
 	let manga_id = get_manga_id(url);
-	let parsed = get_manga_details(manga_id);
+	let parsed = parse_manga_details(base_url, manga_id);
 
 	Ok(DeepLink {
 		manga: parsed.ok(),
