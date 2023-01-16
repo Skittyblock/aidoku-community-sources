@@ -167,13 +167,23 @@ pub fn get_manga_url(manga_id: String, base_url: String) -> String {
 	// Example manga id: 3581
 	// return "https://www.webtoons.com/episodeList?titleNo=3581"
 
+	// For canvas titles, we have to remove the "challenge" from the id and append it to the url
+	// Example manga id: 304446-challenge
+	// return "https://www.webtoons.com/challenge/episodeList?titleNo=304446"
+
 	// Removing the language tag from the url, because it is not required
 	let mut split_url = base_url.split('/').collect::<Vec<&str>>();
 	split_url.pop();
 
 	let base_url = split_url.join("/");
 
+	// Removing the "challenge" from the id if it's a canvas title and appending it to the url
+	if manga_id.contains("-challenge") {
+		let manga_id = manga_id.replace("-challenge", "");
+		format!("{}/challenge/episodeList?titleNo={}", base_url, manga_id)
+	} else {
 	format!("{}/episodeList?titleNo={}", base_url, manga_id)
+	}
 }
 
 /// Returns full URL of a chapter from a chapter ID and manga ID.
