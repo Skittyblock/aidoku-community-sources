@@ -46,7 +46,7 @@ pub fn parse_manga_list(base_url: String, filters: Vec<Filter>) -> Result<MangaP
 		let id = get_manga_id(manga_node.attr("href").read());
 		let cover = manga_node.select("img").attr("src").read();
 		let title = manga_node.select(".subj").text().read();
-		let genere = [manga_node.select(".genre").text().read()].to_vec();
+		let categories = [manga_node.select(".genre").text().read()].to_vec();
 
 		let author_artist = manga_node.select(".author").text().read();
 		let author_artist = author_artist.split('/').collect::<Vec<&str>>();
@@ -67,7 +67,7 @@ pub fn parse_manga_list(base_url: String, filters: Vec<Filter>) -> Result<MangaP
 			author,
 			artist,
 			url,
-			categories: genere,
+			categories,
 			viewer: MangaViewer::Scroll,
 			..Default::default()
 		});
