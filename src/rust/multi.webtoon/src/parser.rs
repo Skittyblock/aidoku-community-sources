@@ -4,8 +4,7 @@ use aidoku::{
 	std::defaults::defaults_get,
 	std::net::Request,
 	std::{String, Vec},
-	Chapter, DeepLink, Filter, Listing, Manga, MangaContentRating, MangaPageResult, MangaStatus,
-	MangaViewer, Page,
+	Chapter, DeepLink, Filter, Listing, Manga, MangaPageResult, MangaStatus, MangaViewer, Page,
 };
 
 use crate::{get_manga_details, helper::*};
