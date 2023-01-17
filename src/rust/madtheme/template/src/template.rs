@@ -224,11 +224,7 @@ pub trait MadTheme {
 			.filter_map(|node| {
 				if let Ok(node) = node.as_node() {
 					let url = node.select("a").attr("abs:href").read();
-					let id = url
-						.split('/')
-						.last()
-						.expect("expected last component")
-						.to_string();
+					let id = url.trim_start_matches(self.base_url()).to_string();
 
 					let title = node.select(".chapter-title").text().read();
 					let date_updated =
@@ -259,8 +255,13 @@ pub trait MadTheme {
 			.collect::<Vec<_>>())
 	}
 
-	fn get_page_list(&self, manga_id: String, id: String) -> Result<Vec<Page>> {
-		let url = format!("{}/{}/{}", self.base_url(), manga_id, id);
+	fn get_page_list(&self, _: String, id: String) -> Result<Vec<Page>> {
+		let url = if id.starts_with("http") {
+			// External chapter, so the id is the same as the URL
+			id
+		} else {
+			format!("{}{id}", self.base_url())
+		};
 		let request = Request::get(&url).header("Referer", self.base_url());
 		let html = request.string()?;
 
