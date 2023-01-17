@@ -104,8 +104,9 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 			}
 		}
 	}
-	get_instance().get_manga_list(get_search_url(
-		String::from("https://www.nettruyenme.com"),
+	let instance = get_instance()
+	instance.get_manga_list(get_search_url(
+		instance.base_url.clone(),
 		title,
 		page,
 		included_tags,
