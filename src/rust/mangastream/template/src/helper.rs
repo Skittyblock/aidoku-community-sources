@@ -258,8 +258,8 @@ pub fn urlencode<T: AsRef<[u8]>>(url: T) -> String {
 ///
 /// This is done by removing the random number near the end of the url
 ///
-/// This will work for most if not all sources that use randomized url's for the `manga url`,
-/// but for the `chapter url` it will only work for some sources
+/// This will work for most if not all sources that use randomized url's for the
+/// `manga url`, but for the `chapter url` it will only work for some sources
 pub fn get_permanet_url(original_url: String) -> String {
 	let mut original_url = original_url;
 
@@ -280,8 +280,8 @@ pub fn get_permanet_url(original_url: String) -> String {
 		.next()
 		.expect("Failed to split url by -");
 
-	// check if the garbage is a 10 digit number to prevent removing the wrong part of the url
-	// the garbage should always be a 10 digit number
+	// check if the garbage is a 10 digit number to prevent removing the wrong part
+	// of the url the garbage should always be a 10 digit number
 	if garbage.parse::<u32>().is_ok() && garbage.len() == 10 {
 		// remove the garbage from the url
 		// example https://luminousscans.com/series/1671729411-a-bad-person/

@@ -311,9 +311,9 @@ impl MangaStreamSource {
 			let chapter_node = chapter.as_node().expect("Failed to get chapter as node");
 			let raw_title = chapter_node.select(self.chapter_title).text().read();
 			let title = {
-				// Because every mangastream source likes to be different and not have a consistent
-				// chapter naming scheme we have to do some hacky stuff to get the chapter title because
-				// we can't use regex
+				// Because every mangastream source likes to be different and not have a
+				// consistent chapter naming scheme we have to do some hacky stuff to get the
+				// chapter title because we can't use regex
 
 				let mut title = raw_title.split_whitespace().collect::<Vec<&str>>();
 				if title.len() >= 2 && title[0] == "Chapter" && title[1].parse::<f64>().is_ok() {
