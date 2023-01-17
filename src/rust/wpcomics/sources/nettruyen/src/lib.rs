@@ -104,7 +104,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 			}
 		}
 	}
-	let instance = get_instance()
+	let instance = get_instance();
 	instance.get_manga_list(get_search_url(
 		instance.base_url.clone(),
 		title,
