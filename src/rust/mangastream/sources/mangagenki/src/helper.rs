@@ -20,7 +20,7 @@ pub fn get_listing_url(source: &MangaStreamSource, listing_name: String, page: i
 	} else {
 		&source.base_url
 	};
-	let url = match page {
+	match page {
 		1 if list_type != source.base_url => {
 			format!(
 				"{}/{}/?{}",
@@ -32,8 +32,7 @@ pub fn get_listing_url(source: &MangaStreamSource, listing_name: String, page: i
 			source.base_url, source.traverse_pathname, page, list_type
 		),
 		_ => source.base_url.clone(),
-	};
-	url
+	}
 }
 
 pub fn get_title_skip() -> Vec<String> {
