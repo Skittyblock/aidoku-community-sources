@@ -7,6 +7,8 @@ use aidoku::{
 use crate::helper::*;
 
 pub struct MangaStreamSource {
+	pub has_permanent_manga_url: bool,
+	pub has_permanent_chapter_url: bool,
 	pub is_nsfw: bool,
 	pub tagid_mapping: fn(String) -> String,
 	pub listing: [&'static str; 3],
@@ -53,6 +55,8 @@ pub struct MangaStreamSource {
 impl Default for MangaStreamSource {
 	fn default() -> Self {
 		MangaStreamSource {
+			has_permanent_manga_url: false,
+			has_permanent_chapter_url: false,
 			is_nsfw: false,
 			tagid_mapping: |str| str,
 			listing: ["Latest", "Popular", "New"],
@@ -89,7 +93,7 @@ impl Default for MangaStreamSource {
 			chapter_date_format_2: "",
 			language: "en",
 			language_2: "",
-			locale: "en_US",	
+			locale: "en_US",
 			locale_2: "",
 
 			alt_pages: false,
@@ -179,7 +183,15 @@ impl MangaStreamSource {
 			{
 				continue;
 			}
-			let id = manga_node.select("a").attr("href").read();
+			let id = {
+				let original_url = manga_node.select("a").attr("href").read();
+
+				if self.has_permanent_manga_url {
+					get_permanet_url(original_url)
+				} else {
+					original_url
+				}
+			};
 			let cover = get_image_src(manga_node);
 			mangas.push(Manga {
 				id,
@@ -285,7 +297,15 @@ impl MangaStreamSource {
 		for chapter in html.select(self.chapter_selector).array() {
 			let chapter_node = chapter.as_node();
 			let title = chapter_node.select(self.chapter_title).text().read();
-			let chapter_url = chapter_node.select(self.chapter_url).attr("href").read();
+			let chapter_url = {
+				let original_url = chapter_node.select(self.chapter_url).attr("href").read();
+
+				if self.has_permanent_chapter_url {
+					get_permanet_url(original_url)
+				} else {
+					original_url
+				}
+			};
 			let chapter_id = chapter_url.clone();
 			let chapter_number = get_chapter_number(title.clone());
 			let date_updated = get_date(self, chapter_node.select(self.chapter_date).text());

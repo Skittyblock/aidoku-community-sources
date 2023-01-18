@@ -185,7 +185,7 @@ pub fn parse_manga(obj: Node, id: String) -> Result<Manga> {
 		.select(".background_pic")
 		.select("img")
 		.attr("src")
-		.read();
+		.read() + "?type=crop540_540";
 
 	if cover.trim().is_empty() {
 		cover = obj
@@ -233,8 +233,8 @@ pub fn get_chapter_list(obj: Node, manga_id: String) -> Result<Vec<Chapter>> {
 		let chapter = id.parse::<f32>().unwrap();
 
 		// The mobile website sucks so we need to manually replace some chars
-		let title = obj
-			.select(".sub_title span")
+		let raw_title = obj
+			.select(".sub_title .ellipsis")
 			.text()
 			.read()
 			.trim()
@@ -245,6 +245,52 @@ pub fn get_chapter_list(obj: Node, manga_id: String) -> Result<Vec<Chapter>> {
 			.replace("&lt;", "<")
 			.replace("&gt;", ">")
 			.replace("&nbsp;", " ");
+
+		let mut volume = -1.0;
+
+		let title = {
+			let mut title = raw_title.split_whitespace().collect::<Vec<&str>>();
+
+			// Remove leading volume text and set volume accordingly
+			// This is for titles like "(S1) Chapter 1 - PeePeePooPoo)"
+			if title.len() >= 2 {
+				let title_chars = title[0].chars().collect::<Vec<char>>();
+
+				if title_chars[1] == 'S' && title_chars[2].to_string().parse::<f64>().is_ok() {
+					volume = title_chars[2].to_string().parse::<f32>().unwrap_or(-1.0);
+					title.remove(0);
+				}
+			}
+
+			// Remove leading season text and set volume accordingly
+			// This is for titles like "[Season 1] Chapter 1 - PeePeePooPoo)"
+			if title.len() >= 2
+				&& (title[0] == "[Season")
+				&& title[1].replace(']', "").parse::<f64>().is_ok()
+			{
+				volume = title[1].replace(']', "").parse::<f32>().unwrap_or(-1.0);
+				title.remove(0);
+				title.remove(0);
+			}
+
+			// Remove leading chapter/episode text
+			if title.len() >= 2
+				&& (title[0] == "Chapter"
+					|| title[0] == "Episode"
+					|| title[0] == "Ch." || title[0] == "Ep.")
+				&& title[1].replace(':', "").parse::<f64>().is_ok()
+			{
+				title.remove(0);
+				title.remove(0);
+			}
+
+			// Remove leading symbols
+			if !title.is_empty() && (title[0] == "-" || title[0] == ":") {
+				title.remove(0);
+			}
+
+			title.join(" ")
+		};
 
 		let date_updated = obj
 			.select(".date")
@@ -257,7 +303,7 @@ pub fn get_chapter_list(obj: Node, manga_id: String) -> Result<Vec<Chapter>> {
 			id: format!("{}|{}", manga_id, id),
 			title,
 			chapter,
-			volume: 1.0,
+			volume,
 			date_updated,
 			scanlator: String::new(),
 			url: String::new(),

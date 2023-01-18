@@ -15,10 +15,7 @@ pub fn urlencode(string: String) -> String {
 
 	for byte in bytes {
 		let curr = *byte;
-		if (b'a'..=b'z').contains(&curr)
-			|| (b'A'..=b'Z').contains(&curr)
-			|| (b'0'..=b'9').contains(&curr)
-		{
+		if curr.is_ascii_lowercase() || curr.is_ascii_uppercase() || curr.is_ascii_digit() {
 			result.push(curr);
 		} else {
 			result.push(b'%');
@@ -47,10 +44,7 @@ pub fn img_url_encode(string: String) -> String {
 			result.push(b'.');
 		} else if curr == b'_' {
 			result.push(b'_');
-		} else if (b'a'..=b'z').contains(&curr)
-			|| (b'A'..=b'Z').contains(&curr)
-			|| (b'0'..=b'9').contains(&curr)
-		{
+		} else if curr.is_ascii_lowercase() || curr.is_ascii_uppercase() || curr.is_ascii_digit() {
 			result.push(curr);
 		} else {
 			result.push(b'%');
@@ -192,7 +186,8 @@ pub fn get_int_manga_id(manga_id: String, base_url: String, path: String) -> Str
 	let url = base_url + "/" + path.as_str() + "/" + manga_id.as_str();
 	let html = Request::new(url.as_str(), HttpMethod::Get).html();
 	let id_html = html.select("script#wp-manga-js-extra").html().read();
-	let id = &id_html[id_html.find("manga_id").unwrap() + 11..id_html.find("\"};").unwrap()];
+	let id = &id_html[id_html.find("manga_id").expect("Could not find manga_id") + 11
+		..id_html.find("\"}").expect("Could not find end of manga_id")];
 	String::from(id)
 }
 

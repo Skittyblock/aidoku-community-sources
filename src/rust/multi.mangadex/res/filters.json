@@ -7,15 +7,6 @@
 	},
 	{
 		"type": "group",
-		"name": "Chapters",
-		"filters": [{
-			"type": "check",
-			"name": "Has available chapters",
-			"default": true
-		}]
-	},
-	{
-		"type": "group",
 		"name": "Original language",
 		"filters": [
 			{
@@ -139,23 +130,6 @@
 			"index": 0,
 			"ascending": false
 		}
-	},
-	{
-		"type": "select",
-		"name": "Included tags mode",
-		"options": [
-			"AND",
-			"OR"
-		]
-	},
-	{
-		"type": "select",
-		"name": "Excluded tags mode",
-		"options": [
-			"AND",
-			"OR"
-		],
-		"default": 1
 	},
 	{
 		"type": "group",
@@ -636,5 +610,27 @@
 				"canExclude": true
 			}
 		]
+	},
+	{
+		"type": "select",
+		"name": "Included tags mode",
+		"options": [
+			"AND",
+			"OR"
+		]
+	},
+	{
+		"type": "select",
+		"name": "Excluded tags mode",
+		"options": [
+			"AND",
+			"OR"
+		],
+		"default": 1
+	},
+	{
+		"type": "check",
+		"name": "Has available chapters",
+		"default": true
 	}
 ]

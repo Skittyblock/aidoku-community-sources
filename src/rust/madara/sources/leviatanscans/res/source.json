@@ -3,7 +3,7 @@
 		"id": "multi.leviatanscans",
 		"lang": "multi",
 		"name": "LeviatanScans",
-		"version": 1,
+		"version": 3,
 		"url": "https://leviatanscans.com",
 		"nsfw": 0
 	},
@@ -15,6 +15,13 @@
 			"name": "Popular"
 		}
 	],
-	"languages": [{ "code": "en" }, { "code": "es" }],
+	"languages": [
+		{
+			"code": "en"
+		},
+		{
+			"code": "es"
+		}
+	],
 	"languageSelectType": "single"
 }

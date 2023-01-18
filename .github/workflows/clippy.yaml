@@ -13,7 +13,7 @@ jobs:
       -
         name: Get changed files
         id: files
-        uses: jitterbit/get-changed-files@v1
+        uses: Ana06/get-changed-files@v2.2.0
         with:
           format: json
       -

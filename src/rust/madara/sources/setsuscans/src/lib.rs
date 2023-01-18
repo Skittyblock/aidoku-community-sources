@@ -17,8 +17,9 @@ fn get_data() -> template::MadaraSiteData {
 	data
 }
 
-// SetsuScans keeps its manga data in its src attribute as a base64 encoded string
-// so this function overrides the default get_manga_id function to handle SetsuScans
+// SetsuScans keeps its manga data in its src attribute as a base64 encoded
+// string so this function overrides the default get_manga_id function to handle
+// SetsuScans
 fn get_manga_id(manga_id: String, base_url: String, path: String) -> String {
 	let url = base_url + "/" + path.as_str() + "/" + manga_id.as_str();
 	let html = Request::new(url.as_str(), HttpMethod::Get).html();
