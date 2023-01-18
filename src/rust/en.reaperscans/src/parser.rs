@@ -327,6 +327,8 @@ pub fn parse_page_list(
 		.expect("Failed to get html");
 
 	let mut pages: Vec<Page> = Vec::new();
+	// Stores the indices of the pages so duplicates can be incremented.
+	let mut indices: Vec<i32> = Vec::new();
 
 	for page in html.select("main div img.max-w-full").array() {
 		let page_node = page.as_node().expect("Failed to get page node");
@@ -341,9 +343,16 @@ pub fn parse_page_list(
 			.next()
 			.expect("Failed to get image name from url");
 
-		let index = *extract_f32_from_string(String::from(image_name))
+		let mut index = *extract_f32_from_string(String::from(image_name))
 			.first()
 			.expect("Failed to get index") as i32;
+
+		// ReaperScans sometimes has duplicate image numbers, so this will increment the
+		// index for pages that have the same index.
+		if indices.contains(&index) {
+			index += 1;
+		}
+		indices.push(index);
 
 		let encoded_image_name = urlencode(String::from(image_name));
 		let encoded_url = url.replace(image_name, &encoded_image_name);
