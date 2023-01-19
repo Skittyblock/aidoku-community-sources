@@ -13,11 +13,11 @@ pub fn listing_map(listing: String) -> String {
 
 // MARK: Other utilities
 pub fn get_search_url(base_url: String, query: String, genre: String, page: i32) -> String {
-	return if !query.is_empty() {
+	if !query.is_empty() {
 		format!("{base_url}/search?page={page}&keyword={query}")
 	} else if !genre.is_empty() {
 		format!("{base_url}/genre/{genre}?page={page}")
 	} else {
 		base_url
-	};
+	}
 }
