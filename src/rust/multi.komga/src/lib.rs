@@ -23,7 +23,7 @@ fn get_authorization_header() -> String {
 
 	let authb = auth.as_bytes();
 	let mut buf = vec![0; authb.len() * 4 / 3 + 4];
-	let len = base64::encode_config_slice(&authb, base64::STANDARD, &mut buf);
+	let len = base64::encode_config_slice(authb, base64::STANDARD, &mut buf);
 	buf.resize(len, 0);
 
 	format!("Basic {}", String::from_utf8_lossy(&buf))
