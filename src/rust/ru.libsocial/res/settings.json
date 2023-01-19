@@ -1,0 +1,71 @@
+[
+  {
+    "type": "group",
+    "title": "Изображения",
+    "items": [
+      {
+        "title": "Сервер изображений",
+        "type": "select",
+        "key": "server",
+        "default": "main",
+        "titles": [
+          "Автоматический",
+          "Главный",
+          "Сжатие"
+        ],
+        "values": [
+          "auto",
+          "main",
+          "compress"
+        ]
+      },
+      {
+        "title": "Выбор перевода",
+        "type": "select",
+        "key": "translate_type",
+        "default": "mixing",
+        "titles": [
+          "Без повторных перевод",
+          "Все переводы"
+        ],
+        "values": [
+          "mixing",
+          "combining"
+        ]
+      }
+    ]
+  },
+  {
+    "type": "group",
+    "title": "Авторизация",
+    "items": [
+      {
+        "type": "text",
+        "autocapitalizationType": 0,
+        "autocorrectionType": 1,
+        "spellCheckingType": 1,
+        "key": "email",
+        "default": "",
+        "notification": "login",
+        "placeholder": "Логин или Email"
+      },
+      {
+        "type": "text",
+        "autocapitalizationType": 0,
+        "autocorrectionType": 1,
+        "spellCheckingType": 1,
+        "key": "password",
+        "default": "",
+        "notification": "pass",
+        "placeholder": "Пароль"
+      },
+      {
+        "type": "button",
+        "key": "auth",
+        "title": "Войти",
+        "destructive": false,
+        "action": "auth"
+      }
+    ]
+  }
+]

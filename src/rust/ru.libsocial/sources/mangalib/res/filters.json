@@ -1026,5 +1026,29 @@
         "canExclude": false
       }
     ]
+  },
+  {
+    "type": "group",
+    "name": "Возрастное ограничение",
+    "filters": [
+      {
+        "type": "check",
+        "name": "Отсутствует",
+        "id": "caution=0",
+        "canExclude": true
+      },
+      {
+        "type": "check",
+        "name": "16+",
+        "id": "caution=1",
+        "canExclude": true
+      },
+      {
+        "type": "check",
+        "name": "18+",
+        "id": "caution=2",
+        "canExclude": true
+      }
+    ]
   }
 ]
