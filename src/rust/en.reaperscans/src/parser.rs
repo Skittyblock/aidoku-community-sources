@@ -10,14 +10,16 @@ use crate::request_helper::*;
 pub fn parse_manga_list(base_url: String, page: i32) -> Result<MangaPageResult> {
 	let url = format!("{}/comics?page={}", base_url, page);
 
-	let html = Request::new(url, HttpMethod::Get)
-		.html()
-		.expect("Failed to get html");
+	let html = Request::new(url, HttpMethod::Get).html().expect(
+		"ReaperScans: Could not display All listing. Check the website and your internet connection on https://reaperscans.com",
+	);
 
 	let mut mangas: Vec<Manga> = Vec::new();
 
 	for manga in html.select("main div[wire:id] div > li > div").array() {
-		let manga_node = manga.as_node().expect("Failed to get manga node");
+		let manga_node = manga
+			.as_node()
+			.expect("Reaperscans: Failed to parse a manga node. Title could not be displayed");
 		let id = get_manga_id(manga_node.select("a").attr("href").read());
 		let cover = manga_node.select("img").attr("src").read();
 		let title = String::from(manga_node.select("a.text-sm").text().read().trim());
@@ -49,11 +51,13 @@ pub fn parse_manga_list(base_url: String, page: i32) -> Result<MangaPageResult> 
 
 pub fn parse_search(base_url: String, query: String) -> Result<MangaPageResult> {
 	let html: Node = create_search_request_object(String::from(&base_url), query)
-		.expect("Error: Search POST request was unsuccesful.");
+		.expect("Reaperscans: Search POST request was unsuccesful");
 
 	let mut mangas: Vec<Manga> = Vec::new();
 	for i in html.select("ul li").array() {
-		let item = i.as_node().expect("");
+		let item = i
+			.as_node()
+			.expect("Reaperscans: Failed to parse a manga node. Title could not be displayed");
 		// Search displays both Comics and Novels in that order.
 		if &item.text().read() == "Novels" {
 			break;
@@ -100,7 +104,7 @@ pub fn parse_manga_listing(
 
 	let html = Request::new(&url, HttpMethod::Get)
 		.html()
-		.expect("Failed to get html");
+		.expect("ReaperScans: Could not display a listing. Check the website and your internet connection on https://reaperscans.com");
 
 	let mut mangas: Vec<Manga> = Vec::new();
 
@@ -108,7 +112,9 @@ pub fn parse_manga_listing(
 		.select("main div[wire:id] div.grid > div.relative")
 		.array()
 	{
-		let manga_node = manga.as_node().expect("Failed to get manga node");
+		let manga_node = manga
+			.as_node()
+			.expect("Reaperscans: Failed to parse a manga node. Title could not be displayed");
 		let id = get_manga_id(manga_node.select("a").attr("href").read());
 		let cover = manga_node.select("img").attr("src").read();
 		let title = String::from(manga_node.select("p.text-sm a").text().read().trim());
@@ -143,7 +149,7 @@ pub fn parse_manga_details(base_url: String, manga_id: String) -> Result<Manga> 
 
 	let html = Request::new(&url, HttpMethod::Get)
 		.html()
-		.expect("Failed to get html");
+		.expect("Reaperscans: Failed to access the comic page. Try accessing the website on a browser and check your internet connection");
 
 	let cover = html
 		.select("main div.grid div.container img")
@@ -173,7 +179,7 @@ pub fn parse_manga_details(base_url: String, manga_id: String) -> Result<Manga> 
 	{
 		let info = node
 			.as_node()
-			.expect("Failed to get info node")
+			.expect("Reaperscans: Could not parse the comic's details")
 			.text()
 			.read();
 
@@ -227,7 +233,7 @@ pub fn parse_chapter_list(base_url: String, manga_id: String) -> Result<Vec<Chap
 	let url = get_manga_url(manga_id, base_url.clone());
 	let initial_request = Request::new(url, HttpMethod::Get)
 		.html()
-		.expect("Failed to get html");
+		.expect("Reaperscans: Could not retreive the chapter list html");
 
 	parse_chapter_list_helper(initial_request.clone(), &mut chapters);
 
@@ -238,9 +244,11 @@ pub fn parse_chapter_list(base_url: String, manga_id: String) -> Result<Vec<Chap
 			base_url.clone(),
 			i32_to_string(page),
 		)
-		.expect("Error: Chapter POST request was unsuccesful.");
-		parse_chapter_list_helper(response_html.clone(), &mut chapters);
-		// checks if next-page button exists.
+		.expect(
+			"Reaperscans: Chapter POST request was unsuccesful. This maybe due to
+	changes in the website",
+		);
+		parse_chapter_list_helper(response_html.clone(), &mut chapters); // checks if next-page button exists.
 		if response_html
 			.select("button[wire:click*=nextPage]")
 			.html()
@@ -255,7 +263,9 @@ pub fn parse_chapter_list(base_url: String, manga_id: String) -> Result<Vec<Chap
 }
 pub fn parse_chapter_list_helper(html: Node, chapters: &mut Vec<Chapter>) {
 	for chapter in html.select("div[wire:id] div > ul > li").array() {
-		let chapter_node = chapter.as_node().expect("Failed to get chapter node");
+		let chapter_node = chapter.as_node().expect(
+			"Reaperscans: Failed to parse a chapter node. The chapter list request was unsuccesful",
+		);
 
 		let mut title = String::new();
 		let chapter_number;
@@ -273,23 +283,23 @@ pub fn parse_chapter_list_helper(html: Node, chapters: &mut Vec<Chapter>) {
 				parsed_title
 					.split('-')
 					.last()
-					.expect("Failed to get chapter title")
+					.expect("Reaperscans: Failed to get chapter title")
 					.trim(),
 			);
 			chapter_number = parsed_title
 				.replace("Chapter", "")
 				.split('-')
 				.next()
-				.expect("Failed to get chapter number")
+				.expect("Reaperscans: Failed to get chapter number")
 				.trim()
 				.parse::<f32>()
-				.expect("Failed to parse chapter number");
+				.expect("Reaperscans: Failed to parse chapter number");
 		} else {
 			chapter_number = parsed_title
 				.replace("Chapter", "")
 				.trim()
 				.parse::<f32>()
-				.expect("Failed to parse chapter number");
+				.expect("Reaperscans: Failed to parse chapter number");
 		}
 
 		let chapter_id = get_chapter_id(chapter_node.select("a").attr("href").read());
@@ -324,28 +334,30 @@ pub fn parse_page_list(
 
 	let html = Request::new(&url, HttpMethod::Get)
 		.html()
-		.expect("Failed to get html");
+		.expect("Reaperscans: Failed to display the chapter. Check your internet connection");
 
 	let mut pages: Vec<Page> = Vec::new();
 	// Stores the indices of the pages so duplicates can be incremented.
 	let mut indices: Vec<i32> = Vec::new();
 
 	for page in html.select("main div img.max-w-full").array() {
-		let page_node = page.as_node().expect("Failed to get page node");
+		let page_node = page
+			.as_node()
+			.expect("Reaperscans: Failed to parse a chapter node. The chapter pages request was unsuccesful");
 
 		let url = page_node.attr("src").read();
 
 		let image_name = url
 			.split('/')
 			.last()
-			.expect("Failed to get image name from url")
+			.expect("Reaperscans: Could not get the image url for the chapter")
 			.split('.')
 			.next()
-			.expect("Failed to get image name from url");
+			.expect("Reaperscans: Could not get the image url for the chapter");
 
 		let mut index = *extract_f32_from_string(String::from(image_name))
 			.first()
-			.expect("Failed to get index") as i32;
+			.expect("Reaperscans: Failed to get index") as i32;
 
 		// ReaperScans sometimes has duplicate image numbers, so this will increment the
 		// index for pages that have the same index.
