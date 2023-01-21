@@ -1,16 +1,31 @@
 #![no_std]
 
 mod helper;
+mod parser;
+
 use aidoku::{
 	error::Result,
 	prelude::*,
-	std::{net::Request, String, Vec},
+	std::{
+		net::{HttpMethod, Request},
+		print, String, Vec,
+	},
 	Chapter, DeepLink, Filter, Listing, Manga, MangaPageResult, Page,
 };
 
+use parser::*;
+
+const URL: &str = "https://mangakatana.com";
+
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
-	todo!()
+	let url = format!("{}/manga/page/{}", URL, page);
+
+	let html = Request::new(url, HttpMethod::Get)
+		.html()
+		.expect("Failed to get html from mangakatana");
+
+	Ok(parse_manga_list(html, String::from(URL)))
 }
 
 #[get_manga_listing]

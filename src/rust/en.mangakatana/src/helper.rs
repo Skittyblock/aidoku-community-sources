@@ -1,6 +1,7 @@
 use aidoku::{
 	prelude::format,
 	std::{html::Node, String, Vec},
+	MangaContentRating, MangaStatus, MangaViewer,
 };
 
 /// Returns an array of f32s contained within a string.
@@ -71,4 +72,117 @@ pub fn text_with_newlines(node: Node) -> String {
 	} else {
 		String::new()
 	}
+}
+
+/// Returns the status of a manga from a string.
+pub fn get_manga_status(status: String) -> MangaStatus {
+	match status.to_lowercase().as_str() {
+		"ongoing" => MangaStatus::Ongoing,
+		"completed" => MangaStatus::Completed,
+		"cancelled" => MangaStatus::Cancelled,
+		_ => MangaStatus::Unknown,
+	}
+}
+
+/// Returns the content rating of a manga from a vector of categories.
+pub fn get_manga_content_rating(categories: Vec<String>) -> MangaContentRating {
+	let mut rating = MangaContentRating::Safe;
+
+	// if !categories.is_empty() {
+	// 	if categories.contains("Ecchi")
+	// 		|| categories.contains("Harem")
+	// 		|| categories.contains("Adult")
+	// 		|| categories.contains("Loli")
+	// 		|| categories.contains("Shota")
+	// 	{
+	// 		rating = MangaContentRating::Suggestive
+	// 	};
+
+	// 	if categories.contains("Gore")
+	// 		|| categories.contains("Sexual violence")
+	// 		|| categories.contains("Erotica")
+	// 	{
+	// 		rating = MangaContentRating::Nsfw
+	// 	};
+	// }
+
+	if !categories.is_empty() {
+		if categories
+			.iter()
+			.any(|e| e == "Ecchi" || e == "Harem" || e == "Adult" || e == "Loli" || e == "Shota")
+		{
+			rating = MangaContentRating::Suggestive;
+		}
+		if categories
+			.iter()
+			.any(|e| e == "Gore" || e == "Sexual violence" || e == "Erotica")
+		{
+			rating = MangaContentRating::Nsfw;
+		}
+	}
+
+	rating
+}
+
+/// Returns the viewer of a manga from a vector of categories.
+pub fn get_manga_viewer(categories: Vec<String>) -> MangaViewer {
+	let mut viewer = MangaViewer::Rtl;
+
+	// if !categories.is_empty() {
+	// 	if categories.contains("Manhwa")
+	// 		|| categories.contains("Manhua")
+	// 		|| categories.contains("Webtoon")
+	// 	{
+	// 		viewer = MangaViewer::Scroll
+	// 	}
+	// }
+
+	if !categories.is_empty()
+		&& categories
+			.iter()
+			.any(|e| e == "Manhwa" || e == "Manhua" || e == "Webtoon")
+	{
+		viewer = MangaViewer::Scroll;
+	}
+
+	viewer
+}
+
+/// Returns the ID of a manga from a URL.
+pub fn get_manga_id(url: String) -> String {
+	// MangaKatana has unique numeric IDs for each manga.
+	// The id is preceded by a period then a random string.
+	// Example Url: https://mangakatana.com/manga/go-toubun-no-hanayome.18224
+	// parse "18224" from the url
+
+	let mut id = String::new();
+
+	let mut split_url = url.split(['/', '.']).collect::<Vec<&str>>();
+	split_url.reverse();
+
+	if !split_url.is_empty() {
+		// I'm doing this to handle edge cases where the id is not the last part of the url.
+		for part in split_url {
+			// If you reach a period, you have passed the id and failed to find it.
+			if part == "." {
+				break;
+			}
+			// The first part that can be parsed as a u32 is the id.
+			if part.parse::<u32>().is_ok() {
+				id = String::from(part);
+			}
+		}
+	}
+
+	id
+}
+
+/// Returns full URL of a manga from a manga ID.
+pub fn get_manga_url(manga_id: String, base_url: String) -> String {
+	// MangaKatana manga urls contain a random string followed by a period then the manga id.
+	// I'm setting the random string to "id" as it can be anything, then appending the period & id.
+	// Example manga id: 18224
+	// return "https://mangakatana.com/manga/id.18224"
+
+	format!("{}/manga/id.{}", base_url, manga_id)
 }
