@@ -54,7 +54,7 @@ pub fn parse_manga_list(html: Node, base_url: String) -> MangaPageResult {
 }
 
 pub fn parse_manga_details(html: Node, manga_url: String, base_url: String) -> Manga {
-	let id = get_manga_id(manga_url);
+	let id = get_manga_id(manga_url.clone());
 	let cover = html.select("#single_book .cover img").attr("src").read();
 	let title = html.select("#single_book .info .heading").text().read();
 	let author = html
