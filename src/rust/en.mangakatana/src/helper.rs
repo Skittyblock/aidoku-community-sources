@@ -126,6 +126,7 @@ pub fn get_manga_id(url: String) -> String {
 	// MangaKatana has unique numeric IDs for each manga.
 	// The id is preceded by a period then a random string.
 	// Example Url: https://mangakatana.com/manga/go-toubun-no-hanayome.18224
+	// Example Url: https://mangakatana.com/manga/id.18224
 	// parse "18224" from the url
 
 	let mut id = String::new();
