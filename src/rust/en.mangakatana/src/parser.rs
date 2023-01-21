@@ -95,3 +95,59 @@ pub fn parse_manga_details(html: Node, manga_url: String, base_url: String) -> M
 		..Default::default()
 	}
 }
+
+pub fn parse_chapter_list(html: Node, base_url: String) -> Vec<Chapter> {
+	let mut chapters: Vec<Chapter> = Vec::new();
+
+	for node in html.select("#single_book .chapters tr").array() {
+		let node = node.as_node().expect("Failed to get chapter node");
+
+		let raw_url = node.select(".chapter a").attr("href").read();
+		let id = get_chapter_id(raw_url.clone());
+		let manga_id = get_manga_id(raw_url);
+		let url = get_chapter_url(id.clone(), manga_id, base_url.clone());
+
+		let mut title = String::new();
+		let chapter = {
+			let raw_title = node.select(".chapter a").text().read();
+			// If raw title is "Oneshot", then chapter is 0.0
+			if raw_title == "Oneshot" {
+				title = raw_title;
+				0.0
+			} else {
+				let split_title = raw_title.split_whitespace().collect::<Vec<&str>>();
+				// Pull out chatper title from split title
+				// and remove any leading characters
+				if split_title.len() > 2 {
+					if split_title[2] == ":" || split_title[2] == "-" {
+						title = split_title[3..].join(" ");
+					} else {
+						title = split_title[2..].join(" ");
+					}
+				}
+
+				// Example Title: Chapter 1: A Miracle Appears
+				split_title[1]
+					.replace(':', "")
+					.parse::<f32>()
+					.unwrap_or(-1.0)
+			}
+		};
+
+		let date_updated =
+			node.select(".update_time")
+				.text()
+				.as_date("MMM-dd-yyyy", Some("en-US"), None);
+
+		chapters.push(Chapter {
+			id,
+			title,
+			chapter,
+			date_updated,
+			url,
+			..Default::default()
+		});
+	}
+
+	chapters
+}

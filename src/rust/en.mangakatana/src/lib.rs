@@ -6,10 +6,8 @@ mod parser;
 use aidoku::{
 	error::Result,
 	prelude::*,
-	std::{
-		net::{HttpMethod, Request},
-		print, String, Vec,
-	},
+	std::net::{HttpMethod, Request},
+	std::{String, Vec},
 	Chapter, DeepLink, Filter, Listing, Manga, MangaPageResult, Page,
 };
 
@@ -47,7 +45,13 @@ fn get_manga_details(manga_id: String) -> Result<Manga> {
 
 #[get_chapter_list]
 fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
-	todo!()
+	let url = get_manga_url(manga_id, String::from(URL));
+
+	let html = Request::new(url.clone(), HttpMethod::Get)
+		.html()
+		.expect("Failed to get html from mangakatana");
+
+	Ok(parse_chapter_list(html, String::from(URL)))
 }
 
 #[get_page_list]
