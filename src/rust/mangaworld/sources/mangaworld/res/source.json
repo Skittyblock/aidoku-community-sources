@@ -1,0 +1,13 @@
+{
+	"info": {
+		"id": "it.mangaworld",
+		"lang": "it",
+		"name": "MangaWorld",
+		"version": 1,
+		"url": "https://www.mangaworld.so"
+	},
+	"listings": [
+		{ "name": "Più letti" },
+		{ "name": "Più recenti" }
+	]
+}
