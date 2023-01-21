@@ -17,7 +17,7 @@ pub fn parse_manga_list(html: Node, base_url: String) -> MangaPageResult {
 		let url = get_manga_url(id.clone(), base_url.clone());
 		let cover = node.select(".media .wrap_img img").attr("src").read();
 		let title = node.select(".text .title a").text().read();
-		let description = node.select(".text .summary").text().read();
+		let description = text_with_newlines(node.select(".text .summary"));
 
 		let status = {
 			let status_string = node.select(".media .status").text().read();
