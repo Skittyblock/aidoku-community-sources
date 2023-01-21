@@ -6,13 +6,5 @@
 		"version": 0,
 		"url": "https://mangakatana.com",
 		"nsfw": 1
-	},
-	"listings": [
-		{
-			"name": "Latest"
-		},
-		{
-			"name": "New"
-		}
-	]
+	}
 }
