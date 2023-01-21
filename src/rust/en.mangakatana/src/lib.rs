@@ -13,6 +13,7 @@ use aidoku::{
 	Chapter, DeepLink, Filter, Listing, Manga, MangaPageResult, Page,
 };
 
+use helper::get_manga_url;
 use parser::*;
 
 const URL: &str = "https://mangakatana.com";
@@ -35,7 +36,13 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 
 #[get_manga_details]
 fn get_manga_details(manga_id: String) -> Result<Manga> {
-	todo!()
+	let url = get_manga_url(manga_id, String::from(URL));
+
+	let html = Request::new(url.clone(), HttpMethod::Get)
+		.html()
+		.expect("Failed to get html from mangakatana");
+
+	Ok(parse_manga_details(html, url, String::from(URL)))
 }
 
 #[get_chapter_list]
