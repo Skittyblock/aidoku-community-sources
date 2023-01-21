@@ -1,6 +1,7 @@
 use aidoku::{
 	prelude::format,
-	std::{html::Node, String, Vec},
+	std::html::Node,
+	std::{String, Vec},
 	MangaContentRating, MangaStatus, MangaViewer,
 };
 
@@ -135,7 +136,8 @@ pub fn get_manga_id(url: String) -> String {
 	split_url.reverse();
 
 	if !split_url.is_empty() {
-		// I'm doing this to handle edge cases where the id is not the last part of the url.
+		// I'm doing this to handle edge cases where the id is not the last part of the
+		// url.
 		for part in split_url {
 			// If you reach a period, you have passed the id and failed to find it.
 			if part == "." {
@@ -165,7 +167,8 @@ pub fn get_chapter_id(url: String) -> String {
 	split_url.reverse();
 
 	if !split_url.is_empty() {
-		// I'm doing this to handle edge cases where the id is not the last part of the url.
+		// I'm doing this to handle edge cases where the
+		// id is not the last part of the url.
 		for part in split_url {
 			// If you reach a period, you have passed the id and failed to find it.
 			if part == "." {
@@ -190,8 +193,9 @@ pub fn get_chapter_id(url: String) -> String {
 
 /// Returns full URL of a manga from a manga ID.
 pub fn get_manga_url(manga_id: String, base_url: String) -> String {
-	// MangaKatana manga urls contain a random string followed by a period then the manga id.
-	// I'm setting the random string to "id" as it can be anything, then appending the period & id.
+	// MangaKatana manga urls contain a random string followed by a period then the
+	// manga id. I'm setting the random string to "id" as it can be anything, then
+	// appending the period & id.
 	// Example manga id: 18224
 	// return "https://mangakatana.com/manga/id.18224"
 
@@ -200,8 +204,9 @@ pub fn get_manga_url(manga_id: String, base_url: String) -> String {
 
 /// Returns full URL of a chapter from a chapter ID.
 pub fn get_chapter_url(chapter_id: String, manga_id: String, base_url: String) -> String {
-	// MangaKatana manga urls contain a random string followed by a period then the manga id.
-	// I'm setting the random string to "id" as it can be anything, then appending the period & id.
+	// MangaKatana manga urls contain a random string followed by a period then the
+	// manga id. I'm setting the random string to "id" as it can be anything, then
+	// appending the period & id.
 	// The chapter id is the chapter number preceded by a "c".
 	// Example manga id: 18224
 	// Example chapter id: c1

@@ -1,7 +1,10 @@
 use aidoku::{
-	error::Result, prelude::format, std::html::Node, std::net::HttpMethod, std::net::Request,
-	std::String, std::Vec, Chapter, Listing, Manga, MangaContentRating, MangaPageResult,
-	MangaStatus, MangaViewer, Page,
+	error::Result,
+	prelude::format,
+	std::html::Node,
+	std::net::{HttpMethod, Request},
+	std::{String, Vec},
+	Chapter, Listing, Manga, MangaContentRating, MangaPageResult, MangaStatus, MangaViewer, Page,
 };
 
 use crate::helper::*;
