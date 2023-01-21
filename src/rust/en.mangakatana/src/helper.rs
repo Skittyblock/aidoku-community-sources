@@ -88,24 +88,6 @@ pub fn get_manga_status(status: String) -> MangaStatus {
 pub fn get_manga_content_rating(categories: Vec<String>) -> MangaContentRating {
 	let mut rating = MangaContentRating::Safe;
 
-	// if !categories.is_empty() {
-	// 	if categories.contains("Ecchi")
-	// 		|| categories.contains("Harem")
-	// 		|| categories.contains("Adult")
-	// 		|| categories.contains("Loli")
-	// 		|| categories.contains("Shota")
-	// 	{
-	// 		rating = MangaContentRating::Suggestive
-	// 	};
-
-	// 	if categories.contains("Gore")
-	// 		|| categories.contains("Sexual violence")
-	// 		|| categories.contains("Erotica")
-	// 	{
-	// 		rating = MangaContentRating::Nsfw
-	// 	};
-	// }
-
 	if !categories.is_empty() {
 		if categories
 			.iter()
@@ -127,15 +109,6 @@ pub fn get_manga_content_rating(categories: Vec<String>) -> MangaContentRating {
 /// Returns the viewer of a manga from a vector of categories.
 pub fn get_manga_viewer(categories: Vec<String>) -> MangaViewer {
 	let mut viewer = MangaViewer::Rtl;
-
-	// if !categories.is_empty() {
-	// 	if categories.contains("Manhwa")
-	// 		|| categories.contains("Manhua")
-	// 		|| categories.contains("Webtoon")
-	// 	{
-	// 		viewer = MangaViewer::Scroll
-	// 	}
-	// }
 
 	if !categories.is_empty()
 		&& categories
