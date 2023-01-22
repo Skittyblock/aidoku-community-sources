@@ -102,6 +102,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "lelscanvf"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "lazy_static",
+ "mmrcms_template",
+]
+
+[[package]]
 name = "libc"
 version = "0.2.127"
 source = "registry+https://github.com/rust-lang/crates.io-index"
