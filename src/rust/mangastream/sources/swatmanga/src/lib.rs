@@ -11,7 +11,7 @@ mod helper;
 fn get_instance() -> MangaStreamSource {
 	MangaStreamSource {
 		listing: ["الرائج", "آخر", "جَديد"],
-		base_url: String::from("https://swatmanga.me"),
+		base_url: String::from("https://swatmanga.net"),
 		manga_details_title: ".infox h1",
 		manga_details_author: "td:contains(Autor)+td",
 		manga_details_description: ".desc",
