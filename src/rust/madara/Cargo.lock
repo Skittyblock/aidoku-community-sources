@@ -131,6 +131,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "mangascantrad"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "madara_template",
+]
+
+[[package]]
 name = "mangatx"
 version = "0.1.0"
 dependencies = [
