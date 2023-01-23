@@ -28,8 +28,8 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 }
 
 #[get_manga_listing]
-fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
-	todo!()
+fn get_manga_listing(_listing: Listing, page: i32) -> Result<MangaPageResult> {
+	get_manga_list(Vec::new(), page)
 }
 
 #[get_manga_details]
