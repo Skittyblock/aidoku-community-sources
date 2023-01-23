@@ -1,6 +1,8 @@
 use aidoku::{
 	prelude::format,
-	std::{defaults::defaults_get, html::Node, String, StringRef, Vec},
+	std::defaults::defaults_get,
+	std::html::Node,
+	std::{String, StringRef, Vec},
 	MangaStatus,
 };
 
@@ -75,7 +77,32 @@ pub fn i32_to_string(mut integer: i32) -> String {
 	string
 }
 
-// return chpater number from string
+/// Converts `<br>` and `\n` into newlines.
+pub fn text_with_newlines(node: Node) -> String {
+	let html = node.html().read();
+	if !String::from(html.trim()).is_empty() {
+		Node::new_fragment(
+			node.html()
+				.read()
+				// This also replaces `\n` because mangastream sources split their
+				// description text into multiple p tags, and this causes newlines
+				// to be lost if you call `text()` on the node.
+				// So to fix that we replace all newlines with a placeholder, and
+				// then replace the placeholder with a newline after calling `text()`.
+				.replace("\n", "{{ .LINEBREAK }}")
+				.replace("<br>", "{{ .LINEBREAK }}")
+				.as_bytes(),
+		)
+		.expect("Failed to create new fragment")
+		.text()
+		.read()
+		.replace("{{ .LINEBREAK }}", "\n")
+	} else {
+		String::new()
+	}
+}
+
+// return chapter number from string
 pub fn get_chapter_number(id: String) -> f32 {
 	id.chars()
 		.filter(|a| (*a >= '0' && *a <= '9') || *a == ' ' || *a == '.')

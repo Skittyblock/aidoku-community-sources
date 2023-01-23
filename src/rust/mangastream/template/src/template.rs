@@ -1,7 +1,11 @@
 use aidoku::{
-	error::Result, prelude::format, std::json::parse, std::net::HttpMethod, std::net::Request,
-	std::String, std::Vec, Chapter, DeepLink, Filter, FilterType, Manga, MangaContentRating,
-	MangaPageResult, MangaStatus, MangaViewer, Page,
+	error::Result,
+	prelude::format,
+	std::json::parse,
+	std::net::{HttpMethod, Request},
+	std::{String, Vec},
+	Chapter, DeepLink, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
+	MangaViewer, Page,
 };
 
 use crate::helper::*;
@@ -256,7 +260,7 @@ impl MangaStreamSource {
 			author = String::new();
 		}
 		let artist = html.select(self.manga_details_artist).text().read();
-		let description = html.select(self.manga_details_description).text().read();
+		let description = text_with_newlines(html.select(self.manga_details_description));
 		let status = manga_status(
 			String::from(html.select(self.manga_details_status).text().read().trim()),
 			self.status_options,
