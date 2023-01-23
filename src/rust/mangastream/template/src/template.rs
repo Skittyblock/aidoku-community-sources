@@ -79,7 +79,7 @@ impl Default for MangaStreamSource {
 			manga_details_cover_src: "src",
 			manga_details_author: "span:contains(Author:), span:contains(Pengarang:), .fmed b:contains(Author)+span, .imptdt:contains(Author) i, .fmed b:contains(Yazar)+span, .fmed b:contains(Autheur)+span",
 			manga_details_artist: "#last_episode small",
-			manga_details_description: ".entry-content p",
+			manga_details_description: "div.desc p, div.entry-content p, div[itemprop=description]:not(:has(p))",
 			manga_details_status: ".imptdt:contains(Status), .imptdt:contains(Durum), .imptdt:contains(Statut) i",
 			manga_details_type: ".imptdt a",
 			manga_details_type_options: "Manga",
