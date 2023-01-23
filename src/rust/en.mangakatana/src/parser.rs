@@ -1,8 +1,9 @@
 use aidoku::{
 	error::Result,
+	helpers::substring::Substring,
 	prelude::format,
-	std::html::Node,
 	std::net::{HttpMethod, Request},
+	std::{html::Node, print},
 	std::{String, Vec},
 	Chapter, Listing, Manga, MangaContentRating, MangaPageResult, MangaStatus, MangaViewer, Page,
 };
@@ -153,4 +154,47 @@ pub fn parse_chapter_list(html: Node, base_url: String) -> Vec<Chapter> {
 	}
 
 	chapters
+}
+
+pub fn parse_page_list(html: Node) -> Vec<Page> {
+	let mut pages: Vec<Page> = Vec::new();
+
+	// Find the script element that contains the image urls
+	for script in html.select("script").array() {
+		let node = script.as_node().expect("Failed to get script node");
+		let script = node.html().read();
+
+		// If script doesn't contain data-src, then it's not the script we want
+		if !script.contains("data-src") {
+			continue;
+		}
+
+		// We are using substring_after_last and substring_before_last because
+		// the script contains a dummy array with only one page in it, we don't
+		// want that, we want the actual array that contains all the pages.
+		// Luckily, the dummy array is always the first array in the script,
+		// and the actual array is always the last array in the script.
+		let before = script.substring_after_last("=[").unwrap();
+		let after = before.substring_before_last(",];").unwrap();
+
+		let urls = after.split(",");
+
+		for url in urls {
+			let url = url.replace('\'', "");
+
+			let index = {
+				let before = url.substring_after_last('/').unwrap_or("");
+				let after = before.substring_before('.').unwrap_or("");
+				after.parse::<i32>().unwrap_or(-1)
+			};
+
+			pages.push(Page {
+				index,
+				url,
+				..Default::default()
+			});
+		}
+	}
+
+	pages
 }

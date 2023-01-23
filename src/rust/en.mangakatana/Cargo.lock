@@ -7,10 +7,19 @@ name = "aidoku"
 version = "0.2.0"
 source = "git+https://github.com/Aidoku/aidoku-rs#5a68a5507a78716c2eb327eb2c12cdb1700a4bf3"
 dependencies = [
+ "aidoku_helpers",
  "aidoku_imports",
  "aidoku_macros",
  "aidoku_proc_macros",
  "wee_alloc",
+]
+
+[[package]]
+name = "aidoku_helpers"
+version = "0.1.0"
+source = "git+https://github.com/Aidoku/aidoku-rs#5a68a5507a78716c2eb327eb2c12cdb1700a4bf3"
+dependencies = [
+ "aidoku_imports",
 ]
 
 [[package]]

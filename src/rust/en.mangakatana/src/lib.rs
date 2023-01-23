@@ -11,7 +11,7 @@ use aidoku::{
 	Chapter, DeepLink, Filter, Listing, Manga, MangaPageResult, Page,
 };
 
-use helper::{get_chapter_id, get_manga_id, get_manga_url};
+use helper::{get_chapter_id, get_chapter_url, get_manga_id, get_manga_url};
 use parser::*;
 
 const URL: &str = "https://mangakatana.com";
@@ -56,7 +56,13 @@ fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 
 #[get_page_list]
 fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
-	todo!()
+	let url = get_chapter_url(chapter_id, manga_id, String::from(URL));
+
+	let html = Request::new(url.clone(), HttpMethod::Get)
+		.html()
+		.expect("Failed to get html from mangakatana");
+
+	Ok(parse_page_list(html))
 }
 
 #[modify_image_request]
