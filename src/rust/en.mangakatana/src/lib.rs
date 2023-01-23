@@ -11,7 +11,7 @@ use aidoku::{
 	Chapter, DeepLink, Filter, Listing, Manga, MangaPageResult, Page,
 };
 
-use helper::get_manga_url;
+use helper::{get_chapter_id, get_manga_id, get_manga_url};
 use parser::*;
 
 const URL: &str = "https://mangakatana.com";
@@ -66,5 +66,15 @@ fn modify_image_request(request: Request) {
 
 #[handle_url]
 fn handle_url(url: String) -> Result<DeepLink> {
-	todo!()
+	let manga_id = get_manga_id(url.clone());
+	let chapter_id = get_chapter_id(url);
+	let manga_url = get_manga_url(manga_id.clone(), String::from(URL));
+
+	Ok(DeepLink {
+		manga: get_manga_details(manga_id).ok(),
+		chapter: Some(Chapter {
+			id: chapter_id,
+			..Default::default()
+		}),
+	})
 }
