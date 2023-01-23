@@ -1,11 +1,8 @@
 use aidoku::{
-	error::Result,
 	helpers::substring::Substring,
-	prelude::format,
-	std::net::{HttpMethod, Request},
-	std::{html::Node, print},
+	std::html::Node,
 	std::{String, Vec},
-	Chapter, Listing, Manga, MangaContentRating, MangaPageResult, MangaStatus, MangaViewer, Page,
+	Chapter, Manga, MangaPageResult, Page,
 };
 
 use crate::helper::*;
@@ -57,7 +54,7 @@ pub fn parse_manga_list(html: Node, base_url: String) -> MangaPageResult {
 	MangaPageResult { manga, has_more }
 }
 
-pub fn parse_manga_details(html: Node, manga_url: String, base_url: String) -> Manga {
+pub fn parse_manga_details(html: Node, manga_url: String) -> Manga {
 	let id = get_manga_id(manga_url.clone());
 	let cover = html.select("#single_book .cover img").attr("src").read();
 	let title = html.select("#single_book .info .heading").text().read();
@@ -177,7 +174,7 @@ pub fn parse_page_list(html: Node) -> Vec<Page> {
 		let before = script.substring_after_last("=[").unwrap();
 		let after = before.substring_before_last(",];").unwrap();
 
-		let urls = after.split(",");
+		let urls = after.split(',');
 
 		for url in urls {
 			let url = url.replace('\'', "");

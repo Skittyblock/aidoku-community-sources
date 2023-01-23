@@ -40,14 +40,14 @@ fn get_manga_details(manga_id: String) -> Result<Manga> {
 		.html()
 		.expect("Failed to get html from mangakatana");
 
-	Ok(parse_manga_details(html, url, String::from(URL)))
+	Ok(parse_manga_details(html, url))
 }
 
 #[get_chapter_list]
 fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 	let url = get_manga_url(manga_id, String::from(URL));
 
-	let html = Request::new(url.clone(), HttpMethod::Get)
+	let html = Request::new(url, HttpMethod::Get)
 		.html()
 		.expect("Failed to get html from mangakatana");
 
@@ -58,7 +58,7 @@ fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 	let url = get_chapter_url(chapter_id, manga_id, String::from(URL));
 
-	let html = Request::new(url.clone(), HttpMethod::Get)
+	let html = Request::new(url, HttpMethod::Get)
 		.html()
 		.expect("Failed to get html from mangakatana");
 
@@ -74,7 +74,6 @@ fn modify_image_request(request: Request) {
 fn handle_url(url: String) -> Result<DeepLink> {
 	let manga_id = get_manga_id(url.clone());
 	let chapter_id = get_chapter_id(url);
-	let manga_url = get_manga_url(manga_id.clone(), String::from(URL));
 
 	Ok(DeepLink {
 		manga: get_manga_details(manga_id).ok(),
