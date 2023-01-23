@@ -161,12 +161,7 @@ pub fn parse_manga_details(base_url: String, manga_id: String) -> Result<Manga> 
 			.read()
 			.trim(),
 	);
-	let description = String::from(
-		html.select("main div.grid section div > div.p-4 > p")
-			.text()
-			.read()
-			.trim(),
-	);
+	let description = text_with_newlines(html.select("main div.grid section div > div.p-4 > p"));
 
 	let mut status = MangaStatus::Unknown;
 	let mut age_rating = String::new();

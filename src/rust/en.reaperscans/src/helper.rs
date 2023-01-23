@@ -1,5 +1,6 @@
 use aidoku::{
 	prelude::format,
+	std::html::Node,
 	std::{current_date, String, Vec},
 	Filter, FilterType,
 };
@@ -41,6 +42,25 @@ pub fn urlencode(string: String) -> String {
 		}
 	}
 	String::from_utf8(result).unwrap_or_default()
+}
+
+/// Converts `<br>` into newlines.
+pub fn text_with_newlines(node: Node) -> String {
+	let html = node.html().read();
+	if !String::from(html.trim()).is_empty() {
+		Node::new_fragment(
+			node.html()
+				.read()
+				.replace("<br>", "{{ .LINEBREAK }}")
+				.as_bytes(),
+		)
+		.expect("Failed to create new fragment")
+		.text()
+		.read()
+		.replace("{{ .LINEBREAK }}", "\n")
+	} else {
+		String::new()
+	}
 }
 
 /// Returns the ID of a manga from a URL.
