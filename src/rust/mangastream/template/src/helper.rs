@@ -81,8 +81,9 @@ pub fn i32_to_string(mut integer: i32) -> String {
 pub fn text_with_newlines(node: Node) -> String {
 	let html = node.html().read();
 	if !String::from(html.trim()).is_empty() {
-		Node::new_fragment(
-			node.html()
+		String::from(
+			Node::new_fragment(
+				node.html()
 				.read()
 				// This also replaces `\n` because mangastream sources split their
 				// description text into multiple p tags, and this causes newlines
@@ -92,11 +93,13 @@ pub fn text_with_newlines(node: Node) -> String {
 				.replace("\n", "{{ .LINEBREAK }}")
 				.replace("<br>", "{{ .LINEBREAK }}")
 				.as_bytes(),
+			)
+			.expect("Failed to create new fragment")
+			.text()
+			.read()
+			.replace("{{ .LINEBREAK }}", "\n")
+			.trim(),
 		)
-		.expect("Failed to create new fragment")
-		.text()
-		.read()
-		.replace("{{ .LINEBREAK }}", "\n")
 	} else {
 		String::new()
 	}
