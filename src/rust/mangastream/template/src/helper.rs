@@ -90,7 +90,7 @@ pub fn text_with_newlines(node: Node) -> String {
 				// to be lost if you call `text()` on the node.
 				// So to fix that we replace all newlines with a placeholder, and
 				// then replace the placeholder with a newline after calling `text()`.
-				.replace("\n", "{{ .LINEBREAK }}")
+				.replace('\n', "{{ .LINEBREAK }}")
 				.replace("<br>", "{{ .LINEBREAK }}")
 				.as_bytes(),
 			)
