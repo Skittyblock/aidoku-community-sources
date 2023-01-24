@@ -9,6 +9,10 @@ fn get_data() -> template::MadaraSiteData {
 	let data: template::MadaraSiteData = template::MadaraSiteData {
 		base_url: String::from("https://manga-scantrad.io"),
 		lang: String::from("fr"),
+		status_filter_ongoing: String::from("En cours"),
+		status_filter_completed: String::from("Terminé"),
+		status_filter_cancelled: String::from("Annulé"),
+		status_filter_on_hold: String::from("En pause"),
 		status: |html| {
 			let status_str = html
 				.select("div.post-content_item:contains(État) div.summary-content")
