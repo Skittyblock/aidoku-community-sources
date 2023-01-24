@@ -162,17 +162,16 @@ pub fn parse_chapter(manga_id: &str, chapter_object: ObjectRef) -> Result<Chapte
 		}
 
 		// Remove leading chapter text
-		#[allow(clippy::collapsible_if)]
-		if cleaned_title.len() >= 2 {
-			if (cleaned_title[0] == "Chapter"
+		if cleaned_title.len() >= 2
+			&& (cleaned_title[0] == "Chapter"
 				|| cleaned_title[0] == "Episode"
 				|| cleaned_title[0] == "episode."
-				|| cleaned_title[0] == "No.")
-				|| cleaned_title[0] == "#" && cleaned_title[1].parse::<f64>().is_ok()
-			{
-				cleaned_title.remove(0);
-				cleaned_title.remove(0);
-			}
+				|| cleaned_title[0] == "No."
+				|| cleaned_title[0] == "#")
+			&& cleaned_title[1].parse::<f64>().is_ok()
+		{
+			cleaned_title.remove(0);
+			cleaned_title.remove(0);
 		}
 
 		// Remove leading symbols
