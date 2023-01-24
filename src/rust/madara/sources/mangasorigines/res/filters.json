@@ -8,19 +8,19 @@
 		"filters": [
 			{
 				"type": "check",
-				"name": "Ongoing"
+				"name": "En cours"
 			},
 			{
 				"type": "check",
-				"name": "On Hold"
+				"name": "En pause"
 			},
 			{
 				"type": "check",
-				"name": "Cancelled"
+				"name": "Annulé"
 			},
 			{
 				"type": "check",
-				"name": "Completed"
+				"name": "Terminé"
 			}
 		]
 	},
@@ -28,8 +28,8 @@
 		"type": "select",
 		"name": "Genre Condition",
 		"options": [
-			"OR (having one of the selected genre)",
-			"AND (having all of the selected genres)"
+			"OU (ayant l'un des genres sélectionnés)",
+			"ET (ayant tous les genres sélectionnés)"
 		]
 	},
 	{
@@ -43,43 +43,48 @@
 			},
 			{
 				"type": "genre",
-				"name": "Adventure",
-				"id": "adventure"
+				"name": "Amitié",
+				"id": "amitie"
 			},
 			{
 				"type": "genre",
-				"name": "Based on a Novel",
-				"id": "based-on-a-novel"
+				"name": "Amour",
+				"id": "amour"
 			},
 			{
 				"type": "genre",
-				"name": "Comedy",
-				"id": "comedy"
+				"name": "Art Martial",
+				"id": "art-martial"
 			},
 			{
 				"type": "genre",
-				"name": "Comic",
-				"id": "comic"
+				"name": "Aventure",
+				"id": "aventure"
 			},
 			{
 				"type": "genre",
-				"name": "Completed Manga",
-				"id": "completed-manga"
+				"name": "Box",
+				"id": "box"
 			},
 			{
 				"type": "genre",
-				"name": "Cooking",
-				"id": "cooking"
+				"name": "Boxe",
+				"id": "boxe"
 			},
 			{
 				"type": "genre",
-				"name": "Doujinshi",
-				"id": "doujinshi"
+				"name": "Combat",
+				"id": "combat"
 			},
 			{
 				"type": "genre",
-				"name": "Drama",
-				"id": "drama"
+				"name": "Comédie",
+				"id": "comedie"
+			},
+			{
+				"type": "genre",
+				"name": "Drame",
+				"id": "drame"
 			},
 			{
 				"type": "genre",
@@ -88,8 +93,28 @@
 			},
 			{
 				"type": "genre",
-				"name": "Fantasy",
-				"id": "fantasy"
+				"name": "Fantaisie",
+				"id": "fantaisie"
+			},
+			{
+				"type": "genre",
+				"name": "Fantastique",
+				"id": "fantastique"
+			},
+			{
+				"type": "genre",
+				"name": "Gender Bender",
+				"id": "gender-bender"
+			},
+			{
+				"type": "genre",
+				"name": "Gore",
+				"id": "gore"
+			},
+			{
+				"type": "genre",
+				"name": "Guerre",
+				"id": "guerre"
 			},
 			{
 				"type": "genre",
@@ -98,33 +123,28 @@
 			},
 			{
 				"type": "genre",
-				"name": "Hentai Manhwa",
-				"id": "hentai-manhwa"
+				"name": "Historique",
+				"id": "historique"
 			},
 			{
 				"type": "genre",
-				"name": "Historical",
-				"id": "historical"
+				"name": "Horreur",
+				"id": "horreur"
 			},
 			{
 				"type": "genre",
-				"name": "Horror",
-				"id": "horror"
-			},
-			{
-				"type": "genre",
-				"name": "isekai",
+				"name": "Isekai",
 				"id": "isekai"
+			},
+			{
+				"type": "genre",
+				"name": "Jeux vidéo",
+				"id": "jeux-video"
 			},
 			{
 				"type": "genre",
 				"name": "Josei",
 				"id": "josei"
-			},
-			{
-				"type": "genre",
-				"name": "Magic",
-				"id": "magic"
 			},
 			{
 				"type": "genre",
@@ -143,43 +163,58 @@
 			},
 			{
 				"type": "genre",
-				"name": "Martial Arts",
-				"id": "martial-arts"
-			},
-			{
-				"type": "genre",
-				"name": "Mature",
-				"id": "free-mature-manga"
-			},
-			{
-				"type": "genre",
-				"name": "Mecha",
-				"id": "read-free-mecha-manga"
-			},
-			{
-				"type": "genre",
-				"name": "Medical",
+				"name": "Médical",
 				"id": "medical"
 			},
 			{
 				"type": "genre",
-				"name": "Mystery",
-				"id": "mystery"
+				"name": "Meurtre",
+				"id": "meurtre"
 			},
 			{
 				"type": "genre",
-				"name": "Novel List",
+				"name": "Mystère",
+				"id": "mystere"
+			},
+			{
+				"type": "genre",
+				"name": "Novel",
 				"id": "novel"
 			},
 			{
 				"type": "genre",
-				"name": "Psychological",
-				"id": "psychological"
+				"name": "Origines Trad",
+				"id": "origines-trad"
 			},
 			{
 				"type": "genre",
-				"name": "Reincarnation",
-				"id": "read-reincarnation-manga"
+				"name": "Parodie",
+				"id": "parodie"
+			},
+			{
+				"type": "genre",
+				"name": "Policier",
+				"id": "policier"
+			},
+			{
+				"type": "genre",
+				"name": "Psychologique",
+				"id": "psychologique"
+			},
+			{
+				"type": "genre",
+				"name": "Psycopathe",
+				"id": "psycopathe"
+			},
+			{
+				"type": "genre",
+				"name": "Réincarnation",
+				"id": "reincarnation"
+			},
+			{
+				"type": "genre",
+				"name": "Returner",
+				"id": "returner"
 			},
 			{
 				"type": "genre",
@@ -188,18 +223,8 @@
 			},
 			{
 				"type": "genre",
-				"name": "RPG",
-				"id": "rpg-mangazuki"
-			},
-			{
-				"type": "genre",
-				"name": "School Life",
-				"id": "school-life"
-			},
-			{
-				"type": "genre",
-				"name": "Sci-fi",
-				"id": "sci-fi"
+				"name": "Science-fiction",
+				"id": "science-fiction"
 			},
 			{
 				"type": "genre",
@@ -208,53 +233,53 @@
 			},
 			{
 				"type": "genre",
-				"name": "Shoujo",
-				"id": "shoujo"
+				"name": "Shôjo",
+				"id": "shojo"
 			},
 			{
 				"type": "genre",
-				"name": "Shoujo Ai",
-				"id": "shoujo-ai"
+				"name": "Shônen",
+				"id": "shonen"
 			},
 			{
 				"type": "genre",
-				"name": "Shounen",
-				"id": "shounen-manga-free-at-mangatx"
-			},
-			{
-				"type": "genre",
-				"name": "Shounen Ai",
-				"id": "shounen-ai-manga-free"
-			},
-			{
-				"type": "genre",
-				"name": "Slice of Life",
-				"id": "slice-of-life"
-			},
-			{
-				"type": "genre",
-				"name": "Soft Yaoi",
-				"id": "soft-yaoi-mangatx"
-			},
-			{
-				"type": "genre",
-				"name": "Soft Yuri",
-				"id": "soft-yuri-free-mangatx"
+				"name": "Shônen Ai",
+				"id": "shonen-ai"
 			},
 			{
 				"type": "genre",
 				"name": "Sports",
-				"id": "sports-manga"
+				"id": "sports"
 			},
 			{
 				"type": "genre",
-				"name": "Supernatural",
-				"id": "supernatural"
+				"name": "Stream",
+				"id": "stream"
 			},
 			{
 				"type": "genre",
-				"name": "Tragedy",
-				"id": "free-tragedy-manga"
+				"name": "Surnaturel",
+				"id": "surnaturel"
+			},
+			{
+				"type": "genre",
+				"name": "Tranches de vie",
+				"id": "tranches-de-vie"
+			},
+			{
+				"type": "genre",
+				"name": "Vie scolaire",
+				"id": "vie-scolaire"
+			},
+			{
+				"type": "genre",
+				"name": "Webcomic",
+				"id": "webcomic"
+			},
+			{
+				"type": "genre",
+				"name": "Webnovel",
+				"id": "webnovel"
 			},
 			{
 				"type": "genre",
@@ -263,8 +288,8 @@
 			},
 			{
 				"type": "genre",
-				"name": "Zombie",
-				"id": "zombie"
+				"name": "Yaoi",
+				"id": "yaoi"
 			}
 		]
 	}
