@@ -10,6 +10,12 @@ fn get_data() -> template::MadaraSiteData {
 		base_url: String::from("https://reaperscans.fr"),
 		lang: String::from("fr"),
 		source_path: String::from("serie"),
+		status_filter_ongoing: String::from("En cours"),
+		status_filter_completed: String::from("Terminé"),
+		status_filter_cancelled: String::from("Annulé"),
+		status_filter_on_hold: String::from("En pause"),
+		popular: String::from("Populaire"),
+		trending: String::from("Tendance"),
 		status: |html| {
 			let status_str = html
 				.select("div.post-content_item:contains(Statut) div.summary-content")
