@@ -13,6 +13,8 @@ fn get_data() -> template::MadaraSiteData {
 		status_filter_completed: String::from("Terminé"),
 		status_filter_cancelled: String::from("Annulé"),
 		status_filter_on_hold: String::from("En pause"),
+		popular: String::from("Populaire"),
+		trending: String::from("Tendance"),
 		status: |html| {
 			let status_str = html
 				.select("div.post-content_item:contains(État) div.summary-content")
