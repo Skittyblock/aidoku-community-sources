@@ -10,6 +10,12 @@ fn get_data() -> template::MadaraSiteData {
 		base_url: String::from("https://mangas-origines.fr"),
 		lang: String::from("fr"),
 		description_selector: String::from("div.manga-excerpt p"),
+		status_filter_ongoing: String::from("En cours"),
+		status_filter_completed: String::from("Terminé"),
+		status_filter_cancelled: String::from("Annulé"),
+		status_filter_on_hold: String::from("En pause"),
+		popular: String::from("Populaire"),
+		trending: String::from("Tendance"),
 		status: |html| {
 			let status_str = html
 				.select("div.post-content_item:contains(Statut) div.summary-content")
@@ -20,8 +26,8 @@ fn get_data() -> template::MadaraSiteData {
 			status_str.next();
 			match status_str.as_str() {
 				"en cours" => MangaStatus::Ongoing,
-				"terminé" => MangaStatus::Completed,
-				"abandonné" => MangaStatus::Cancelled,
+				"complété" => MangaStatus::Completed,
+				"annulé" => MangaStatus::Cancelled,
 				"en pause" => MangaStatus::Hiatus,
 				_ => MangaStatus::Unknown,
 			}
