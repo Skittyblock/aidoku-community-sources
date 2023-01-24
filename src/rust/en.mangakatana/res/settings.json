@@ -7,7 +7,7 @@
 			{
 				"type": "select",
 				"key": "imageServer",
-				"title": "Current Image Server",
+				"title": "Image Server",
 				"values": [
 					"",
 					"mk",

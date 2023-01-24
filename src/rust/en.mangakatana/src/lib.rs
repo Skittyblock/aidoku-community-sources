@@ -6,6 +6,7 @@ mod parser;
 use aidoku::{
 	error::Result,
 	prelude::*,
+	std::defaults::defaults_get,
 	std::net::{HttpMethod, Request},
 	std::{String, Vec},
 	Chapter, DeepLink, Filter, FilterType, Listing, Manga, MangaPageResult, Page,
@@ -143,7 +144,20 @@ fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 
 #[get_page_list]
 fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
+	let image_server = defaults_get("imageServer")?
+		.as_string()
+		.map(|v| v.read())
+		.unwrap_or_default();
+
+	let url = {
 	let url = get_chapter_url(chapter_id, manga_id, String::from(URL));
+
+		if image_server.is_empty() {
+			url
+		} else {
+			format!("{}?sv={}", url, image_server)
+		}
+	};
 
 	let html = Request::new(url, HttpMethod::Get)
 		.html()
