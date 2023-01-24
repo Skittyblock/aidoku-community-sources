@@ -20,22 +20,15 @@
 		}
 	},
 	{
-		"type": "group",
+		"type": "select",
 		"name": "Status",
-		"filters": [
-			{
-				"type": "check",
-				"name": "Ongoing"
-			},
-			{
-				"type": "check",
-				"name": "Completed"
-			},
-			{
-				"type": "check",
-				"name": "Cancelled"
-			}
-		]
+		"options": [
+			"Any",
+			"Ongoing",
+			"Completed",
+			"Cancelled"
+		],
+		"default": 0
 	},
 	{
 		"type": "group",
