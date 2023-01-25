@@ -26,7 +26,6 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	let mut include_generes = Vec::new();
 	let mut exclude_generes = Vec::new();
 
-	// FIXME!: Pagination is broken when using search
 	for filter in filters {
 		match filter.kind {
 			FilterType::Title => {
