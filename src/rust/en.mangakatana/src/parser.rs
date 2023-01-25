@@ -49,9 +49,9 @@ pub fn parse_manga_list(html: Node, base_url: String) -> MangaPageResult {
 		});
 	}
 
-	// MnagaKatana has a bunch of empty pages for some reason
-	// so if no manga is found, then we know we're on an empty page and
-	// there are no more pages even if the pagination button is still there
+	// MangaKatana has a bunch of empty pages for some reason, so,
+	// if no manga is found, then we know we're on an empty page and
+	// there are no more usefull pages even if the pagination button is still there
 	let has_more = !html.select(".uk-pagination .next").array().is_empty() && !manga.is_empty();
 
 	MangaPageResult { manga, has_more }
