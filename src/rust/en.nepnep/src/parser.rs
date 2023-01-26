@@ -5,6 +5,9 @@ use aidoku::{
 
 use super::helper::{chapter_image, chapter_url_encode};
 
+extern crate alloc;
+use alloc::string::ToString;
+
 // Parse manga with title and cover
 pub fn parse_basic_manga(manga_object: ObjectRef, cover_url: String) -> Result<Manga> {
 	let id = manga_object.get("i").as_string()?.read();
@@ -127,9 +130,60 @@ pub fn parse_chapter(manga_id: &str, chapter_object: ObjectRef) -> Result<Chapte
 		title.push_str(&chapter_image(&id, false));
 	}
 
+	let mut volume = -1.0;
+
+	let cleaned_title = {
+		let mut cleaned_title = title.split_whitespace().collect::<Vec<&str>>();
+
+		// Remove leading season text and set volume accordingly
+		// This is for titles like "S1 - Chapter 1"
+		if title.len() >= 2 {
+			let title_chars = cleaned_title[0].chars().collect::<Vec<char>>();
+
+			if title_chars[0] == 'S' && title_chars[1].to_string().parse::<f64>().is_ok() {
+				volume = title_chars[1].to_string().parse::<f32>().unwrap_or(-1.0);
+				cleaned_title.remove(0);
+			}
+
+			// Remove leading symbols
+			if !cleaned_title.is_empty() && cleaned_title[0] == "-" {
+				cleaned_title.remove(0);
+			}
+		}
+
+		// Remove leading volume text and set volume accordingly
+		if cleaned_title.len() >= 2
+			&& (cleaned_title[0] == "Volume")
+			&& cleaned_title[1].parse::<f64>().is_ok()
+		{
+			volume = cleaned_title[1].parse::<f32>().unwrap_or(-1.0);
+			cleaned_title.remove(0);
+			cleaned_title.remove(0);
+		}
+
+		// Remove leading chapter text
+		if cleaned_title.len() >= 2
+			&& (cleaned_title[0] == "Chapter"
+				|| cleaned_title[0] == "Episode"
+				|| cleaned_title[0] == "episode."
+				|| cleaned_title[0] == "No.")
+			|| cleaned_title[0] == "#" && cleaned_title[1].parse::<f64>().is_ok()
+		{
+			cleaned_title.remove(0);
+			cleaned_title.remove(0);
+		}
+
+		// Remove leading symbols
+		if !cleaned_title.is_empty() && cleaned_title[0] == "-" {
+			cleaned_title.remove(0);
+		}
+
+		cleaned_title.join(" ")
+	};
+
 	let date_updated = chapter_object
 		.get("Date")
-		.as_date("yyyy-MM-dd HH:mm:SS", None, None)
+		.as_date("yyyy-MM-dd HH:mm:SS", Some("en-US"), Some("UTC"))
 		.unwrap_or(-1.0);
 
 	let mut url = String::from("https://mangasee123.com/read-online/");
@@ -137,8 +191,8 @@ pub fn parse_chapter(manga_id: &str, chapter_object: ObjectRef) -> Result<Chapte
 
 	Ok(Chapter {
 		id: path,
-		title,
-		volume: -1.0,
+		title: cleaned_title,
+		volume,
 		chapter,
 		date_updated,
 		scanlator: String::new(),
