@@ -131,9 +131,12 @@ impl Default for MadaraSiteData {
 					.to_lowercase();
 				match status_str.as_str() {
 					"ongoing" => MangaStatus::Ongoing,
+					"releasing" => MangaStatus::Ongoing,
 					"completed" => MangaStatus::Completed,
 					"canceled" => MangaStatus::Cancelled,
+					"dropped" => MangaStatus::Cancelled,
 					"hiatus" => MangaStatus::Hiatus,
+					"on hold" => MangaStatus::Hiatus,
 					_ => MangaStatus::Unknown,
 				}
 			},
