@@ -5,25 +5,6 @@ use aidoku::{
 	MangaContentRating, MangaStatus, MangaViewer,
 };
 
-/// Percent-encode any non-ASCII characters in a string.
-pub fn urlencode(string: String) -> String {
-	let mut result: Vec<u8> = Vec::with_capacity(string.len() * 3);
-	let hex = "0123456789ABCDEF".as_bytes();
-	let bytes = string.as_bytes();
-
-	for byte in bytes {
-		let curr = *byte;
-		if curr.is_ascii_alphanumeric() {
-			result.push(curr);
-		} else {
-			result.push(b'%');
-			result.push(hex[curr as usize >> 4]);
-			result.push(hex[curr as usize & 15]);
-		}
-	}
-	String::from_utf8(result).unwrap_or_default()
-}
-
 /// Converts `<br>` into newlines.
 pub fn text_with_newlines(node: Node) -> String {
 	let html = node.html().read();

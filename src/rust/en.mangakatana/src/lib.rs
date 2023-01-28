@@ -5,11 +5,12 @@ mod parser;
 
 use aidoku::{
 	error::Result,
+	helpers::uri::encode_uri_component,
 	prelude::*,
 	std::defaults::defaults_get,
 	std::net::{HttpMethod, Request},
 	std::{String, Vec},
-	Chapter, DeepLink, Filter, FilterType, Listing, Manga, MangaPageResult, Page,
+	Chapter, DeepLink, Filter, FilterType, Manga, MangaPageResult, Page,
 };
 
 use helper::*;
@@ -31,14 +32,14 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 			FilterType::Title => {
 				if let Ok(value) = filter.value.as_string() {
 					searching = true;
-					let query = urlencode(value.read());
+					let query = encode_uri_component(value.read());
 					url = format!("{}/page/{}?search={}&search_by=book_name", URL, page, query);
 				}
 			}
 			FilterType::Author => {
 				if let Ok(value) = filter.value.as_string() {
 					searching = true;
-					let query = urlencode(value.read());
+					let query = encode_uri_component(value.read());
 					url = format!("{}/page/{}?search={}&search_by=author", URL, page, query);
 				}
 			}
