@@ -47,28 +47,13 @@ pub fn parse_manga_list(base_url: String, filters: Vec<Filter>) -> Result<MangaP
 		let id = get_manga_id(manga_node.attr("href").read());
 		let cover = manga_node.select("img").attr("src").read();
 		let title = manga_node.select(".subj").text().read();
-		let categories = [manga_node.select(".genre").text().read()].to_vec();
-
-		let author_artist = manga_node.select(".author").text().read();
-		let author_artist = author_artist.split('/').collect::<Vec<&str>>();
-
-		let author = String::from(author_artist[0].trim());
-		let mut artist = String::new();
-
-		if author_artist.len() > 1 {
-			artist = String::from(author_artist[1].trim());
-		}
-
 		let url = manga_node.attr("href").read();
 
 		mangas.push(Manga {
 			id,
 			cover,
 			title,
-			author,
-			artist,
 			url,
-			categories,
 			viewer: MangaViewer::Scroll,
 			..Default::default()
 		});
@@ -105,18 +90,13 @@ pub fn parse_canvas_list(url: String, page: i32) -> Result<MangaPageResult> {
 		let id = get_manga_id(manga_node.attr("href").read());
 		let cover = manga_node.select("img").attr("src").read();
 		let title = manga_node.select(".subj").text().read();
-		let categories = [manga_node.select(".genre").text().read()].to_vec();
-		let author = manga_node.select(".author").text().read();
-
 		let url = manga_node.attr("href").read();
 
 		mangas.push(Manga {
 			id,
 			cover,
 			title,
-			author,
 			url,
-			categories,
 			viewer: MangaViewer::Scroll,
 			..Default::default()
 		});
