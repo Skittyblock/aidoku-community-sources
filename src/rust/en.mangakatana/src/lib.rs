@@ -114,12 +114,6 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	Ok(parse_manga_list(html, String::from(URL)))
 }
 
-#[get_manga_listing]
-fn get_manga_listing(_listing: Listing, page: i32) -> Result<MangaPageResult> {
-	// No listings exist on mangakatana it's all done through filters
-	get_manga_list(Vec::new(), page)
-}
-
 #[get_manga_details]
 fn get_manga_details(manga_id: String) -> Result<Manga> {
 	let url = get_manga_url(manga_id, String::from(URL));
