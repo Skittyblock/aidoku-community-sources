@@ -5,10 +5,10 @@ use aidoku::{
 		html::Node,
 		String, StringRef, Vec, current_date, json
 	},
-	Manga, Page, MangaStatus, MangaContentRating, MangaViewer, Chapter
+	Manga, Page, MangaPageResult, MangaStatus, MangaContentRating, MangaViewer, Chapter
 };
 
-pub fn parse_mangas(html: Node) -> Vec<Manga>  {
+pub fn parse_manga_list(html: Node) -> Result<MangaPageResult>  {
 	let mut mangas: Vec<Manga> = Vec::new();
 
 	for page in html.select(".group").array() {
@@ -18,7 +18,7 @@ pub fn parse_mangas(html: Node) -> Vec<Manga>  {
 		
 		let title = page.select(">.title a").attr("title").read();
 		let url = page.select(">.title a").attr("href").read();
-		let id = String::from(url.split("/").enumerate().nth(4).expect("Failed to get id").1.trim());
+		let id = String::from(url.split('/').enumerate().nth(4).expect("Failed to get id").1.trim());
 		let cover = String::from(page.select(".preview").attr("src").read().trim());
 
 		mangas.push(Manga {
@@ -36,11 +36,12 @@ pub fn parse_mangas(html: Node) -> Vec<Manga>  {
 		});
 	}
 
-	return mangas;
-}
+	let has_more = !html.select(".next").text().read().is_empty();
 
-pub fn check_not_last_page(html: Node) -> bool {
-	return html.select(".next").text().read().len() != 0;
+	Ok(MangaPageResult {
+		manga: mangas,
+		has_more,
+	})
 }
 
 pub fn parse_manga_details(base_url: String, manga_id: String, html: Node) -> Result<Manga> {	
@@ -52,7 +53,7 @@ pub fn parse_manga_details(base_url: String, manga_id: String, html: Node) -> Re
 	let url = format!("{}/series/{}", base_url, manga_id);
 	
 	for item in html.select(".large.comic .info").html().read().split("<br>"){
-		let split :Vec<&str> = item.trim().split(":").collect();
+		let split :Vec<&str> = item.trim().split(':').collect();
 
 		match split[0].trim() {
 			"<b>Author</b>" => author = String::from(split[1].trim()),
@@ -88,28 +89,28 @@ pub fn parse_chapter_list(base_url: String, manga_id: String, html: Node) -> Res
 		let url = element.select(".title a").attr("href").read();
 		let id = String::from(&url.replace(&format!("{}/read/{}", base_url, manga_id), ""));
 
-		let split_url : Vec<&str> = url.split("/").collect();
+		let split_url : Vec<&str> = url.split('/').collect();
 		let volume = if split_url[6] == "0" {
 			-1.0
 		} else {
 			String::from(split_url[6]).parse().unwrap()
 		} as f32;
 
-		let chapter = if split_url[8] == "" {
+		let chapter = if split_url[8].is_empty() {
 			String::from(split_url[7]).parse().unwrap()
 		} else {
-			String::from(format!("{}.{}", split_url[7], split_url[8])).parse().unwrap()
+			format!("{}.{}", split_url[7], split_url[8]).parse().unwrap()
 		};
 
 		let chap_title_str = element.select(".title a").text().read();
 		let mut title = String::new();
-		if chap_title_str.contains(":") {
-			let split_title :Vec<&str> = chap_title_str.split(":").collect();
+		if chap_title_str.contains(':') {
+			let split_title :Vec<&str> = chap_title_str.split(':').collect();
 			title = String::from(split_title[1].trim());
 		}
 		
 		let date_str = element.select(".meta_r").text().read();
-		let date_str_split :Vec<&str> = date_str.split(",").collect();
+		let date_str_split :Vec<&str> = date_str.split(',').collect();
 		let scanlator = String::from(date_str_split[0].replace("par", "").trim());
 
 		let mut date_updated = StringRef::from(&date_str_split[1].trim())
@@ -142,7 +143,7 @@ pub fn parse_chapter_list(base_url: String, manga_id: String, html: Node) -> Res
 	Ok(chapters)
 }
 
-pub fn parse_chapter_details(html: Node) -> Result<Vec<Page>> {
+pub fn parse_page_list(html: Node) -> Result<Vec<Page>> {
 	let data = html
 		.select("#content > script:nth-child(5)")
 		.html()
@@ -162,8 +163,7 @@ pub fn parse_chapter_details(html: Node) -> Result<Vec<Page>> {
 		.expect("Failed to get data as array");
 	
 	let mut pages: Vec<Page> = Vec::new();
-	let mut i = 0;
-	for item in json {
+	for (i, item) in json.enumerate() {
 		let obj = item
 			.as_object()
 			.expect("Failed to get data as object");
@@ -180,7 +180,6 @@ pub fn parse_chapter_details(html: Node) -> Result<Vec<Page>> {
 			base64: String::new(),
 			text: String::new(),
 		});
-		i += 1;
 	}
 
 	Ok(pages)
