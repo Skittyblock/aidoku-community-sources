@@ -112,7 +112,7 @@ pub fn get_chapter_id(url: String) -> String {
 
 	let mut id = String::new();
 
-	let mut split_url = url.split('/').collect::<Vec<&str>>();
+	let mut split_url = url.split(['/', '.']).collect::<Vec<&str>>();
 	split_url.reverse();
 
 	if !split_url.is_empty() {
