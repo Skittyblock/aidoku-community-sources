@@ -32,10 +32,7 @@ pub fn urlencode(string: String) -> String {
 
 	for byte in bytes {
 		let curr = *byte;
-		if (b'a'..=b'z').contains(&curr)
-			|| (b'A'..=b'Z').contains(&curr)
-			|| (b'0'..=b'9').contains(&curr)
-		{
+		if curr.is_ascii_lowercase() || curr.is_ascii_uppercase() || curr.is_ascii_digit() {
 			result.push(curr);
 		} else {
 			result.push(b'%');
@@ -101,7 +98,7 @@ pub fn status_from_string(status: String) -> MangaStatus {
 }
 
 pub fn is_numeric_char(c: char) -> bool {
-	('0'..='9').contains(&c) || c == '.'
+	c.is_ascii_digit() || c == '.'
 }
 
 pub fn get_chapter_number(id: String) -> f32 {
