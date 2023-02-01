@@ -2,11 +2,14 @@
 use aidoku::{
 	error::Result,
 	prelude::*,
+	std::net::HttpMethod,
+	std::net::Request,
 	std::String,
 	std::{ObjectRef, Vec},
-	Chapter, DeepLink, Filter, Manga, MangaPageResult, Page,
+	Chapter, DeepLink, Filter, Manga, MangaContentRating, MangaPageResult, Page,
 };
-
+use alloc::string::ToString;
+extern crate alloc;
 use guya_template::template;
 
 fn data() -> template::GuyaSiteData {
@@ -23,7 +26,18 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 
 #[get_manga_details]
 pub fn get_manga_details(slug: String) -> Result<Manga> {
-	template::get_manga_details(data(), slug)
+	let url = format!("{}/read/series/{}/", &data().base_url, slug);
+	let request = Request::new(url, HttpMethod::Get).header("User-Agent", "Aidoku");
+	let html = request.html()?;
+	let nsfw_modal = html.select("script");
+	if nsfw_modal
+		.html()
+		.read()
+		.contains("$('#nfsw-modal').modal({backdrop: 'static', keyboard: false});")
+	{
+		return template::get_manga_details(data(), slug, MangaContentRating::Nsfw);
+	}
+	template::get_manga_details(data(), slug, MangaContentRating::Safe)
 }
 
 #[get_chapter_list]
@@ -61,5 +75,18 @@ pub fn get_page_list(chapter: ObjectRef) -> Result<Vec<Page>> {
 
 #[handle_url]
 pub fn handle_url(url: String) -> Result<DeepLink> {
-	template::handle_url(data(), url)
+	let parts = url.split('/').collect::<Vec<&str>>();
+	let slug = parts[5].to_string();
+	let nsfw_url = format!("{}/read/series/{}/", &data().base_url, slug);
+	let request = Request::new(nsfw_url, HttpMethod::Get).header("User-Agent", "Aidoku");
+	let html = request.html()?;
+	let nsfw_modal = html.select("script");
+	if nsfw_modal
+		.html()
+		.read()
+		.contains("$('#nfsw-modal').modal({backdrop: 'static', keyboard: false});")
+	{
+		return template::handle_url(data(), url, MangaContentRating::Nsfw);
+	}
+	template::handle_url(data(), url, MangaContentRating::Safe)
 }
