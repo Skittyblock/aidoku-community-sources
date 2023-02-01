@@ -4,7 +4,7 @@ use aidoku::{
 	prelude::*,
 	std::String,
 	std::{ObjectRef, Vec},
-	Chapter, DeepLink, Filter, Manga, MangaPageResult, Page,
+	Chapter, DeepLink, Filter, Manga, MangaContentRating, MangaPageResult, Page,
 };
 
 use guya_template::template;
@@ -28,7 +28,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 
 #[get_manga_details]
 pub fn get_manga_details(slug: String) -> Result<Manga> {
-	template::get_manga_details(data(), slug)
+	template::get_manga_details(data(), slug, MangaContentRating::Safe)
 }
 
 #[get_chapter_list]
@@ -66,5 +66,5 @@ pub fn get_page_list(chapter: ObjectRef) -> Result<Vec<Page>> {
 
 #[handle_url]
 pub fn handle_url(url: String) -> Result<DeepLink> {
-	template::handle_url(data(), url)
+	template::handle_url(data(), url, MangaContentRating::Safe)
 }

@@ -78,7 +78,11 @@ pub fn get_manga_list(data: GuyaSiteData, filters: Vec<Filter>, _: i32) -> Resul
 // 	todo!()
 // }
 
-pub fn get_manga_details(data: GuyaSiteData, slug: String) -> Result<Manga> {
+pub fn get_manga_details(
+	data: GuyaSiteData,
+	slug: String,
+	nsfw: MangaContentRating,
+) -> Result<Manga> {
 	let url = format!("{}/api/series/{}/", &data.base_url, slug);
 	let request = Request::new(url, HttpMethod::Get).header("User-Agent", "Aidoku");
 	let json = request.json()?.as_object()?;
@@ -101,7 +105,7 @@ pub fn get_manga_details(data: GuyaSiteData, slug: String) -> Result<Manga> {
 		artist,
 		url: user_url,
 		status: MangaStatus::Unknown,
-		nsfw: data.nsfw,
+		nsfw,
 		viewer: MangaViewer::Rtl,
 		..Default::default()
 	})
@@ -206,10 +210,10 @@ pub fn get_page_list(data: GuyaSiteData, chapter: ObjectRef) -> Result<Vec<Page>
 	Ok(pages)
 }
 
-pub fn handle_url(data: GuyaSiteData, url: String) -> Result<DeepLink> {
+pub fn handle_url(data: GuyaSiteData, url: String, nsfw: MangaContentRating) -> Result<DeepLink> {
 	let parts = url.split('/').collect::<Vec<&str>>();
 	let slug = parts[5].to_string();
-	let manga = get_manga_details(data, slug).ok();
+	let manga = get_manga_details(data, slug, nsfw).ok();
 	Ok(DeepLink {
 		manga,
 		chapter: None,
