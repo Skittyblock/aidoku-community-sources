@@ -95,6 +95,7 @@ pub fn get_manga_id(url: String) -> String {
 			// The first part that can be parsed as a u32 is the id.
 			if part.parse::<u32>().is_ok() {
 				id = String::from(part);
+				break;
 			}
 		}
 	}
