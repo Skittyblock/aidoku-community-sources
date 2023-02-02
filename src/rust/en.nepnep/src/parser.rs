@@ -166,8 +166,9 @@ pub fn parse_chapter(manga_id: &str, chapter_object: ObjectRef) -> Result<Chapte
 			&& (cleaned_title[0] == "Chapter"
 				|| cleaned_title[0] == "Episode"
 				|| cleaned_title[0] == "episode."
-				|| cleaned_title[0] == "No.")
-			|| cleaned_title[0] == "#" && cleaned_title[1].parse::<f64>().is_ok()
+				|| cleaned_title[0] == "No."
+				|| cleaned_title[0] == "#")
+			&& cleaned_title[1].parse::<f64>().is_ok()
 		{
 			cleaned_title.remove(0);
 			cleaned_title.remove(0);
