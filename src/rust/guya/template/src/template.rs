@@ -4,7 +4,7 @@ use aidoku::{
 	std::net::HttpMethod,
 	std::net::Request,
 	std::String,
-	std::{ObjectRef, Vec},
+	std::{html::Node, ObjectRef, Vec},
 	Chapter, DeepLink, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
 	MangaViewer, Page,
 };
@@ -92,7 +92,16 @@ pub fn get_manga_details(
 		&data.base_url,
 		json.get("cover").as_string()?.read()
 	);
-	let description = json.get("description").as_string()?.read();
+	let description_raw = json.get("description").as_string()?.read();
+	let description_node = Node::new_fragment(description_raw.as_bytes())?;
+	let description = description_node
+		.select("body")
+		.array()
+		.get(0)
+		.as_node()?
+		.own_text()
+		.read();
+	println!("{}", description);
 	let user_url = format!("{}/read/manga/{}/", &data.base_url, slug);
 	let author = json.get("author").as_string()?.read();
 	let artist = json.get("artist").as_string()?.read();
