@@ -78,6 +78,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "hiperdex"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "madara_template",
+]
+
+[[package]]
 name = "hscans"
 version = "0.1.0"
 dependencies = [
