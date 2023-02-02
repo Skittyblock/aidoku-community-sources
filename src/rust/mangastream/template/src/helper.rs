@@ -344,13 +344,12 @@ pub fn get_id_from_url(url: String) -> String {
 }
 
 pub fn get_lang_code() -> String {
-	let mut code = String::new();
 	if let Ok(languages) = defaults_get("languages") {
 		if let Ok(arr) = languages.as_array() {
 			if let Ok(language) = arr.get(0).as_string() {
-				code = language.read();
+				return language.read();
 			}
 		}
 	}
-	code
+	String::new()
 }
