@@ -1,0 +1,22 @@
+[
+	{
+		"type": "group",
+		"title": "Settings",
+		"items": [
+			{
+				"type": "switch",
+				"key": "optionalPages",
+				"title": "Show optional pages",
+				"subtitle": "Warning pages, author notes, etc...",
+				"default": true
+			},
+			{
+				"type": "switch",
+				"key": "canvasSeries",
+				"title": "Show canvas series",
+				"subtitle": "Canvas series are published by independent creators",
+				"default": true
+			}
+		]
+	}
+]

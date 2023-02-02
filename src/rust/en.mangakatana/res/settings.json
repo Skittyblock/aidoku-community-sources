@@ -1,0 +1,25 @@
+[
+	{
+		"type": "group",
+		"title": "Image Server Selection",
+		"footer": "MangaKatana has multiple image servers, if you are having trouble loading images, try switching servers.",
+		"items": [
+			{
+				"type": "select",
+				"key": "imageServer",
+				"title": "Image Server",
+				"values": [
+					"",
+					"mk",
+					"3"
+				],
+				"titles": [
+					"Server 1",
+					"Server 2",
+					"Server 3"
+				],
+				"default": ""
+			}
+		]
+	}
+]
