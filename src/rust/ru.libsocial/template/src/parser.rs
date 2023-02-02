@@ -5,6 +5,7 @@ use aidoku::std::json::parse;
 use aidoku::std::{print, ArrayRef, ObjectRef, StringRef, ValueRef};
 use aidoku::{
 	error::Result,
+	helpers::uri::encode_uri,
 	prelude::*,
 	std::{String, Vec},
 	Chapter, Manga, MangaContentRating, MangaPageResult, MangaStatus, MangaViewer, Page,
@@ -29,13 +30,13 @@ pub fn manga_list_parse<T: AsRef<str>>(
 }
 
 pub fn manga_parse<T: AsRef<str>>(base_url: T, response: ObjectRef) -> Result<Manga> {
-	let title = response.get("rus_name").as_string()?;
-	let cover = response.get("coverImage").as_string()?;
+	let title = response.get("rus_name").as_string()?.read();
+	let cover = response.get("coverImage").as_string()?.read();
 	let slug = response.get("slug").as_string()?.read();
 	Ok(Manga {
 		id: format!("{}", slug),
-		cover: format!("{}/{}", base_url.as_ref(), cover.read()),
-		title: title.read(),
+		cover,
+		title,
 		author: String::from(""),
 		artist: String::from(""),
 		description: String::from(""),
@@ -468,12 +469,12 @@ pub fn pages_parse(node: Node) -> Result<Vec<Page>> {
 	for page in pages_array {
 		let page_obj = page.as_object()?;
 
-		let url = format!(
+		let url = encode_uri(format!(
 			"{}{}{}",
 			server,
 			img_url,
 			page_obj.get("u").as_string()?.read()
-		);
+		));
 
 		pages.push(Page {
 			index: page_obj.get("p").as_int()? as i32,
