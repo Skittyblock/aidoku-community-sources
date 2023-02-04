@@ -1,0 +1,388 @@
+[
+	{
+		"type": "title"
+	},
+	{
+		"type": "group",
+		"name": "Genero",
+		"filters": [
+			{
+				"type": "genre",
+				"name": "4-Koma",
+				"id": "4-Koma"
+			},
+			{
+				"type": "genre",
+				"name": "Ação",
+				"id": "Ação"
+			},
+			{
+				"type": "genre",
+				"name": "Adulto (18+)",
+				"id": "Adulto%20(18"
+			},
+			{
+				"type": "genre",
+				"name": "Adulto (YAOI)",
+				"id": "Adulto%20(YAOI)"
+			},
+			{
+				"type": "genre",
+				"name": "Artes Marciais",
+				"id": "Artes%20Marciais"
+			},
+			{
+				"type": "genre",
+				"name": "Aventura",
+				"id": "Aventura"
+			},
+			{
+				"type": "genre",
+				"name": "Bara",
+				"id": "Bara"
+			},
+			{
+				"type": "genre",
+				"name": "Comédia",
+				"id": "Comédia"
+			},
+			{
+				"type": "genre",
+				"name": "Crossdress",
+				"id": "Crossdress"
+			},
+			{
+				"type": "genre",
+				"name": "Culinaria",
+				"id": "Culinaria"
+			},
+			{
+				"type": "genre",
+				"name": "Demônios",
+				"id": "Demônios"
+			},
+			{
+				"type": "genre",
+				"name": "Doujinshi",
+				"id": "Doujinshi"
+			},
+			{
+				"type": "genre",
+				"name": "Drama",
+				"id": "Drama"
+			},
+			{
+				"type": "genre",
+				"name": "Ecchi",
+				"id": "Ecchi"
+			},
+			{
+				"type": "genre",
+				"name": "Escolar",
+				"id": "Escolar"
+			},
+			{
+				"type": "genre",
+				"name": "Espaço",
+				"id": "Espaço"
+			},
+			{
+				"type": "genre",
+				"name": "Esporte",
+				"id": "Esporte"
+			},
+			{
+				"type": "genre",
+				"name": "Fantasia",
+				"id": "Fantasia"
+			},
+			{
+				"type": "genre",
+				"name": "Ficção",
+				"id": "Ficção"
+			},
+			{
+				"type": "genre",
+				"name": "Gastronomia",
+				"id": "Gastronomia"
+			},
+			{
+				"type": "genre",
+				"name": "Gender Bender",
+				"id": "Gender%20Bender"
+			},
+			{
+				"type": "genre",
+				"name": "Guerra",
+				"id": "Guerra"
+			},
+			{
+				"type": "genre",
+				"name": "Harem",
+				"id": "Harem"
+			},
+			{
+				"type": "genre",
+				"name": "Hentai",
+				"id": "Hentai"
+			},
+			{
+				"type": "genre",
+				"name": "Histórico",
+				"id": "Histórico"
+			},
+			{
+				"type": "genre",
+				"name": "Horror",
+				"id": "Horror"
+			},
+			{
+				"type": "genre",
+				"name": "Isekai",
+				"id": "Isekai"
+			},
+			{
+				"type": "genre",
+				"name": "Jogo",
+				"id": "Jogo"
+			},
+			{
+				"type": "genre",
+				"name": "Josei",
+				"id": "Josei"
+			},
+			{
+				"type": "genre",
+				"name": "Magia",
+				"id": "Magia"
+			},
+			{
+				"type": "genre",
+				"name": "Manhua",
+				"id": "Manhua"
+			},
+			{
+				"type": "genre",
+				"name": "Manhwa",
+				"id": "Manhwa"
+			},
+			{
+				"type": "genre",
+				"name": "Mecha",
+				"id": "Mecha"
+			},
+			{
+				"type": "genre",
+				"name": "Medicina",
+				"id": "Medicina"
+			},
+			{
+				"type": "genre",
+				"name": "Militar",
+				"id": "Militar"
+			},
+			{
+				"type": "genre",
+				"name": "Mistério",
+				"id": "Mistério"
+			},
+			{
+				"type": "genre",
+				"name": "Musical",
+				"id": "Musical"
+			},
+			{
+				"type": "genre",
+				"name": "Nonsense",
+				"id": "Nonsense"
+			},
+			{
+				"type": "genre",
+				"name": "Novel",
+				"id": "Novel"
+			},
+			{
+				"type": "genre",
+				"name": "Omegaverse",
+				"id": "Omegaverse"
+			},
+			{
+				"type": "genre",
+				"name": "Oneshot",
+				"id": "Oneshot"
+			},
+			{
+				"type": "genre",
+				"name": "Paródia",
+				"id": "Paródia"
+			},
+			{
+				"type": "genre",
+				"name": "Policial",
+				"id": "Policial"
+			},
+			{
+				"type": "genre",
+				"name": "Psicológico",
+				"id": "Psicológico"
+			},
+			{
+				"type": "genre",
+				"name": "Reencarnação",
+				"id": "Reencarnação"
+			},
+			{
+				"type": "genre",
+				"name": "Romance",
+				"id": "Romance"
+			},
+			{
+				"type": "genre",
+				"name": "Samurai",
+				"id": "Samurai"
+			},
+			{
+				"type": "genre",
+				"name": "Scan",
+				"id": "Scan"
+			},
+			{
+				"type": "genre",
+				"name": "Sci-fi",
+				"id": "Sci-fi"
+			},
+			{
+				"type": "genre",
+				"name": "Seinen",
+				"id": "Seinen"
+			},
+			{
+				"type": "genre",
+				"name": "Shoujo",
+				"id": "Shoujo"
+			},
+			{
+				"type": "genre",
+				"name": "Shoujo Ai",
+				"id": "Shoujo%20Ai"
+			},
+			{
+				"type": "genre",
+				"name": "Shounen",
+				"id": "Shounen"
+			},
+			{
+				"type": "genre",
+				"name": "Shounen Ai",
+				"id": "Shounen%20Ai"
+			},
+			{
+				"type": "genre",
+				"name": "Slice of Life",
+				"id": "Slice%20of Life"
+			},
+			{
+				"type": "genre",
+				"name": "Smut",
+				"id": "Smut"
+			},
+			{
+				"type": "genre",
+				"name": "Sobrenatural",
+				"id": "Sobrenatural"
+			},
+			{
+				"type": "genre",
+				"name": "Super Poderes",
+				"id": "Super%20Poderes"
+			},
+			{
+				"type": "genre",
+				"name": "Suspense",
+				"id": "Suspense"
+			},
+			{
+				"type": "genre",
+				"name": "Terror",
+				"id": "Terror"
+			},
+			{
+				"type": "genre",
+				"name": "Tragédia",
+				"id": "Tragédia"
+			},
+			{
+				"type": "genre",
+				"name": "Vampiros",
+				"id": "Vampiros"
+			},
+			{
+				"type": "genre",
+				"name": "Webtoon",
+				"id": "Webtoon"
+			},
+			{
+				"type": "genre",
+				"name": "Yaoi",
+				"id": "Yaoi"
+			},
+			{
+				"type": "genre",
+				"name": "Yaoi (Omegaverse)",
+				"id": "Yaoi%20(Omegaverse)"
+			},
+			{
+				"type": "genre",
+				"name": "Yuri",
+				"id": "Yuri"
+			},
+			{
+				"type": "genre",
+				"name": "Zumbi",
+				"id": "Zumbi"
+			}
+		]
+	},
+	{
+		"type": "select",
+		"name": "Status",
+		"options": [
+			"All",
+			"ativo",
+			"completo"
+		]
+	},
+	{
+		"type": "select",
+		"name": "ByLetter",
+		"options": [
+			"All",
+			"A",
+			"B",
+			"C",
+			"D",
+			"E",
+			"F",
+			"G",
+			"H",
+			"I",
+			"J",
+			"K",
+			"L",
+			"M",
+			"N",
+			"O",
+			"P",
+			"Q",
+			"R",
+			"S",
+			"T",
+			"U",
+			"V",
+			"W",
+			"X",
+			"Y",
+			"Z"
+		]
+	}
+]

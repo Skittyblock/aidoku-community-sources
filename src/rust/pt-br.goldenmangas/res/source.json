@@ -1,0 +1,13 @@
+{
+	"info": {
+		"id": "pt-br.goldenmangas",
+		"lang": "pt-br",
+		"name": "GoldenMangas",
+		"version": 1,
+		"url": "https://goldenmangas.top",
+		"nsfw": 1
+	},
+	"listings": [
+		{ "name": "Últimas Atualizações" }
+	]
+}
