@@ -137,15 +137,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "mangazuki"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "lazy_static",
- "mmrcms_template",
-]
-
-[[package]]
 name = "mangazukiraws"
 version = "0.1.0"
 dependencies = [
