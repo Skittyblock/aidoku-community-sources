@@ -18,12 +18,20 @@
 	{
 		"type": "select",
 		"name": "Tình trạng",
-		"options": ["Tất cả", "Đang tiến hành", "Đã hoàn thành"]
+		"options": [
+			"Tất cả",
+			"Đang tiến hành",
+			"Đã hoàn thành"
+		]
 	},
 	{
 		"type": "select",
 		"name": "Dành cho",
-		"options": ["Tất cả", "Con gái", "Con trai"]
+		"options": [
+			"Tất cả",
+			"Con gái",
+			"Con trai"
+		]
 	},
 	{
 		"type": "select",

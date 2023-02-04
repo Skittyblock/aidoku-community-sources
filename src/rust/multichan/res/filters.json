@@ -1,37 +1,35 @@
 [
-    {
-        "type": "title"
-    },
-    {
-        "type": "group",
-        "name": "Параметры поиска",
-        "filters": [
-            {
-                "type": "check",
-                "name": "Сортировка по дате"
-            }
-        ]
-    },
-    {
-        "type": "group",
-        "name": "Тэги",
-        "filters": [
-
-        ]
-    },
-    {
-        "type": "sort",
-        "name": "Сортировать",
-        "canAscend": true,
-        "options": [
-            "Дата",
-            "Популярность",
-            "Имя",
-            "Главы"
-        ],
-        "default": {
-            "index": 0,
-            "ascending": false
-        }
-    }
+	{
+		"type": "title"
+	},
+	{
+		"type": "group",
+		"name": "Параметры поиска",
+		"filters": [
+			{
+				"type": "check",
+				"name": "Сортировка по дате"
+			}
+		]
+	},
+	{
+		"type": "group",
+		"name": "Тэги",
+		"filters": []
+	},
+	{
+		"type": "sort",
+		"name": "Сортировать",
+		"canAscend": true,
+		"options": [
+			"Дата",
+			"Популярность",
+			"Имя",
+			"Главы"
+		],
+		"default": {
+			"index": 0,
+			"ascending": false
+		}
+	}
 ]
