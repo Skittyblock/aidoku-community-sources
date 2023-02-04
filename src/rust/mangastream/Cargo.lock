@@ -120,14 +120,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "kraw"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "mangastream_template",
-]
-
-[[package]]
 name = "kumascans"
 version = "0.1.0"
 dependencies = [
