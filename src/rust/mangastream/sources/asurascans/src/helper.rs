@@ -1,21 +1,12 @@
-use aidoku::std::{defaults::defaults_get, String};
+use aidoku::std::String;
+use mangastream_template::helper::*;
 
 pub fn get_base_url() -> String {
 	let code = get_lang_code();
 	match code.as_str() {
 		"tr" => String::from("https://asurascanstr.com"),
-		_ => String::from("https://asura.gg"),
+		_ => String::from("https://www.asurascans.com"),
 	}
-}
-
-pub fn get_lang_code() -> String {
-	let mut code = String::new();
-	if let Ok(languages) = defaults_get("languages").as_array() {
-		if let Ok(language) = languages.get(0).as_string() {
-			code = language.read();
-		}
-	}
-	code
 }
 
 pub fn get_tag_id(tag: String) -> String {
