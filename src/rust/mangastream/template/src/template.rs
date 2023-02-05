@@ -13,7 +13,7 @@ use crate::helper::*;
 pub struct MangaStreamSource {
 	pub has_permanent_manga_url: bool,
 	pub has_permanent_chapter_url: bool,
-	pub has_random_image_prefix: bool,
+	pub has_random_chapter_prefix: bool,
 	pub is_nsfw: bool,
 	pub tagid_mapping: fn(String) -> String,
 	pub listing: [&'static str; 3],
@@ -63,7 +63,7 @@ impl Default for MangaStreamSource {
 			has_permanent_manga_url: false,
 			has_permanent_chapter_url: false,
 			// this is for urls like https://mangashit.cum/RANDOM_INT_PREFIX/chapter-1
-			has_random_image_prefix: false,
+			has_random_chapter_prefix: false,
 			is_nsfw: false,
 			tagid_mapping: |str| str,
 			listing: ["Latest", "Popular", "New"],
@@ -366,7 +366,7 @@ impl MangaStreamSource {
 		let url = {
 			let mut url = format!("{}/{}", self.base_url, id);
 
-			if self.has_random_image_prefix {
+			if self.has_random_chapter_prefix {
 				url = format!("{}/{}/{}", self.base_url, 0, id);
 			}
 
