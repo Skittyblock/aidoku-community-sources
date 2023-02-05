@@ -13,6 +13,7 @@ use crate::helper::*;
 pub struct MangaStreamSource {
 	pub has_permanent_manga_url: bool,
 	pub has_permanent_chapter_url: bool,
+	pub has_random_image_prefix: bool,
 	pub is_nsfw: bool,
 	pub tagid_mapping: fn(String) -> String,
 	pub listing: [&'static str; 3],
@@ -61,6 +62,8 @@ impl Default for MangaStreamSource {
 		MangaStreamSource {
 			has_permanent_manga_url: false,
 			has_permanent_chapter_url: false,
+			// this is for urls like https://mangashit.cum/RANDOM_INT_PREFIX/chapter-1
+			has_random_image_prefix: false,
 			is_nsfw: false,
 			tagid_mapping: |str| str,
 			listing: ["Latest", "Popular", "New"],
@@ -360,7 +363,15 @@ impl MangaStreamSource {
 
 	//parse the maga chapter images list
 	pub fn parse_page_list(&self, id: String) -> Result<Vec<Page>> {
-		let url = format!("{}/{}", self.base_url, id);
+		let url = {
+			let mut url = format!("{}/{}", self.base_url, id);
+
+			if self.has_random_image_prefix {
+				url = format!("{}/{}/{}", self.base_url, 0, id);
+			}
+
+			url
+		};
 		let mut pages: Vec<Page> = Vec::new();
 		let html = Request::new(&url, HttpMethod::Get)
 			.header("Referer", &self.base_url)
