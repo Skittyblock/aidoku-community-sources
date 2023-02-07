@@ -1,0 +1,18 @@
+{
+	"info": {
+		"id": "en.lhtranslation",
+		"lang": "en",
+		"name": "LHTranslation",
+		"version": 4,
+		"url": "https://lhtranslation.net",
+		"nsfw": 1
+	},
+	"listings": [
+		{
+			"name": "Trending"
+		},
+		{
+			"name": "Popular"
+		}
+	]
+}

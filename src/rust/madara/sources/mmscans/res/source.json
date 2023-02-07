@@ -1,0 +1,18 @@
+{
+	"info": {
+		"id": "en.mmscans",
+		"lang": "en",
+		"name": "MMScans",
+		"version": 3,
+		"url": "https://mm-scans.org",
+		"nsfw": 0
+	},
+	"listings": [
+		{
+			"name": "Trending"
+		},
+		{
+			"name": "Popular"
+		}
+	]
+}

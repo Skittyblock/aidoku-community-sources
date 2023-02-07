@@ -1,0 +1,20 @@
+{
+	"info": {
+		"id": "es.acescans",
+		"lang": "es",
+		"name": "SenpaiEdiciones",
+		"version": 2,
+		"url": "https://senpaiediciones.com"
+	},
+	"listings": [
+		{
+			"name": "Populares"
+		},
+		{
+			"name": "ultimo"
+		},
+		{
+			"name": "nueva"
+		}
+	]
+}

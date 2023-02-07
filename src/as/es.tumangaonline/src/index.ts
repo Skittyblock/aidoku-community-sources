@@ -1,8 +1,20 @@
-import { ValueRef, ArrayRef, Filter, Listing, Request, Chapter, Manga } from "aidoku-as/src";
+import { ValueRef, ArrayRef, Filter, Listing, Request, Chapter, Manga, defaults } from "aidoku-as/src/index";
 
 import { TuMangaOnlineSource as Source } from "./TuMangaOnlineSource";
 
 let source = new Source();
+
+@external("net", "set_rate_limit")
+declare function set_rate_limit(rate_limit: i32): void;
+
+@external("net", "set_rate_limit_period")
+declare function set_rate_limit_period(period: i32): void;
+
+export function initialize(): void {
+	const rateLimit = defaults.get("rateLimit").toInteger();
+	set_rate_limit(rateLimit as i32);
+	set_rate_limit_period(60);
+}
 
 export function get_manga_list(filter_list_descriptor: i32, page: i32): i32 {
 	let filters: Filter[] = [];
@@ -51,4 +63,12 @@ export function handle_url(url: i32): i32 {
 		return (result.manga as Manga).value;
 	}
 	return -1;
+}
+
+export function handle_notification(notification: i32): void {
+	let notif = new ValueRef(notification).toString();
+	if (notif == "es.tumangaonline.rateLimit") {
+		const rateLimit = defaults.get("rateLimit").toInteger();
+		set_rate_limit(rateLimit as i32)
+	}
 }

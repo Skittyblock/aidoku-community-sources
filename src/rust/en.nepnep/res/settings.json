@@ -7,8 +7,14 @@
 				"type": "select",
 				"key": "sourceURL",
 				"title": "Source",
-				"values": ["https://mangasee123.com", "https://manga4life.com"],
-				"titles": ["MangaSee", "MangaLife"],
+				"values": [
+					"https://mangasee123.com",
+					"https://manga4life.com"
+				],
+				"titles": [
+					"MangaSee",
+					"MangaLife"
+				],
 				"default": "https://mangasee123.com"
 			}
 		]

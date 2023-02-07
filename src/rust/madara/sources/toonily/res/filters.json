@@ -4,7 +4,7 @@
 	},
 	{
 		"type": "select",
-		"name": "Adult",
+		"name": "Adult Content",
 		"options": [
 			"All",
 			"No Adult Content",

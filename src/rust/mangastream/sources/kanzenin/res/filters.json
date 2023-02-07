@@ -1,0 +1,236 @@
+[
+	{
+		"type": "title"
+	},
+	{
+		"type": "group",
+		"name": "Tags",
+		"filters": [
+			{
+				"type": "genre",
+				"name": "Ahegao",
+				"id": "ahegao"
+			},
+			{
+				"type": "genre",
+				"name": "Anal",
+				"id": "anal"
+			},
+			{
+				"type": "genre",
+				"name": "Blackmail",
+				"id": "blackmail"
+			},
+			{
+				"type": "genre",
+				"name": "Bondage",
+				"id": "bondage"
+			},
+			{
+				"type": "genre",
+				"name": "Cheating",
+				"id": "cheating"
+			},
+			{
+				"type": "genre",
+				"name": "Comedy",
+				"id": "comedy"
+			},
+			{
+				"type": "genre",
+				"name": "Demon",
+				"id": "demon"
+			},
+			{
+				"type": "genre",
+				"name": "Drama",
+				"id": "drama"
+			},
+			{
+				"type": "genre",
+				"name": "Elf",
+				"id": "elf"
+			},
+			{
+				"type": "genre",
+				"name": "Fakku",
+				"id": "fakku"
+			},
+			{
+				"type": "genre",
+				"name": "Femdom",
+				"id": "femdom"
+			},
+			{
+				"type": "genre",
+				"name": "Futanari",
+				"id": "futanari"
+			},
+			{
+				"type": "genre",
+				"name": "Gangbang",
+				"id": "gangbang"
+			},
+			{
+				"type": "genre",
+				"name": "Group",
+				"id": "group"
+			},
+			{
+				"type": "genre",
+				"name": "Harem",
+				"id": "harem"
+			},
+			{
+				"type": "genre",
+				"name": "Hipnotis",
+				"id": "hipnotis"
+			},
+			{
+				"type": "genre",
+				"name": "Incest",
+				"id": "incest"
+			},
+			{
+				"type": "genre",
+				"name": "Lolicon",
+				"id": "lolicon"
+			},
+			{
+				"type": "genre",
+				"name": "Maid",
+				"id": "maid"
+			},
+			{
+				"type": "genre",
+				"name": "Mature",
+				"id": "mature"
+			},
+			{
+				"type": "genre",
+				"name": "Milf",
+				"id": "milf"
+			},
+			{
+				"type": "genre",
+				"name": "Mindbreak",
+				"id": "mindbreak"
+			},
+			{
+				"type": "genre",
+				"name": "Monster Girl",
+				"id": "monster-girl"
+			},
+			{
+				"type": "genre",
+				"name": "Mother",
+				"id": "mother"
+			},
+			{
+				"type": "genre",
+				"name": "Netorare",
+				"id": "netorare"
+			},
+			{
+				"type": "genre",
+				"name": "Office Girl",
+				"id": "office-girl"
+			},
+			{
+				"type": "genre",
+				"name": "Parody",
+				"id": "parody"
+			},
+			{
+				"type": "genre",
+				"name": "Pregnant",
+				"id": "pregnant"
+			},
+			{
+				"type": "genre",
+				"name": "Prostitusi",
+				"id": "prostitusi"
+			},
+			{
+				"type": "genre",
+				"name": "Rape",
+				"id": "rape"
+			},
+			{
+				"type": "genre",
+				"name": "Robot",
+				"id": "robot"
+			},
+			{
+				"type": "genre",
+				"name": "Romance",
+				"id": "romance"
+			},
+			{
+				"type": "genre",
+				"name": "School Girl",
+				"id": "school-girl"
+			},
+			{
+				"type": "genre",
+				"name": "Shotacon",
+				"id": "shotacon"
+			},
+			{
+				"type": "genre",
+				"name": "Story Arc",
+				"id": "story-arc"
+			},
+			{
+				"type": "genre",
+				"name": "Supernatural",
+				"id": "supernatural"
+			},
+			{
+				"type": "genre",
+				"name": "Teacher",
+				"id": "teacher"
+			},
+			{
+				"type": "genre",
+				"name": "Threesome",
+				"id": "threesome"
+			},
+			{
+				"type": "genre",
+				"name": "Vanilla",
+				"id": "vanilla"
+			},
+			{
+				"type": "genre",
+				"name": "Virgin",
+				"id": "virgin"
+			},
+			{
+				"type": "genre",
+				"name": "Yandere",
+				"id": "yandere"
+			}
+		]
+	},
+	{
+		"type": "select",
+		"name": "Status",
+		"options": [
+			"All",
+			"Ongoing",
+			"Completed",
+			"Hiatus"
+		]
+	},
+	{
+		"type": "select",
+		"name": "Type",
+		"options": [
+			"All",
+			"Manga",
+			"Manhwa",
+			"Manhua"
+		]
+	}
+]

@@ -1,0 +1,10 @@
+{
+	"info": {
+		"id": "en.mangazuki",
+		"lang": "en",
+		"name": "Mangazuki",
+		"version": 1,
+		"url": "https://mangazuki.co",
+		"nsfw": 2
+	}
+}

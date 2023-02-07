@@ -1,0 +1,18 @@
+{
+	"info": {
+		"id": "en.manhuaus",
+		"lang": "en",
+		"name": "ManhuaUS",
+		"version": 4,
+		"url": "https://manhuaus.com",
+		"nsfw": 0
+	},
+	"listings": [
+		{
+			"name": "Trending"
+		},
+		{
+			"name": "Popular"
+		}
+	]
+}

@@ -13,6 +13,9 @@ use aidoku::{
 
 use crate::helper::*;
 
+extern crate alloc;
+use alloc::string::ToString;
+
 pub struct MadaraSiteData {
 	pub base_url: String,
 	pub lang: String,
@@ -20,9 +23,15 @@ pub struct MadaraSiteData {
 	pub source_path: String,
 	pub search_path: String,
 
+	pub search_cookies: String,
+	pub post_type: String,
+
 	pub search_selector: String,
 	pub image_selector: String,
 	pub genre_selector: String,
+	pub description_selector: String,
+	pub chapter_selector: String,
+	pub base_id_selector: String,
 
 	pub status_filter_ongoing: String,
 	pub status_filter_completed: String,
@@ -35,6 +44,7 @@ pub struct MadaraSiteData {
 
 	pub alt_ajax: bool,
 
+	pub get_manga_id: fn(String, String, String) -> String,
 	pub viewer: fn(&Node, &Vec<String>) -> MangaViewer,
 	pub status: fn(&Node) -> MangaStatus,
 	pub nsfw: fn(&Node, &Vec<String>) -> MangaContentRating,
@@ -51,14 +61,68 @@ impl Default for MadaraSiteData {
 			search_path: String::from("page"),
 			// selector div for search results page
 			search_selector: String::from("div.c-tabs-item__content"),
+			// cookies to pass for search request
+			search_cookies: String::from("wpmanga-adault=1"),
+			// the type of request to perform "post_type={post_type}", some sites (toonily) do not
+			// work with the default
+			post_type: String::from("wp-manga"),
+			// p to select description from
+			description_selector: String::from("div.description-summary div p"),
+			// selector for chapter list
+			chapter_selector: String::from("li.wp-manga-chapter"),
+			// a to get the base id from requests to admin-ajax.php
+			base_id_selector: String::from("h3.h5 > a"),
 			// div to select images from a chapter
 			image_selector: String::from("div.page-break > img"),
 			// div to select all the genres
 			genre_selector: String::from("div.genres-content > a"),
 			// choose between two options for chapter list POST request
 			alt_ajax: false,
+			// get the manga id from script tag
+			get_manga_id: get_int_manga_id,
 			// default viewer
-			viewer: |_, _| MangaViewer::Scroll,
+			viewer: |html, categories| {
+				let series_type = html
+					.select("div.post-content_item:contains(Type) div.summary-content")
+					.text()
+					.read()
+					.to_lowercase();
+
+				let webtoon_tags = [
+					"manhwa", "manhua", "webtoon", "vertical", "korean", "chinese",
+				];
+				let rtl_tags = ["manga", "japan"];
+
+				if !series_type.is_empty() {
+					for tag in webtoon_tags {
+						if series_type.contains(tag) {
+							return MangaViewer::Scroll;
+						}
+					}
+
+					for tag in rtl_tags {
+						if series_type.contains(tag) {
+							return MangaViewer::Rtl;
+						}
+					}
+
+					MangaViewer::Scroll
+				} else {
+					for tag in webtoon_tags {
+						if categories.iter().any(|v| v.to_lowercase() == tag) {
+							return MangaViewer::Scroll;
+						}
+					}
+
+					for tag in rtl_tags {
+						if categories.iter().any(|v| v.to_lowercase() == tag) {
+							return MangaViewer::Rtl;
+						}
+					}
+
+					MangaViewer::Scroll
+				}
+			},
 			status: |html| {
 				let status_str = html
 					.select("div.post-content_item:contains(Status) div.summary-content")
@@ -67,13 +131,16 @@ impl Default for MadaraSiteData {
 					.to_lowercase();
 				match status_str.as_str() {
 					"ongoing" => MangaStatus::Ongoing,
+					"releasing" => MangaStatus::Ongoing,
 					"completed" => MangaStatus::Completed,
 					"canceled" => MangaStatus::Cancelled,
+					"dropped" => MangaStatus::Cancelled,
 					"hiatus" => MangaStatus::Hiatus,
+					"on hold" => MangaStatus::Hiatus,
 					_ => MangaStatus::Unknown,
 				}
 			},
-			nsfw: |html, _| {
+			nsfw: |html, categories| {
 				if !html
 					.select(".manga-title-badges.adult")
 					.text()
@@ -82,6 +149,21 @@ impl Default for MadaraSiteData {
 				{
 					MangaContentRating::Nsfw
 				} else {
+					let nsfw_tags = ["adult", "mature"];
+					let suggestive_tags = ["ecchi"];
+
+					for tag in nsfw_tags {
+						if categories.iter().any(|v| v.to_lowercase() == tag) {
+							return MangaContentRating::Nsfw;
+						}
+					}
+
+					for tag in suggestive_tags {
+						if categories.iter().any(|v| v.to_lowercase() == tag) {
+							return MangaContentRating::Suggestive;
+						}
+					}
+
 					MangaContentRating::Safe
 				}
 			},
@@ -113,7 +195,9 @@ pub fn get_manga_list(
 }
 
 pub fn get_search_result(data: MadaraSiteData, url: String) -> Result<MangaPageResult> {
-	let html = Request::new(url.as_str(), HttpMethod::Get).html();
+	let html = Request::new(url.as_str(), HttpMethod::Get)
+		.header("Cookie", &data.search_cookies)
+		.html();
 	let mut manga: Vec<Manga> = Vec::new();
 	let mut has_more = false;
 
@@ -147,7 +231,7 @@ pub fn get_search_result(data: MadaraSiteData, url: String) -> Result<MangaPageR
 			categories: Vec::new(),
 			status: MangaStatus::Unknown,
 			nsfw: MangaContentRating::Safe,
-			viewer: (data.viewer)(&Node::new("<p></p>".as_bytes()), &Vec::new()),
+			viewer: MangaViewer::Scroll,
 		});
 		has_more = true;
 	}
@@ -176,15 +260,28 @@ pub fn get_series_page(data: MadaraSiteData, listing: &str, page: i32) -> Result
 			continue;
 		}
 
-		let id = obj
-			.select("h3.h5 > a")
-			.attr("href")
-			.read()
-			.replace(&data.base_url.clone(), "")
-			.replace(&data.source_path.clone(), "")
-			.replace('/', "");
+		let base_id = obj.select(&data.base_id_selector).attr("href").read();
+		let final_path = base_id
+			.strip_prefix(&data.base_url)
+			.unwrap_or(&base_id)
+			.strip_prefix('/')
+			.unwrap_or(&base_id)
+			.strip_prefix(&data.source_path)
+			.unwrap_or(&base_id)
+			.strip_prefix('/')
+			.unwrap_or(&base_id);
+		let id = final_path
+			.strip_suffix('/')
+			.unwrap_or(final_path)
+			.to_string();
 
-		let title = obj.select("h3.h5 > a").text().read();
+		// These are useless badges that are added to the title like "HOT", "NEW", etc.
+		let title_badges = obj.select("span.manga-title-badges").text().read();
+		let mut title = obj.select(&data.base_id_selector).text().read();
+		if title.contains(&title_badges) {
+			title = title.replace(&title_badges, "");
+			title = String::from(title.trim());
+		}
 
 		let cover = get_image_url(obj.select("img"));
 
@@ -199,7 +296,7 @@ pub fn get_series_page(data: MadaraSiteData, listing: &str, page: i32) -> Result
 			categories: Vec::new(),
 			status: MangaStatus::Unknown,
 			nsfw: MangaContentRating::Safe,
-			viewer: (data.viewer)(&Node::new("<p></p>".as_bytes()), &Vec::new()),
+			viewer: MangaViewer::Scroll,
 		});
 		has_more = true;
 	}
@@ -226,11 +323,17 @@ pub fn get_manga_details(manga_id: String, data: MadaraSiteData) -> Result<Manga
 
 	let html = Request::new(url.as_str(), HttpMethod::Get).html();
 
-	let title = html.select("div.post-title h1").text().read();
+	// These are useless badges that are added to the title like "HOT", "NEW", etc.
+	let title_badges = html.select("span.manga-title-badges").text().read();
+	let mut title = html.select("div.post-title h1").text().read();
+	if title.contains(&title_badges) {
+		title = title.replace(&title_badges, "");
+		title = String::from(title.trim());
+	}
 	let cover = get_image_url(html.select("div.summary_image img"));
 	let author = html.select("div.author-content a").text().read();
 	let artist = html.select("div.artist-content a").text().read();
-	let description = html.select("div.description-summary div p").text().read();
+	let description = html.select(&data.description_selector).text().read();
 
 	let mut categories: Vec<String> = Vec::new();
 	for item in html.select(data.genre_selector.as_str()).array() {
@@ -265,7 +368,7 @@ pub fn get_chapter_list(manga_id: String, data: MadaraSiteData) -> Result<Vec<Ch
 			+ "/ajax/chapters";
 	}
 
-	let int_id = get_int_manga_id(manga_id, data.base_url.clone(), data.source_path.clone());
+	let int_id = (data.get_manga_id)(manga_id, data.base_url.clone(), data.source_path.clone());
 	let body_content = format!("action=manga_get_chapters&manga={}", int_id);
 
 	let req = Request::new(url.as_str(), HttpMethod::Post)
@@ -275,7 +378,7 @@ pub fn get_chapter_list(manga_id: String, data: MadaraSiteData) -> Result<Vec<Ch
 	let html = req.html();
 
 	let mut chapters: Vec<Chapter> = Vec::new();
-	for item in html.select("li.wp-manga-chapter  ").array() {
+	for item in html.select(&data.chapter_selector).array() {
 		let obj = item.as_node();
 
 		let id = obj
@@ -296,21 +399,38 @@ pub fn get_chapter_list(manga_id: String, data: MadaraSiteData) -> Result<Vec<Ch
 			e.g.
 			one-piece-color-jk-english/volume-20-showdown-at-alubarna/chapter-177-30-million-vs-81-million/
 			will return 177
-			parasite-chromatique-french/volume-10/chapitre-062/
-			will return 62
+			parasite-chromatique-french/volume-10/chapitre-062-5/
+			will return 62.5
 		*/
-		let mut chapter = 0.0;
 
 		let slash_vec = id.as_str().split('/').collect::<Vec<&str>>();
 
 		let dash_split = slash_vec[slash_vec.len() - 2].split('-');
 		let dash_vec = dash_split.collect::<Vec<&str>>();
 
+		let mut is_decimal = false;
+		let mut chapter = 0.0;
 		for obj in dash_vec {
-			let item = obj.replace('/', "").parse::<f32>().unwrap_or(-1.0);
+			let mut item = {
+				let mut obj = obj;
+				if obj.contains('_') {
+					obj = obj.split('_').next().unwrap_or(obj);
+				}
+				obj.replace('/', "").parse::<f32>().unwrap_or(-1.0)
+			};
+			if item == -1.0 {
+				item = String::from(obj.chars().next().unwrap())
+					.parse::<f32>()
+					.unwrap_or(-1.0);
+			}
 			if item != -1.0 {
-				chapter = item;
-				break;
+				if is_decimal {
+					chapter += item / 10.0;
+					break;
+				} else {
+					chapter = item;
+					is_decimal = true;
+				}
 			}
 		}
 
@@ -319,6 +439,12 @@ pub fn get_chapter_list(manga_id: String, data: MadaraSiteData) -> Result<Vec<Ch
 			.0
 			.as_date("MMM d, yyyy", Some("en"), None)
 			.unwrap_or(-1.0);
+		if date_updated < -1.0 {
+			date_updated = StringRef::from(&date_str)
+				.0
+				.as_date("MMM d, yy", Some("en"), None)
+				.unwrap_or(-1.0);
+		}
 		if date_updated == -1.0 {
 			date_updated = current_date();
 		}

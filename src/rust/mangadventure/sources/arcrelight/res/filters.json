@@ -1,0 +1,102 @@
+[
+	{
+		"type": "title"
+	},
+	{
+		"type": "author"
+	},
+	{
+		"type": "select",
+		"name": "Status",
+		"options": [
+			"Any",
+			"Completed",
+			"Ongoing"
+		]
+	},
+	{
+		"type": "sort",
+		"name": "Sort by",
+		"canAscend": true,
+		"options": [
+			"Title",
+			"Views",
+			"Latest upload",
+			"Chapter count"
+		],
+		"default": {
+			"index": 0,
+			"ascending": true
+		}
+	},
+	{
+		"type": "group",
+		"name": "Categories",
+		"filters": [
+			{
+				"type": "genre",
+				"name": "4-koma"
+			},
+			{
+				"type": "genre",
+				"name": "Chaos;Head"
+			},
+			{
+				"type": "genre",
+				"name": "Collection"
+			},
+			{
+				"type": "genre",
+				"name": "Comedy"
+			},
+			{
+				"type": "genre",
+				"name": "Drama"
+			},
+			{
+				"type": "genre",
+				"name": "Jubilee"
+			},
+			{
+				"type": "genre",
+				"name": "Mystery"
+			},
+			{
+				"type": "genre",
+				"name": "Psychological"
+			},
+			{
+				"type": "genre",
+				"name": "Robotics;Notes"
+			},
+			{
+				"type": "genre",
+				"name": "Romance"
+			},
+			{
+				"type": "genre",
+				"name": "Sci-Fi"
+			},
+			{
+				"type": "genre",
+				"name": "Seinen"
+			},
+			{
+				"type": "genre",
+				"name": "Shounen"
+			},
+			{
+				"type": "genre",
+				"name": "Steins;Gate"
+			},
+			{
+				"type": "genre",
+				"name": "Supernatural"
+			},
+			{
+				"type": "genre",
+				"name": "Tragedy"
+			}
+		]
+	}
+]

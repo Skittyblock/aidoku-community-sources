@@ -5,6 +5,9 @@ use aidoku::{
 
 use crate::template::MadaraSiteData;
 
+extern crate alloc;
+use alloc::string::ToString;
+
 pub fn urlencode(string: String) -> String {
 	let mut result: Vec<u8> = Vec::with_capacity(string.len() * 3);
 	let hex = "0123456789abcdef".as_bytes();
@@ -12,10 +15,7 @@ pub fn urlencode(string: String) -> String {
 
 	for byte in bytes {
 		let curr = *byte;
-		if (b'a'..=b'z').contains(&curr)
-			|| (b'A'..=b'Z').contains(&curr)
-			|| (b'0'..=b'9').contains(&curr)
-		{
+		if curr.is_ascii_lowercase() || curr.is_ascii_uppercase() || curr.is_ascii_digit() {
 			result.push(curr);
 		} else {
 			result.push(b'%');
@@ -27,39 +27,44 @@ pub fn urlencode(string: String) -> String {
 	String::from_utf8(result).unwrap_or_default()
 }
 
-pub fn i32_to_string(mut integer: i32) -> String {
-	if integer == 0 {
-		return String::from("0");
-	}
-	let mut string = String::with_capacity(11);
-	let pos = if integer < 0 {
-		string.insert(0, '-');
-		1
-	} else {
-		0
-	};
-	while integer != 0 {
-		let mut digit = integer % 10;
-		if pos == 1 {
-			digit *= -1;
-		}
-		string.insert(pos, char::from_u32((digit as u32) + ('0' as u32)).unwrap());
-		integer /= 10;
-	}
-	string
-}
+pub fn img_url_encode(string: String) -> String {
+	let mut result: Vec<u8> = Vec::with_capacity(string.len() * 3);
+	let hex = "0123456789abcdef".as_bytes();
+	let bytes = string.as_bytes();
 
-pub fn get_int_manga_id(manga_id: String, base_url: String, path: String) -> String {
-	let url = base_url + "/" + path.as_str() + "/" + manga_id.as_str();
-	let html = Request::new(url.as_str(), HttpMethod::Get).html();
-	let id_html = html.select("script#wp-manga-js-extra").html().read();
-	let id = &id_html[id_html.find("manga_id").unwrap() + 11..id_html.find("\"};").unwrap()];
-	String::from(id)
+	for byte in bytes {
+		let curr = *byte;
+		if curr == b'-' {
+			result.push(b'-');
+		} else if curr == b'?' {
+			result.push(b'?');
+		} else if curr == b'%' {
+			result.push(b'%');
+		} else if curr == b'.' {
+			result.push(b'.');
+		} else if curr == b'_' {
+			result.push(b'_');
+		} else if curr.is_ascii_lowercase() || curr.is_ascii_uppercase() || curr.is_ascii_digit() {
+			result.push(curr);
+		} else {
+			result.push(b'%');
+			if hex[curr as usize >> 4] >= 97 && hex[curr as usize >> 4] <= 122 {
+				result.push(hex[curr as usize >> 4] - 32);
+			} else {
+				result.push(hex[curr as usize >> 4]);
+			}
+			if hex[curr as usize & 15] >= 97 && hex[curr as usize & 15] <= 122 {
+				result.push(hex[curr as usize & 15] - 32);
+			} else {
+				result.push(hex[curr as usize & 15]);
+			}
+		}
+	}
+	String::from_utf8(result).unwrap_or_default()
 }
 
 pub fn get_image_url(obj: Node) -> String {
-	let mut img;
-	img = obj.attr("data-src").read();
+	let mut img = obj.attr("data-src").read();
 	if img.is_empty() {
 		img = obj.attr("data-lazy-src").read();
 	}
@@ -71,13 +76,26 @@ pub fn get_image_url(obj: Node) -> String {
 	}
 	img = String::from(img.trim());
 
-	if defaults_get("highres").as_bool().unwrap_or(false) {
+	if defaults_get("highres").as_bool().unwrap_or(false) && !img.contains("width") {
 		img = img
 			.replace("-350x476", "")
+			.replace("-193x278", "")
 			.replace("-110x150", "")
 			.replace("-175x238", "");
 	}
-	img
+	// encoding last part of the url as some scanlations use non-alphanumerical
+	// chars which need to be encoded
+	let img_split = img.split('/').collect::<Vec<&str>>();
+	let last_encoded = img_url_encode(String::from(img_split[img_split.len() - 1]));
+
+	let mut encoded_img = String::new();
+
+	for item in img_split.iter().take(img_split.len() - 1) {
+		encoded_img.push_str(item);
+		encoded_img.push('/');
+	}
+	encoded_img.push_str(&last_encoded);
+	encoded_img
 }
 
 pub fn get_filtered_url(filters: Vec<Filter>, page: i32, data: &MadaraSiteData) -> (String, bool) {
@@ -85,6 +103,7 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32, data: &MadaraSiteData) 
 	let mut query = String::new();
 	let mut search_string = String::new();
 	let mut url = data.base_url.clone();
+	let post_type = String::from("&post_type=") + &data.post_type.clone();
 
 	for filter in filters {
 		match filter.kind {
@@ -154,11 +173,29 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32, data: &MadaraSiteData) 
 		url.push('/');
 		url.push_str(&data.search_path);
 		url.push('/');
-		url.push_str(&i32_to_string(page));
+		url.push_str(&page.to_string());
 		url.push_str("/?s=");
 		url.push_str(&search_string);
-		url.push_str("&post_type=wp-manga");
+		url.push_str(&post_type);
 		url.push_str(&query);
 	}
 	(url, is_searching)
+}
+
+pub fn get_int_manga_id(manga_id: String, base_url: String, path: String) -> String {
+	let url = base_url + "/" + path.as_str() + "/" + manga_id.as_str();
+	let html = Request::new(url.as_str(), HttpMethod::Get).html();
+	let id_html = html.select("script#wp-manga-js-extra").html().read();
+	let id = &id_html[id_html.find("manga_id").expect("Could not find manga_id") + 11
+		..id_html.find("\"}").expect("Could not find end of manga_id")];
+	String::from(id)
+}
+
+pub fn get_lang_code() -> Option<String> {
+	if let Ok(languages) = defaults_get("languages").as_array() {
+		if let Ok(language) = languages.get(0).as_string() {
+			return Some(language.read());
+		}
+	}
+	None
 }
