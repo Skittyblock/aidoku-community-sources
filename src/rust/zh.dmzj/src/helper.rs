@@ -30,7 +30,7 @@ pub fn encode_uri(string: &String) -> String {
 				|| curr == b'!' || curr == b'~'
 				|| curr == b'*' || curr == b'\''
 				|| curr == b'(' || curr == b')')
-			|| (curr == b'#')
+			|| (curr == b'#'))
 		{
 			result.push(curr);
 		} else {
