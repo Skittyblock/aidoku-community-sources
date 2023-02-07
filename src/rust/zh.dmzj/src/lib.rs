@@ -9,11 +9,7 @@ use aidoku::{
 	error::Result,
 	prelude::*,
 	std::net::{HttpMethod, Request},
-<<<<<<< HEAD
-	std::{json, String, Vec, ArrayRef},
-=======
 	std::{json, String, Vec},
->>>>>>> master
 	Chapter, DeepLink, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
 	MangaViewer, Page,
 };
@@ -93,28 +89,23 @@ pub fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult
 			&helper::encode_uri(&keyword)
 		);
 
-<<<<<<< HEAD
 		// API return 404 randomly, try multi times.
 		let mut index = 0;
-		let data: ArrayRef = loop{
-			if index == 8
-			{
+		let data: ArrayRef = loop {
+			if index == 8 {
 				break ArrayRef::new();
 			}
-=======
-		let data = {
-			let req = helper::get(&url);
-			let r = req.string();
->>>>>>> master
 
 			let req = helper::get(&url);
 			let r = req.string();
-			
+
 			let r = r.strip_prefix("var g_search_data = ");
 
 			match r {
-				Some(r) => break json::parse(r.strip_suffix(';').unwrap().as_bytes()).as_array()?,
-				_ => index += 1
+				Some(r) => {
+					break json::parse(r.strip_suffix(';').unwrap().as_bytes()).as_array()?
+				}
+				_ => index += 1,
 			}
 		};
 
@@ -243,32 +234,12 @@ fn get_manga_details(id: String) -> Result<Manga> {
 		// Try old api
 
 		let url = format!("{}/dynamic/comicinfo/{}.json", API_URL, id);
-<<<<<<< HEAD
-
-		let req = helper::get(&url);
-
-		let info = req
-			.json()
-			.as_object()?
-			.get("data")
-			.as_object()?
-			.get("info")
-			.clone() 
-			/* 
-			Notice here is a huge bug about ownership lose.
-			You have to clone ref especially after convert to object and before convert to other type.
-			Or you lose everything.
-			Ctrl F clone to search for evidence.
-			*/				
-			.as_object()?;
-=======
 
 		let json = helper::get(&url).json().as_object()?;
 
 		let data = json.get("data").as_object()?;
 		let info = data.get("info").as_object()?;
 		let types = info.get("types").as_string()?.read();
->>>>>>> master
 
 		return Ok(Manga {
 			id: id.clone(),
@@ -278,15 +249,7 @@ fn get_manga_details(id: String) -> Result<Manga> {
 			artist: String::new(),
 			description: info.get("description").as_string()?.read(),
 			url: format!("{}/info/{}.html", BASE_URL, id),
-<<<<<<< HEAD
-			categories: info
-				.get("types")
-				.clone()
-				.as_string()?
-				.read()
-=======
 			categories: types
->>>>>>> master
 				.split('/')
 				.collect::<Vec<_>>()
 				.iter()
