@@ -9,7 +9,7 @@ use aidoku::{
 	error::Result,
 	prelude::*,
 	std::net::{HttpMethod, Request},
-	std::{json, String, Vec},
+	std::{json, String, Vec, ArrayRef},
 	Chapter, DeepLink, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
 	MangaViewer, Page,
 };
@@ -89,17 +89,23 @@ pub fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult
 			&helper::encode_uri(&keyword)
 		);
 
-		let data = {
+		// API return 404 randomly, try multi times.
+		let mut index = 0;
+		let data: ArrayRef = loop{
+			if index == 8
+			{
+				break ArrayRef::new();
+			}
+
 			let req = helper::get(&url);
 			let r = req.string();
+			
+			let r = r.strip_prefix("var g_search_data = ");
 
-			let r = r
-				.strip_prefix("var g_search_data = ")
-				.unwrap()
-				.strip_suffix(';')
-				.unwrap();
-
-			json::parse(r.as_bytes()).as_array()?
+			match r {
+				Some(r) => break json::parse(r.strip_suffix(';').unwrap().as_bytes()).as_array()?,
+				_ => index += 1
+			}
 		};
 
 		for it in data {
@@ -437,7 +443,6 @@ fn get_page_list(id: String) -> Result<Vec<Page>> {
 	Ok(pages)
 }
 
-// Doesn't work
 #[modify_image_request]
 fn modify_image_request(request: Request) {
 	request
