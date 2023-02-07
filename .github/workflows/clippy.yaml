@@ -1,0 +1,77 @@
+name: Lint Rust sources
+on:
+  pull_request:
+    paths:
+    - 'src/rust/**'
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        uses: actions/checkout@v3
+      -
+        name: Get changed files
+        id: files
+        uses: Ana06/get-changed-files@v2.2.0
+        with:
+          format: json
+      -
+        name: Cache rust stuff
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/registry/index
+            ~/.cargo/registry/cache
+            ~/.cargo/git/db
+            ~/.cargo/bin
+            src/rust/**/target
+          key: ${{ runner.os }}-cargo3-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: ${{ runner.os }}-cargo3-
+      -
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: nightly
+          override: true
+          components: clippy
+          target: wasm32-unknown-unknown
+      -
+        name: Other dependencies
+        run: sudo apt-get install -y moreutils
+      -
+        name: Lint sources
+        id: lint
+        run: |
+          shopt -s globstar
+
+          echo "::group::Linting"
+          readarray -t TEMP <<< "$(jq -r '.[]' <<<'${{ steps.files.outputs.added_modified }}')"
+
+          while IFS= read -r -d $'\0' i; do
+            if [[ "$i" == *"src/rust"* ]]; then
+              (
+                cd "$i"
+                cargo clippy --message-format=json > annotations.json
+                jq --arg WORKING_DIRECTORY "${i%/}" \
+                   -rsf ${{ github.workspace }}/.github/workflows/supporting/annotations.jq annotations.json
+              )
+            fi
+          done < <(printf "%s\n" "${TEMP[@]}" | cut -d'/' -f-3 | sort -u | grep 'src' | tr '\n' '\0')
+          echo "::endgroup::"
+
+          echo "::group::Generating summary"
+          jq --arg RUSTC_VERSION "$(rustc --version)" \
+             --arg CARGO_VERSION "$(cargo --version)" \
+             --arg CLIPPY_VERSION "$(cargo clippy --version)" \
+             -srf ${{ github.workspace }}/.github/workflows/supporting/summary.jq ./**/annotations.json > $GITHUB_STEP_SUMMARY
+          echo "::endgroup::"
+
+          echo "::group::Failing this step if clippy generated anything"
+          for annotation in ./**/annotations.json; do
+            LINT_COUNT=$(jq -sr 'map(select(.reason == "compiler-message" and .message.code and .message.spans[].is_primary)) | length' $annotation)
+
+            if ! [ "$LINT_COUNT" = "0" ]; then
+              exit 1
+            fi
+          done
+          echo "::endgroup::"

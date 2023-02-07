@@ -53,7 +53,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 		}
 	}
 
-	let url = helper::build_search_url(query.clone(), tags.clone(), sort, page);
+	let url = helper::build_search_url(query, tags.clone(), sort, page);
 
 	let html = Request::new(url.as_str(), HttpMethod::Get).html();
 
@@ -87,7 +87,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 		if href == "#" {
 			continue;
 		}
-		let href_parts = href.split("/").collect::<Vec<&str>>();
+		let href_parts = href.split('/').collect::<Vec<&str>>();
 		// get second last part in href
 		let num_str = String::from(href_parts[href_parts.len() - 2]);
 
@@ -151,7 +151,7 @@ fn get_manga_details(id: String) -> Result<Manga> {
 
 #[get_chapter_list]
 fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
-	let url = format!("https://hentaifox.com/gallery/{}", id.clone());
+	let url = format!("https://hentaifox.com/gallery/{}", id);
 
 	Ok(Vec::from([Chapter {
 		id,

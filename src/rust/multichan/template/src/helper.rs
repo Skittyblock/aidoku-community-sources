@@ -27,8 +27,7 @@ pub fn urlencode(string: String) -> String {
 
 	for byte in bytes {
 		let curr = *byte;
-		if curr.is_ascii_alphanumeric()
-		{
+		if curr.is_ascii_alphanumeric() {
 			result.push(curr);
 		} else {
 			result.push(b'%');

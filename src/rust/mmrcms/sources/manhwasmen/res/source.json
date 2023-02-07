@@ -1,0 +1,10 @@
+{
+	"info": {
+		"id": "en.manhwasmen",
+		"lang": "en",
+		"name": "Manhwas Men",
+		"version": 1,
+		"url": "https://manhwas.men",
+		"nsfw": 2
+	}
+}

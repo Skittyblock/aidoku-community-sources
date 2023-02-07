@@ -9,7 +9,11 @@ use aidoku::{
 	error::Result,
 	prelude::*,
 	std::net::{HttpMethod, Request},
+<<<<<<< HEAD
 	std::{json, String, Vec, ArrayRef},
+=======
+	std::{json, String, Vec},
+>>>>>>> master
 	Chapter, DeepLink, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
 	MangaViewer, Page,
 };
@@ -89,6 +93,7 @@ pub fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult
 			&helper::encode_uri(&keyword)
 		);
 
+<<<<<<< HEAD
 		// API return 404 randomly, try multi times.
 		let mut index = 0;
 		let data: ArrayRef = loop{
@@ -96,6 +101,11 @@ pub fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult
 			{
 				break ArrayRef::new();
 			}
+=======
+		let data = {
+			let req = helper::get(&url);
+			let r = req.string();
+>>>>>>> master
 
 			let req = helper::get(&url);
 			let r = req.string();
@@ -233,6 +243,7 @@ fn get_manga_details(id: String) -> Result<Manga> {
 		// Try old api
 
 		let url = format!("{}/dynamic/comicinfo/{}.json", API_URL, id);
+<<<<<<< HEAD
 
 		let req = helper::get(&url);
 
@@ -250,6 +261,14 @@ fn get_manga_details(id: String) -> Result<Manga> {
 			Ctrl F clone to search for evidence.
 			*/				
 			.as_object()?;
+=======
+
+		let json = helper::get(&url).json().as_object()?;
+
+		let data = json.get("data").as_object()?;
+		let info = data.get("info").as_object()?;
+		let types = info.get("types").as_string()?.read();
+>>>>>>> master
 
 		return Ok(Manga {
 			id: id.clone(),
@@ -259,11 +278,15 @@ fn get_manga_details(id: String) -> Result<Manga> {
 			artist: String::new(),
 			description: info.get("description").as_string()?.read(),
 			url: format!("{}/info/{}.html", BASE_URL, id),
+<<<<<<< HEAD
 			categories: info
 				.get("types")
 				.clone()
 				.as_string()?
 				.read()
+=======
+			categories: types
+>>>>>>> master
 				.split('/')
 				.collect::<Vec<_>>()
 				.iter()
@@ -332,7 +355,6 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 			.get("data")
 			.as_object()?
 			.get("list")
-			.clone()
 			.as_array()?;
 
 		let len = list.len();

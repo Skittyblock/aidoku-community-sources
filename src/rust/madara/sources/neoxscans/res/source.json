@@ -1,0 +1,18 @@
+{
+	"info": {
+		"id": "pt-br.neoxscans",
+		"lang": "pt-br",
+		"name": "Neox Scans",
+		"version": 3,
+		"url": "https://neoxscans.net",
+		"nsfw": 1
+	},
+	"listings": [
+		{
+			"name": "Trending"
+		},
+		{
+			"name": "Popular"
+		}
+	]
+}

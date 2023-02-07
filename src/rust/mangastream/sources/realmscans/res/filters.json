@@ -1,0 +1,452 @@
+[
+	{
+		"type": "title"
+	},
+	{
+		"type": "group",
+		"name": "Tags",
+		"filters": [
+			{
+				"type": "genre",
+				"name": "Action",
+				"id": "3"
+			},
+			{
+				"type": "genre",
+				"name": "Adaptation",
+				"id": "145"
+			},
+			{
+				"type": "genre",
+				"name": "Adventure",
+				"id": "4"
+			},
+			{
+				"type": "genre",
+				"name": "Aliens",
+				"id": "146"
+			},
+			{
+				"type": "genre",
+				"name": "Another Chance",
+				"id": "147"
+			},
+			{
+				"type": "genre",
+				"name": "Apocalypse",
+				"id": "148"
+			},
+			{
+				"type": "genre",
+				"name": "Based On A Novel",
+				"id": "149"
+			},
+			{
+				"type": "genre",
+				"name": "Cheat",
+				"id": "150"
+			},
+			{
+				"type": "genre",
+				"name": "Comedy",
+				"id": "62"
+			},
+			{
+				"type": "genre",
+				"name": "Conspiracy",
+				"id": "151"
+			},
+			{
+				"type": "genre",
+				"name": "Cultivation",
+				"id": "152"
+			},
+			{
+				"type": "genre",
+				"name": "Demon",
+				"id": "153"
+			},
+			{
+				"type": "genre",
+				"name": "Demon King",
+				"id": "154"
+			},
+			{
+				"type": "genre",
+				"name": "Dragon",
+				"id": "155"
+			},
+			{
+				"type": "genre",
+				"name": "Drama",
+				"id": "12"
+			},
+			{
+				"type": "genre",
+				"name": "Dungeons",
+				"id": "156"
+			},
+			{
+				"type": "genre",
+				"name": "Fantasy",
+				"id": "5"
+			},
+			{
+				"type": "genre",
+				"name": "Game",
+				"id": "120"
+			},
+			{
+				"type": "genre",
+				"name": "Genius",
+				"id": "158"
+			},
+			{
+				"type": "genre",
+				"name": "Ghosts",
+				"id": "157"
+			},
+			{
+				"type": "genre",
+				"name": "Harem",
+				"id": "10"
+			},
+			{
+				"type": "genre",
+				"name": "Hero",
+				"id": "159"
+			},
+			{
+				"type": "genre",
+				"name": "Hidden Identity",
+				"id": "160"
+			},
+			{
+				"type": "genre",
+				"name": "HighFantasy",
+				"id": "123"
+			},
+			{
+				"type": "genre",
+				"name": "Historical",
+				"id": "6"
+			},
+			{
+				"type": "genre",
+				"name": "Horror",
+				"id": "29"
+			},
+			{
+				"type": "genre",
+				"name": "Isekai",
+				"id": "140"
+			},
+			{
+				"type": "genre",
+				"name": "Josie",
+				"id": "161"
+			},
+			{
+				"type": "genre",
+				"name": "Kingdom Building",
+				"id": "138"
+			},
+			{
+				"type": "genre",
+				"name": "Korean",
+				"id": "121"
+			},
+			{
+				"type": "genre",
+				"name": "Magic",
+				"id": "61"
+			},
+			{
+				"type": "genre",
+				"name": "Manhwa",
+				"id": "122"
+			},
+			{
+				"type": "genre",
+				"name": "Martial Arts",
+				"id": "7"
+			},
+			{
+				"type": "genre",
+				"name": "Mature",
+				"id": "105"
+			},
+			{
+				"type": "genre",
+				"name": "Mecha",
+				"id": "14"
+			},
+			{
+				"type": "genre",
+				"name": "Medical",
+				"id": "163"
+			},
+			{
+				"type": "genre",
+				"name": "Military",
+				"id": "164"
+			},
+			{
+				"type": "genre",
+				"name": "Misunderstanding",
+				"id": "162"
+			},
+			{
+				"type": "genre",
+				"name": "MMORPG",
+				"id": "165"
+			},
+			{
+				"type": "genre",
+				"name": "Monster",
+				"id": "166"
+			},
+			{
+				"type": "genre",
+				"name": "Murim",
+				"id": "144"
+			},
+			{
+				"type": "genre",
+				"name": "Mystery",
+				"id": "19"
+			},
+			{
+				"type": "genre",
+				"name": "Necromancer",
+				"id": "167"
+			},
+			{
+				"type": "genre",
+				"name": "Noble",
+				"id": "168"
+			},
+			{
+				"type": "genre",
+				"name": "Overpowered",
+				"id": "135"
+			},
+			{
+				"type": "genre",
+				"name": "Parody",
+				"id": "169"
+			},
+			{
+				"type": "genre",
+				"name": "Pets",
+				"id": "171"
+			},
+			{
+				"type": "genre",
+				"name": "Philosophical",
+				"id": "170"
+			},
+			{
+				"type": "genre",
+				"name": "Post-apocalyptic",
+				"id": "172"
+			},
+			{
+				"type": "genre",
+				"name": "Psycho",
+				"id": "191"
+			},
+			{
+				"type": "genre",
+				"name": "Psychological",
+				"id": "59"
+			},
+			{
+				"type": "genre",
+				"name": "Rebirth",
+				"id": "173"
+			},
+			{
+				"type": "genre",
+				"name": "Reincarnation",
+				"id": "174"
+			},
+			{
+				"type": "genre",
+				"name": "Returner",
+				"id": "175"
+			},
+			{
+				"type": "genre",
+				"name": "Revenge",
+				"id": "176"
+			},
+			{
+				"type": "genre",
+				"name": "Romance",
+				"id": "20"
+			},
+			{
+				"type": "genre",
+				"name": "School Life",
+				"id": "21"
+			},
+			{
+				"type": "genre",
+				"name": "Sci-fi",
+				"id": "15"
+			},
+			{
+				"type": "genre",
+				"name": "Seinen",
+				"id": "16"
+			},
+			{
+				"type": "genre",
+				"name": "Shota",
+				"id": "177"
+			},
+			{
+				"type": "genre",
+				"name": "Shoujo",
+				"id": "116"
+			},
+			{
+				"type": "genre",
+				"name": "Shounen",
+				"id": "8"
+			},
+			{
+				"type": "genre",
+				"name": "Slice of Life",
+				"id": "22"
+			},
+			{
+				"type": "genre",
+				"name": "Spirits",
+				"id": "192"
+			},
+			{
+				"type": "genre",
+				"name": "Story",
+				"id": "126"
+			},
+			{
+				"type": "genre",
+				"name": "Strategy",
+				"id": "139"
+			},
+			{
+				"type": "genre",
+				"name": "Super Hero",
+				"id": "178"
+			},
+			{
+				"type": "genre",
+				"name": "Supernatural",
+				"id": "23"
+			},
+			{
+				"type": "genre",
+				"name": "Survival",
+				"id": "64"
+			},
+			{
+				"type": "genre",
+				"name": "System",
+				"id": "141"
+			},
+			{
+				"type": "genre",
+				"name": "Thriller",
+				"id": "65"
+			},
+			{
+				"type": "genre",
+				"name": "Time Control",
+				"id": "179"
+			},
+			{
+				"type": "genre",
+				"name": "Time Travel",
+				"id": "180"
+			},
+			{
+				"type": "genre",
+				"name": "Tower",
+				"id": "181"
+			},
+			{
+				"type": "genre",
+				"name": "Tragedy",
+				"id": "182"
+			},
+			{
+				"type": "genre",
+				"name": "Video Game",
+				"id": "183"
+			},
+			{
+				"type": "genre",
+				"name": "Villain",
+				"id": "184"
+			},
+			{
+				"type": "genre",
+				"name": "Virtual Reality",
+				"id": "185"
+			},
+			{
+				"type": "genre",
+				"name": "War",
+				"id": "186"
+			},
+			{
+				"type": "genre",
+				"name": "Weak To Strong",
+				"id": "187"
+			},
+			{
+				"type": "genre",
+				"name": "Webtoon",
+				"id": "66"
+			},
+			{
+				"type": "genre",
+				"name": "Wuxia",
+				"id": "133"
+			},
+			{
+				"type": "genre",
+				"name": "Xianxia",
+				"id": "189"
+			},
+			{
+				"type": "genre",
+				"name": "Zombies",
+				"id": "190"
+			}
+		]
+	},
+	{
+		"type": "select",
+		"name": "Status",
+		"options": [
+			"All",
+			"Ongoing",
+			"Completed",
+			"Hiatus"
+		]
+	},
+	{
+		"type": "select",
+		"name": "Type",
+		"options": [
+			"All",
+			"Manga",
+			"Manhwa",
+			"Manhua",
+			"Comic"
+		]
+	}
+]

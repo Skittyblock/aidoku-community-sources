@@ -1,0 +1,14 @@
+{
+	"info": {
+		"id": "en.assortedscans",
+		"name": "Assorted Scans",
+		"url": "https://assortedscans.com",
+		"lang": "en",
+		"version": 1,
+		"nsfw": 1
+	},
+	"listings": [
+		{"name": "Most Viewed"},
+		{"name": "Latest Updates"}
+	]
+}

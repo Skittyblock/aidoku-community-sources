@@ -1,7 +1,7 @@
 #![no_std]
 use aidoku::{
-	prelude::*, error::Result, std::String, std::Vec, std::net::Request,
-	Filter, Listing, Manga, MangaPageResult, Page, Chapter, DeepLink,
+	error::Result, prelude::*, std::net::Request, std::String, std::Vec, Chapter, DeepLink, Filter,
+	Listing, Manga, MangaPageResult, Page,
 };
 
 // use mangabox_template::helper::*;
@@ -10,18 +10,20 @@ use mangabox_template::template;
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	template::get_manga_list(
-		String::from("https://manganato.com"), 
+		String::from("https://manganato.com"),
 		String::from("div.content-genres-item"),
-		filters, page
+		filters,
+		page,
 	)
 }
 
 #[get_manga_listing]
 fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 	template::get_manga_listing(
-		String::from("https://manganato.com"), 
+		String::from("https://manganato.com"),
 		String::from("div.content-genres-item"),
-		listing, page
+		listing,
+		page,
 	)
 }
 
@@ -36,16 +38,13 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 }
 
 #[get_page_list]
-fn get_page_list(id: String) -> Result<Vec<Page>> {
-	template::get_page_list(id)
+fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
+	template::get_page_list(chapter_id)
 }
 
-#[modify_image_request] 
+#[modify_image_request]
 fn modify_image_request(request: Request) {
-	template::modify_image_request(
-		String::from("https://readmanganato.com"),
-		request
-	)
+	template::modify_image_request(String::from("https://readmanganato.com"), request)
 }
 
 #[handle_url]

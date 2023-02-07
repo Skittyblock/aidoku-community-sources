@@ -7,7 +7,7 @@ use aidoku::{
 use crate::BASE_URL;
 
 pub fn get_chapter_number(id: String) -> f32 {
-	let values: Vec<&str> = id.split("/").collect();
+	let values: Vec<&str> = id.split('/').collect();
 	values[5].parse::<f32>().unwrap()
 }
 
@@ -15,7 +15,7 @@ pub fn get_manga_id(raw_id: String) -> String {
 	if raw_id.contains("all-pages") {
 		let mut m_id = String::new();
 		let first_part = &raw_id[7..];
-		let last_part = &first_part[..first_part.find("/").unwrap_or(first_part.len())];
+		let last_part = &first_part[..first_part.find('/').unwrap_or(first_part.len())];
 		m_id.push_str(&raw_id[..7]);
 		m_id.push_str(last_part);
 		m_id
@@ -56,7 +56,7 @@ pub fn manga_status(status: String) -> MangaStatus {
 }
 
 pub fn get_page_number(id: String) -> i32 {
-	let html = Request::new(id.clone().as_str(), HttpMethod::Get).html();
+	let html = Request::new(id.as_str(), HttpMethod::Get).html();
 	let mut url = String::new();
 	for manga in html.select(".ui.pagination.menu a").array() {
 		let manga_node = manga.as_node();
@@ -65,7 +65,7 @@ pub fn get_page_number(id: String) -> i32 {
 			url = String::from(manga_node.attr("href").read().as_str());
 		}
 	}
-	let values: Vec<&str> = url.split("/").collect();
+	let values: Vec<&str> = url.split('/').collect();
 	String::from(values[2]).parse::<i32>().unwrap_or(1)
 }
 
@@ -129,7 +129,7 @@ pub fn genres() -> [&'static str; 45] {
 
 pub fn get_image_src(node: Node) -> String {
 	let image = node.select("img").first().attr("src").read();
-	if image.starts_with("data") || image == "" {
+	if image.starts_with("data") || image.is_empty() {
 		node.select("img").first().attr("data-src").read()
 	} else {
 		image
