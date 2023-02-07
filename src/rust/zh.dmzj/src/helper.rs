@@ -16,7 +16,7 @@ pub fn encode_uri(string: &String) -> String {
 
 	for byte in bytes {
 		let curr = *byte;
-		if (curr.is_ascii_lowercase()
+		if curr.is_ascii_lowercase()
 			|| curr.is_ascii_uppercase()
 			|| curr.is_ascii_digit()
 			|| (curr == b';'
@@ -30,7 +30,7 @@ pub fn encode_uri(string: &String) -> String {
 				|| curr == b'!' || curr == b'~'
 				|| curr == b'*' || curr == b'\''
 				|| curr == b'(' || curr == b')')
-			|| (curr == b'#'))
+			|| (curr == b'#')
 		{
 			result.push(curr);
 		} else {
