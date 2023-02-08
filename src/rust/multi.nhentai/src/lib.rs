@@ -272,7 +272,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 	let mut url = String::from("https://nhentai.net/g/");
 	url.push_str(&id);
 
-	let date_updated = json.get("upload_date").as_float().unwrap_or(0.0) as f64;
+	let date_updated = json.get("upload_date").as_float().unwrap_or(0.0);
 
 	let language = &helper::get_tag_names_by_type(json.get("tags").as_array()?, "artist")?[0];
 

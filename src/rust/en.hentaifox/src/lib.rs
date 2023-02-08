@@ -180,7 +180,7 @@ fn get_page_list(id: String) -> Result<Vec<Page>> {
 	for i in 1..=total {
 		let img_url = format!("https://i2.hentaifox.com/{}/{}/{}.jpg", img_dir, g_id, i);
 		pages.push(Page {
-			index: i as i32,
+			index: i,
 			url: img_url,
 			base64: String::new(),
 			text: String::new(),

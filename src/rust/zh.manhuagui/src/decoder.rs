@@ -86,8 +86,7 @@ impl Decoder {
 		let mut skip_next = false;
 		for (a, b) in func
 			.split("")
-			.into_iter()
-			.zip(func.clone().split("").into_iter().skip(1))
+			.zip(func.clone().split("").skip(1))
 		{
 			if skip_next {
 				skip_next = false;
@@ -102,7 +101,7 @@ impl Decoder {
 			}
 		}
 		if !skip_next {
-			let last = func.split("").into_iter().last().unwrap();
+			let last = func.split("").last().unwrap();
 			splited.push(String::from(last));
 		}
 
@@ -122,12 +121,11 @@ impl Decoder {
 		let js = result.join("");
 		let mut json = String::new();
 
-		for (i, s) in js.split(".imgData(").into_iter().enumerate() {
+		for (i, s) in js.split(".imgData(").enumerate() {
 			if i == 1 {
 				for (j, ss) in String::from(s)
 					.clone()
 					.split(").preInit();")
-					.into_iter()
 					.enumerate()
 				{
 					if j == 0 {
@@ -140,9 +138,9 @@ impl Decoder {
 		let mut pages: Vec<String> = vec![];
 		let mut path: String = String::new();
 
-		for (i, s) in json.split('[').into_iter().enumerate() {
+		for (i, s) in json.split('[').enumerate() {
 			if i == 1 {
-				for (j, ss) in s.split(']').into_iter().enumerate() {
+				for (j, ss) in s.split(']').enumerate() {
 					if j == 0 {
 						// get files here
 						for sss in ss.split(',') {
@@ -150,9 +148,9 @@ impl Decoder {
 						}
 					} else if j == 1 {
 						// get path here
-						for (k, sss) in ss.split("\"path\":\"").into_iter().enumerate() {
+						for (k, sss) in ss.split("\"path\":\"").enumerate() {
 							if k == 1 {
-								for (x, ssss) in sss.split("\",\"").into_iter().enumerate() {
+								for (x, ssss) in sss.split("\",\"").enumerate() {
 									if x == 0 {
 										path = String::from(ssss);
 									}
