@@ -12,7 +12,7 @@ use aidoku::{
 	Chapter, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
 	MangaViewer, Page,
 };
-use alloc::{vec, string::ToString};
+use alloc::{string::ToString, vec};
 
 const BASE_URL: &str = "https://www.manhuagui.com";
 
@@ -162,7 +162,6 @@ pub fn parse_search_page(html: Node) -> Result<MangaPageResult> {
 		}
 	}
 
-
 	Ok(MangaPageResult {
 		manga: mangas,
 		has_more: has_next,
@@ -207,7 +206,8 @@ pub fn get_chapter_list(html: Node) -> Result<Vec<Chapter>> {
 	if hidden {
 		let compressed = html.select("#__VIEWSTATE").attr("value").read();
 		let decompressed =
-			String::from_utf16(&decompress_from_base64(compressed.as_str()).unwrap_or_default()).unwrap_or_default();
+			String::from_utf16(&decompress_from_base64(compressed.as_str()).unwrap_or_default())
+				.unwrap_or_default();
 		div = Node::new_fragment(decompressed.as_bytes()).unwrap_or(div);
 	}
 
@@ -241,8 +241,16 @@ pub fn get_chapter_list(html: Node) -> Result<Vec<Chapter>> {
 					.replace(['第', '话', '卷'], "")
 					.parse::<f32>()
 					.unwrap_or(index);
-				let ch = if title.contains('卷') { -1.0 } else { chapter_or_volume };
-				let vo = if title.contains('卷') { chapter_or_volume } else { -1.0 };
+				let ch = if title.contains('卷') {
+					-1.0
+				} else {
+					chapter_or_volume
+				};
+				let vo = if title.contains('卷') {
+					chapter_or_volume
+				} else {
+					-1.0
+				};
 
 				let chapter = Chapter {
 					id: chapter_id,

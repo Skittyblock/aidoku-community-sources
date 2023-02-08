@@ -15,19 +15,26 @@ pub struct Decoder {
 
 impl Decoder {
 	pub fn new(document: String) -> Self {
-
 		let script = get_script(document);
 
 		let func = get_func(script.clone());
-		let a = get_a(script.clone(), func.clone()).parse::<i32>().unwrap_or(-1);
-		let c = get_c(script.clone(), func.clone()).parse::<i32>().unwrap_or(-1);
+		let a = get_a(script.clone(), func.clone())
+			.parse::<i32>()
+			.unwrap_or(-1);
+		let c = get_c(script.clone(), func.clone())
+			.parse::<i32>()
+			.unwrap_or(-1);
 		let data: Vec<String> = get_data(script, func.clone());
 
 		Decoder { func, a, c, data }
 	}
 
 	fn e(&self, c: i32) -> String {
-		let prefix: String = if c >= self.a { self.e(c / self.a) } else { String::new() };
+		let prefix: String = if c >= self.a {
+			self.e(c / self.a)
+		} else {
+			String::new()
+		};
 
 		let suffix_vec = vec![
 			self.tr(c % self.a, 36),
@@ -84,10 +91,7 @@ impl Decoder {
 		let mut result: Vec<String> = vec![];
 		let mut splited: Vec<String> = vec![];
 		let mut skip_next = false;
-		for (a, b) in func
-			.split("")
-			.zip(func.clone().split("").skip(1))
-		{
+		for (a, b) in func.split("").zip(func.clone().split("").skip(1)) {
 			if skip_next {
 				skip_next = false;
 				continue;
@@ -123,11 +127,7 @@ impl Decoder {
 
 		for (i, s) in js.split(".imgData(").enumerate() {
 			if i == 1 {
-				for (j, ss) in String::from(s)
-					.clone()
-					.split(").preInit();")
-					.enumerate()
-				{
+				for (j, ss) in String::from(s).clone().split(").preInit();").enumerate() {
 					if j == 0 {
 						json = String::from(ss);
 					}

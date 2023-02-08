@@ -6,9 +6,9 @@ mod search;
 
 use aidoku::{
 	error::{AidokuError, Result},
+	helpers::uri::{encode_uri, QueryParameters},
 	prelude::*,
 	std::{defaults::defaults_get, net::Request, String, Vec},
-	helpers::uri::{encode_uri, QueryParameters},
 	Chapter, DeepLink, Filter, Listing, Manga, MangaPageResult, Page,
 };
 use alloc::string::ToString;
