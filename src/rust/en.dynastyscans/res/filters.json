@@ -315,7 +315,7 @@
 		"canAscend": false,
 		"options": ["Best Match", "Alphabetical", "Date Added"],
 		"default": {
-			"index": "0",
+			"index": 0,
 			"ascending": false
 		}
 	},
