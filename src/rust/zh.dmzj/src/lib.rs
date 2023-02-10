@@ -9,7 +9,7 @@ use aidoku::{
 	error::Result,
 	prelude::*,
 	std::net::{HttpMethod, Request},
-	std::{json, String, Vec},
+	std::{json, ArrayRef, String, Vec},
 	Chapter, DeepLink, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
 	MangaViewer, Page,
 };
@@ -89,17 +89,23 @@ pub fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult
 			&helper::encode_uri(&keyword)
 		);
 
-		let data = {
+		// API return 404 randomly, try multi times.
+		let mut index = 0;
+		let data: ArrayRef = loop {
+			if index == 8 {
+				break ArrayRef::new();
+			}
+
 			let req = helper::get(&url);
-			let r = req.string();
+			let r = req.string().unwrap();
+			let rr = r.strip_prefix("var g_search_data = ");
 
-			let r = r
-				.strip_prefix("var g_search_data = ")
-				.unwrap()
-				.strip_suffix(';')
-				.unwrap();
-
-			json::parse(r.as_bytes()).as_array()?
+			match rr {
+				Some(rr) => {
+					break json::parse(rr.strip_suffix(';').unwrap().as_bytes())?.as_array()?
+				}
+				_ => index += 1,
+			}
 		};
 
 		for it in data {
@@ -141,7 +147,7 @@ pub fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult
 			helper::i32_to_string(sort),
 			helper::i32_to_string(page)
 		);
-		let data = Request::new(&url, HttpMethod::Get).json().as_array()?;
+		let data = Request::new(&url, HttpMethod::Get).json()?.as_array()?;
 
 		for it in data {
 			let it = it.as_object()?;
@@ -193,7 +199,7 @@ fn get_manga_details(id: String) -> Result<Manga> {
 		aidoku::std::current_date() as i64
 	);
 
-	let pb = helper::decode(&helper::get(&url).string());
+	let pb = helper::decode(&helper::get(&url).string()?);
 	if pb.errno == 0 {
 		let pb_data = pb.data.unwrap();
 		return Ok(Manga {
@@ -220,7 +226,7 @@ fn get_manga_details(id: String) -> Result<Manga> {
 				0 => MangaViewer::Rtl, // Maybe? Can't find evidence.
 				1 => MangaViewer::Ltr,
 				2 => MangaViewer::Scroll,
-				_ => MangaViewer::Default,
+				_ => MangaViewer::Rtl,
 			},
 		});
 	} else {
@@ -228,7 +234,7 @@ fn get_manga_details(id: String) -> Result<Manga> {
 
 		let url = format!("{}/dynamic/comicinfo/{}.json", API_URL, id);
 
-		let json = helper::get(&url).json().as_object()?;
+		let json = helper::get(&url).json()?.as_object()?;
 
 		let data = json.get("data").as_object()?;
 		let info = data.get("info").as_object()?;
@@ -258,7 +264,7 @@ fn get_manga_details(id: String) -> Result<Manga> {
 				0 => MangaViewer::Rtl, // Maybe? Can't find evidence.
 				1 => MangaViewer::Ltr,
 				2 => MangaViewer::Scroll,
-				_ => MangaViewer::Default,
+				_ => MangaViewer::Rtl,
 			},
 		});
 	}
@@ -273,7 +279,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 		aidoku::std::current_date() as i64
 	);
 
-	let pb = helper::decode(&helper::get(&url).string());
+	let pb = helper::decode(&helper::get(&url).string()?);
 
 	let mut chapters = Vec::new();
 
@@ -306,7 +312,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 		let req = helper::get(&url);
 
 		let list = req
-			.json()
+			.json()?
 			.as_object()?
 			.get("data")
 			.as_object()?
@@ -333,7 +339,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 }
 
 #[get_page_list]
-fn get_page_list(id: String) -> Result<Vec<Page>> {
+fn get_page_list(_manga_id: String, id: String) -> Result<Vec<Page>> {
 	// Not Tested
 	// Maybe only use the first one.
 
@@ -357,8 +363,8 @@ fn get_page_list(id: String) -> Result<Vec<Page>> {
 
 		let req = req.json();
 		let r = match index {
-			0 | 1 => req.as_object()?.get("page_url").clone().as_array().ok(),
-			2 => req
+			0 | 1 => req?.as_object()?.get("page_url").clone().as_array().ok(),
+			2 => req?
 				.as_object()?
 				.get("chapter")
 				.as_object()?
@@ -421,7 +427,6 @@ fn get_page_list(id: String) -> Result<Vec<Page>> {
 	Ok(pages)
 }
 
-// Doesn't work
 #[modify_image_request]
 fn modify_image_request(request: Request) {
 	request
