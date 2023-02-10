@@ -15,11 +15,24 @@
 		"nsfw": 0
 	},
 	"languages": [
-		{ "code": "en", "default": true },
-		{ "code": "es" },
-		{ "code": "fr" },
-		{ "code": "ko" },
-		{ "code": "ru" },
-		{ "code": "zh" }
+		{
+			"code": "en",
+			"default": true
+		},
+		{
+			"code": "es"
+		},
+		{
+			"code": "fr"
+		},
+		{
+			"code": "ko"
+		},
+		{
+			"code": "ru"
+		},
+		{
+			"code": "zh"
+		}
 	]
 }

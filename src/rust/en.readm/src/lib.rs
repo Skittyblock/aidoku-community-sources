@@ -24,11 +24,7 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 		"Popular" => format!("{}/popular-manga/{}", BASE_URL, page),
 		_ => String::from(BASE_URL),
 	};
-	parser::parse_manga_listing(
-		String::from(BASE_URL),
-		url,
-		listing.name,
-	)
+	parser::parse_manga_listing(String::from(BASE_URL), url, listing.name)
 }
 
 #[get_manga_details]

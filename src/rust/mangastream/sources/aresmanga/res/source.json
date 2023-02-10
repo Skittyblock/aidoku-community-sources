@@ -3,12 +3,18 @@
 		"id": "ar.aresmanga",
 		"lang": "ar",
 		"name": "AresManga",
-		"version": 1,
+		"version": 2,
 		"url": "https://aresmanga.com"
 	},
 	"listings": [
-		{ "name": "الرائج" },
-		{ "name": "آخر" },
-        { "name": "جَديد" }
+		{
+			"name": "الرائج"
+		},
+		{
+			"name": "آخر"
+		},
+		{
+			"name": "جَديد"
+		}
 	]
 }

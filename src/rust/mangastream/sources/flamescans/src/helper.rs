@@ -1,4 +1,5 @@
-use aidoku::std::{defaults::defaults_get, String};
+use aidoku::std::String;
+use mangastream_template::helper::*;
 
 pub fn get_base_url() -> String {
 	let code = get_lang_code();
@@ -6,16 +7,6 @@ pub fn get_base_url() -> String {
 		"ar" => String::from("https://ar.flamescans.org"),
 		_ => String::from("https://flamescans.org"),
 	}
-}
-
-pub fn get_lang_code() -> String {
-	let mut code = String::new();
-	if let Ok(languages) = defaults_get("languages").as_array() {
-		if let Ok(language) = languages.get(0).as_string() {
-			code = language.read();
-		}
-	}
-	code
 }
 
 pub fn get_tag_id(tag: String) -> String {

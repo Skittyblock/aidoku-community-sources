@@ -1,232 +1,232 @@
 [
-    {
-        "type": "title"
-    },
-    {
-        "type": "group",
-        "name": "Tags",
-        "filters": [
-            {
-                "type": "genre",
-                "name": "100 فصل",
-                "id": "490"
-            },
-            {
-                "type": "genre",
-                "name": "آلات",
-                "id": "484"
-            },
-            {
-                "type": "genre",
-                "name": "أكشن",
-                "id": "58"
-            },
-            {
-                "type": "genre",
-                "name": "ألعاب",
-                "id": "124"
-            },
-            {
-                "type": "genre",
-                "name": "إثارة",
-                "id": "59"
-            },
-            {
-                "type": "genre",
-                "name": "إعادة إحياء",
-                "id": "88"
-            },
-            {
-                "type": "genre",
-                "name": "اكشن",
-                "id": "506"
-            },
-            {
-                "type": "genre",
-                "name": "انتقام",
-                "id": "489"
-            },
-            {
-                "type": "genre",
-                "name": "تاريخي",
-                "id": "6"
-            },
-            {
-                "type": "genre",
-                "name": "تراجيدي",
-                "id": "7"
-            },
-            {
-                "type": "genre",
-                "name": "جوسيه",
-                "id": "140"
-            },
-            {
-                "type": "genre",
-                "name": "حريم",
-                "id": "81"
-            },
-            {
-                "type": "genre",
-                "name": "حياة مدرسية",
-                "id": "354"
-            },
-            {
-                "type": "genre",
-                "name": "خارق للطبيعة",
-                "id": "26"
-            },
-            {
-                "type": "genre",
-                "name": "خيال",
-                "id": "8"
-            },
-            {
-                "type": "genre",
-                "name": "خيال علمي",
-                "id": "485"
-            },
-            {
-                "type": "genre",
-                "name": "دراما",
-                "id": "32"
-            },
-            {
-                "type": "genre",
-                "name": "دموي",
-                "id": "16"
-            },
-            {
-                "type": "genre",
-                "name": "رعب",
-                "id": "405"
-            },
-            {
-                "type": "genre",
-                "name": "رومانسي",
-                "id": "9"
-            },
-            {
-                "type": "genre",
-                "name": "رياضي",
-                "id": "541"
-            },
-            {
-                "type": "genre",
-                "name": "زمكاني",
-                "id": "488"
-            },
-            {
-                "type": "genre",
-                "name": "زومبي",
-                "id": "486"
-            },
-            {
-                "type": "genre",
-                "name": "سحر",
-                "id": "28"
-            },
-            {
-                "type": "genre",
-                "name": "سينين",
-                "id": "17"
-            },
-            {
-                "type": "genre",
-                "name": "شوجو",
-                "id": "114"
-            },
-            {
-                "type": "genre",
-                "name": "شونين",
-                "id": "10"
-            },
-            {
-                "type": "genre",
-                "name": "شياطين",
-                "id": "60"
-            },
-            {
-                "type": "genre",
-                "name": "عنف",
-                "id": "487"
-            },
-            {
-                "type": "genre",
-                "name": "غموض",
-                "id": "34"
-            },
-            {
-                "type": "genre",
-                "name": "فانتازيا",
-                "id": "78"
-            },
-            {
-                "type": "genre",
-                "name": "فنون قتالية",
-                "id": "11"
-            },
-            {
-                "type": "genre",
-                "name": "قوة خارقة",
-                "id": "18"
-            },
-            {
-                "type": "genre",
-                "name": "كوميدي",
-                "id": "19"
-            },
-            {
-                "type": "genre",
-                "name": "مغامرات",
-                "id": "86"
-            },
-            {
-                "type": "genre",
-                "name": "موريم",
-                "id": "505"
-            },
-            {
-                "type": "genre",
-                "name": "نظام",
-                "id": "436"
-            },
-            {
-                "type": "genre",
-                "name": "نفسي",
-                "id": "24"
-            },
-            {
-                "type": "genre",
-                "name": "وحوش",
-                "id": "41"
-            },
-            {
-                "type": "genre",
-                "name": "ويبتون",
-                "id": "35"
-            }
-        ]
-    },
-    {
-        "type": "select",
-        "name": "Status",
-        "options": [
-            "الكل",
-            "مستمرة",
-            "مكتملة",
-            "متوقفة"
-        ]
-    },
-    {
-        "type": "select",
-        "name": "Type",
-        "options": [
-            "الكل",
-            "مانجا",
-            "مانهوا",
-            "مانها",
-            "كوميك"
-        ]
-    }
+	{
+		"type": "title"
+	},
+	{
+		"type": "group",
+		"name": "Tags",
+		"filters": [
+			{
+				"type": "genre",
+				"name": "100 فصل",
+				"id": "490"
+			},
+			{
+				"type": "genre",
+				"name": "آلات",
+				"id": "484"
+			},
+			{
+				"type": "genre",
+				"name": "أكشن",
+				"id": "58"
+			},
+			{
+				"type": "genre",
+				"name": "ألعاب",
+				"id": "124"
+			},
+			{
+				"type": "genre",
+				"name": "إثارة",
+				"id": "59"
+			},
+			{
+				"type": "genre",
+				"name": "إعادة إحياء",
+				"id": "88"
+			},
+			{
+				"type": "genre",
+				"name": "اكشن",
+				"id": "506"
+			},
+			{
+				"type": "genre",
+				"name": "انتقام",
+				"id": "489"
+			},
+			{
+				"type": "genre",
+				"name": "تاريخي",
+				"id": "6"
+			},
+			{
+				"type": "genre",
+				"name": "تراجيدي",
+				"id": "7"
+			},
+			{
+				"type": "genre",
+				"name": "جوسيه",
+				"id": "140"
+			},
+			{
+				"type": "genre",
+				"name": "حريم",
+				"id": "81"
+			},
+			{
+				"type": "genre",
+				"name": "حياة مدرسية",
+				"id": "354"
+			},
+			{
+				"type": "genre",
+				"name": "خارق للطبيعة",
+				"id": "26"
+			},
+			{
+				"type": "genre",
+				"name": "خيال",
+				"id": "8"
+			},
+			{
+				"type": "genre",
+				"name": "خيال علمي",
+				"id": "485"
+			},
+			{
+				"type": "genre",
+				"name": "دراما",
+				"id": "32"
+			},
+			{
+				"type": "genre",
+				"name": "دموي",
+				"id": "16"
+			},
+			{
+				"type": "genre",
+				"name": "رعب",
+				"id": "405"
+			},
+			{
+				"type": "genre",
+				"name": "رومانسي",
+				"id": "9"
+			},
+			{
+				"type": "genre",
+				"name": "رياضي",
+				"id": "541"
+			},
+			{
+				"type": "genre",
+				"name": "زمكاني",
+				"id": "488"
+			},
+			{
+				"type": "genre",
+				"name": "زومبي",
+				"id": "486"
+			},
+			{
+				"type": "genre",
+				"name": "سحر",
+				"id": "28"
+			},
+			{
+				"type": "genre",
+				"name": "سينين",
+				"id": "17"
+			},
+			{
+				"type": "genre",
+				"name": "شوجو",
+				"id": "114"
+			},
+			{
+				"type": "genre",
+				"name": "شونين",
+				"id": "10"
+			},
+			{
+				"type": "genre",
+				"name": "شياطين",
+				"id": "60"
+			},
+			{
+				"type": "genre",
+				"name": "عنف",
+				"id": "487"
+			},
+			{
+				"type": "genre",
+				"name": "غموض",
+				"id": "34"
+			},
+			{
+				"type": "genre",
+				"name": "فانتازيا",
+				"id": "78"
+			},
+			{
+				"type": "genre",
+				"name": "فنون قتالية",
+				"id": "11"
+			},
+			{
+				"type": "genre",
+				"name": "قوة خارقة",
+				"id": "18"
+			},
+			{
+				"type": "genre",
+				"name": "كوميدي",
+				"id": "19"
+			},
+			{
+				"type": "genre",
+				"name": "مغامرات",
+				"id": "86"
+			},
+			{
+				"type": "genre",
+				"name": "موريم",
+				"id": "505"
+			},
+			{
+				"type": "genre",
+				"name": "نظام",
+				"id": "436"
+			},
+			{
+				"type": "genre",
+				"name": "نفسي",
+				"id": "24"
+			},
+			{
+				"type": "genre",
+				"name": "وحوش",
+				"id": "41"
+			},
+			{
+				"type": "genre",
+				"name": "ويبتون",
+				"id": "35"
+			}
+		]
+	},
+	{
+		"type": "select",
+		"name": "Status",
+		"options": [
+			"الكل",
+			"مستمرة",
+			"مكتملة",
+			"متوقفة"
+		]
+	},
+	{
+		"type": "select",
+		"name": "Type",
+		"options": [
+			"الكل",
+			"مانجا",
+			"مانهوا",
+			"مانها",
+			"كوميك"
+		]
+	}
 ]

@@ -8,6 +8,8 @@
 		"nsfw": 2
 	},
 	"listings": [
-		{ "name": "Recently Added" }
+		{
+			"name": "Recently Added"
+		}
 	]
 }
