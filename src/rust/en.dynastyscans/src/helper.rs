@@ -11,7 +11,10 @@ pub fn urlencode(string: String) -> String {
 
 	for byte in bytes {
 		let curr = *byte;
-		if curr.is_ascii_lowercase() || curr.is_ascii_uppercase() || curr.is_ascii_digit() {
+		if curr.is_ascii_lowercase()
+			|| curr.is_ascii_uppercase()
+			|| curr.is_ascii_digit()
+		{
 			result.push(curr);
 		} else {
 			result.push(b'%');
