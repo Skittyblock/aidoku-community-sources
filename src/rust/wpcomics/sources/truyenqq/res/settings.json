@@ -7,7 +7,10 @@
 				"type": "select",
 				"key": "serverSelection",
 				"title": "Server",
-				"values": ["1", "2"],
+				"values": [
+					"1",
+					"2"
+				],
 				"titles": [
 					"Server 1",
 					"Server 2"

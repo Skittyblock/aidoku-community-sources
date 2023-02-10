@@ -8,8 +8,14 @@
 		"nsfw": 2
 	},
 	"listings": [
-		{ "name": "Newest" },
-		{ "name": "Oldest" },
-		{ "name": "Popularity" }
+		{
+			"name": "Newest"
+		},
+		{
+			"name": "Oldest"
+		},
+		{
+			"name": "Popularity"
+		}
 	]
 }
