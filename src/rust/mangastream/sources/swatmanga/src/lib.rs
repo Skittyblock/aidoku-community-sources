@@ -10,6 +10,7 @@ mod helper;
 
 fn get_instance() -> MangaStreamSource {
 	MangaStreamSource {
+		has_random_chapter_prefix: true,
 		listing: ["الرائج", "آخر", "جَديد"],
 		base_url: String::from("https://swatmanga.net"),
 		manga_details_title: ".infox h1",
