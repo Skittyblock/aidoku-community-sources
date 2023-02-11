@@ -343,6 +343,11 @@
 			},
 			{
 				"type": "genre",
+				"name": "tomboy",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
 				"name": "twintails",
 				"canExclude": true
 			},
