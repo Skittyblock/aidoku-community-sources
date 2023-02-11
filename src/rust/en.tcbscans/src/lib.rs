@@ -140,7 +140,8 @@ fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 fn handle_url(url: String) -> Result<DeepLink> {
 	// https://onepiecechapters.com/mangas/x/x
 	// https://onepiecechapters.com/chapters/x/x -> not handled because no manga id
-	// todo: can get manga url from ".flex.items-center.justify-center.my-6.gap-2.text-sm.font-bold a".last()
+	// todo: can get manga url from
+	// ".flex.items-center.justify-center.my-6.gap-2.text-sm.font-bold a".last()
 	let split = url.split('/').collect::<Vec<&str>>();
 	if split.len() > 3 && split[3] == "mangas" {
 		let id = String::from("/") + &split[3..].join("/");
