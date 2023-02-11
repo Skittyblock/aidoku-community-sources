@@ -80,7 +80,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 
 	if is_sauce_code {
 		let url = helper::get_details_url(sauce_code);
-		let request = Request::new(&url, HttpMethod::Get).header("User-Agent", "Aidoku");
+		let request = Request::new(url, HttpMethod::Get).header("User-Agent", "Aidoku");
 		let json = request.json()?.as_object()?;
 
 		let id = helper::get_id(json.get("id"))?;
