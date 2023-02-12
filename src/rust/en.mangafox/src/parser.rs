@@ -218,8 +218,8 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32) -> String {
 	let mut search_query = String::new();
 	let mut url = String::from("https://fanfox.net");
 
-	let mut genres = String::new();
-	let mut nogenres = String::new();
+	let mut genres = String::from("&genres=");
+	let mut nogenres = String::from("&nogenres=");
 
 	for filter in filters {
 		match filter.kind {
@@ -281,16 +281,14 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32) -> String {
 		url.push_str("/search?page=");
 		url.push_str(&page.to_string());
 		url.push_str(&search_query);
-		url.push_str("&genres=");
 		url.push_str(&genres);
-		url.push_str("&nogenres=");
 		url.push_str(&nogenres);
 	} else {
 		url.push_str("/directory/");
 		url.push_str(&page.to_string());
 		url.push_str(".html?rating")
 	}
-	url
+	encode_uri(url)
 }
 
 pub fn parse_incoming_url(url: String) -> String {
