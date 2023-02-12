@@ -236,10 +236,12 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32) -> String {
 						0 => {
 							nogenres.push_str(filter_id.read().as_str());
 							nogenres.push(',');
+							is_searching = true;
 						}
 						1 => {
 							genres.push_str(filter_id.read().as_str());
 							genres.push(',');
+							is_searching = true;
 						}
 						_ => continue,
 					}
