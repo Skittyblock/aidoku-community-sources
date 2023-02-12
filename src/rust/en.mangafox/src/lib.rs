@@ -18,7 +18,6 @@ use alloc::string::ToString;
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	let url = parser::get_filtered_url(filters, page);
-	println!("{}", &url);
 	let html = Request::new(url.as_str(), HttpMethod::Get)
 		.html()
 		.expect("");

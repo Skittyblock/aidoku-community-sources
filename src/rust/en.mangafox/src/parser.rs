@@ -278,23 +278,23 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32) -> String {
 	}
 
 	if is_searching {
-		let search_string;
-		if page == 1 {
-			search_string = format!(
-				"/search?title=&stype=1&author_method=cw&author=&artist_method=cw&artist={}&released_method=eq&released=&genres={}&nogenres={}",
-				&search_query,
-				&genres.trim_end_matches(','),
-				&nogenres.trim_end_matches(','),
-			);
+		let search_string = if page == 1 {
+			format!(
+                "/search?title=&stype=1&author_method=cw&author=&artist_method=cw&artist={}&released_method=eq&released=&genres={}&nogenres={}",
+                &search_query,
+                &genres.trim_end_matches(','),
+                &nogenres.trim_end_matches(','),
+            )
 		} else {
-			search_string = format!(
-				"/search?page={}&author_method=cw&author=&artist_method=cw&artist={}&genres={}&nogenres={}&released_method=eq&released=&stype=1",
-				&page.to_string(),
-				&search_query,
-				&genres.trim_end_matches(','),
-				&nogenres.trim_end_matches(','),
-			);
-		}
+			format!(
+                "/search?page={}&author_method=cw&author=&artist_method=cw&artist={}&genres={}&nogenres={}&released_method=eq&released=&stype=1",
+                &page.to_string(),
+                &search_query,
+                &genres.trim_end_matches(','),
+                &nogenres.trim_end_matches(','),
+            )
+		};
+
 		url.push_str(search_string.as_str());
 	} else {
 		let list_string = format!("/directory?page={}.html?rating", &page.to_string());
