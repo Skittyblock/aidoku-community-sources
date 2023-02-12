@@ -1,18 +1,18 @@
 {
-  "info": {
-    "id": "en.hiperdex",
-    "lang": "en",
-    "name": "Hiperdex",
-    "version": 1,
-    "url": "https://1sthiperdex.com",
-    "nsfw": 1
-  },
-  "listings": [
-    {
-      "name": "Trending"
+    "info": {
+        "id": "en.hiperdex",
+        "lang": "en",
+        "name": "Hiperdex",
+        "version": 1,
+        "url": "https://1sthiperdex.com",
+        "nsfw": 2
     },
-    {
-      "name": "Popular"
-    }
-  ]
+    "listings": [
+        {
+        "name": "Trending"
+        },
+        {
+        "name": "Popular"
+        }
+    ]
 }
