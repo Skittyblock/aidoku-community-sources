@@ -30,7 +30,10 @@ impl Default for GuyaSiteData {
 pub fn get_manga_list(data: GuyaSiteData, filters: Vec<Filter>, _: i32) -> Result<MangaPageResult> {
 	let url = format!("{}/api/get_all_series/", &data.base_url);
 	let request = Request::new(url, HttpMethod::Get).header("User-Agent", "Aidoku");
-	let mut json = request.json()?.as_object()?;
+	let mut json = request
+		.json()
+		.expect("Manga list json not found")
+		.as_object()?;
 
 	for filter in filters {
 		match filter.kind {
@@ -55,7 +58,10 @@ pub fn get_manga_list(data: GuyaSiteData, filters: Vec<Filter>, _: i32) -> Resul
 			Ok(obj) => obj,
 			Err(_) => continue,
 		};
-		let slug = obj.get("slug").as_string()?.read();
+		let slug = match obj.get("slug").as_string() {
+			Ok(slug) => slug.read(),
+			Err(_) => continue,
+		};
 		let cover = format!("{}{}", &data.base_url, obj.get("cover").as_string()?.read());
 		manga_arr.push(Manga {
 			id: slug,
@@ -81,8 +87,15 @@ pub fn get_manga_details(
 ) -> Result<Manga> {
 	let url = format!("{}/api/series/{}/", &data.base_url, slug);
 	let request = Request::new(url, HttpMethod::Get).header("User-Agent", "Aidoku");
-	let json = request.json()?.as_object()?;
-	let title = json.get("title").as_string()?.read();
+	let json = request
+		.json()
+		.expect("Manga detail json not found")
+		.as_object()?;
+	let title = json
+		.get("title")
+		.as_string()
+		.expect("Manga detail title not found")
+		.read();
 	let cover = format!(
 		"{}{}",
 		&data.base_url,
@@ -90,17 +103,19 @@ pub fn get_manga_details(
 	);
 	let description_raw = json.get("description").as_string()?.read();
 	let description_node = Node::new_fragment(description_raw.as_bytes())?;
-	let description = description_node
-		.select("body")
-		.array()
-		.get(0)
-		.as_node()?
-		.own_text()
-		.read();
-	println!("{}", description);
+	let description = match description_node.select("body").array().get(0).as_node() {
+		Ok(node) => node.own_text().read(),
+		Err(_) => String::from(""),
+	};
 	let user_url = format!("{}/read/manga/{}/", &data.base_url, slug);
-	let author = json.get("author").as_string()?.read();
-	let artist = json.get("artist").as_string()?.read();
+	let author = match json.get("author").as_string() {
+		Ok(author) => author.read(),
+		Err(_) => String::from("Unknown Author"),
+	};
+	let artist = match json.get("artist").as_string() {
+		Ok(artist) => artist.read(),
+		Err(_) => String::from("Unknown Artist"),
+	};
 	Ok(Manga {
 		id: slug,
 		title,
@@ -119,7 +134,10 @@ pub fn get_manga_details(
 pub fn get_chapter_list(data: GuyaSiteData, slug: String) -> Result<Vec<Chapter>> {
 	let url = format!("{}/api/series/{}/", &data.base_url, slug);
 	let request = Request::new(url, HttpMethod::Get).header("User-Agent", "Aidoku");
-	let json = request.json()?.as_object()?;
+	let json = request
+		.json()
+		.expect("Manga chapter list json not found")
+		.as_object()?;
 	let mut chapter_arr: Vec<Chapter> = Vec::new();
 	let chapter_obj = json.get("chapters").as_object()?;
 	let mut chapters: Vec<f32> = chapter_obj
@@ -182,10 +200,17 @@ pub fn get_chapter_list(data: GuyaSiteData, slug: String) -> Result<Vec<Chapter>
 }
 
 pub fn get_page_list(data: GuyaSiteData, chapter: ObjectRef) -> Result<Vec<Page>> {
-	let slug = chapter.get("mangaId").as_string()?.read();
+	let slug = chapter
+		.get("mangaId")
+		.as_string()
+		.expect("Manga chapter object slug not found")
+		.read();
 	let url = format!("{}/api/series/{}/", &data.base_url, &slug);
 	let request = Request::new(url, HttpMethod::Get).header("User-Agent", "Aidoku");
-	let json = request.json()?.as_object()?;
+	let json = request
+		.json()
+		.expect("Manga page list json not found")
+		.as_object()?;
 	let chapter_num = chapter.get("chapterNum").as_float()?;
 	let chapter_num = format!("{:.1}", chapter_num)
 		.trim_end_matches(".0")
