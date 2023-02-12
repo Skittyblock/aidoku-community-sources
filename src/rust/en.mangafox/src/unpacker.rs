@@ -3,26 +3,34 @@
 //! Source code of packer can be found [here](https://github.com/evanw/packer/blob/master/packer.js).
 //!
 //! This is a port of Tachiyomi's [`:lib-unpacker`](https://github.com/tachiyomiorg/tachiyomi-extensions/blob/master/lib/unpacker/src/main/java/eu/kanade/tachiyomi/lib/unpacker/Unpacker.kt);
-use aidoku::std::{String, Vec};
+use aidoku::{
+	helpers::substring::Substring,
+	std::{String, Vec},
+};
 
-use crate::substring::*;
+// use crate::substring::*;
 
 pub fn unpack<T: AsRef<str>>(packed: T) -> String {
 	let mut packed = String::from(packed.as_ref());
 	packed = packed
 		.substring_after("}('")
+		.unwrap()
 		.substring_before(".split('|'),0,{}))")
+		.unwrap()
 		.replace("\\'", "\"");
 
-	let data = packed.substring_before("',");
+	let data = packed.substring_before("',").unwrap();
 	if data.is_empty() {
 		return String::new();
 	}
 
 	let dict_str = packed
 		.substring_after("',")
+		.unwrap()
 		.substring_after('\'')
-		.substring_before('\'');
+		.unwrap()
+		.substring_before('\'')
+		.unwrap();
 	let dictionary = dict_str.split('|').collect::<Vec<_>>();
 	let len = dictionary.len();
 

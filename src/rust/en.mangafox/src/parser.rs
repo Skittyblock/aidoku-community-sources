@@ -2,8 +2,7 @@ use aidoku::{
 	error::Result,
 	helpers::substring::Substring,
 	prelude::*,
-	std::String,
-	std::{html::Node, Vec},
+	std::{html::Node, String, Vec},
 	Chapter, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
 	MangaViewer, Page,
 };
@@ -148,13 +147,13 @@ pub fn parse_chapters(obj: Node) -> Result<Vec<Chapter>> {
 			match f_char {
 				'v' => {
 					volume = String::from(item)
-						.trim_start_matches("v")
+						.trim_start_matches('v')
 						.parse::<f32>()
 						.unwrap_or(-1.0)
 				}
 				'c' => {
 					chapter = String::from(item)
-						.trim_start_matches("c")
+						.trim_start_matches('c')
 						.parse::<f32>()
 						.unwrap_or(-1.0)
 				}
@@ -195,14 +194,13 @@ pub fn get_page_list(html: Node) -> Result<Vec<Page>> {
 
 	let evaluated = unpacker::unpack(eval_script);
 
-	let mut page_img_str = String::new();
-	match evaluated.substring_after("var newImgs=[\"//") {
-		Some(v) => match v.substring_before("\"];var newImginfos=") {
-			Some(w) => page_img_str = w.to_string(),
-			None => {}
-		},
-		None => {}
-	}
+	let page_img_str = evaluated
+		.substring_after("var newImgs=[\"//")
+		.unwrap()
+		.substring_before("\"];var newImginfos=")
+		.unwrap()
+		.to_string();
+
 	let str_page_arr = page_img_str
 		.as_str()
 		.split("\",\"//")

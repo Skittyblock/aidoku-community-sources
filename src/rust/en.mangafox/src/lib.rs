@@ -1,12 +1,12 @@
 #![no_std]
-#![feature(test, let_chains, pattern)]
+#![feature(pattern)]
+
 use aidoku::{
-	error::Result, helpers::substring::Substring, prelude::*, std::net::HttpMethod,
-	std::net::Request, std::String, std::Vec, Chapter, Filter, Manga, MangaPageResult, Page,
+	error::Result, prelude::*, std::net::HttpMethod, std::net::Request, std::String, std::Vec,
+	Chapter, Filter, Manga, MangaPageResult, Page,
 };
 
 mod parser;
-mod substring;
 mod unpacker;
 
 #[get_manga_list]
@@ -51,7 +51,6 @@ fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 
 #[modify_image_request]
 pub fn modify_image_request(request: Request) {
-	println!("yuse");
 	request.header("Referer", "https://m.fanfox.net/");
 }
 
