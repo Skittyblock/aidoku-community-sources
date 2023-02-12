@@ -53,7 +53,7 @@ pub fn parse_manga(obj: Node, id: String) -> Result<Manga> {
 	let author = obj.select("p.detail-info-right-say a").text().read();
 	let description = obj.select("p.fullcontent").text().read();
 
-	let url = String::from("https://www.fanfox.net/manga/") + &id;
+	let url = format!("https://www.fanfox.net/manga/{}", &id);
 
 	let mut viewer = MangaViewer::Rtl;
 	let mut nsfw: MangaContentRating = MangaContentRating::Safe;
@@ -96,13 +96,13 @@ pub fn parse_manga(obj: Node, id: String) -> Result<Manga> {
 		cover,
 		title,
 		author,
-		artist: String::new(),
 		description,
 		url,
 		categories,
 		status,
 		nsfw,
 		viewer,
+		..Default::default()
 	})
 }
 
@@ -218,8 +218,8 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32) -> String {
 	let mut search_query = String::new();
 	let mut url = String::from("https://fanfox.net");
 
-	let mut genres = String::from("&genres=");
-	let mut nogenres = String::from("&nogenres=");
+	let mut genres = String::new();
+	let mut nogenres = String::new();
 
 	for filter in filters {
 		match filter.kind {
@@ -266,9 +266,9 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32) -> String {
 				}
 				if filter.name == "Completed" {
 					search_query.push_str("&st=");
+					search_query
+						.push_str(&(filter.value.as_int().unwrap_or(-1) as i32).to_string());
 					if filter.value.as_int().unwrap_or(-1) > 0 {
-						search_query
-							.push_str(&(filter.value.as_int().unwrap_or(-1) as i32).to_string());
 						is_searching = true;
 					}
 				}
@@ -278,15 +278,27 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32) -> String {
 	}
 
 	if is_searching {
-		url.push_str("/search?page=");
-		url.push_str(&page.to_string());
-		url.push_str(&search_query);
-		url.push_str(&genres);
-		url.push_str(&nogenres);
+		let search_string;
+		if page == 1 {
+			search_string = format!(
+				"/search?title=&stype=1&author_method=cw&author=&artist_method=cw&artist={}&released_method=eq&released=&genres={}&nogenres={}",
+				&search_query,
+				&genres.trim_end_matches(','),
+				&nogenres.trim_end_matches(','),
+			);
+		} else {
+			search_string = format!(
+				"/search?page={}&author_method=cw&author=&artist_method=cw&artist={}&genres={}&nogenres={}&released_method=eq&released=&stype=1",
+				&page.to_string(),
+				&search_query,
+				&genres.trim_end_matches(','),
+				&nogenres.trim_end_matches(','),
+			);
+		}
+		url.push_str(search_string.as_str());
 	} else {
-		url.push_str("/directory/");
-		url.push_str(&page.to_string());
-		url.push_str(".html?rating")
+		let list_string = format!("/directory?page={}.html?rating", &page.to_string());
+		url.push_str(list_string.as_str());
 	}
 	encode_uri(url)
 }
