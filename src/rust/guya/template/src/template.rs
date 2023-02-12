@@ -74,10 +74,6 @@ pub fn get_manga_list(data: GuyaSiteData, filters: Vec<Filter>, _: i32) -> Resul
 	})
 }
 
-// pub fn get_manga_listing(todo!()) -> Result<MangaPageResult> {
-// 	todo!()
-// }
-
 pub fn get_manga_details(
 	data: GuyaSiteData,
 	slug: String,
