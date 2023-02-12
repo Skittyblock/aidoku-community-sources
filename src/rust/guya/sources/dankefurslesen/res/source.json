@@ -1,10 +1,10 @@
 {
-    "info": {
-        "id": "en.dankefurslesen",
-        "lang": "en",
-        "name": "Danke Fürs Lesen",
-        "version": 1,
-        "url": "https://danke.moe/",
-        "nsfw": 0
-    }
+	"info": {
+		"id": "en.dankefurslesen",
+		"lang": "en",
+		"name": "Danke Fürs Lesen",
+		"version": 1,
+		"url": "https://danke.moe/",
+		"nsfw": 0
+	}
 }
