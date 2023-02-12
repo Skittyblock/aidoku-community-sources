@@ -235,11 +235,11 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32) -> String {
 					match filter.value.as_int().unwrap_or(-1) {
 						0 => {
 							nogenres.push_str(filter_id.read().as_str());
-							nogenres.push_str(",");
+							nogenres.push(',');
 						}
 						1 => {
 							genres.push_str(filter_id.read().as_str());
-							genres.push_str(",");
+							genres.push(',');
 						}
 						_ => continue,
 					}
@@ -279,10 +279,10 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32) -> String {
 		url.push_str("/search?page=");
 		url.push_str(&page.to_string());
 		url.push_str(&search_query);
-        url.push_str("&genres=");
-        url.push_str(&genres);
-        url.push_str("&nogenres=");
-        url.push_str(&nogenres);
+		url.push_str("&genres=");
+		url.push_str(&genres);
+		url.push_str("&nogenres=");
+		url.push_str(&nogenres);
 	} else {
 		url.push_str("/directory/");
 		url.push_str(&page.to_string());
@@ -299,7 +299,7 @@ pub fn parse_incoming_url(url: String) -> String {
 	let mut manga_id = url
 		.substring_after("/manga/")
 		.expect("Could not parse the chapter URL. Make sure the URL for MangaFox is correct.");
-	if manga_id.contains("/") {
+	if manga_id.contains('/') {
 		manga_id = manga_id.substring_before("/").unwrap();
 	}
 	manga_id.to_string()
