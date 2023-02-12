@@ -1,14 +1,21 @@
 {
-    "info": {
-        "id": "en.mangafox",
-        "lang": "en",
-        "name": "MangaFox",
-        "version": 2,
-        "url": "https://fanfox.net",
-        "nsfw": 1
-    },
-    "listings": [
-        { "name": "Latest" },
-         {"name": "Top Rated" }
-    ]
+	"info": {
+		"id": "en.mangafox",
+		"lang": "en",
+		"name": "MangaFox",
+		"version": 2,
+		"urls": ["https://fanfox.net", "https://m.fanfox.net"],
+		"nsfw": 1
+	},
+	"listings": [
+		{
+			"name": "Latest"
+		},
+		{
+			"name": "Popular"
+		},
+		{
+			"name": "Updated Rating"
+		}
+	]
 }
