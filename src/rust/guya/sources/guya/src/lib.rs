@@ -21,11 +21,6 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	template::get_manga_list(data(), filters, page)
 }
 
-// #[get_manga_listing]
-// pub fn get_manga_listing(listing: Listing, page: i32) ->
-// Result<MangaPageResult> { 	todo!()
-// }
-
 #[get_manga_details]
 pub fn get_manga_details(slug: String) -> Result<Manga> {
 	template::get_manga_details(data(), slug, MangaContentRating::Safe)
