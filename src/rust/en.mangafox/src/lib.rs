@@ -26,12 +26,11 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 
 #[get_manga_listing]
 fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
-	let mut url_query = "";
-	match listing.name.as_str() {
-		"Latest" => url_query = "latest",
-		"Updated Rating" => url_query = "rating",
-		_ => {}
-	}
+	let url_query = match listing.name.as_str() {
+		"Latest" => "latest",
+		"Updated Rating" => "rating",
+		_ => "",
+	};
 	let url = format!(
 		"https://fanfox.net/directory/updated/{}.html?{}",
 		page.to_string(),
