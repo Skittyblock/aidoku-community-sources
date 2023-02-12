@@ -4,7 +4,10 @@
 		"lang": "en",
 		"name": "MangaFox",
 		"version": 2,
-		"urls": ["https://fanfox.net", "https://m.fanfox.net"],
+		"urls": [
+			"https://fanfox.net",
+			"https://m.fanfox.net"
+		],
 		"nsfw": 1
 	},
 	"listings": [
