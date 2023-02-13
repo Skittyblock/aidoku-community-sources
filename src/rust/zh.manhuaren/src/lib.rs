@@ -3,11 +3,11 @@ extern crate alloc;
 use aidoku::{
 	error::Result,
 	prelude::*,
-	std::{format, ObjectRef, String, StringRef, Vec},
 	std::{
 		json,
 		net::{HttpMethod, Request},
 	},
+	std::{ObjectRef, String, StringRef, Vec},
 	Chapter, DeepLink, Filter, FilterType, Listing, Manga, MangaContentRating, MangaPageResult,
 	MangaStatus, MangaViewer, Page,
 };
