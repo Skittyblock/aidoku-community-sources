@@ -145,6 +145,7 @@ pub fn generate_get_query(args: &mut Vec<(String, String)>) -> String {
 }
 
 pub fn request<T: AsRef<str>>(url: T, method: HttpMethod) -> Result<String> {
-	let req = Request::new(url, method).header("X-Yq-Yqci", "{\"le\": \"zh\"}");
-	req.string()
+	Request::new(url, method)
+		.header("X-Yq-Yqci", "{\"le\": \"zh\"}")
+		.string()
 }
