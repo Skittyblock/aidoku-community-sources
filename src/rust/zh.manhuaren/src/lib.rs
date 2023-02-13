@@ -3,7 +3,7 @@ extern crate alloc;
 use aidoku::{
 	error::Result,
 	prelude::*,
-	std::{format, print, ObjectRef, String, StringRef, Vec},
+	std::{format, ObjectRef, String, StringRef, Vec},
 	std::{
 		json,
 		net::{HttpMethod, Request},
@@ -59,12 +59,6 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 		}
 	}
 
-	print(format(format_args!("page: {}", page)));
-	print(format(format_args!("query: {}", query)));
-	print(format(format_args!("status: {}", status)));
-	print(format(format_args!("genre: {}", genre)));
-	print(format(format_args!("sort: {}", sort)));
-
 	if query.is_empty() {
 		get_manga_list_by_filter(
 			ListFilter {
@@ -81,8 +75,6 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 
 #[get_manga_listing]
 fn get_manga_listing(_: Listing, _: i32) -> Result<MangaPageResult> {
-	print("get_manga_listing");
-
 	todo!()
 }
 
@@ -94,15 +86,9 @@ fn get_manga_details(id: String) -> Result<Manga> {
 
 	let qs = helper::generate_get_query(&mut args);
 
-	print("qs:");
-	print(&qs);
-
 	let url = String::from(API_URL) + "/v1/manga/getDetail?" + &qs;
-	print("url:");
-	print(&url);
 
 	let body = helper::request(url, HttpMethod::Get)?;
-	// print(&body);
 
 	let json = json::parse(body)?.as_object()?;
 	let manga = json.get("response").as_object()?;
@@ -166,15 +152,8 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 
 	let qs = helper::generate_get_query(&mut args);
 
-	print("qs:");
-	print(&qs);
-
 	let url = String::from(API_URL) + "/v1/manga/getDetail?" + &qs;
-	print("url:");
-	print(&url);
-
 	let body = helper::request(url, HttpMethod::Get)?;
-	// print(&body);
 
 	let json = json::parse(body)?.as_object()?;
 	let manga = json.get("response").as_object()?;
@@ -190,10 +169,6 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 
 #[get_page_list]
 fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
-	print("get_page_list:");
-	print(&manga_id);
-	print(&chapter_id);
-
 	let mut args: Vec<(String, String)> = vec![
 		(String::from("mangaId"), manga_id),
 		(String::from("mangaSectionId"), chapter_id),
@@ -204,16 +179,9 @@ fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 
 	let qs = helper::generate_get_query(&mut args);
 
-	print("qs:");
-	print(&qs);
-
 	let url = String::from(API_URL) + "/v1/manga/getRead?" + &qs;
-	print("url:");
-	print(&url);
 
 	let body = helper::request(url, HttpMethod::Get)?;
-	// print(&body);
-
 	let json = json::parse(body)?.as_object()?;
 	let manga = json.get("response").as_object()?;
 
@@ -246,22 +214,13 @@ fn get_manga_list_by_filter(filter: ListFilter, page: i32) -> Result<MangaPageRe
 
 	let qs = helper::generate_get_query(&mut args);
 
-	print("qs:");
-	print(&qs);
-
 	let url = String::from(API_URL) + "/v2/manga/getCategoryMangas?" + &qs;
-	print("url:");
-	print(&url);
-
 	let body = helper::request(url, HttpMethod::Get)?;
-	// print(&body);
 
 	let json = json::parse(body)?.as_object()?;
 	let response = json.get("response").as_object()?;
 	let mangas = response.get("mangas").as_array()?;
 	let item_count = mangas.len();
-
-	print(format(format_args!("items: {}", item_count)));
 
 	let mut manga_arr: Vec<Manga> = Vec::new();
 
@@ -321,22 +280,14 @@ fn get_manga_list_by_query(query: String, page: i32) -> Result<MangaPageResult> 
 
 	let qs = helper::generate_get_query(&mut args);
 
-	print("qs:");
-	print(&qs);
-
 	let url = String::from(API_URL) + "/v1/search/getSearchManga?" + &qs;
-	print("url:");
-	print(&url);
 
 	let body = helper::request(url, HttpMethod::Get)?;
-	// print(&body);
 
 	let json = json::parse(body)?.as_object()?;
 	let response = json.get("response").as_object()?;
 	let mangas = response.get("result").as_array()?;
 	let item_count = mangas.len();
-
-	print(format(format_args!("items: {}", item_count)));
 
 	let mut manga_arr: Vec<Manga> = Vec::new();
 
@@ -384,28 +335,6 @@ fn get_manga_list_by_query(query: String, page: i32) -> Result<MangaPageResult> 
 	})
 }
 
-// {
-//   sectionId: 738001,
-//   sectionName: '第89卷',
-//   sectionIsNewest: 0,
-//   sectionOfflineUrl:
-// 'mangaapi.manhuaren.com/comicChapterDownLoad.ashx?cid=738001',   sectionType:
-// 0,   sectionUrl: '',
-//   sectionTitle: '',
-//   sectionSort: 89,
-//   sectionSubName: '89',
-//   isMustPay: 0,
-//   authority: 0,
-//   hasUnlockDate: 0,
-//   releaseTime: '2018-12-12',
-//   beFreeSince: '',
-//   imageUrl: '',
-//   isNoAllowDownload: 0,
-//   otherSectionId: '',
-//   mangaLanguage: 0,
-//   sectionSign: 0,
-//   uploadUserId: 0
-// }
 fn parse_chapters(manga: &ObjectRef, key: &str) -> Vec<Chapter> {
 	match manga.get(key).as_array() {
 		Ok(chapters) => {
@@ -489,8 +418,6 @@ fn parse_page(chapter: &ObjectRef) -> Vec<Page> {
 				let mut url = helper::encode_uri(String::from(&host));
 				url.push_str(&p_str);
 				url.push_str(&query);
-
-				// print(&url);
 
 				page_arr.push(Page {
 					index: (i + 1) as i32,
