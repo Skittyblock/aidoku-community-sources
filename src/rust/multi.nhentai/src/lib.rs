@@ -16,25 +16,19 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	let mut is_sauce_code = false;
 	let mut sauce_code = String::from("0");
 
-	if let Ok(languages) = defaults_get("languages").as_array() {
+	if let Ok(languages) = defaults_get("languages")?.as_array() {
 		query = String::new();
-		let mut language_int = 0;
-		for lang in languages {
-			match lang.as_string()?.read().as_str() {
-				"en" => language_int |= 1,
-				"jp" => language_int |= 2,
-				"zh" => language_int |= 4,
-				_ => {}
+		if languages.is_empty() {
+			query.push_str("language:english")
+		} else {
+			for lang in languages {
+				match lang.as_string()?.read().as_str() {
+					"en" => query.push_str("language:english"),
+					"jp" => query.push_str("language:japanese"),
+					"zh" => query.push_str("language:chinese"),
+					_ => {}
+				}
 			}
-		}
-		if language_int & 1 == 0 {
-			query.push_str(" -language:english");
-		}
-		if language_int & 2 == 0 {
-			query.push_str(" -language:japanese");
-		}
-		if language_int & 4 == 0 {
-			query.push_str(" -language:chinese");
 		}
 	} else {
 		query = String::from("language:english")
@@ -86,8 +80,8 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 
 	if is_sauce_code {
 		let url = helper::get_details_url(sauce_code);
-		let request = Request::new(&url, HttpMethod::Get).header("User-Agent", "Aidoku");
-		let json = request.json().as_object()?;
+		let request = Request::new(url, HttpMethod::Get).header("User-Agent", "Aidoku");
+		let json = request.json()?.as_object()?;
 
 		let id = helper::get_id(json.get("id"))?;
 
@@ -131,7 +125,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 		url.push_str(&helper::urlencode(sort));
 
 		let request = Request::new(&url, HttpMethod::Get).header("User-Agent", "Aidoku");
-		let json = request.json().as_object()?;
+		let json = request.json()?.as_object()?;
 
 		let data = json.get("result").as_array()?;
 
@@ -202,6 +196,7 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 		kind: FilterType::Sort,
 		name: String::from("Sort"),
 		value: selection.0,
+		object: ObjectRef::new(),
 	});
 
 	get_manga_list(filters, page)
@@ -211,7 +206,7 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 fn get_manga_details(id: String) -> Result<Manga> {
 	let request = Request::new(helper::get_details_url(id).as_str(), HttpMethod::Get)
 		.header("User-Agent", "Aidoku");
-	let json = request.json().as_object()?;
+	let json = request.json()?.as_object()?;
 
 	let id = helper::get_id(json.get("id"))?;
 
@@ -267,12 +262,12 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 		HttpMethod::Get,
 	)
 	.header("User-Agent", "Aidoku");
-	let json = request.json().as_object()?;
+	let json = request.json()?.as_object()?;
 
 	let mut url = String::from("https://nhentai.net/g/");
 	url.push_str(&id);
 
-	let date_updated = json.get("upload_date").as_float().unwrap_or(0.0) as f64;
+	let date_updated = json.get("upload_date").as_float().unwrap_or(0.0);
 
 	let language = &helper::get_tag_names_by_type(json.get("tags").as_array()?, "artist")?[0];
 
@@ -296,10 +291,10 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 }
 
 #[get_page_list]
-fn get_page_list(id: String) -> Result<Vec<Page>> {
+fn get_page_list(_: String, id: String) -> Result<Vec<Page>> {
 	let request = Request::new(helper::get_details_url(id).as_str(), HttpMethod::Get)
 		.header("User-Agent", "Aidoku");
-	let json = request.json().as_object()?;
+	let json = request.json()?.as_object()?;
 
 	let images = json.get("images").as_object()?;
 	let pages_arr = images.get("pages").as_array()?;

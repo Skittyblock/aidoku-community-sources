@@ -327,7 +327,6 @@ pub fn parse_manga_details(api_url: String, id: String) -> Result<Manga> {
 }
 
 pub fn parse_chapter_list(api_url: String, id: String) -> Result<Vec<Chapter>> {
-
 	let mut chapters: Vec<Chapter> = Vec::new();
 	let mut chapter_limit = 100;
 	let page = 1;

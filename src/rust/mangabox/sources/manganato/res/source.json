@@ -11,8 +11,14 @@
 		]
 	},
 	"listings": [
-		{ "name": "Latest Updates" },
-		{ "name": "New Manga" },
-		{ "name": "Top Manga" }
+		{
+			"name": "Latest Updates"
+		},
+		{
+			"name": "New Manga"
+		},
+		{
+			"name": "Top Manga"
+		}
 	]
 }

@@ -1,5 +1,7 @@
 [
-	{ "type": "title" },
+	{
+		"type": "title"
+	},
 	{
 		"type": "select",
 		"name": "Tags",
@@ -61,7 +63,10 @@
 		"type": "sort",
 		"name": "Sort",
 		"canAscend": true,
-		"options": ["Latest", "Popular"],
+		"options": [
+			"Latest",
+			"Popular"
+		],
 		"default": {
 			"index": 0,
 			"ascending": false

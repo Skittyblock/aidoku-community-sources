@@ -7,10 +7,7 @@ pub fn urlencode(string: String) -> String {
 
 	for byte in bytes {
 		let curr = *byte;
-		if (b'a'..=b'z').contains(&curr)
-			|| (b'A'..=b'Z').contains(&curr)
-			|| (b'0'..=b'9').contains(&curr)
-		{
+		if curr.is_ascii_lowercase() || curr.is_ascii_uppercase() || curr.is_ascii_digit() {
 			result.push(curr);
 		} else {
 			result.push(b'%');
@@ -61,7 +58,7 @@ pub fn numbers_only_from_string(string: String) -> i32 {
 	}
 	for i in index..length {
 		let curr = string.as_bytes()[i];
-		if !(b'0'..=b'9').contains(&curr) {
+		if !curr.is_ascii_digit() {
 			break;
 		}
 		result = result * 10 + (curr - b'0') as i32;
