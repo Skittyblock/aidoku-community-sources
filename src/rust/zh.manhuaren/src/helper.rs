@@ -1,8 +1,8 @@
 use aidoku::{
 	error::Result,
+	prelude::*,
 	std::String,
 	std::{
-		format,
 		net::{HttpMethod, Request},
 		Vec,
 	},
@@ -138,7 +138,7 @@ pub fn generate_get_query(args: &mut Vec<(String, String)>) -> String {
 		}
 
 		let v = encode_uri_component(String::from(&a.1));
-		qs.push_str(&format(format_args!("{}={}", a.0, v)));
+		qs.push_str(&format!("{}={}", a.0, v));
 	}
 
 	qs
