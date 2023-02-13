@@ -23,30 +23,24 @@ pub fn create_search_request_object(
 	let request_info = request_info_elem.attr("wire:initial-data");
 	let liveware = request_info.read();
 
-	let fingerprint;
-	match liveware.substring_after("{\"fingerprint\":") {
-		Some(v) => match v.substring_before(",\"effects\"") {
-			Some(w) => fingerprint = w,
-			None => panic!(),
-		},
-		None => panic!(),
-	}
-	let name;
-	match liveware.substring_after("\"name\":\"") {
-		Some(v) => match v.substring_before("\",\"locale\"") {
-			Some(w) => name = w,
-			None => panic!(),
-		},
-		None => panic!(),
-	}
-	let servermemo;
-	match liveware.substring_after(",\"serverMemo\":") {
-		Some(v) => match v.substring_before_last("}") {
-			Some(w) => servermemo = w,
-			None => panic!(),
-		},
-		None => panic!(),
-	}
+	let fingerprint = &liveware
+		.substring_after("{\"fingerprint\":")
+		.unwrap()
+		.substring_before(",\"effects\"")
+		.unwrap();
+
+	let name = &liveware
+		.substring_after("\"name\":\"")
+		.unwrap()
+		.substring_before("\",\"locale\"")
+		.unwrap();
+
+	let servermemo = &liveware
+		.substring_after(",\"serverMemo\":")
+		.unwrap()
+		.substring_before_last("}")
+		.unwrap();
+
 	let mut updates = String::from(
 		"[{\"type\":\"syncInput\",\"payload\":{\"id\":\"f6wl\",\"name\":\"query\",\"value\":\"",
 	);
@@ -102,30 +96,24 @@ pub fn create_chapter_request_object(
 	let request_info = request_info_elem.attr("wire:initial-data");
 	let liveware = request_info.read();
 
-	let fingerprint;
-	match liveware.substring_after("{\"fingerprint\":") {
-		Some(v) => match v.substring_before(",\"effects\"") {
-			Some(w) => fingerprint = w,
-			None => panic!(),
-		},
-		None => panic!(),
-	}
-	let name;
-	match liveware.substring_after("\"name\":\"") {
-		Some(v) => match v.substring_before("\",\"locale\"") {
-			Some(w) => name = w,
-			None => panic!(),
-		},
-		None => panic!(),
-	}
-	let servermemo;
-	match liveware.substring_after(",\"serverMemo\":") {
-		Some(v) => match v.substring_before_last("}") {
-			Some(w) => servermemo = w,
-			None => panic!(),
-		},
-		None => panic!(),
-	}
+	let fingerprint = &liveware
+		.substring_after("{\"fingerprint\":")
+		.unwrap()
+		.substring_before(",\"effects\"")
+		.unwrap();
+
+	let name = &liveware
+		.substring_after("\"name\":\"")
+		.unwrap()
+		.substring_before("\",\"locale\"")
+		.unwrap();
+
+	let servermemo = &liveware
+		.substring_after(",\"serverMemo\":")
+		.unwrap()
+		.substring_before_last("}")
+		.unwrap();
+
 	let mut updates = String::from(
 		"[{\"type\":\"callMethod\",\"payload\":{\"id\":\"f8ay\",\"method\":\"gotoPage\",\"params\":[",
 	);
