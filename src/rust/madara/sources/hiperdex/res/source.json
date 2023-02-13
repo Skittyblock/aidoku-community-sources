@@ -9,10 +9,10 @@
 	},
 	"listings": [
 		{
-		"name": "Trending"
+			"name": "Trending"
 		},
 		{
-		"name": "Popular"
+			"name": "Popular"
 		}
 	]
 }
