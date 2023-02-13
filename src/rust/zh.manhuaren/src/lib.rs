@@ -3,13 +3,10 @@ extern crate alloc;
 use aidoku::{
 	error::Result,
 	prelude::*,
-	std::{
-		json,
-		net::{HttpMethod, Request},
-	},
+	std::{json, net::HttpMethod},
 	std::{ObjectRef, String, StringRef, Vec},
-	Chapter, DeepLink, Filter, FilterType, Listing, Manga, MangaContentRating, MangaPageResult,
-	MangaStatus, MangaViewer, Page,
+	Chapter, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
+	MangaViewer, Page,
 };
 use alloc::vec;
 mod helper;
@@ -101,32 +98,32 @@ fn get_manga_details(id: String) -> Result<Manga> {
 		cover: manga
 			.get("mangaPicimageUrl")
 			.as_string()
-			.unwrap_or(StringRef::from(""))
+			.unwrap_or_else(|_| StringRef::from(""))
 			.read(),
 		title: manga
 			.get("mangaName")
 			.as_string()
-			.unwrap_or(StringRef::from(""))
+			.unwrap_or_else(|_| StringRef::from(""))
 			.read(),
 		author: manga
 			.get("mangaAuthor")
 			.as_string()
-			.unwrap_or(StringRef::from(""))
+			.unwrap_or_else(|_| StringRef::from(""))
 			.read(),
 		artist: manga
 			.get("mangaAuthor")
 			.as_string()
-			.unwrap_or(StringRef::from(""))
+			.unwrap_or_else(|_| StringRef::from(""))
 			.read(),
 		description: manga
 			.get("mangaIntro")
 			.as_string()
-			.unwrap_or(StringRef::from(""))
+			.unwrap_or_else(|_| StringRef::from(""))
 			.read(),
 		url: manga
 			.get("shareUrl")
 			.as_string()
-			.unwrap_or(StringRef::from(""))
+			.unwrap_or_else(|_| StringRef::from(""))
 			.read(),
 		categories: categories.iter().map(|c| String::from(*c)).collect(),
 		status: match manga.get("mangaIsOver").as_int().unwrap_or(-1) {
@@ -219,22 +216,22 @@ fn get_manga_list_by_filter(filter: ListFilter, page: i32) -> Result<MangaPageRe
 			cover: manga_obj
 				.get("mangaPicimageUrl")
 				.as_string()
-				.unwrap_or(StringRef::from(""))
+				.unwrap_or_else(|_| StringRef::from(""))
 				.read(),
 			title: manga_obj
 				.get("mangaName")
 				.as_string()
-				.unwrap_or(StringRef::from(""))
+				.unwrap_or_else(|_| StringRef::from(""))
 				.read(),
 			author: manga_obj
 				.get("mangaAuthor")
 				.as_string()
-				.unwrap_or(StringRef::from(""))
+				.unwrap_or_else(|_| StringRef::from(""))
 				.read(),
 			artist: manga_obj
 				.get("mangaAuthor")
 				.as_string()
-				.unwrap_or(StringRef::from(""))
+				.unwrap_or_else(|_| StringRef::from(""))
 				.read(),
 			description: String::new(),
 			url: String::new(),
@@ -286,22 +283,22 @@ fn get_manga_list_by_query(query: String, page: i32) -> Result<MangaPageResult> 
 			cover: manga_obj
 				.get("mangaCoverimageUrl")
 				.as_string()
-				.unwrap_or(StringRef::from(""))
+				.unwrap_or_else(|_| StringRef::from(""))
 				.read(),
 			title: manga_obj
 				.get("mangaName")
 				.as_string()
-				.unwrap_or(StringRef::from(""))
+				.unwrap_or_else(|_| StringRef::from(""))
 				.read(),
 			author: manga_obj
 				.get("mangaAuthor")
 				.as_string()
-				.unwrap_or(StringRef::from(""))
+				.unwrap_or_else(|_| StringRef::from(""))
 				.read(),
 			artist: manga_obj
 				.get("mangaAuthor")
 				.as_string()
-				.unwrap_or(StringRef::from(""))
+				.unwrap_or_else(|_| StringRef::from(""))
 				.read(),
 			description: String::new(),
 			url: String::new(),
@@ -389,18 +386,18 @@ fn parse_page(chapter: &ObjectRef) -> Vec<Page> {
 			let host = host_list
 				.get(0)
 				.as_string()
-				.unwrap_or(StringRef::from(""))
+				.unwrap_or_else(|_| StringRef::from(""))
 				.read();
 			let query = chapter
 				.get("query")
 				.as_string()
-				.unwrap_or(StringRef::from(""))
+				.unwrap_or_else(|_| StringRef::from(""))
 				.read();
 
 			let mut page_arr: Vec<Page> = Vec::new();
 
 			for (i, p) in pages.enumerate() {
-				let p_str = p.as_string().unwrap_or(StringRef::from("")).read();
+				let p_str = p.as_string().unwrap_or_else(|_| StringRef::from("")).read();
 
 				let mut url = helper::encode_uri(String::from(&host));
 				url.push_str(&p_str);

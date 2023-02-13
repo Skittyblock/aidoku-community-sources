@@ -87,7 +87,6 @@ jobs:
         for src in ./src/rust/*; do
           (
             cd "$src"
-            echo "$src"
             ./build.sh -a
           )
         done
