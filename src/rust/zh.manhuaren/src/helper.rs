@@ -4,7 +4,7 @@ use aidoku::{
 	std::{
 		format,
 		net::{HttpMethod, Request},
-		print, Vec,
+		Vec,
 	},
 };
 use md5::{Digest, Md5};
@@ -120,8 +120,6 @@ pub fn generate_gsn_hash(args: &mut Vec<(String, String)>) -> String {
 
 	temp.push_str(GSN_KEY);
 
-	print(&temp);
-
 	md5(&temp)
 }
 
@@ -131,9 +129,6 @@ pub fn generate_get_query(args: &mut Vec<(String, String)>) -> String {
 	let gsn = generate_gsn_hash(args);
 
 	args.push((String::from("gsn"), String::from(&gsn)));
-
-	print("gsn:");
-	print(gsn);
 
 	let mut qs = String::new();
 
