@@ -101,6 +101,8 @@ pub fn decode_as_comic_detail(
 	prost::Message::decode(Bytes::from(decode(base64)))
 }
 
+/*
 pub fn decode_as_chapter_images(base64: &str) -> Result<protobuf::ResponseDto, prost::DecodeError> {
 	prost::Message::decode(Bytes::from(decode(base64)))
 }
+*/

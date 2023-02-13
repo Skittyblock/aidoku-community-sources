@@ -324,7 +324,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 }
 
 #[get_page_list]
-fn get_page_list(manga_id: String, id: String) -> Result<Vec<Page>> {
+fn get_page_list(_manga_id: String, id: String) -> Result<Vec<Page>> {
 	// Not Tested
 	// Maybe only use the first one.
 	let url = [
@@ -381,13 +381,10 @@ fn get_page_list(manga_id: String, id: String) -> Result<Vec<Page>> {
 
 	// Image fallback
 	let thumb = {
-		if arr.len() != 0 {
+		if !arr.is_empty() {
 			let r = Request::get(&helper::encode_uri(&arr[0]));
 			r.send();
-			match r.status_code() {
-				200 => false,
-				_ => true,
-			}
+			!matches!(r.status_code(), 200)
 		} else {
 			false
 		}
