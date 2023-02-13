@@ -342,7 +342,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 fn get_page_list(_manga_id: String, id: String) -> Result<Vec<Page>> {
 	// Not Tested
 	// Maybe only use the first one.
-
+	println!("00");
 	let url = [
 		format!("{}/{}.html", API_PAGELIST_WEBVIEW_URL, &id),
 		format!(
@@ -358,10 +358,14 @@ fn get_page_list(_manga_id: String, id: String) -> Result<Vec<Page>> {
 		if index > 2 {
 			break Vec::new();
 		}
+		println!("Loop: {}", index);
 
 		let req = helper::get(&url[index]);
 
 		let req = req.json();
+		println!("{}", helper::get(&url[index]).string()?);
+		println!("END Clone");
+
 		let r = match index {
 			0 | 1 => req?.as_object()?.get("page_url").clone().as_array().ok(),
 			2 => req?
@@ -379,7 +383,7 @@ fn get_page_list(_manga_id: String, id: String) -> Result<Vec<Page>> {
 				// Check if image url valid by having an extension.
 				let mut rr: Vec<String> = Vec::new();
 				for it in r {
-					let str = it.as_string()?.read();
+					let str = it.as_string()?.read().to_lowercase();
 
 					if let Some(mat) = str.rfind('.') {
 						match &str[mat..str.len()] {
@@ -395,6 +399,8 @@ fn get_page_list(_manga_id: String, id: String) -> Result<Vec<Page>> {
 	};
 
 	let mut pages = Vec::new();
+	println!("11,{}", arr.len());
+	println!("{}", arr[0]);
 
 	for (index, r) in arr.iter().enumerate() {
 		let mut image_url = String::from(r.deref());
