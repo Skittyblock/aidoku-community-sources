@@ -84,7 +84,7 @@
 	},
 	{
 		"type": "sort",
-		"name": "排序",
+		"name": "Sort",
 		"canAscend": false,
 		"options": [
 			"人气",
