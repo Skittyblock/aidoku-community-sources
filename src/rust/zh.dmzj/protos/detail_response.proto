@@ -1,8 +1,8 @@
-// https://github.com/tachiyomiorg/tachiyomi-extensions/blob/master/src/zh/dmzj/API.md
+// https://github.com/xiaoyaocz/dmzj_flutter/blob/23b04c2af930cb7c18a74665e8ec0bf1ccc6f09b/lib/protobuf/comic/detail_response.proto
 
 syntax = "proto3";
 
-package dmzj.comic_detail;
+package dmzj.comic;
 
 message ComicDetailResponse {
     int32 Errno = 1;
