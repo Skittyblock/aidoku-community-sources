@@ -91,7 +91,15 @@ fn get_manga_details(id: String) -> Result<Manga> {
 		.unwrap_or_else(|_| StringRef::from(""))
 		.read();
 
-	let categories: Vec<&str> = category_str.split(' ').collect();
+	let categories: Vec<String> = match category_str.is_empty() {
+		true => Vec::new(),
+		false => category_str
+			.split(' ')
+			.collect::<Vec<_>>()
+			.iter()
+			.map(|c| String::from(*c))
+			.collect(),
+	};
 
 	Ok(Manga {
 		id: helper::i32_to_string(manga.get("mangaId").as_int().unwrap_or(0) as i32),
@@ -125,7 +133,7 @@ fn get_manga_details(id: String) -> Result<Manga> {
 			.as_string()
 			.unwrap_or_else(|_| StringRef::from(""))
 			.read(),
-		categories: categories.iter().map(|c| String::from(*c)).collect(),
+		categories,
 		status: match manga.get("mangaIsOver").as_int().unwrap_or(-1) {
 			0 => MangaStatus::Ongoing,
 			1 => MangaStatus::Completed,
