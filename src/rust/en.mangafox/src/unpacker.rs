@@ -1,3 +1,5 @@
+// Unpacker from https://github.com/beerpiss/unpacker.rs
+
 //! no_std unpacker for JavaScript code compressed by [packer](http://dean.edwards.name/packer/).
 //!
 //! Source code of packer can be found [here](https://github.com/evanw/packer/blob/master/packer.js).
