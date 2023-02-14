@@ -23,12 +23,6 @@ jobs:
       uses: actions/checkout@v3
     -
       uses: google/wireit@setup-github-actions-caching/v1
-    - 
-      uses: actions/setup-node@v3
-      with:
-        node-version: 16
-        cache: npm
-        cache-dependency-path: '**/package-lock.json'
     -
       name: Cache rust stuff
       uses: actions/cache@v3
@@ -70,17 +64,6 @@ jobs:
         curl -L https://github.com/mozilla/sccache/releases/download/v$SCCACHE_VERSION/$SCCACHE_FILE.tar.gz | tar -xz
         sudo mv -f $SCCACHE_FILE/sccache /usr/local/bin/sccache
         sudo chmod +x /usr/local/bin/sccache
-    -
-      name: Build AssemblyScript sources
-      run: |
-        for src in ./src/as/*; do
-          (
-            cd "$src"
-            npm clean-install
-            npm run build
-          ) &
-        done
-        wait
     -
       name: Build Rust sources
       run: |
