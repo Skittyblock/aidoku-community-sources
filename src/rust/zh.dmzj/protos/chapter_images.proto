@@ -1,3 +1,5 @@
+// https://github.com/tachiyomiorg/tachiyomi-extensions/blob/master/src/zh/dmzj/API.md
+
 syntax = "proto3";
 
 package dmzj.chapter_images;
