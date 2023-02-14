@@ -179,9 +179,7 @@ pub fn get_chapter_list(data: GuyaSiteData, slug: String) -> Result<Vec<Chapter>
 					date_updated = date_list.get(&dl_id).as_float()?;
 				}
 			}
-			let url = &user_url;
 			let id = format!("{}|{}", &folder, &group_id);
-			let language = &data.language;
 			chapter_arr.push(Chapter {
 				id,
 				title: title.clone(),
@@ -189,8 +187,8 @@ pub fn get_chapter_list(data: GuyaSiteData, slug: String) -> Result<Vec<Chapter>
 				chapter: chapter_int,
 				scanlator: group_name,
 				date_updated,
-				url: url.to_string(),
-				lang: language.to_string(),
+				url: user_url.clone(),
+				lang: data.language.clone(),
 			});
 		}
 	}
