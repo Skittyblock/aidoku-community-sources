@@ -72,7 +72,7 @@ pub fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult
 					Ok(value) => value,
 					Err(_) => continue,
 				};
-				sort = value.get("index").as_int()? as i32;
+				sort = 1 - value.get("index").as_int()? as i32;
 			}
 			_ => continue,
 		}
