@@ -3,7 +3,7 @@ extern crate alloc;
 use aidoku::{
 	error::Result,
 	prelude::*,
-	std::{json, net::HttpMethod},
+	std::{json, net::HttpMethod, net::Request},
 	std::{ObjectRef, String, StringRef, Vec},
 	Chapter, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
 	MangaViewer, Page,
@@ -19,6 +19,15 @@ const FILTER_STATUS: [i32; 3] = [0, 1, 2];
 const FILTER_SORT: [i32; 3] = [0, 1, 2];
 
 const API_URL: &str = "http://mangaapi.manhuaren.com";
+
+#[modify_image_request]
+fn modify_image_request(request: Request) {
+	request
+		.header("X-Yq-Yqci", "{\"le\": \"zh\"}")
+		.header("User-Agent", "okhttp/3.11.0")
+		.header("Referer", "http://www.dm5.com/dm5api/")
+		.header("clubReferer", "http://mangaapi.manhuaren.com/");
+}
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
@@ -73,7 +82,6 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 #[get_manga_details]
 fn get_manga_details(id: String) -> Result<Manga> {
 	let mut args: Vec<(String, String)> = Vec::new();
-
 	args.push((String::from("mangaId"), id));
 
 	let qs = helper::generate_get_query(&mut args);
@@ -84,7 +92,6 @@ fn get_manga_details(id: String) -> Result<Manga> {
 
 	let json = json::parse(body)?.as_object()?;
 	let manga = json.get("response").as_object()?;
-
 	let category_str = manga
 		.get("mangaTheme")
 		.as_string()
@@ -101,13 +108,23 @@ fn get_manga_details(id: String) -> Result<Manga> {
 			.collect(),
 	};
 
-	Ok(Manga {
-		id: helper::i32_to_string(manga.get("mangaId").as_int().unwrap_or(0) as i32),
-		cover: manga
-			.get("mangaPicimageUrl")
+	let mut cover = manga
+		.get("mangaPicimageUrl")
+		.as_string()
+		.unwrap_or_else(|_| StringRef::from(""))
+		.read();
+
+	if cover.is_empty() {
+		cover = manga
+			.get("shareIcon")
 			.as_string()
 			.unwrap_or_else(|_| StringRef::from(""))
-			.read(),
+			.read();
+	}
+
+	Ok(Manga {
+		id: helper::i32_to_string(manga.get("mangaId").as_int().unwrap_or(0) as i32),
+		cover,
 		title: manga
 			.get("mangaName")
 			.as_string()
@@ -182,6 +199,7 @@ fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 	let url = String::from(API_URL) + "/v1/manga/getRead?" + &qs;
 
 	let body = helper::request(url, HttpMethod::Get)?;
+
 	let json = json::parse(body)?.as_object()?;
 	let manga = json.get("response").as_object()?;
 
@@ -208,7 +226,6 @@ fn get_manga_list_by_filter(filter: ListFilter, page: i32) -> Result<MangaPageRe
 
 	let url = String::from(API_URL) + "/v2/manga/getCategoryMangas?" + &qs;
 	let body = helper::request(url, HttpMethod::Get)?;
-
 	let json = json::parse(body)?.as_object()?;
 	let response = json.get("response").as_object()?;
 	let mangas = response.get("mangas").as_array()?;
@@ -219,13 +236,23 @@ fn get_manga_list_by_filter(filter: ListFilter, page: i32) -> Result<MangaPageRe
 	for manga in mangas {
 		let manga_obj = manga.as_object()?;
 
-		manga_arr.push(Manga {
-			id: helper::i32_to_string(manga_obj.get("mangaId").as_int().unwrap_or(0) as i32),
-			cover: manga_obj
-				.get("mangaPicimageUrl")
+		let mut cover = manga_obj
+			.get("mangaPicimageUrl")
+			.as_string()
+			.unwrap_or_else(|_| StringRef::from(""))
+			.read();
+
+		if cover.is_empty() {
+			cover = manga_obj
+				.get("mangaCoverimageUrl")
 				.as_string()
 				.unwrap_or_else(|_| StringRef::from(""))
-				.read(),
+				.read();
+		}
+
+		manga_arr.push(Manga {
+			id: helper::i32_to_string(manga_obj.get("mangaId").as_int().unwrap_or(0) as i32),
+			cover,
 			title: manga_obj
 				.get("mangaName")
 				.as_string()
@@ -288,7 +315,9 @@ fn get_manga_list_by_query(query: String, page: i32) -> Result<MangaPageResult> 
 
 		manga_arr.push(Manga {
 			id: helper::i32_to_string(manga_obj.get("mangaId").as_int().unwrap_or(0) as i32),
-			cover: manga_obj
+			cover:
+				// this cover val won't be empty
+				manga_obj
 				.get("mangaCoverimageUrl")
 				.as_string()
 				.unwrap_or_else(|_| StringRef::from(""))
