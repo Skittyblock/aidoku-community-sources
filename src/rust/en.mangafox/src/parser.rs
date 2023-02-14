@@ -7,7 +7,7 @@ use aidoku::{
 	MangaViewer, Page,
 };
 
-use crate::unpacker;
+use unpacker::unpack;
 
 extern crate alloc;
 use alloc::string::ToString;
@@ -186,7 +186,7 @@ pub fn get_page_list(html: Node) -> Result<Vec<Page>> {
 		}
 	}
 
-	let evaluated = unpacker::unpack(eval_script);
+	let evaluated = unpack(eval_script);
 
 	let page_img_str = evaluated
 		.substring_after("var newImgs=[\"//")

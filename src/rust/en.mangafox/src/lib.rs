@@ -10,7 +10,6 @@ use aidoku::{
 };
 
 mod parser;
-mod unpacker;
 
 extern crate alloc;
 use alloc::string::ToString;

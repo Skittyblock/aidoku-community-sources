@@ -59,6 +59,7 @@ name = "mangafox"
 version = "0.1.0"
 dependencies = [
  "aidoku",
+ "unpacker",
 ]
 
 [[package]]
@@ -101,6 +102,11 @@ name = "unicode-ident"
 version = "1.0.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "84a22b9f218b40614adcb3f4ff08b703773ad44fa9423e4e0d346d5db86e4ebc"
+
+[[package]]
+name = "unpacker"
+version = "0.1.0"
+source = "git+https://github.com/beerpiss/unpacker.rs.git#c7e94a99e69c90251e6363d4484d726d4b45a5c2"
 
 [[package]]
 name = "wee_alloc"
