@@ -84,11 +84,11 @@
 	},
 	{
 		"type": "sort",
-		"name": "Sort",
+		"name": "排序",
 		"canAscend": false,
 		"options": [
-			"人气",
-			"更新"
+			"更新",
+			"人气"
 		],
 		"default": {
 			"index": 0,

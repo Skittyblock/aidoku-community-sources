@@ -2,7 +2,7 @@
 
 syntax = "proto3";
 
-package dmzj.comic;
+package dmzj.comic_detail;
 
 message ComicDetailResponse {
     int32 Errno = 1;

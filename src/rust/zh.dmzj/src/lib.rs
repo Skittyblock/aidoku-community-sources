@@ -18,10 +18,7 @@ mod helper;
 
 const BASE_URL: &str = "https://m.dmzj.com";
 const V3_API_URL: &str = "https://v3api.dmzj.com";
-const V3_API_CHAPTER_URL: &str = "https://nnv3api.muwai.com";
-// v3api now shutdown the functionality to fetch manga detail and chapter list,
-// so move these logic to v4api
-const V4_API_URL: &str = "https://nnv4api.muwai.com"; // https://v4api.dmzj1.com
+const V4_API_URL: &str = "https://nnv4api.dmzj.com";
 const API_URL: &str = "https://api.dmzj.com";
 const API_PAGELIST_OLD_URL: &str = "https://api.m.dmzj.com";
 const API_PAGELIST_WEBVIEW_URL: &str = "https://m.dmzj.com/chapinfo";
@@ -75,7 +72,7 @@ pub fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult
 					Ok(value) => value,
 					Err(_) => continue,
 				};
-				sort = value.get("index").as_int()? as i32;
+				sort = 1 - value.get("index").as_int()? as i32;
 			}
 			_ => continue,
 		}
@@ -192,14 +189,9 @@ pub fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult
 
 #[get_manga_details]
 fn get_manga_details(id: String) -> Result<Manga> {
-	let url = format!(
-		"{}/comic/detail/{}?channel=android&version=3.0.0&timestamp={}",
-		V4_API_URL,
-		&id,
-		aidoku::std::current_date() as i64
-	);
+	let url = format!("{}/comic/detail/{}?uid=2665531", V4_API_URL, &id);
 
-	let pb = helper::decode(&helper::get(&url).string()?);
+	let pb = helper::decode_as_comic_detail(&helper::get(&url).string()?).unwrap();
 	if pb.errno == 0 {
 		let pb_data = pb.data.unwrap();
 		return Ok(Manga {
@@ -230,7 +222,7 @@ fn get_manga_details(id: String) -> Result<Manga> {
 			},
 		});
 	} else {
-		// Try old api
+		// Try V3 api
 
 		let url = format!("{}/dynamic/comicinfo/{}.json", API_URL, id);
 
@@ -272,17 +264,13 @@ fn get_manga_details(id: String) -> Result<Manga> {
 
 #[get_chapter_list]
 fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
-	let url = format!(
-		"{}/comic/detail/{}?channel=android&version=3.0.0&timestamp={}",
-		V4_API_URL,
-		&id,
-		aidoku::std::current_date() as i64
-	);
+	// Try V4 API first
 
-	let pb = helper::decode(&helper::get(&url).string()?);
+	let url = format!("{}/comic/detail/{}?uid=2665531", V4_API_URL, &id);
+
+	let pb = helper::decode_as_comic_detail(&helper::get(&url).string()?).unwrap();
 
 	let mut chapters = Vec::new();
-
 	if pb.errno == 0 && !pb.data.as_ref().unwrap().chapters.is_empty() {
 		let pb_data = pb.data.unwrap();
 		let mut volume = 0;
@@ -308,18 +296,15 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 			}
 		}
 	} else {
-		let url = format!("{}/dynamic/comicinfo/{}.json", API_URL, id);
-		let req = helper::get(&url);
+		// Try V3 API
 
-		let list = req
-			.json()?
-			.as_object()?
-			.get("data")
-			.as_object()?
-			.get("list")
-			.as_array()?;
+		let url = format!("{}/dynamic/comicinfo/{}.json", API_URL, id);
+		let json = helper::get(&url).json()?.as_object()?;
+		let data = json.get("data").as_object()?;
+		let list = data.get("list").as_array()?;
 
 		let len = list.len();
+
 		for (index, chapter) in list.enumerate() {
 			let data = chapter.as_object()?;
 
@@ -342,12 +327,11 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 fn get_page_list(_manga_id: String, id: String) -> Result<Vec<Page>> {
 	// Not Tested
 	// Maybe only use the first one.
-
 	let url = [
 		format!("{}/{}.html", API_PAGELIST_WEBVIEW_URL, &id),
 		format!(
 			"{}/chapter/{}.json?channel=android&version=3.0.0&timestamp={}",
-			V3_API_CHAPTER_URL,
+			API_URL,
 			&id,
 			aidoku::std::current_date() as i64
 		),
@@ -355,13 +339,12 @@ fn get_page_list(_manga_id: String, id: String) -> Result<Vec<Page>> {
 	];
 	let mut index = 0;
 	let arr: Vec<String> = loop {
-		if index > 2 {
+		if index >= url.len() {
 			break Vec::new();
 		}
 
-		let req = helper::get(&url[index]);
+		let req = helper::get(&url[index]).json();
 
-		let req = req.json();
 		let r = match index {
 			0 | 1 => req?.as_object()?.get("page_url").clone().as_array().ok(),
 			2 => req?
@@ -369,7 +352,9 @@ fn get_page_list(_manga_id: String, id: String) -> Result<Vec<Page>> {
 				.get("chapter")
 				.as_object()?
 				.get("page_url")
+				// STILL NOT FIXED
 				.clone()
+				// DO NOT REMOVE
 				.as_array()
 				.ok(),
 			_ => None,
@@ -382,7 +367,7 @@ fn get_page_list(_manga_id: String, id: String) -> Result<Vec<Page>> {
 					let str = it.as_string()?.read();
 
 					if let Some(mat) = str.rfind('.') {
-						match &str[mat..str.len()] {
+						match str[mat..str.len()].to_lowercase().as_str() {
 							".jpg" | ".png" | ".gif" => rr.push(str),
 							_ => {}
 						}
@@ -394,6 +379,17 @@ fn get_page_list(_manga_id: String, id: String) -> Result<Vec<Page>> {
 		};
 	};
 
+	// Image fallback
+	let thumb = {
+		if !arr.is_empty() {
+			let r = Request::get(&helper::encode_uri(&arr[0]));
+			r.send();
+			!matches!(r.status_code(), 200)
+		} else {
+			false
+		}
+	};
+
 	let mut pages = Vec::new();
 
 	for (index, r) in arr.iter().enumerate() {
@@ -402,7 +398,7 @@ fn get_page_list(_manga_id: String, id: String) -> Result<Vec<Page>> {
 			.replace("http:", "https:")
 			.replace("dmzj1.com", "dmzj.com");
 
-		let _thumb_url = {
+		let thumb_url = {
 			if !id.is_empty() {
 				let initial = image_url
 					.strip_prefix("https://images.dmzj.com/")
@@ -418,7 +414,10 @@ fn get_page_list(_manga_id: String, id: String) -> Result<Vec<Page>> {
 
 		pages.push(Page {
 			index: index as i32,
-			url: helper::encode_uri(&image_url),
+			url: helper::encode_uri(match thumb {
+				true => &thumb_url,
+				false => &image_url,
+			}),
 			base64: String::new(),
 			text: String::new(),
 		});
