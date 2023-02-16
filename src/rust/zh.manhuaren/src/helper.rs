@@ -78,19 +78,20 @@ pub fn request<T: AsRef<str>>(url: T, method: HttpMethod) -> Result<String> {
 		.string()
 }
 
-pub fn unwrap_or_empty(val: Result<StringRef>, fallback: String) -> String {
+pub fn stringref_unwrap_or_fallback(val: Result<StringRef>, fallback: String) -> String {
 	match val {
 		Ok(val) => {
 			let str = val.read();
-			match str.is_empty() {
-				true => fallback,
-				_ => str,
+			if str.is_empty() {
+				fallback
+			} else {
+				str
 			}
 		}
 		Err(_) => fallback,
 	}
 }
 
-pub fn unwrap_or_default(val: Result<StringRef>) -> String {
-	unwrap_or_empty(val, String::new())
+pub fn stringref_unwrap_or_empty(val: Result<StringRef>) -> String {
+	stringref_unwrap_or_fallback(val, String::new())
 }

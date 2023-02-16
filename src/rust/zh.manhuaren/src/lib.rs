@@ -94,7 +94,7 @@ fn get_manga_details(id: String) -> Result<Manga> {
 	let json = json::parse(body)?.as_object()?;
 	let manga = json.get("response").as_object()?;
 
-	let category_str = helper::unwrap_or_default(manga.get("mangaTheme").as_string());
+	let category_str = helper::stringref_unwrap_or_empty(manga.get("mangaTheme").as_string());
 
 	let categories: Vec<String> = match category_str.is_empty() {
 		true => Vec::new(),
@@ -106,9 +106,9 @@ fn get_manga_details(id: String) -> Result<Manga> {
 			.collect(),
 	};
 
-	let cover = helper::unwrap_or_empty(
+	let cover = helper::stringref_unwrap_or_fallback(
 		manga.get("mangaPicimageUrl").as_string(),
-		helper::unwrap_or_default(manga.get("shareIcon").as_string()),
+		helper::stringref_unwrap_or_empty(manga.get("shareIcon").as_string()),
 	);
 
 	Ok(Manga {
@@ -117,11 +117,11 @@ fn get_manga_details(id: String) -> Result<Manga> {
 			Err(_) => id,
 		},
 		cover,
-		title: helper::unwrap_or_default(manga.get("mangaName").as_string()),
-		author: helper::unwrap_or_default(manga.get("mangaAuthor").as_string()),
-		artist: helper::unwrap_or_default(manga.get("mangaAuthor").as_string()),
-		description: helper::unwrap_or_default(manga.get("mangaIntro").as_string()),
-		url: helper::unwrap_or_default(manga.get("shareUrl").as_string()),
+		title: helper::stringref_unwrap_or_empty(manga.get("mangaName").as_string()),
+		author: helper::stringref_unwrap_or_empty(manga.get("mangaAuthor").as_string()),
+		artist: helper::stringref_unwrap_or_empty(manga.get("mangaAuthor").as_string()),
+		description: helper::stringref_unwrap_or_empty(manga.get("mangaIntro").as_string()),
+		url: helper::stringref_unwrap_or_empty(manga.get("shareUrl").as_string()),
 		categories,
 		status: match manga.get("mangaIsOver").as_int().unwrap_or(-1) {
 			0 => MangaStatus::Ongoing,
@@ -202,9 +202,9 @@ fn get_manga_list_by_filter(filter: ListFilter, page: i32) -> Result<MangaPageRe
 	for manga in mangas {
 		let manga_obj = manga.as_object()?;
 
-		let cover = helper::unwrap_or_empty(
+		let cover = helper::stringref_unwrap_or_fallback(
 			manga_obj.get("mangaPicimageUrl").as_string(),
-			helper::unwrap_or_default(manga_obj.get("mangaCoverimageUrl").as_string()),
+			helper::stringref_unwrap_or_empty(manga_obj.get("mangaCoverimageUrl").as_string()),
 		);
 
 		manga_arr.push(Manga {
@@ -214,9 +214,9 @@ fn get_manga_list_by_filter(filter: ListFilter, page: i32) -> Result<MangaPageRe
 				.unwrap_or_default()
 				.to_string(),
 			cover,
-			title: helper::unwrap_or_default(manga_obj.get("mangaName").as_string()),
-			author: helper::unwrap_or_default(manga_obj.get("mangaAuthor").as_string()),
-			artist: helper::unwrap_or_default(manga_obj.get("mangaAuthor").as_string()),
+			title: helper::stringref_unwrap_or_empty(manga_obj.get("mangaName").as_string()),
+			author: helper::stringref_unwrap_or_empty(manga_obj.get("mangaAuthor").as_string()),
+			artist: helper::stringref_unwrap_or_empty(manga_obj.get("mangaAuthor").as_string()),
 			status: match manga_obj.get("mangaIsOver").as_int().unwrap_or(-1) {
 				0 => MangaStatus::Ongoing,
 				1 => MangaStatus::Completed,
@@ -261,16 +261,16 @@ fn get_manga_list_by_query(query: String, page: i32) -> Result<MangaPageResult> 
 			id: manga_obj.get("mangaId").as_int().unwrap_or_default().to_string(),
 			cover:
 				// api won't return mangaPicimageUrl, no need to check
-				helper::unwrap_or_default(manga_obj
+				helper::stringref_unwrap_or_empty(manga_obj
 					.get("mangaCoverimageUrl")
 					.as_string()),
-			title: helper::unwrap_or_default(manga_obj
+			title: helper::stringref_unwrap_or_empty(manga_obj
 				.get("mangaName")
 				.as_string()),
-			author: helper::unwrap_or_default(manga_obj
+			author: helper::stringref_unwrap_or_empty(manga_obj
 				.get("mangaAuthor")
 				.as_string()),
-			artist: helper::unwrap_or_default(manga_obj
+			artist: helper::stringref_unwrap_or_empty(manga_obj
 				.get("mangaAuthor")
 				.as_string()),
 			status: match manga_obj.get("mangaIsOver").as_int().unwrap_or(-1) {
@@ -311,9 +311,10 @@ fn parse_chapters(manga: &ObjectRef, key: &str) -> Vec<Chapter> {
 					title.push_str("[番外] ");
 				}
 
-				let section_name = helper::unwrap_or_default(ch_obj.get("sectionName").as_string());
+				let section_name =
+					helper::stringref_unwrap_or_empty(ch_obj.get("sectionName").as_string());
 				let section_title =
-					helper::unwrap_or_default(ch_obj.get("sectionTitle").as_string());
+					helper::stringref_unwrap_or_empty(ch_obj.get("sectionTitle").as_string());
 
 				title.push_str(&section_name);
 
@@ -354,13 +355,13 @@ fn parse_page(chapter: &ObjectRef) -> Vec<Page> {
 	match chapter.get("mangaSectionImages").as_array() {
 		Ok(pages) => {
 			let host_list = chapter.get("hostList").as_array().expect("hostList Error");
-			let host = helper::unwrap_or_default(host_list.get(0).as_string());
-			let query = helper::unwrap_or_default(chapter.get("query").as_string());
+			let host = helper::stringref_unwrap_or_empty(host_list.get(0).as_string());
+			let query = helper::stringref_unwrap_or_empty(chapter.get("query").as_string());
 
 			let mut page_arr: Vec<Page> = Vec::new();
 
 			for (i, p) in pages.enumerate() {
-				let p_str = helper::unwrap_or_default(p.as_string());
+				let p_str = helper::stringref_unwrap_or_empty(p.as_string());
 
 				let mut url = encode_uri(String::from(&host));
 				url.push_str(&p_str);
