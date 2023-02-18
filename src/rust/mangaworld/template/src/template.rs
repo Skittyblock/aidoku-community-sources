@@ -80,11 +80,6 @@ pub fn parse_manga_listing(
 		let id = String::from(url.substring_after("manga/").unwrap_or_default());
 		let cover = manga_node.select("img").attr("src").read();
 		let manga_type = manga_node.select(".genre a").text().read();
-		let viewer = match manga_type.as_str() {
-			"Manga" => MangaViewer::Rtl,
-			"Manhwa" => MangaViewer::Scroll,
-			_ => MangaViewer::Ltr,
-		};
 		mangas.push(Manga {
 			id,
 			cover,
@@ -96,7 +91,7 @@ pub fn parse_manga_listing(
 			categories: Vec::new(),
 			status: MangaStatus::Unknown,
 			nsfw: MangaContentRating::Safe,
-			viewer,
+			viewer: MangaViewer::Rtl,
 		});
 		count += 1;
 	}
