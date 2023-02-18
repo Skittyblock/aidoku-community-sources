@@ -228,7 +228,7 @@ pub fn parse_chapter(chapter_object: ObjectRef) -> Result<Chapter> {
 
 	let date_updated = attributes
 		.get("publishAt")
-		.as_date("yyyy-MM-dd'T'HH:mm:ss+ss:ss", None, Some("UTC"))
+		.as_date("yyyy-MM-dd'T'HH:mm:ss+ss:ss", Some("en-US"), Some("UTC"))
 		.unwrap_or(-1.0);
 
 	// Fix for Skittyblock/aidoku-community-sources#25
@@ -260,20 +260,32 @@ pub fn parse_chapter(chapter_object: ObjectRef) -> Result<Chapter> {
 		title = String::from("Oneshot");
 	}
 
-	let mut scanlator = String::new();
+	let mut uploader = String::new();
+	let mut group: Vec<String> = Vec::new();
 
 	if let Ok(relationships) = chapter_object.get("relationships").as_array() {
 		for relationship in relationships {
 			if let Ok(relationship_object) = relationship.as_object()
 				&& let Ok(relation_type) = relationship_object.get("type").as_string()
 				&& let Ok(attribs) = relationship_object.get("attributes").as_object()
-				&& relation_type.read() == "scanlation_group"
 			{
-				scanlator = attribs.get("name").as_string().map(|v| v.read()).unwrap_or_default();
-				break;
+				if relation_type.clone().read() == "scanlation_group" {
+					group.push(attribs.get("name").as_string().map(|v| v.read()).unwrap_or_default());
+				} else if relation_type.clone().read() == "user" {
+					uploader = attribs.get("username").as_string().map(|v| v.read()).unwrap_or_default();
+				}
 			}
 		}
 	}
+
+	// If there's no group, use the uploader as the scanlator
+	let scanlator = {
+		if group.is_empty() {
+			uploader
+		} else {
+			group.join(", ")
+		}
+	};
 
 	let mut url = String::from("https://mangadex.org/chapter/");
 	url.push_str(&id);
