@@ -81,11 +81,6 @@ pub fn parse_manga_listing(
 					.read()
 					.replace(' ', "%20"),
 			);
-			let viewer = if title.contains("Novel") {
-				MangaViewer::Ltr
-			} else {
-				MangaViewer::Rtl
-			};
 			mangas.push(Manga {
 				id,
 				cover,
@@ -97,7 +92,7 @@ pub fn parse_manga_listing(
 				categories: Vec::new(),
 				status: MangaStatus::Unknown,
 				nsfw: MangaContentRating::Safe,
-				viewer,
+				viewer: MangaViewer::Rtl,
 			});
 		}
 	} else {
