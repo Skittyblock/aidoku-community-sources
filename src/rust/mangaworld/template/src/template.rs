@@ -136,10 +136,9 @@ pub fn parse_manga_details(base_url: String, id: String) -> Result<Manga> {
 			.text()
 			.read(),
 	);
-	let nsfw = if categories
+	let nsfw = if base_url == "https://www.mangaworldadult.com" ||  categories
 		.iter()
 		.any(|v| *v == "Ecchi" || *v == "Hentai" || *v == "Maturo")
-		|| base_url == "https://www.mangaworldadult.com"
 	{
 		MangaContentRating::Nsfw
 	} else {
@@ -150,9 +149,9 @@ pub fn parse_manga_details(base_url: String, id: String) -> Result<Manga> {
 		.text()
 		.read();
 	let viewer = match manga_type.as_str() {
-		"Manga" => MangaViewer::Rtl,
+		"Manhua" => MangaViewer::Ltr,
 		"Manhwa" => MangaViewer::Scroll,
-		_ => MangaViewer::Ltr,
+		_ => MangaViewer::Rtl,
 	};
 	Ok(Manga {
 		id,
