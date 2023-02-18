@@ -4,7 +4,7 @@
 	},
 	{
 		"type": "group",
-		"name": "Genero",
+		"name": "Por genero",
 		"filters": [
 			{
 				"type": "genre",
@@ -348,15 +348,15 @@
 		"name": "Status",
 		"options": [
 			"All",
-			"ativo",
-			"completo"
+			"Ativo",
+			"Completo"
 		]
 	},
 	{
 		"type": "select",
 		"name": "ByLetter",
 		"options": [
-			"All",
+			"Todos",
 			"A",
 			"B",
 			"C",

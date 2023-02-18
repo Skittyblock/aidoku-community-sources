@@ -40,7 +40,7 @@ pub fn parse_manga_list(
 				let index = filter.value.as_int().unwrap_or(-1) as usize;
 				match filter.name.as_str() {
 					"Status" => status = String::from(status_options[index]),
-					"ByLetter" => sort_letter = String::from(sort_options[index]),
+					"Por letra" => sort_letter = String::from(sort_options[index]),
 					_ => continue,
 				}
 			}
@@ -64,7 +64,6 @@ pub fn parse_manga_listing(
 	} else {
 		base_url.clone()
 	};
-	let mut _count = 0;
 	let mut mangas: Vec<Manga> = Vec::new();
 	let html = Request::new(&list_url, HttpMethod::Get).html()?;
 	if listing_name.is_empty() {
