@@ -79,7 +79,6 @@ pub fn parse_manga_listing(
 		let url = manga_node.select(".manga-title").attr("href").read();
 		let id = String::from(url.substring_after("manga/").unwrap_or_default());
 		let cover = manga_node.select("img").attr("src").read();
-		let manga_type = manga_node.select(".genre a").text().read();
 		mangas.push(Manga {
 			id,
 			cover,
@@ -131,9 +130,10 @@ pub fn parse_manga_details(base_url: String, id: String) -> Result<Manga> {
 			.text()
 			.read(),
 	);
-	let nsfw = if base_url == "https://www.mangaworldadult.com" ||  categories
-		.iter()
-		.any(|v| *v == "Ecchi" || *v == "Hentai" || *v == "Maturo")
+	let nsfw = if base_url == "https://www.mangaworldadult.com"
+		|| categories
+			.iter()
+			.any(|v| *v == "Ecchi" || *v == "Hentai" || *v == "Maturo")
 	{
 		MangaContentRating::Nsfw
 	} else {
