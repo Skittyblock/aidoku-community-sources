@@ -8,7 +8,8 @@ use aidoku::{
 use crate::crypto::batojs_decrypt;
 use crate::helper::{i32_to_string, lang_encoder, urlencode};
 use crate::substring::Substring;
-// use alloc::string::String;
+extern crate alloc;
+use alloc::string::ToString;
 
 pub fn parse_listing(html: &Node, result: &mut Vec<Manga>) {
 	for page in html.select(".col.item").array() {
@@ -169,20 +170,32 @@ pub fn get_chaper_list(obj: Node) -> Result<Vec<Chapter>> {
 			.read()
 			.replace("/chapter/", "");
 		// Title
-		let title = chapter_node
+		let mut title = chapter_node
 			.select(".chapt span")
 			.text()
 			.read()
 			.replace(": ", "");
 
 		let name = chapter_node.select(".chapt b").text().read();
-		let vol_and_chap = name.split("Chapter").collect::<Vec<&str>>();
+		if !name.contains("Chapter") && title.is_empty() {
+			title = name.to_string();
+		}
 
 		// Volume & Chapter
-		let volume = String::from(vol_and_chap[0].replace("Volume", "").trim())
-			.parse::<f32>()
-			.unwrap_or(-1.0);
-		let chapter = String::from(vol_and_chap[1].trim())
+		let vol_and_chap = name.split("Chapter").collect::<Vec<&str>>();
+		let chapter = match vol_and_chap.get(1) {
+			Some(chap_str) => chap_str
+				.trim()
+				.split(' ')
+				.next()
+				.unwrap_or("-1.0")
+				.parse::<f32>()
+				.unwrap_or(-1.0),
+			None => -1.0,
+		};
+		let volume = vol_and_chap[0]
+			.replace("Volume", "")
+			.trim()
 			.parse::<f32>()
 			.unwrap_or(-1.0);
 
