@@ -4,26 +4,28 @@ use aidoku::
 	MangaContentRating
 };
 
-pub fn IsNSFW(genre: String) -> MangaContentRating{
+pub fn is_nsfw(genre: String) -> MangaContentRating{
 
-	let NSFWCategories: String = String::from("Еччі Юрі Яой"); // maybe new
-	if NSFWCategories.contains(&genre)
+	let nsfwcategories: String = String::from("Еччі Юрі Яой"); // maybe new
+	if nsfwcategories.contains(&genre)
 	{
 		return MangaContentRating::Nsfw;
 	}
-	return MangaContentRating::Safe;
+	//return MangaContentRating::Safe;
+	MangaContentRating::Safe
 }
 
-pub fn IsNSFWBool(genre: String) -> bool {
-	let NSFWCategories: String = String::from("Еччі Юрі Яой"); // maybe new
-	if NSFWCategories.contains(&genre)
+pub fn is_nsfwbool(genre: String) -> bool {
+	let nsfwcategories: String = String::from("Еччі Юрі Яой"); // maybe new
+	if nsfwcategories.contains(&genre)
 	{
 		return true;
 	}
-	return false;
+	//return false;
+	false
 }
 
-pub fn GetStatusString(status: String) -> String{
+pub fn get_status_string(status: String) -> String{
 	if status == "Триває"{
 		return String::from("Ongoing");
 	}
@@ -36,7 +38,8 @@ pub fn GetStatusString(status: String) -> String{
 	if status == "Покинуто"{
 		return String::from("Cancelled");
 	}
-	return String::from("Unknown"); // find others
+	//return String::from("Unknown"); // find others
+	String::from("Unknown") // find others
 }
 
 pub fn genres_list() -> [&'static str; 50] {

@@ -16,21 +16,21 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	let mut manga_arr: Vec<Manga> = Vec::new();
 	let mut total: i32 = 1;
 
-	let baseUrl = String::from("https://manga.in.ua");
+	let base_url = String::from("https://manga.in.ua");
 
 	let genres_list = helper::genres_list();
 
-	let mut sortValue: String = String::new();
-	let mut searchValue = String::new();
-	let mut genreValue = String::new();
-	let mut statusValue : String = String::new();
+	let mut sort_value: String = String::new();
+	let mut search_value = String::new();
+	let mut genre_value = String::new();
+	let mut status_value : String = String::new();
 
-	let mut isCoverDataSrc = false;
+	let mut is_cover_data_src = false;
 
 	for filter in filters {
 		match filter.kind{
 			FilterType::Title => {
-				searchValue = filter.value.as_string()?.read();
+				search_value = filter.value.as_string()?.read();
 			}
 			FilterType::Select => {
 				if filter.name.as_str() == "Сортувати" {
@@ -41,14 +41,14 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 						1 => "popular",
 						_ => "",
 					};
-					sortValue = String::from(option);
+					sort_value = String::from(option);
 				}
 
 				if filter.name.as_str() == "Жанри" {
 					let index = filter.value.as_int()? as usize;
 					match index {
 						0 => continue,
-						_ => genreValue = String::from(genres_list[index]),
+						_ => genre_value = String::from(genres_list[index]),
 					}
 				}
 
@@ -63,7 +63,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 						4 => "xfsearch/tra/%D0%9F%D0%BE%D0%BA%D0%B8%D0%BD%D1%83%D1%82%D0%BE", // Покинуто - Cancelled
 						_ => continue
 					};
-					statusValue = String::from(option);
+					status_value = String::from(option);
 				}
 			}
 			_ => todo!()
@@ -71,11 +71,11 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	}
 
 	// in case the user searches on popular - move to latest because popular doesn't have a search
-	if sortValue == "popular" && (!searchValue.is_empty() || !genreValue.is_empty() || !statusValue.is_empty()) {
-		sortValue = String::from("latest");
+	if sort_value == "popular" && (!search_value.is_empty() || !genre_value.is_empty() || !status_value.is_empty()) {
+		sort_value = String::from("latest");
 	}
 
-	if sortValue == "popular" {
+	if sort_value == "popular" {
 		// ignore page number
 		let html = Request::new("https://manga.in.ua/", HttpMethod::Get).html();
 
@@ -87,12 +87,12 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 			let title = res_node.select(".card__content .card__title a").text().read();
 			let cover = res_node.select(".card__cover a figure img").attr("abs:src").read(); 
 
-			let mut isNSFW : MangaContentRating = MangaContentRating::Safe;
+			let mut is_nsfw : MangaContentRating = MangaContentRating::Safe;
 			let mut categories: Vec<String> = Vec::new();
-			for categRes in res_node.select(".card__category a").array(){
-				let categ_node = categRes.as_node();
+			for categ_res in res_node.select(".card__category a").array(){
+				let categ_node = categ_res.as_node();
 				let name = categ_node.text().read(); 
-				isNSFW = helper::IsNSFW(name.clone());
+				is_nsfw = helper::is_nsfw(name.clone());
 
 				categories.push(name);
 			}
@@ -107,7 +107,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 				url: String::new(),
 				categories: categories.clone(),
 				status: MangaStatus::Unknown,
-				nsfw: isNSFW,
+				nsfw: is_nsfw,
 				viewer: MangaViewer::Rtl,
 			})
 		}
@@ -116,62 +116,62 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 		let request;
 
 		// have search, genre and status -> ignore status
-		if !searchValue.is_empty() && !genreValue.is_empty() {//&& !statusValue.is_empty(){
-			let url = format!("{}/mangas/{}", baseUrl, genreValue);
+		if !search_value.is_empty() && !genre_value.is_empty() {//&& !status_value.is_empty(){
+			let url = format!("{}/mangas/{}", base_url, genre_value);
 
-			let body_data = format!("do=search&subaction=search&titleonly=3&story={}", searchValue);
+			let body_data = format!("do=search&subaction=search&titleonly=3&story={}", search_value);
 
 			request = Request::new(url.as_str(), HttpMethod::Post)
 						.body(body_data.as_bytes())
 						.header("Referer", "https://manga.in.ua");
 		}
 		// search and status
-		else if !searchValue.is_empty() && genreValue.is_empty() && !statusValue.is_empty(){
-			let url = format!("{}/{}", baseUrl, statusValue);
+		else if !search_value.is_empty() && genre_value.is_empty() && !status_value.is_empty(){
+			let url = format!("{}/{}", base_url, status_value);
 			
-			let body_data = format!("do=search&subaction=search&titleonly=3&story={}", searchValue);
+			let body_data = format!("do=search&subaction=search&titleonly=3&story={}", search_value);
 
 			request = Request::new(url.as_str(), HttpMethod::Post)
 						.body(body_data.as_bytes())
 						.header("Referer", "https://manga.in.ua");
 		}
 		// genre and status -> ignore status
-		else if searchValue.is_empty() && !genreValue.is_empty() && !statusValue.is_empty(){
-			let url = format!("{}/mangas/{}/page/{}", baseUrl, genreValue, page);
+		else if search_value.is_empty() && !genre_value.is_empty() && !status_value.is_empty(){
+			let url = format!("{}/mangas/{}/page/{}", base_url, genre_value, page);
 			request = Request::new(url.as_str(), HttpMethod::Get);
 			
-			isCoverDataSrc = true;
+			is_cover_data_src = true;
 		}
 		// only search
-		else if !searchValue.is_empty() && genreValue.is_empty() && statusValue.is_empty(){
-			let url = format!("{}/index.php?do=search", baseUrl);
+		else if !search_value.is_empty() && genre_value.is_empty() && status_value.is_empty(){
+			let url = format!("{}/index.php?do=search", base_url);
 			
-			let body_data = format!("do=search&subaction=search&story={}&search_start={}", searchValue, page);
+			let body_data = format!("do=search&subaction=search&story={}&search_start={}", search_value, page);
 
 			request = Request::new(url.as_str(), HttpMethod::Post)
 						.body(body_data.as_bytes())
 						.header("Referer", "https://manga.in.ua");
 		}
 		// only genre
-		else if searchValue.is_empty() && !genreValue.is_empty() && statusValue.is_empty(){
-			let url = format!("{}/mangas/{}/page/{}", baseUrl, genreValue, page);
+		else if search_value.is_empty() && !genre_value.is_empty() && status_value.is_empty(){
+			let url = format!("{}/mangas/{}/page/{}", base_url, genre_value, page);
 			request = Request::new(url.as_str(), HttpMethod::Get);
 			
-			isCoverDataSrc = true;
+			is_cover_data_src = true;
 		}
 		// only status
-		else if searchValue.is_empty() && genreValue.is_empty() && !statusValue.is_empty(){
-			let url = format!("{}/{}/page/{}", baseUrl, statusValue, page);
+		else if search_value.is_empty() && genre_value.is_empty() && !status_value.is_empty(){
+			let url = format!("{}/{}/page/{}", base_url, status_value, page);
 			request = Request::new(url.as_str(), HttpMethod::Get);
 
-			isCoverDataSrc = true;
+			is_cover_data_src = true;
 		}
 		// should not got here. just in case
 		else {
-			let url = format!("{}/page/{}", baseUrl, page);
+			let url = format!("{}/page/{}", base_url, page);
 			request = Request::new(url.as_str(), HttpMethod::Get);
 
-			isCoverDataSrc = true;
+			is_cover_data_src = true;
 		}
 
 		let html = request.html();
@@ -185,29 +185,28 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 			
 			let href = card.select(".card__title a").attr("href").read();	
 
-			let cover;
-			
-			if isCoverDataSrc {
-				cover = res_node.select(".card--big img").attr("abs:data-src").read();
+
+			let cover : String = if is_cover_data_src {
+				res_node.select(".card--big img").attr("abs:data-src").read()
 			}
 			else{
-				cover = res_node.select(".card--big img").attr("abs:src").read();
-			}
+				res_node.select(".card--big img").attr("abs:src").read()
+			};
 
 			let mut categories: Vec<String> = Vec::new();
-			for categRes in res_node.select(".card__category a").array(){
-				let categ_node = categRes.as_node();
+			for categ_res in res_node.select(".card__category a").array(){
+				let categ_node = categ_res.as_node();
 				let categ_name = categ_node.text().read(); 
 				
 				categories.push(categ_name);
 			}
 			
 			let mut desc = String::new();
-			let mut isNSFW : MangaContentRating = MangaContentRating::Safe;
+			let mut is_nsfw : MangaContentRating = MangaContentRating::Safe;
 			for info in card.select(".card__list li").array(){
 				let info_node = info.as_node();
 				desc = info_node.text().read();
-				isNSFW = helper::IsNSFW(desc.clone());
+				is_nsfw = helper::is_nsfw(desc.clone());
 				continue; // need only first element. is there better solution?
 			}
 
@@ -221,12 +220,12 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 				url: String::new(),
 				categories: categories.clone(),
 				status: MangaStatus::Unknown,
-				nsfw: isNSFW,
+				nsfw: is_nsfw,
 				viewer: MangaViewer::Rtl,
 			})
 		}
 		
-		let mut lastPage = String::new();
+		let mut last_page = String::new();
 		for paging_res in html.select(".page-navigation a").array() 
 		{
 			let paging = paging_res.as_node();
@@ -237,11 +236,11 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 			// on first page "Попередня" (previous) is span, so the latest page number is before "Наступна" (Next) 
 			// on other pages "Попередня" and "Наступна" are a elements, so latest page number is before "Попередня"
 			if st != "Наступна" && st != "Попередня" {
-				lastPage = st;
+				last_page = st;
 			}
 		}
 
-		match lastPage.parse::<i32>(){
+		match last_page.parse::<i32>(){
 			Ok(n) => total = n,
 			Err(_) => todo!(),
 		} 
@@ -261,7 +260,7 @@ fn get_manga_details(id: String) -> Result<Manga> {
 	let cover = html.select(".item__full-sidebar--poster img").attr("abs:src").read();
 	let description = html.select(".item__full-description").text().read();
 
-	let mut isNSFW = false;
+	let mut is_nsfw = false;
 	let mut status = String::from("Unknown");
 
 	let mut categories = Vec::new();
@@ -274,23 +273,23 @@ fn get_manga_details(id: String) -> Result<Manga> {
 		}
 		categories.push(name.clone());
 
-		if !isNSFW { // check if only didnt find nsfw category
-			isNSFW = helper::IsNSFWBool(name.clone());
+		if !is_nsfw { // check if only didnt find nsfw category
+			is_nsfw = helper::is_nsfwbool(name.clone());
 		}
 		if status == "Unknown" { // check if only didnt find status
-			status = helper::GetStatusString(name.clone());
+			status = helper::get_status_string(name.clone());
 		}
 	}
 
-	let mut statusRes = MangaStatus::Unknown;
+	let mut status_res = MangaStatus::Unknown;
 	if status == "Ongoing"{
-		statusRes = MangaStatus::Ongoing;
+		status_res = MangaStatus::Ongoing;
 	}
 	else if status == "Unknown"{
-		statusRes = MangaStatus::Unknown;
+		status_res = MangaStatus::Unknown;
 	}
 	else if status == "Completed"{
-		statusRes = MangaStatus::Completed;
+		status_res = MangaStatus::Completed;
 	}
 
 	let manga = Manga {
@@ -302,8 +301,8 @@ fn get_manga_details(id: String) -> Result<Manga> {
 		description,
 		url : String::new(),
 		categories: categories.clone(),
-		status: statusRes,
-		nsfw: if isNSFW {MangaContentRating::Nsfw} else {MangaContentRating::Safe},
+		status: status_res,
+		nsfw: if is_nsfw {MangaContentRating::Nsfw} else {MangaContentRating::Safe},
 		viewer: MangaViewer::Rtl,
 	};
 	Ok(manga)
@@ -335,8 +334,8 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 		else
 		{	
 			// parse volume and chapter.
-			let volumeChapter = title.clone();
-			let replaced = volumeChapter.replace("НОВЕ ", "");
+			let volume_chapter = title.clone();
+			let replaced = volume_chapter.replace("НОВЕ ", "");
 			let arr: Vec<_> = replaced.split_whitespace().collect();
 
 			match arr[3].parse::<f32>(){
@@ -365,12 +364,11 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 fn get_page_list(id: String) -> Result<Vec<Page>> {
 	let html = Request::new(id.as_str(), HttpMethod::Get).html();
 
-	let mut index : i32 = 0;
 	let mut pages: Vec<Page> = Vec::new();
-	for result in html.select(".loadcomicsimages img").array() {
+	//for result in html.select(".loadcomicsimages img").array() {
+	for (index, result) in (0_i32..).zip(html.select(".loadcomicsimages img").array()) {
 		let res_node = result.as_node();
 		let image = res_node.attr("abs:data-src").read();
-		index += 1;
 		pages.push(Page{
 			index,
 			url: image,
