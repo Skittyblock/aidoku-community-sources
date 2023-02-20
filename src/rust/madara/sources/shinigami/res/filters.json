@@ -113,6 +113,11 @@
 			},
 			{
 				"type": "genre",
+				"name": "Mirror",
+				"id": "mirror"
+			},
+			{
+				"type": "genre",
 				"name": "Murim",
 				"id": "murim"
 			},
@@ -125,6 +130,11 @@
 				"type": "genre",
 				"name": "Novel",
 				"id": "novel"
+			},
+			{
+				"type": "genre",
+				"name": "Project",
+				"id": "project"
 			},
 			{
 				"type": "genre",
