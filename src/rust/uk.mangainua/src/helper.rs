@@ -1,45 +1,22 @@
-use aidoku::
-{
-	std::String,
-	MangaContentRating
-};
+use aidoku::std::String;
 
-pub fn is_nsfw(genre: String) -> MangaContentRating{
-
-	let nsfwcategories: String = String::from("Еччі Юрі Яой"); // maybe new
-	if nsfwcategories.contains(&genre)
-	{
-		return MangaContentRating::Nsfw;
-	}
-	//return MangaContentRating::Safe;
-	MangaContentRating::Safe
-}
-
-pub fn is_nsfwbool(genre: String) -> bool {
-	let nsfwcategories: String = String::from("Еччі Юрі Яой"); // maybe new
-	if nsfwcategories.contains(&genre)
-	{
+pub fn is_nsfw(genre: String) -> bool {
+	let nsfwcategories = "Еччі Юрі Яой 18+"; // maybe new
+	if nsfwcategories.contains(&genre) {
 		return true;
 	}
 	//return false;
 	false
 }
 
-pub fn get_status_string(status: String) -> String{
-	if status == "Триває"{
-		return String::from("Ongoing");
+pub fn get_status_string(status: String) -> &'static str {
+	match status.as_str() {
+		"Триває" => "Ongoing",
+		"Закінчений" => "Completed",
+		"Невідомо" => "Unknown",
+		"Покинуто" => "Cancelled",
+		_ => "Unknown",
 	}
-	if status == "Закінчений"{
-		return String::from("Completed");
-	}
-	if status == "Невідомо"{
-		return String::from("Unknown");
-	}
-	if status == "Покинуто"{
-		return String::from("Cancelled");
-	}
-	//return String::from("Unknown"); // find others
-	String::from("Unknown") // find others
 }
 
 pub fn genres_list() -> [&'static str; 50] {
