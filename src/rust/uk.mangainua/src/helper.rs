@@ -5,8 +5,8 @@ pub fn is_nsfw(genre: &String) -> bool {
 	nsfwcategories.contains(genre)
 }
 
-pub fn get_status_string(status: String) -> &'static str {
-	match status.as_str() {
+pub fn get_status_string(status: &str) -> &'static str {
+	match status {
 		"Триває" => "Ongoing",
 		"Закінчений" => "Completed",
 		"Невідомо" => "Unknown",

@@ -318,7 +318,7 @@ fn get_manga_details(id: String) -> Result<Manga> {
 		}
 		if status == "Unknown" {
 			// check if only didnt find status
-			status = helper::get_status_string(name.clone());
+			status = helper::get_status_string(name.as_str());
 		}
 	}
 
@@ -335,7 +335,7 @@ fn get_manga_details(id: String) -> Result<Manga> {
 		cover,
 		title,
 		description,
-		categories: categories.clone(),
+		categories,
 		status: status_res,
 		nsfw: if is_nsfw {
 			MangaContentRating::Nsfw
