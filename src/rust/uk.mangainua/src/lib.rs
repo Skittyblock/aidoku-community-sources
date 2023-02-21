@@ -108,7 +108,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 					.expect("html array not an array of nodes");
 
 				let name = categ_node.text().read();
-				is_nsfw = helper::is_nsfw(name.clone());
+				is_nsfw = helper::is_nsfw(&name);
 
 				categories.push(name);
 			}
@@ -117,7 +117,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 				id: href,
 				cover,
 				title,
-				categories: categories.clone(),
+				categories,
 				nsfw: if is_nsfw {
 					MangaContentRating::Nsfw
 				} else {
@@ -238,7 +238,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 				desc = info_node.text().read();
 
 				if desc.contains('+') {
-					is_nsfw = helper::is_nsfw(desc.clone());
+					is_nsfw = helper::is_nsfw(&desc);
 				}
 			}
 
@@ -246,8 +246,8 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 				id: href,
 				cover,
 				title,
-				description: desc.clone(),
-				categories: categories.clone(),
+				description: desc,
+				categories,
 				nsfw: if is_nsfw {
 					MangaContentRating::Nsfw
 				} else {
@@ -314,7 +314,7 @@ fn get_manga_details(id: String) -> Result<Manga> {
 
 		if !is_nsfw {
 			// check if only didnt find nsfw category
-			is_nsfw = helper::is_nsfw(name.clone());
+			is_nsfw = helper::is_nsfw(&name);
 		}
 		if status == "Unknown" {
 			// check if only didnt find status
@@ -386,7 +386,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 
 			match arr[3].parse::<f32>() {
 				Ok(n) => chapter = n,
-				_e => continue,
+				_ => continue,
 			};
 		}
 
@@ -413,9 +413,6 @@ fn get_page_list(_manga_id: String, _chapter_id: String) -> Result<Vec<Page>> {
 		.expect("get page list html array not an array of nodes");
 
 	let mut pages: Vec<Page> = Vec::new();
-	//for result in html.select(".loadcomicsimages img").array() {
-	//for (index, result) in (0_i32..).zip(html?.select(".loadcomicsimages
-	// img").array()) {
 	for (index, result) in html.select(".loadcomicsimages img").array().enumerate() {
 		let res_node = result.as_node().expect("");
 		let image = res_node.attr("abs:data-src").read();

@@ -1,12 +1,8 @@
 use aidoku::std::String;
 
-pub fn is_nsfw(genre: String) -> bool {
+pub fn is_nsfw(genre: &String) -> bool {
 	let nsfwcategories = "Еччі Юрі Яой 18+"; // maybe new
-	if nsfwcategories.contains(&genre) {
-		return true;
-	}
-	//return false;
-	false
+	nsfwcategories.contains(genre)
 }
 
 pub fn get_status_string(status: String) -> &'static str {
