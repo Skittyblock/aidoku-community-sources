@@ -6,7 +6,7 @@ use aidoku::{
 		net::{HttpMethod, Request},
 		String, StringRef, Vec,
 	},
-	Chapter, DeepLink, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
+	Chapter, DeepLink, Filter, FilterType, Manga, MangaContentRating, MangaPageResult,
 	MangaViewer, Page,
 };
 
@@ -85,14 +85,10 @@ pub fn parse_manga_listing(
 				id,
 				cover,
 				title,
-				author: String::new(),
-				artist: String::new(),
-				description: String::new(),
 				url,
-				categories: Vec::new(),
-				status: MangaStatus::Unknown,
 				nsfw: MangaContentRating::Safe,
 				viewer: MangaViewer::Rtl,
+				..Default::default() 
 			});
 		}
 	} else {
@@ -110,23 +106,14 @@ pub fn parse_manga_listing(
 					.read()
 					.replace(' ', "%20"),
 			);
-			let viewer = if title.contains("Novel") {
-				MangaViewer::Ltr
-			} else {
-				MangaViewer::Rtl
-			};
 			mangas.push(Manga {
 				id,
 				cover,
 				title,
-				author: String::new(),
-				artist: String::new(),
-				description: String::new(),
 				url,
-				categories: Vec::new(),
-				status: MangaStatus::Unknown,
 				nsfw: MangaContentRating::Safe,
-				viewer,
+				viewer: MangaViewer::Rtl,
+				..Default::default() 
 			});
 		}
 	}
