@@ -6,8 +6,8 @@ use aidoku::{
 		net::{HttpMethod, Request},
 		String, Vec,
 	},
-	Chapter, DeepLink, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
-	MangaViewer, Page,
+	Chapter, DeepLink, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaViewer,
+	Page,
 };
 
 use crate::helper::{get_chapter_number, get_search_url, manga_status};
@@ -83,14 +83,10 @@ pub fn parse_manga_listing(
 			id,
 			cover,
 			title,
-			author: String::new(),
-			artist: String::new(),
-			description: String::new(),
 			url,
-			categories: Vec::new(),
-			status: MangaStatus::Unknown,
 			nsfw: MangaContentRating::Safe,
 			viewer: MangaViewer::Rtl,
+			..Default::default()
 		});
 		count += 1;
 	}
