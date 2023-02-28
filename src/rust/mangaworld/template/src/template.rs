@@ -204,7 +204,12 @@ pub fn parse_page_list(
 	manga_id: String,
 	chapter_id: String,
 ) -> Result<Vec<Page>> {
-	let url = format!("{base_url}/manga/{manga_id}/read/{chapter_id}");
+	let chapter_path = if chapter_id.contains("style=list"){
+		chapter_id
+	} else {
+		format!("{}?style=list", chapter_id)
+	};
+	let url = format!("{base_url}/manga/{manga_id}/read/{chapter_path}");
 	let mut pages: Vec<Page> = Vec::new();
 	let html = Request::new(&url, HttpMethod::Get).html()?;
 	for (at, page) in html.select("#page img").array().enumerate() {
