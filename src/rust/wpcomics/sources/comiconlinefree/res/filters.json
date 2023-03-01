@@ -5,7 +5,11 @@
 	{
 		"type": "select",
 		"name": "Status",
-		"options": ["All", "Ongoing", "Completed"]
+		"options": [
+			"All",
+			"Ongoing",
+			"Completed"
+		]
 	},
 	{
 		"type": "group",

@@ -1,325 +1,1846 @@
 [
-	{ "type": "title" },
+	{
+		"type": "title"
+	},
 	{
 		"type": "group",
 		"name": "Tags",
 		"filters": [
-			{"name":"4-koma","id":"5192","type":"genre","canExclude":true},
-			{"name":"3D","id":"22331","type":"genre","canExclude":true},
-			{"name":"404: Men Not Found","id":"5250","type":"genre","canExclude":true},
-			{"name":"Aaaaaangst","id":"5175","type":"genre","canExclude":true},
-			{"name":"Abandonment issues","id":"5269","type":"genre","canExclude":true},
-			{"name":"Abuse","id":"9214","type":"genre","canExclude":true},
-			{"name":"Action","id":"5128","type":"genre","canExclude":true},
-			{"name":"Adult life","id":"6524","type":"genre","canExclude":true},
-			{"name":"Adventure","id":"5162","type":"genre","canExclude":true},
-			{"name":"Age gap","id":"5185","type":"genre","canExclude":true},
-			{"name":"Ahegao","id":"8379","type":"genre","canExclude":true},
-			{"name":"Albinism","id":"11076","type":"genre","canExclude":true},
-			{"name":"Alien","id":"9289","type":"genre","canExclude":true},
-			{"name":"Alternate reality","id":"5236","type":"genre","canExclude":true},
-			{"name":"Amnesia","id":"11449","type":"genre","canExclude":true},
-			{"name":"Amputee","id":"11460","type":"genre","canExclude":true},
-			{"name":"Anal","id":"5625","type":"genre","canExclude":true},
-			{"name":"Angel","id":"21838","type":"genre","canExclude":true},
-			{"name":"Anilingus","id":"5676","type":"genre","canExclude":true},
-			{"name":"Animal ears","id":"5212","type":"genre","canExclude":true},
-			{"name":"Animalization","id":"8203","type":"genre","canExclude":true},
-			{"name":"Animated","id":"10457","type":"genre","canExclude":true},
-			{"name":"Anime","id":"5143","type":"genre","canExclude":true},
-			{"name":"Anthromorphication","id":"19214","type":"genre","canExclude":true},
-			{"name":"April Fools'","id":"18587","type":"genre","canExclude":true},
-			{"name":"Art book","id":"6930","type":"genre","canExclude":true},
-			{"name":"Artist","id":"19087","type":"genre","canExclude":true},
-			{"name":"Assassin","id":"9288","type":"genre","canExclude":true},
-			{"name":"Autobiographical","id":"14243","type":"genre","canExclude":true},
-			{"name":"Bara","id":"10205","type":"genre","canExclude":true},
-			{"name":"Based on a game","id":"5223","type":"genre","canExclude":true},
-			{"name":"Bath","id":"5311","type":"genre","canExclude":true},
-			{"name":"BDSM","id":"5281","type":"genre","canExclude":true},
-			{"name":"Beach","id":"5262","type":"genre","canExclude":true},
-			{"name":"Bears","id":"11431","type":"genre","canExclude":true},
-			{"name":"Become Bread","id":"14452","type":"genre","canExclude":true},
-			{"name":"Bestiality","id":"13508","type":"genre","canExclude":true},
-			{"name":"Big breasts","id":"5123","type":"genre","canExclude":true},
-			{"name":"Big clit","id":"10853","type":"genre","canExclude":true},
-			{"name":"Biographical","id":"20613","type":"genre","canExclude":true},
-			{"name":"Birthday","id":"12921","type":"genre","canExclude":true},
-			{"name":"Bisexual","id":"5436","type":"genre","canExclude":true},
-			{"name":"Biting","id":"10351","type":"genre","canExclude":true},
-			{"name":"Blackmail","id":"5932","type":"genre","canExclude":true},
-			{"name":"Blushing","id":"5309","type":"genre","canExclude":true},
-			{"name":"Body swap","id":"8653","type":"genre","canExclude":true},
-			{"name":"Bodypainting","id":"14640","type":"genre","canExclude":true},
-			{"name":"Boob sex","id":"8229","type":"genre","canExclude":true},
-			{"name":"Bread","id":"10158","type":"genre","canExclude":true},
-			{"name":"Bullying","id":"5405","type":"genre","canExclude":true},
-			{"name":"Butts","id":"10233","type":"genre","canExclude":true},
-			{"name":"Cars","id":"11530","type":"genre","canExclude":true},
-			{"name":"Centaur","id":"19171","type":"genre","canExclude":true},
-			{"name":"Chart","id":"10663","type":"genre","canExclude":true},
-			{"name":"Cheating","id":"5432","type":"genre","canExclude":true},
-			{"name":"Chibi","id":"5411","type":"genre","canExclude":true},
-			{"name":"Childhood friends","id":"5247","type":"genre","canExclude":true},
-			{"name":"Childification","id":"5486","type":"genre","canExclude":true},
-			{"name":"Choose Your Own Adventure","id":"10199","type":"genre","canExclude":true},
-			{"name":"Christmas","id":"9608","type":"genre","canExclude":true},
-			{"name":"Chubby","id":"19085","type":"genre","canExclude":true},
-			{"name":"Clones","id":"16198","type":"genre","canExclude":true},
-			{"name":"Co-worker","id":"5183","type":"genre","canExclude":true},
-			{"name":"College","id":"5414","type":"genre","canExclude":true},
-			{"name":"Comedy","id":"5124","type":"genre","canExclude":true},
-			{"name":"Comic","id":"7168","type":"genre","canExclude":true},
-			{"name":"Communism","id":"7025","type":"genre","canExclude":true},
-			{"name":"Couple life","id":"21839","type":"genre","canExclude":true},
-			{"name":"Cover","id":"23219","type":"genre","canExclude":true},
-			{"name":"Creepy","id":"5237","type":"genre","canExclude":true},
-			{"name":"Cross-dressing","id":"5619","type":"genre","canExclude":true},
-			{"name":"Crossover","id":"5300","type":"genre","canExclude":true},
-			{"name":"Dark skin","id":"5137","type":"genre","canExclude":true},
-			{"name":"Deity","id":"9291","type":"genre","canExclude":true},
-			{"name":"Delinquent","id":"10262","type":"genre","canExclude":true},
-			{"name":"Demon","id":"13066","type":"genre","canExclude":true},
-			{"name":"Depressing as fuck","id":"5485","type":"genre","canExclude":true},
-			{"name":"Depressing ass fuck","id":"8282","type":"genre","canExclude":true},
-			{"name":"Diaper","id":"10924","type":"genre","canExclude":true},
-			{"name":"Disability","id":"14025","type":"genre","canExclude":true},
-			{"name":"Drama","id":"5150","type":"genre","canExclude":true},
-			{"name":"Drugs","id":"5880","type":"genre","canExclude":true},
-			{"name":"Drunk","id":"11160","type":"genre","canExclude":true},
-			{"name":"Dry humping","id":"9515","type":"genre","canExclude":true},
-			{"name":"Duplicate","id":"22391","type":"genre","canExclude":true},
-			{"name":"Ecchi","id":"5114","type":"genre","canExclude":true},
-			{"name":"Egg Laying","id":"10511","type":"genre","canExclude":true},
-			{"name":"Elf","id":"9163","type":"genre","canExclude":true},
-			{"name":"Espionage","id":"5121","type":"genre","canExclude":true},
-			{"name":"Exes","id":"21994","type":"genre","canExclude":true},
-			{"name":"Exhibitionism","id":"5846","type":"genre","canExclude":true},
-			{"name":"Eyeball Licking","id":"8672","type":"genre","canExclude":true},
-			{"name":"Fairy tale","id":"21858","type":"genre","canExclude":true},
-			{"name":"Fantasy","id":"5146","type":"genre","canExclude":true},
-			{"name":"Farting","id":"8667","type":"genre","canExclude":true},
-			{"name":"Feet","id":"6608","type":"genre","canExclude":true},
-			{"name":"Finger Licking","id":"21036","type":"genre","canExclude":true},
-			{"name":"Fisting","id":"5587","type":"genre","canExclude":true},
-			{"name":"Foiled rape attempt","id":"6230","type":"genre","canExclude":true},
-			{"name":"Food","id":"5473","type":"genre","canExclude":true},
-			{"name":"FREEDOM","id":"9936","type":"genre","canExclude":true},
-			{"name":"Full color","id":"5268","type":"genre","canExclude":true},
-			{"name":"Furry","id":"13014","type":"genre","canExclude":true},
-			{"name":"Futanari","id":"5208","type":"genre","canExclude":true},
-			{"name":"Gang","id":"5198","type":"genre","canExclude":true},
-			{"name":"Gender bender","id":"5158","type":"genre","canExclude":true},
-			{"name":"Ghost","id":"6800","type":"genre","canExclude":true},
-			{"name":"Ghost sex","id":"8671","type":"genre","canExclude":true},
-			{"name":"Glasses","id":"5299","type":"genre","canExclude":true},
-			{"name":"Goat girl","id":"9109","type":"genre","canExclude":true},
-			{"name":"Guns and explosions","id":"5129","type":"genre","canExclude":true},
-			{"name":"Guro","id":"9811","type":"genre","canExclude":true},
-			{"name":"Gyaru","id":"18825","type":"genre","canExclude":true},
-			{"name":"Hadaka apron","id":"10019","type":"genre","canExclude":true},
-			{"name":"Hair","id":"6063","type":"genre","canExclude":true},
-			{"name":"Halloween","id":"10300","type":"genre","canExclude":true},
-			{"name":"Ham","id":"8397","type":"genre","canExclude":true},
-			{"name":"Hardcore","id":"8665","type":"genre","canExclude":true},
-			{"name":"Harem","id":"5151","type":"genre","canExclude":true},
-			{"name":"Height gap","id":"18471","type":"genre","canExclude":true},
-			{"name":"Het","id":"5222","type":"genre","canExclude":true},
-			{"name":"Het Delusions","id":"22958","type":"genre","canExclude":true},
-			{"name":"Historical","id":"5172","type":"genre","canExclude":true},
-			{"name":"Horror","id":"5166","type":"genre","canExclude":true},
-			{"name":"Hot spring","id":"5255","type":"genre","canExclude":true},
-			{"name":"Hugh Jackman","id":"7637","type":"genre","canExclude":true},
-			{"name":"Hypnosis","id":"17616","type":"genre","canExclude":true},
-			{"name":"Ice cream","id":"8890","type":"genre","canExclude":true},
-			{"name":"Idiot couple","id":"18826","type":"genre","canExclude":true},
-			{"name":"Idol","id":"5249","type":"genre","canExclude":true},
-			{"name":"Image set","id":"8699","type":"genre","canExclude":true},
-			{"name":"Incest","id":"5165","type":"genre","canExclude":true},
-			{"name":"Incomplete","id":"13903","type":"genre","canExclude":true},
-			{"name":"Insane Amounts of Hand-holding","id":"19088","type":"genre","canExclude":true},
-			{"name":"Insane Amounts of Sex","id":"10830","type":"genre","canExclude":true},
-			{"name":"Interview","id":"23217","type":"genre","canExclude":true},
-			{"name":"Introspective","id":"5134","type":"genre","canExclude":true},
-			{"name":"Isekai","id":"19086","type":"genre","canExclude":true},
-			{"name":"Kabedon","id":"11418","type":"genre","canExclude":true},
-			{"name":"Kuudere","id":"19092","type":"genre","canExclude":true},
-			{"name":"Lactation","id":"5621","type":"genre","canExclude":true},
-			{"name":"Language gap","id":"18878","type":"genre","canExclude":true},
-			{"name":"Large insertion","id":"14500","type":"genre","canExclude":true},
-			{"name":"Legs","id":"10293","type":"genre","canExclude":true},
-			{"name":"Lesbian sidecouple","id":"5541","type":"genre","canExclude":true},
-			{"name":"Light Novel","id":"7173","type":"genre","canExclude":true},
-			{"name":"Lizard","id":"8428","type":"genre","canExclude":true},
-			{"name":"Lolicon","id":"5152","type":"genre","canExclude":true},
-			{"name":"Long strip","id":"21840","type":"genre","canExclude":true},
-			{"name":"Lots of Animals","id":"22959","type":"genre","canExclude":true},
-			{"name":"Lots of brushing","id":"5441","type":"genre","canExclude":true},
-			{"name":"Lots of groping","id":"10519","type":"genre","canExclude":true},
-			{"name":"Lots of hugging","id":"7639","type":"genre","canExclude":true},
-			{"name":"Lots of Ink","id":"12725","type":"genre","canExclude":true},
-			{"name":"Lots of JPG artifacts","id":"6802","type":"genre","canExclude":true},
-			{"name":"Lots of kissing","id":"5125","type":"genre","canExclude":true},
-			{"name":"Lots of Kotori","id":"10069","type":"genre","canExclude":true},
-			{"name":"Lots of ruffling","id":"10356","type":"genre","canExclude":true},
-			{"name":"Lots of sex","id":"5293","type":"genre","canExclude":true},
-			{"name":"Lots of tentacles","id":"5618","type":"genre","canExclude":true},
-			{"name":"Love triangle","id":"5182","type":"genre","canExclude":true},
-			{"name":"M Night Shyamalan","id":"5671","type":"genre","canExclude":true},
-			{"name":"Mahou shoujo","id":"5241","type":"genre","canExclude":true},
-			{"name":"Mahou shounen","id":"5867","type":"genre","canExclude":true},
-			{"name":"Maid","id":"5323","type":"genre","canExclude":true},
-			{"name":"Mangaka","id":"5187","type":"genre","canExclude":true},
-			{"name":"Manly","id":"7638","type":"genre","canExclude":true},
-			{"name":"Marriage","id":"8260","type":"genre","canExclude":true},
-			{"name":"Massage","id":"13878","type":"genre","canExclude":true},
-			{"name":"Masturbation","id":"5403","type":"genre","canExclude":true},
-			{"name":"Mature","id":"21414","type":"genre","canExclude":true},
-			{"name":"Mecha","id":"5355","type":"genre","canExclude":true},
-			{"name":"Medieval","id":"5469","type":"genre","canExclude":true},
-			{"name":"Menstruation","id":"11508","type":"genre","canExclude":true},
-			{"name":"Mermaid","id":"16585","type":"genre","canExclude":true},
-			{"name":"Moderate amounts of sex","id":"5446","type":"genre","canExclude":true},
-			{"name":"Moe up the butt","id":"5258","type":"genre","canExclude":true},
-			{"name":"Moefication","id":"5243","type":"genre","canExclude":true},
-			{"name":"Molestation","id":"5939","type":"genre","canExclude":true},
-			{"name":"Monster girl","id":"6294","type":"genre","canExclude":true},
-			{"name":"Muscles","id":"8352","type":"genre","canExclude":true},
-			{"name":"Music","id":"9013","type":"genre","canExclude":true},
-			{"name":"Mystery","id":"5167","type":"genre","canExclude":true},
-			{"name":"Navel Play","id":"19135","type":"genre","canExclude":true},
-			{"name":"Netorare","id":"9078","type":"genre","canExclude":true},
-			{"name":"New Year's","id":"9917","type":"genre","canExclude":true},
-			{"name":"Nice boat","id":"5233","type":"genre","canExclude":true},
-			{"name":"Ninja","id":"9290","type":"genre","canExclude":true},
-			{"name":"No text","id":"5475","type":"genre","canExclude":true},
-			{"name":"Non-binary","id":"16216","type":"genre","canExclude":true},
-			{"name":"Non-moe art","id":"5189","type":"genre","canExclude":true},
-			{"name":"Non-Science babies","id":"16584","type":"genre","canExclude":true},
-			{"name":"Nosebleed","id":"5211","type":"genre","canExclude":true},
-			{"name":"Not Lizard","id":"14478","type":"genre","canExclude":true},
-			{"name":"Not yaoi","id":"5303","type":"genre","canExclude":true},
-			{"name":"Not yuri","id":"21668","type":"genre","canExclude":true},
-			{"name":"NSFW","id":"5179","type":"genre","canExclude":true},
-			{"name":"Nun","id":"5426","type":"genre","canExclude":true},
-			{"name":"Office lady","id":"5415","type":"genre","canExclude":true},
-			{"name":"Official","id":"9838","type":"genre","canExclude":true},
-			{"name":"Old school","id":"5176","type":"genre","canExclude":true},
-			{"name":"Older than she looks","id":"5234","type":"genre","canExclude":true},
-			{"name":"Omegaverse","id":"20790","type":"genre","canExclude":true},
-			{"name":"Onions","id":"8732","type":"genre","canExclude":true},
-			{"name":"Orgy","id":"5622","type":"genre","canExclude":true},
-			{"name":"Parody","id":"5242","type":"genre","canExclude":true},
-			{"name":"Pay for gay","id":"5365","type":"genre","canExclude":true},
-			{"name":"Pegging","id":"5624","type":"genre","canExclude":true},
-			{"name":"Philosophical","id":"5633","type":"genre","canExclude":true},
-			{"name":"Phone sex","id":"17844","type":"genre","canExclude":true},
-			{"name":"Pirate","id":"9287","type":"genre","canExclude":true},
-			{"name":"Player","id":"5382","type":"genre","canExclude":true},
-			{"name":"Pocky game","id":"11430","type":"genre","canExclude":true},
-			{"name":"Polyamory","id":"10702","type":"genre","canExclude":true},
-			{"name":"Possession","id":"7401","type":"genre","canExclude":true},
-			{"name":"Pregnant","id":"7069","type":"genre","canExclude":true},
-			{"name":"Prequel","id":"9221","type":"genre","canExclude":true},
-			{"name":"Princess carry","id":"13330","type":"genre","canExclude":true},
-			{"name":"Product placement","id":"6926","type":"genre","canExclude":true},
-			{"name":"Prostitution","id":"19271","type":"genre","canExclude":true},
-			{"name":"Pseudo-incest","id":"5767","type":"genre","canExclude":true},
-			{"name":"Psychological","id":"20184","type":"genre","canExclude":true},
-			{"name":"Public indecency","id":"9081","type":"genre","canExclude":true},
-			{"name":"Puking","id":"8673","type":"genre","canExclude":true},
-			{"name":"Ramen","id":"21411","type":"genre","canExclude":true},
-			{"name":"Rape","id":"5197","type":"genre","canExclude":true},
-			{"name":"Read left to right","id":"5454","type":"genre","canExclude":true},
-			{"name":"Reversal","id":"5277","type":"genre","canExclude":true},
-			{"name":"Rivals","id":"17899","type":"genre","canExclude":true},
-			{"name":"Robot","id":"5398","type":"genre","canExclude":true},
-			{"name":"Romance","id":"5120","type":"genre","canExclude":true},
-			{"name":"Roommates","id":"5196","type":"genre","canExclude":true},
-			{"name":"Ryona","id":"13819","type":"genre","canExclude":true},
-			{"name":"Scat","id":"5230","type":"genre","canExclude":true},
-			{"name":"School girl","id":"5368","type":"genre","canExclude":true},
-			{"name":"School life","id":"5147","type":"genre","canExclude":true},
-			{"name":"Sci-fi","id":"5171","type":"genre","canExclude":true},
-			{"name":"Science babies","id":"5336","type":"genre","canExclude":true},
-			{"name":"Self-insert","id":"7709","type":"genre","canExclude":true},
-			{"name":"Selfcest","id":"5459","type":"genre","canExclude":true},
-			{"name":"Sequel","id":"9222","type":"genre","canExclude":true},
-			{"name":"Shaving","id":"5837","type":"genre","canExclude":true},
-			{"name":"Shogi","id":"5135","type":"genre","canExclude":true},
-			{"name":"Shotacon","id":"5623","type":"genre","canExclude":true},
-			{"name":"Shoujo","id":"5170","type":"genre","canExclude":true},
-			{"name":"Shrine maiden","id":"5224","type":"genre","canExclude":true},
-			{"name":"Sleeping","id":"9201","type":"genre","canExclude":true},
-			{"name":"Slice of life","id":"5116","type":"genre","canExclude":true},
-			{"name":"Slime Girl","id":"10253","type":"genre","canExclude":true},
-			{"name":"Smell","id":"6607","type":"genre","canExclude":true},
-			{"name":"Smoking","id":"22697","type":"genre","canExclude":true},
-			{"name":"Space","id":"5122","type":"genre","canExclude":true},
-			{"name":"Spanking","id":"16582","type":"genre","canExclude":true},
-			{"name":"Spin-off","id":"5259","type":"genre","canExclude":true},
-			{"name":"Spoilers","id":"6461","type":"genre","canExclude":true},
-			{"name":"Sports","id":"5227","type":"genre","canExclude":true},
-			{"name":"Squirting Dildo","id":"19274","type":"genre","canExclude":true},
-			{"name":"Stalking","id":"5324","type":"genre","canExclude":true},
-			{"name":"Student council","id":"5396","type":"genre","canExclude":true},
-			{"name":"Student x Teacher","id":"5221","type":"genre","canExclude":true},
-			{"name":"Subtext","id":"5543","type":"genre","canExclude":true},
-			{"name":"Suicide","id":"21274","type":"genre","canExclude":true},
-			{"name":"Superhero","id":"9363","type":"genre","canExclude":true},
-			{"name":"Supernatural","id":"5148","type":"genre","canExclude":true},
-			{"name":"Swimsuits","id":"5384","type":"genre","canExclude":true},
-			{"name":"Tag me mommy","id":"22724","type":"genre","canExclude":true},
-			{"name":"Tailsex","id":"7093","type":"genre","canExclude":true},
-			{"name":"Tanline","id":"8630","type":"genre","canExclude":true},
-			{"name":"Tattoo","id":"21849","type":"genre","canExclude":true},
-			{"name":"Telling twins apart","id":"5206","type":"genre","canExclude":true},
-			{"name":"Text","id":"5217","type":"genre","canExclude":true},
-			{"name":"Theater","id":"15042","type":"genre","canExclude":true},
-			{"name":"Threesome","id":"5330","type":"genre","canExclude":true},
-			{"name":"Time travel","id":"13120","type":"genre","canExclude":true},
-			{"name":"Tomboy","id":"8868","type":"genre","canExclude":true},
-			{"name":"Toys","id":"5248","type":"genre","canExclude":true},
-			{"name":"Tracing","id":"5493","type":"genre","canExclude":true},
-			{"name":"Tragedy","id":"5173","type":"genre","canExclude":true},
-			{"name":"Transgender","id":"5226","type":"genre","canExclude":true},
-			{"name":"Trippy","id":"5263","type":"genre","canExclude":true},
-			{"name":"Tsundere","id":"5138","type":"genre","canExclude":true},
-			{"name":"Twins","id":"5132","type":"genre","canExclude":true},
-			{"name":"Urethral Insertion","id":"14915","type":"genre","canExclude":true},
-			{"name":"Valentine's","id":"9606","type":"genre","canExclude":true},
-			{"name":"Vampire","id":"5367","type":"genre","canExclude":true},
-			{"name":"Very large size gap","id":"8867","type":"genre","canExclude":true},
-			{"name":"Violence","id":"5115","type":"genre","canExclude":true},
-			{"name":"Vore","id":"8599","type":"genre","canExclude":true},
-			{"name":"Watersports","id":"5306","type":"genre","canExclude":true},
-			{"name":"Weird Nipple Shit","id":"16933","type":"genre","canExclude":true},
-			{"name":"What the fuck am I reading?","id":"5235","type":"genre","canExclude":true},
-			{"name":"Wholesome","id":"18857","type":"genre","canExclude":true},
-			{"name":"Wishful thinking","id":"5220","type":"genre","canExclude":true},
-			{"name":"Witch","id":"16199","type":"genre","canExclude":true},
-			{"name":"Works Removed","id":"22963","type":"genre","canExclude":true},
-			{"name":"Wrestling","id":"5420","type":"genre","canExclude":true},
-			{"name":"Yandere","id":"5254","type":"genre","canExclude":true},
-			{"name":"Yaoi","id":"5265","type":"genre","canExclude":true},
-			{"name":"Yaoi Crush","id":"12575","type":"genre","canExclude":true},
-			{"name":"Younger than she looks","id":"20869","type":"genre","canExclude":true},
-			{"name":"Yuri","id":"5113","type":"genre","canExclude":true},
-			{"name":"Yuri crush","id":"9286","type":"genre","canExclude":true},
-			{"name":"Zombies","id":"5130","type":"genre","canExclude":true}
-        ]
+			{
+				"name": "4-koma",
+				"id": "5192",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "3D",
+				"id": "22331",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "404: Men Not Found",
+				"id": "5250",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Aaaaaangst",
+				"id": "5175",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Abandonment issues",
+				"id": "5269",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Abuse",
+				"id": "9214",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Action",
+				"id": "5128",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Adult life",
+				"id": "6524",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Adventure",
+				"id": "5162",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Age gap",
+				"id": "5185",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Ahegao",
+				"id": "8379",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Albinism",
+				"id": "11076",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Alien",
+				"id": "9289",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Alternate reality",
+				"id": "5236",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Amnesia",
+				"id": "11449",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Amputee",
+				"id": "11460",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Anal",
+				"id": "5625",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Angel",
+				"id": "21838",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Anilingus",
+				"id": "5676",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Animal ears",
+				"id": "5212",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Animalization",
+				"id": "8203",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Animated",
+				"id": "10457",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Anime",
+				"id": "5143",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Anthromorphication",
+				"id": "19214",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "April Fools'",
+				"id": "18587",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Art book",
+				"id": "6930",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Artist",
+				"id": "19087",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Assassin",
+				"id": "9288",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Autobiographical",
+				"id": "14243",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Bara",
+				"id": "10205",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Based on a game",
+				"id": "5223",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Bath",
+				"id": "5311",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "BDSM",
+				"id": "5281",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Beach",
+				"id": "5262",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Bears",
+				"id": "11431",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Become Bread",
+				"id": "14452",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Bestiality",
+				"id": "13508",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Big breasts",
+				"id": "5123",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Big clit",
+				"id": "10853",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Biographical",
+				"id": "20613",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Birthday",
+				"id": "12921",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Bisexual",
+				"id": "5436",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Biting",
+				"id": "10351",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Blackmail",
+				"id": "5932",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Blushing",
+				"id": "5309",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Body swap",
+				"id": "8653",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Bodypainting",
+				"id": "14640",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Boob sex",
+				"id": "8229",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Bread",
+				"id": "10158",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Bullying",
+				"id": "5405",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Butts",
+				"id": "10233",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Cars",
+				"id": "11530",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Centaur",
+				"id": "19171",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Chart",
+				"id": "10663",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Cheating",
+				"id": "5432",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Chibi",
+				"id": "5411",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Childhood friends",
+				"id": "5247",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Childification",
+				"id": "5486",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Choose Your Own Adventure",
+				"id": "10199",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Christmas",
+				"id": "9608",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Chubby",
+				"id": "19085",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Clones",
+				"id": "16198",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Co-worker",
+				"id": "5183",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "College",
+				"id": "5414",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Comedy",
+				"id": "5124",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Comic",
+				"id": "7168",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Communism",
+				"id": "7025",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Couple life",
+				"id": "21839",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Cover",
+				"id": "23219",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Creepy",
+				"id": "5237",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Cross-dressing",
+				"id": "5619",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Crossover",
+				"id": "5300",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Dark skin",
+				"id": "5137",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Deity",
+				"id": "9291",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Delinquent",
+				"id": "10262",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Demon",
+				"id": "13066",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Depressing as fuck",
+				"id": "5485",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Depressing ass fuck",
+				"id": "8282",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Diaper",
+				"id": "10924",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Disability",
+				"id": "14025",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Drama",
+				"id": "5150",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Drugs",
+				"id": "5880",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Drunk",
+				"id": "11160",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Dry humping",
+				"id": "9515",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Duplicate",
+				"id": "22391",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Ecchi",
+				"id": "5114",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Egg Laying",
+				"id": "10511",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Elf",
+				"id": "9163",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Espionage",
+				"id": "5121",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Exes",
+				"id": "21994",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Exhibitionism",
+				"id": "5846",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Eyeball Licking",
+				"id": "8672",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Fairy tale",
+				"id": "21858",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Fantasy",
+				"id": "5146",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Farting",
+				"id": "8667",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Feet",
+				"id": "6608",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Finger Licking",
+				"id": "21036",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Fisting",
+				"id": "5587",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Foiled rape attempt",
+				"id": "6230",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Food",
+				"id": "5473",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "FREEDOM",
+				"id": "9936",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Full color",
+				"id": "5268",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Furry",
+				"id": "13014",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Futanari",
+				"id": "5208",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Gang",
+				"id": "5198",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Gender bender",
+				"id": "5158",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Ghost",
+				"id": "6800",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Ghost sex",
+				"id": "8671",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Glasses",
+				"id": "5299",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Goat girl",
+				"id": "9109",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Guns and explosions",
+				"id": "5129",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Guro",
+				"id": "9811",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Gyaru",
+				"id": "18825",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Hadaka apron",
+				"id": "10019",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Hair",
+				"id": "6063",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Halloween",
+				"id": "10300",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Ham",
+				"id": "8397",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Hardcore",
+				"id": "8665",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Harem",
+				"id": "5151",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Height gap",
+				"id": "18471",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Het",
+				"id": "5222",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Het Delusions",
+				"id": "22958",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Historical",
+				"id": "5172",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Horror",
+				"id": "5166",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Hot spring",
+				"id": "5255",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Hugh Jackman",
+				"id": "7637",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Hypnosis",
+				"id": "17616",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Ice cream",
+				"id": "8890",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Idiot couple",
+				"id": "18826",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Idol",
+				"id": "5249",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Image set",
+				"id": "8699",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Incest",
+				"id": "5165",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Incomplete",
+				"id": "13903",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Insane Amounts of Hand-holding",
+				"id": "19088",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Insane Amounts of Sex",
+				"id": "10830",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Interview",
+				"id": "23217",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Introspective",
+				"id": "5134",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Isekai",
+				"id": "19086",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Kabedon",
+				"id": "11418",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Kuudere",
+				"id": "19092",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Lactation",
+				"id": "5621",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Language gap",
+				"id": "18878",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Large insertion",
+				"id": "14500",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Legs",
+				"id": "10293",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Lesbian sidecouple",
+				"id": "5541",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Light Novel",
+				"id": "7173",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Lizard",
+				"id": "8428",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Lolicon",
+				"id": "5152",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Long strip",
+				"id": "21840",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Lots of Animals",
+				"id": "22959",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Lots of brushing",
+				"id": "5441",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Lots of groping",
+				"id": "10519",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Lots of hugging",
+				"id": "7639",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Lots of Ink",
+				"id": "12725",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Lots of JPG artifacts",
+				"id": "6802",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Lots of kissing",
+				"id": "5125",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Lots of Kotori",
+				"id": "10069",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Lots of ruffling",
+				"id": "10356",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Lots of sex",
+				"id": "5293",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Lots of tentacles",
+				"id": "5618",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Love triangle",
+				"id": "5182",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "M Night Shyamalan",
+				"id": "5671",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Mahou shoujo",
+				"id": "5241",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Mahou shounen",
+				"id": "5867",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Maid",
+				"id": "5323",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Mangaka",
+				"id": "5187",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Manly",
+				"id": "7638",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Marriage",
+				"id": "8260",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Massage",
+				"id": "13878",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Masturbation",
+				"id": "5403",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Mature",
+				"id": "21414",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Mecha",
+				"id": "5355",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Medieval",
+				"id": "5469",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Menstruation",
+				"id": "11508",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Mermaid",
+				"id": "16585",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Moderate amounts of sex",
+				"id": "5446",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Moe up the butt",
+				"id": "5258",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Moefication",
+				"id": "5243",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Molestation",
+				"id": "5939",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Monster girl",
+				"id": "6294",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Muscles",
+				"id": "8352",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Music",
+				"id": "9013",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Mystery",
+				"id": "5167",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Navel Play",
+				"id": "19135",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Netorare",
+				"id": "9078",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "New Year's",
+				"id": "9917",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Nice boat",
+				"id": "5233",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Ninja",
+				"id": "9290",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "No text",
+				"id": "5475",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Non-binary",
+				"id": "16216",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Non-moe art",
+				"id": "5189",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Non-Science babies",
+				"id": "16584",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Nosebleed",
+				"id": "5211",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Not Lizard",
+				"id": "14478",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Not yaoi",
+				"id": "5303",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Not yuri",
+				"id": "21668",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "NSFW",
+				"id": "5179",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Nun",
+				"id": "5426",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Office lady",
+				"id": "5415",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Official",
+				"id": "9838",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Old school",
+				"id": "5176",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Older than she looks",
+				"id": "5234",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Omegaverse",
+				"id": "20790",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Onions",
+				"id": "8732",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Orgy",
+				"id": "5622",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Parody",
+				"id": "5242",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Pay for gay",
+				"id": "5365",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Pegging",
+				"id": "5624",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Philosophical",
+				"id": "5633",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Phone sex",
+				"id": "17844",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Pirate",
+				"id": "9287",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Player",
+				"id": "5382",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Pocky game",
+				"id": "11430",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Polyamory",
+				"id": "10702",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Possession",
+				"id": "7401",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Pregnant",
+				"id": "7069",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Prequel",
+				"id": "9221",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Princess carry",
+				"id": "13330",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Product placement",
+				"id": "6926",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Prostitution",
+				"id": "19271",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Pseudo-incest",
+				"id": "5767",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Psychological",
+				"id": "20184",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Public indecency",
+				"id": "9081",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Puking",
+				"id": "8673",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Ramen",
+				"id": "21411",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Rape",
+				"id": "5197",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Read left to right",
+				"id": "5454",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Reversal",
+				"id": "5277",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Rivals",
+				"id": "17899",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Robot",
+				"id": "5398",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Romance",
+				"id": "5120",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Roommates",
+				"id": "5196",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Ryona",
+				"id": "13819",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Scat",
+				"id": "5230",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "School girl",
+				"id": "5368",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "School life",
+				"id": "5147",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Sci-fi",
+				"id": "5171",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Science babies",
+				"id": "5336",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Self-insert",
+				"id": "7709",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Selfcest",
+				"id": "5459",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Sequel",
+				"id": "9222",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Shaving",
+				"id": "5837",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Shogi",
+				"id": "5135",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Shotacon",
+				"id": "5623",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Shoujo",
+				"id": "5170",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Shrine maiden",
+				"id": "5224",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Sleeping",
+				"id": "9201",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Slice of life",
+				"id": "5116",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Slime Girl",
+				"id": "10253",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Smell",
+				"id": "6607",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Smoking",
+				"id": "22697",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Space",
+				"id": "5122",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Spanking",
+				"id": "16582",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Spin-off",
+				"id": "5259",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Spoilers",
+				"id": "6461",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Sports",
+				"id": "5227",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Squirting Dildo",
+				"id": "19274",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Stalking",
+				"id": "5324",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Student council",
+				"id": "5396",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Student x Teacher",
+				"id": "5221",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Subtext",
+				"id": "5543",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Suicide",
+				"id": "21274",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Superhero",
+				"id": "9363",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Supernatural",
+				"id": "5148",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Swimsuits",
+				"id": "5384",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Tag me mommy",
+				"id": "22724",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Tailsex",
+				"id": "7093",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Tanline",
+				"id": "8630",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Tattoo",
+				"id": "21849",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Telling twins apart",
+				"id": "5206",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Text",
+				"id": "5217",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Theater",
+				"id": "15042",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Threesome",
+				"id": "5330",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Time travel",
+				"id": "13120",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Tomboy",
+				"id": "8868",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Toys",
+				"id": "5248",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Tracing",
+				"id": "5493",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Tragedy",
+				"id": "5173",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Transgender",
+				"id": "5226",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Trippy",
+				"id": "5263",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Tsundere",
+				"id": "5138",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Twins",
+				"id": "5132",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Urethral Insertion",
+				"id": "14915",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Valentine's",
+				"id": "9606",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Vampire",
+				"id": "5367",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Very large size gap",
+				"id": "8867",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Violence",
+				"id": "5115",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Vore",
+				"id": "8599",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Watersports",
+				"id": "5306",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Weird Nipple Shit",
+				"id": "16933",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "What the fuck am I reading?",
+				"id": "5235",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Wholesome",
+				"id": "18857",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Wishful thinking",
+				"id": "5220",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Witch",
+				"id": "16199",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Works Removed",
+				"id": "22963",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Wrestling",
+				"id": "5420",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Yandere",
+				"id": "5254",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Yaoi",
+				"id": "5265",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Yaoi Crush",
+				"id": "12575",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Younger than she looks",
+				"id": "20869",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Yuri",
+				"id": "5113",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Yuri crush",
+				"id": "9286",
+				"type": "genre",
+				"canExclude": true
+			},
+			{
+				"name": "Zombies",
+				"id": "5130",
+				"type": "genre",
+				"canExclude": true
+			}
+		]
 	},
 	{
 		"type": "sort",
 		"name": "Sort",
 		"canAscend": false,
-		"options": ["Best Match", "Alphabetical", "Date Added"],
+		"options": [
+			"Best Match",
+			"Alphabetical",
+			"Date Added"
+		],
 		"default": {
-			"index": "0",
+			"index": 0,
 			"ascending": false
 		}
 	},
-    {
+	{
 		"type": "group",
 		"name": "Type",
 		"filters": [

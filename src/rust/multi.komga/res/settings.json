@@ -1,0 +1,26 @@
+[
+	{
+		"type": "group",
+		"title": "Settings",
+		"items": [
+			{
+				"type": "text",
+				"placeholder": "Base URL",
+				"key": "baseURL",
+				"default": "https://demo.komga.org"
+			},
+			{
+				"type": "text",
+				"placeholder": "Username",
+				"key": "username",
+				"default": "demo@komga.org"
+			},
+			{
+				"type": "text",
+				"placeholder": "Password",
+				"key": "password",
+				"default": "komga-demo"
+			}
+		]
+	}
+]

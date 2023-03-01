@@ -5,10 +5,10 @@
 		"name": "MangaPill",
 		"version": 1,
 		"urls": [
-            "https://mangapill.com",
-            "https://www.mangapill.com"
+			"https://mangapill.com",
+			"https://www.mangapill.com"
 		],
 		"nsfw": 1
 	},
-    "listings": []
+	"listings": []
 }

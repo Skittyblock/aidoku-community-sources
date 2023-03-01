@@ -78,6 +78,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "hiperdex"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "madara_template",
+]
+
+[[package]]
 name = "hscans"
 version = "0.1.0"
 dependencies = [
@@ -131,6 +139,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "mangascantrad"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "madara_template",
+]
+
+[[package]]
+name = "mangasorigines"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "madara_template",
+]
+
+[[package]]
 name = "mangatx"
 version = "0.1.0"
 dependencies = [
@@ -156,14 +180,6 @@ dependencies = [
 
 [[package]]
 name = "manhuaus"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "madara_template",
-]
-
-[[package]]
-name = "manhwaid"
 version = "0.1.0"
 dependencies = [
  "aidoku",
@@ -227,6 +243,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "reaperscansfr"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "madara_template",
+]
+
+[[package]]
 name = "reaperscansid"
 version = "0.1.0"
 dependencies = [
@@ -264,14 +288,6 @@ dependencies = [
 
 [[package]]
 name = "toonily"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "madara_template",
-]
-
-[[package]]
-name = "twilightscans"
 version = "0.1.0"
 dependencies = [
  "aidoku",
