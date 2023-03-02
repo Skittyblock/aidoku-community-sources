@@ -1,14 +1,18 @@
 #![no_std]
 use aidoku::{
-	error::Result, prelude::*, std::String, std::Vec, Chapter, DeepLink, Filter, Listing, Manga,
-	MangaPageResult, Page,
+	error::Result, prelude::*, std::defaults::defaults_get, std::String, std::Vec, Chapter,
+	DeepLink, Filter, Listing, Manga, MangaPageResult, Page,
 };
 
 use madara_template::template;
 
 fn get_data() -> template::MadaraSiteData {
+	let mut url = String::new();
+	if let Ok(url_str) = defaults_get("sourceURL").as_string() {
+		url.push_str(url_str.read().as_str());
+	}
 	let data: template::MadaraSiteData = template::MadaraSiteData {
-		base_url: String::from("https://1sthiperdex.com"),
+		base_url: url,
 		alt_ajax: true,
 		..Default::default()
 	};
