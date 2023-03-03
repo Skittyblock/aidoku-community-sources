@@ -12,24 +12,18 @@
 				"default": true
 			},
 			{
-				"type": "group",
-				"title": "Settings",
-				"items": [
-					{
-						"type": "select",
-						"key": "sourceURL",
-						"title": "Source",
-						"values": [
-							"https://hiperdex.com",
-							"https://1sthiperdex.com"
-						],
-						"titles": [
-							"Hiperdex",
-							"1sthiperdex"
-						],
-						"default": "https://hiperdex.com"
-					}
-				]
+				"type": "select",
+				"key": "sourceURL",
+				"title": "Source",
+				"values": [
+					"https://hiperdex.com",
+					"https://1sthiperdex.com"
+				],
+				"titles": [
+					"Hiperdex",
+					"1sthiperdex"
+				],
+				"default": "https://hiperdex.com"
 			}
 		]
 	}
