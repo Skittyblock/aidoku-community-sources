@@ -287,14 +287,10 @@ fn handle_url(url: String) -> Result<DeepLink> {
 		};
 
 		let manga = get_manga_details(manga_id).ok();
-		let chapter = if let Some(id) = chapter_id {
-			Some(Chapter {
-				id,
-				..Default::default()
-			})
-		} else {
-			None
-		};
+		let chapter = chapter_id.map(|id| Chapter {
+			id,
+			..Default::default()
+		});
 
 		Ok(DeepLink { manga, chapter })
 	} else {
