@@ -160,10 +160,7 @@ pub fn parse_manga_details(base_url: String, id: String) -> Result<Manga> {
 }
 
 pub fn parse_chapter_list(base_url: String, id: String) -> Result<Vec<Chapter>> {
-	let url = format!(
-		"{base_url}/manga/{}",
-		id.replace("?style=list", "/1?style=list")
-	);
+	let url = format!("{base_url}/manga/{}", id);
 	let mut chapters: Vec<Chapter> = Vec::new();
 	let html = Request::new(&url, HttpMethod::Get)
 		.header("referer", &url)
@@ -204,7 +201,7 @@ pub fn parse_page_list(
 	manga_id: String,
 	chapter_id: String,
 ) -> Result<Vec<Page>> {
-	let url = format!("{base_url}/manga/{manga_id}/read/{chapter_id}");
+	let url = format!("{base_url}/manga/{manga_id}/read/{chapter_id}/?style=list");
 	let mut pages: Vec<Page> = Vec::new();
 	let html = Request::new(&url, HttpMethod::Get).html()?;
 	for (at, page) in html.select("#page img").array().enumerate() {
