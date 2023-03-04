@@ -1,6 +1,7 @@
 #![no_std]
 
 mod helper;
+mod parser;
 extern crate alloc;
 
 use aidoku::{
@@ -13,9 +14,9 @@ use aidoku::{
 	Chapter, Filter, FilterType, Manga, MangaPageResult, Page,
 };
 use alloc::string::ToString;
-use helper::{genre_id_from_filter, create_advanced_search_body, change_page, parse_search, BASE_URL, parse_chapter_list, parse_manga, parse_page_list};
+use helper::{change_page, create_advanced_search_body, genre_id_from_filter, BASE_URL};
 
-
+use parser::{parse_chapter_list, parse_manga, parse_page_list, parse_search};
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
@@ -35,30 +36,16 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 			FilterType::Author => artist_name = filter.value.as_string()?.read(),
 			FilterType::Genre => {
 				let object_id = filter.object.get("id").as_string()?.read();
-				let object_type = object_id.split('_').next().unwrap_or("unknown");
 				let object_value = genre_id_from_filter(&object_id);
 
-				match object_type {
-					"category" => match filter.value.as_int().unwrap_or(-1) {
-						0 => excluded_tags.push(object_value),
-						1 => included_tags.push(object_value),
-						_ => continue,
-					},
-					"tag" => match filter.value.as_int().unwrap_or(-1) {
-						0 => excluded_tags.push(object_value),
-						1 => included_tags.push(object_value),
-						_ => continue,
-					},
-					"doujin" => match filter.value.as_int().unwrap_or(-1) {
-						0 => excluded_tags.push(object_value),
-						1 => included_tags.push(object_value),
-						_ => continue,
-					},
+				match filter.value.as_int().unwrap_or(-1) {
+					0 => excluded_tags.push(object_value),
+					1 => included_tags.push(object_value),
 					_ => continue,
 				}
 			}
 			FilterType::Select => match filter.name.as_str() {
-				"Status" => status = filter.value.as_int().unwrap(),
+				"Status" => status = filter.value.as_int()?,
 				"Tag Search Mode" => {
 					tag_search_mode = match filter.value.as_int().unwrap_or(-1) {
 						0 => String::from("and"),
@@ -80,6 +67,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 		Some(status),
 		Some(tag_search_mode),
 		Some(included_tags),
+		Some(excluded_tags),
 	);
 
 	let mut has_next = false;
@@ -121,25 +109,19 @@ fn get_manga_details(id: String) -> Result<Manga> {
 	let manga_url = format!("{BASE_URL}/{id}");
 
 	let html = Request::new(manga_url, HttpMethod::Get).html()?;
- 	parse_manga(id, html)
+	parse_manga(id, html)
 }
 
 #[get_chapter_list]
 fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 	let url = format!("{BASE_URL}/{id}");
-
-	match Request::new(url, HttpMethod::Get).html() {
-		Ok(html) => parse_chapter_list(&html),
-		Err(_) => Ok(Vec::new()),
-	}
+	let html = Request::new(url, HttpMethod::Get).html()?;
+	parse_chapter_list(html)
 }
 
 #[get_page_list]
 fn get_page_list(id: String, chapter: String) -> Result<Vec<Page>> {
 	let url = format!("{BASE_URL}/{id}/{chapter}/1");
-
-	match Request::new(url, HttpMethod::Get).html() {
-		Ok(html) => parse_page_list(&html),
-		Err(_) => Ok(Vec::new()),
-	}
+	let html = Request::new(url, HttpMethod::Get).html()?;
+	parse_page_list(html)
 }
