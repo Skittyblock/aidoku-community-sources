@@ -10,11 +10,12 @@ use aidoku::{
 		net::{HttpMethod, Request},
 		*,
 	},
-	Chapter, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
-	MangaViewer, Page,
+	Chapter, Filter, FilterType, Manga, MangaPageResult, Page,
 };
 use alloc::string::ToString;
-use helper::*;
+use helper::{genre_id_from_filter, create_advanced_search_body, change_page, parse_search, BASE_URL, parse_chapter_list, parse_manga, parse_page_list};
+
+
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
@@ -71,7 +72,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 		}
 	}
 
-	let url = "https://hentai2read.com/hentai-list/advanced-search/";
+	let url = format!("{BASE_URL}/hentai-list/advanced-search/");
 
 	let body_data = create_advanced_search_body(
 		Some(manga_title),
@@ -117,29 +118,15 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 
 #[get_manga_details]
 fn get_manga_details(id: String) -> Result<Manga> {
-	let manga_url = format!("https://hentai2read.com/{}", id);
+	let manga_url = format!("{BASE_URL}/{id}");
 
-	match Request::new(&manga_url, HttpMethod::Get).html() {
-		Ok(html) => parse_manga(id, &html),
-		Err(_) => Ok(Manga {
-			id,
-			title: String::new(),
-			author: String::new(),
-			cover: String::new(),
-			artist: String::new(),
-			description: String::new(),
-			url: manga_url,
-			categories: Vec::new(),
-			status: MangaStatus::Unknown,
-			nsfw: MangaContentRating::Nsfw,
-			viewer: MangaViewer::Rtl,
-		}),
-	}
+	let html = Request::new(manga_url, HttpMethod::Get).html()?;
+ 	parse_manga(id, html)
 }
 
 #[get_chapter_list]
 fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
-	let url = format!("https://hentai2read.com/{}", id);
+	let url = format!("{BASE_URL}/{id}");
 
 	match Request::new(url, HttpMethod::Get).html() {
 		Ok(html) => parse_chapter_list(&html),
@@ -149,7 +136,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 
 #[get_page_list]
 fn get_page_list(id: String, chapter: String) -> Result<Vec<Page>> {
-	let url = format!("https://hentai2read.com/{}/{}/{}/", id, chapter, 1);
+	let url = format!("{BASE_URL}/{id}/{chapter}/1");
 
 	match Request::new(url, HttpMethod::Get).html() {
 		Ok(html) => parse_page_list(&html),

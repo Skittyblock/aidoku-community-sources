@@ -3,54 +3,13 @@ use aidoku::{
 	prelude::*,
 	std::Vec,
 	std::{html::Node, json, String},
+	helpers::uri::*,
 	Chapter, Manga, MangaContentRating, MangaStatus, MangaViewer, Page,
 };
 use alloc::{borrow::ToOwned, string::ToString};
 
-pub fn urlencode(string: &String) -> String {
-	let mut result: Vec<u8> = Vec::with_capacity(string.len() * 3);
-	let hex = "0123456789abcdef".as_bytes();
-	let bytes = string.as_bytes();
+pub const BASE_URL: &str = "https://hentai2read.com";
 
-	for byte in bytes {
-		let curr = *byte;
-		if (b'a'..=b'z').contains(&curr)
-			|| (b'A'..=b'Z').contains(&curr)
-			|| (b'0'..=b'9').contains(&curr)
-		{
-			result.push(curr);
-		} else {
-			result.push(b'%');
-			result.push(hex[curr as usize >> 4]);
-			result.push(hex[curr as usize & 15]);
-		}
-	}
-
-	String::from_utf8(result).unwrap_or_default()
-}
-
-pub fn i32_to_string(mut integer: i32) -> String {
-	if integer == 0 {
-		return String::from("0");
-	}
-
-	let mut string = String::with_capacity(11);
-	let pos = if integer < 0 {
-		string.insert(0, '-');
-		1
-	} else {
-		0
-	};
-	while integer != 0 {
-		let mut digit = integer % 10;
-		if pos == 1 {
-			digit *= -1;
-		}
-		string.insert(pos, char::from_u32((digit as u32) + ('0' as u32)).unwrap());
-		integer /= 10;
-	}
-	string
-}
 
 pub fn create_advanced_search_body(
 	manga_title: Option<String>,
@@ -60,8 +19,8 @@ pub fn create_advanced_search_body(
 	tag_list: Option<Vec<i64>>,
 ) -> String {
 	let mut form_body = format!("cmd_wpm_wgt_mng_sch_sbm=Search&txt_wpm_wgt_mng_sch_nme=&cmd_wpm_pag_mng_sch_sbm=&txt_wpm_pag_mng_sch_nme={}&txt_wpm_pag_mng_sch_ats={}&rad_wpm_pag_mng_sch_sts={}&rad_wpm_pag_mng_sch_tag_mde={}",
-		urlencode(&manga_title.unwrap_or_default()),
-        urlencode(&artist_name.unwrap_or_default()),
+		encode_uri(manga_title.unwrap_or_default()),
+        encode_uri(artist_name.unwrap_or_default()),
         &status.unwrap_or_default(),
         &tag_search_mode.unwrap_or_default()
 	);
@@ -95,7 +54,7 @@ pub fn parse_chapter_number(str: &str) -> f32 {
 pub fn change_page(str: &str, page: i32) -> String {
 	let mut url = str.to_owned();
 	let page_str = url.split('/').nth_back(1).unwrap_or_default();
-	url.replace_range(url.len() - page_str.len().., &i32_to_string(page));
+	url.replace_range(url.len() - page_str.len().., &page.to_string());
 	url
 }
 
@@ -149,7 +108,7 @@ pub fn parse_search(html: &Node) -> Vec<Manga> {
 	manga_arr
 }
 
-pub fn parse_manga(id: String, html: &Node) -> Result<Manga> {
+pub fn parse_manga(id: String, html: Node) -> Result<Manga> {
 	let mut author = String::new();
 	let mut artist = String::new();
 	let mut categories = Vec::new();
@@ -219,7 +178,7 @@ pub fn parse_chapter_list(html: &Node) -> Result<Vec<Chapter>> {
 		let url = String::new();
 
 		chapters.push(Chapter {
-			id: format!("{}", chapter),
+			id: chapter.to_string(),
 			title,
 			volume: -1.0,
 			chapter,
@@ -233,37 +192,36 @@ pub fn parse_chapter_list(html: &Node) -> Result<Vec<Chapter>> {
 	Ok(chapters)
 }
 
-fn between_string(s: &str, start: &str, end: &str) -> String {
-	let start_bytes = s.find(start).unwrap() + start.len();
-	let end_bytes = s.find(end).unwrap();
-	let mut result = String::new();
-	for (_, c) in s[start_bytes..end_bytes].chars().enumerate() {
-		result.push(c);
-	}
-	result
+fn between_string(s: &str, start: &str, end: &str) -> Option<String> {
+	let start = s.find(start)? + start.len();
+	let end = s.find(end)? - start;
+	Some(s[start..start + end].to_string())
 }
 
 pub fn parse_page_list(html: &Node) -> Result<Vec<Page>> {
-	let mut pages: Vec<Page> = Vec::new();
 	let mut script = String::new();
-
 	for el in html.select("script").array() {
-		let node = el.as_node().unwrap();
+		let node = el.as_node().expect("script tag not found in html");
 		let text = node.html().read();
 		if text.contains("gData") {
 			script = text;
 			break;
 		}
 	}
-	// between { and }
 
-	let obj = between_string(&script, "'images' : [", "\"]");
+	let Some(obj) = between_string(&script, "'images' : [", "\"]") else {
+		return Ok(Default::default());
+	};
+
+
 	let arr_str = format!("[{}\"]", obj);
-	let dataref = json::parse(arr_str).unwrap();
-	let arr = dataref.as_array().unwrap();
+	let dataref = json::parse(arr_str)?;
+	let arr = dataref.as_array().unwrap_or_default();
+
+	let mut pages: Vec<Page> = Vec::new();
 
 	for (i, item) in arr.enumerate() {
-		let img_path = item.as_string().unwrap().read();
+		let img_path = item.as_string().unwrap_or_default();
 		let img_url = format!("https://static.hentaicdn.com/hentai/{}", img_path);
 		pages.push(Page {
 			index: i as i32,

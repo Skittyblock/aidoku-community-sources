@@ -7,10 +7,19 @@ name = "aidoku"
 version = "0.2.0"
 source = "git+https://github.com/Aidoku/aidoku-rs/#5a68a5507a78716c2eb327eb2c12cdb1700a4bf3"
 dependencies = [
+ "aidoku_helpers",
  "aidoku_imports",
  "aidoku_macros",
  "aidoku_proc_macros",
  "wee_alloc",
+]
+
+[[package]]
+name = "aidoku_helpers"
+version = "0.1.0"
+source = "git+https://github.com/Aidoku/aidoku-rs/#5a68a5507a78716c2eb327eb2c12cdb1700a4bf3"
+dependencies = [
+ "aidoku_imports",
 ]
 
 [[package]]
@@ -40,7 +49,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4785bdd1c96b2a846b2bd7cc02e86b6b3dbf14e7e53446c4f54c92a361040822"
 
 [[package]]
-name = "hentai2read-aidoku"
+name = "hentai2read"
 version = "0.1.0"
 dependencies = [
  "aidoku",
