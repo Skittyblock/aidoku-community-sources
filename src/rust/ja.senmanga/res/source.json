@@ -4,7 +4,8 @@
 		"lang": "ja",
 		"name": "Sen Manga",
 		"version": 1,
-		"url": "https://raw.senmanga.com"
+		"url": "https://raw.senmanga.com",
+		"nsfw": 1
 	},
 	"listings": [
 		{
