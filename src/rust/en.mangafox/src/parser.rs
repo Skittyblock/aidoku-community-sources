@@ -175,15 +175,25 @@ pub fn parse_chapters(obj: Node) -> Result<Vec<Chapter>> {
 }
 
 pub fn get_page_list(html: Node) -> Result<Vec<Page>> {
-    // Unpacker script
-    // https://github.com/Skittyblock/aidoku-community-sources/commit/616199e0ccb3704c45438b9f863641e1aa0cfa19
+	// Unpacker script
+	// https://github.com/Skittyblock/aidoku-community-sources/commit/616199e0ccb3704c45438b9f863641e1aa0cfa19
 	let mut pages: Vec<Page> = Vec::new();
 	for (index, item) in html.select("#viewer img").array().enumerate() {
 		let obj = item.as_node().expect("");
-		let url = format!("https://{}", obj.attr("data-original").read().replace("//", ""));
+		let url = format!(
+			"https://{}",
+			obj.attr("data-original").read().replace("//", "")
+		);
 		pages.push(Page {
 			index: index as i32,
 			url: url.to_string(),
+			..Default::default()
+		});
+	}
+	if pages.is_empty() {
+		pages.push(Page {
+			index: 1,
+			url: "https://i.imgur.com/5mNXCgV.png".to_string(),
 			..Default::default()
 		});
 	}
