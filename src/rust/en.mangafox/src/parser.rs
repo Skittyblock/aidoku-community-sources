@@ -7,8 +7,6 @@ use aidoku::{
 	MangaViewer, Page,
 };
 
-use unpacker::unpack;
-
 extern crate alloc;
 use alloc::string::ToString;
 
@@ -177,35 +175,25 @@ pub fn parse_chapters(obj: Node) -> Result<Vec<Chapter>> {
 }
 
 pub fn get_page_list(html: Node) -> Result<Vec<Page>> {
-	let mut eval_script = String::new();
-	for item in html.select("script").array() {
-		let script = item.as_node().expect("");
-		let body = script.html().read();
-		if body.contains("eval(function(p,a,c,k,e,d){") {
-			eval_script = body;
-		}
-	}
-
-	let evaluated = unpack(eval_script);
-
-	let page_img_str = evaluated
-		.substring_after("var newImgs=[\"//")
-		.unwrap()
-		.substring_before("\"];var newImginfos=")
-		.unwrap()
-		.to_string();
-
-	let str_page_arr = page_img_str
-		.as_str()
-		.split("\",\"//")
-		.collect::<Vec<&str>>();
-
+	// Unpacker script
+	// https://github.com/Skittyblock/aidoku-community-sources/commit/616199e0ccb3704c45438b9f863641e1aa0cfa19
 	let mut pages: Vec<Page> = Vec::new();
-	for (index, string) in str_page_arr.iter().enumerate() {
-		let url = format!("https://{}", string);
+	for (index, item) in html.select("#viewer img").array().enumerate() {
+		let obj = item.as_node().expect("");
+		let url = format!(
+			"https://{}",
+			obj.attr("data-original").read().replace("//", "")
+		);
 		pages.push(Page {
 			index: index as i32,
 			url: url.to_string(),
+			..Default::default()
+		});
+	}
+	if pages.is_empty() {
+		pages.push(Page {
+			index: 1,
+			url: "https://i.imgur.com/5mNXCgV.png".to_string(),
 			..Default::default()
 		});
 	}

@@ -62,7 +62,7 @@ fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 
 #[get_page_list]
 fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
-	let url = format!("https://m.fanfox.net/manga/{}/1.html", chapter_id);
+	let url = format!("https://m.fanfox.net/roll_manga/{}/1.html", chapter_id);
 	let html = Request::new(url.as_str(), HttpMethod::Get)
 		.header("Cookie", "readway=2")
 		.html()
