@@ -90,7 +90,7 @@ pub fn get_search_url(
 	completed: i32,
 	chapter_count: i32,
 ) -> String {
-	return if !query.is_empty() {
+	if !query.is_empty() {
 		format!("{base_url}/tim-truyen?page={page}&keyword={query}")
 	} else {
 		format!(
@@ -98,7 +98,7 @@ pub fn get_search_url(
 			include.join(","),
 			exclude.join(",")
 		)
-	};
+	}
 }
 
 pub fn convert_time(time_ago: String) -> f64 {

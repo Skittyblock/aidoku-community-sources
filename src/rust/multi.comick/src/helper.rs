@@ -36,7 +36,7 @@ pub fn get_search_url(
 	completed: String,
 	page: i32,
 ) -> String {
-	let mut url = format!("{}/search?page={}&tachiyomi=true", api_url, page);
+	let mut url = format!("{}/v1.0/search?page={}&tachiyomi=true", api_url, page);
 	if !query.is_empty() {
 		url.push_str(&format!("&t=true&q={}", query.replace(' ', "%20")))
 	}

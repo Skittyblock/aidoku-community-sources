@@ -3,13 +3,19 @@
 		"id": "fr.blackarmy",
 		"lang": "fr",
 		"name": "BlackArmy",
-		"version": 2,
+		"version": 3,
 		"url": "https://blackarmy.fr/",
 		"nsfw": 1
 	},
 	"listings": [
-		{ "name": "Populaire" },
-		{ "name": "Dernières" },
-        { "name": "Nouveau" }
+		{
+			"name": "Populaire"
+		},
+		{
+			"name": "Dernières"
+		},
+		{
+			"name": "Nouveau"
+		}
 	]
 }

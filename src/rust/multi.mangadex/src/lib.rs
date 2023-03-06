@@ -227,7 +227,7 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 					if let Ok(relationships) = obj.get("relationships").as_array() {
 						for relationship in relationships {
 							if let Ok(relationship) = relationship.as_object()
-								   && let Ok(relation_type) = relationship.get("type").as_string() 
+								   && let Ok(relation_type) = relationship.get("type").as_string()
 								   && relation_type.read() == "manga"
 								   && let Ok(id) = relationship.get("id").as_string() {
 									let mut ret = String::from("&ids[]=");
@@ -294,6 +294,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 		&contentRating[]=erotica\
 		&contentRating[]=suggestive\
 		&contentRating[]=safe\
+		&includes[]=user\
 		&includes[]=scanlation_group";
 
 	if let Ok(languages) = defaults_get("languages").as_array() {

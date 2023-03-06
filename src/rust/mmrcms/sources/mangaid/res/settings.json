@@ -2,14 +2,20 @@
 	{
 		"type": "group",
 		"title": "Settings",
-        "footer": "Jika load gambar terasa lambat/berat, coba gunakan server CDN lain",
+		"footer": "Jika load gambar terasa lambat/berat, coba gunakan server CDN lain",
 		"items": [
 			{
 				"type": "select",
 				"key": "useCDN",
 				"title": "Server CDN",
-                "values": ["?cdn=1", "?cdn=off"],
-                "titles": ["CDN 1", "No CDN"],
+				"values": [
+					"?cdn=1",
+					"?cdn=off"
+				],
+				"titles": [
+					"CDN 1",
+					"No CDN"
+				],
 				"default": "?cdn=1"
 			}
 		]

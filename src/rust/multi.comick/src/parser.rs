@@ -95,7 +95,7 @@ pub fn parse_manga_list(
 		parse_manga_listing(api_url, String::from("Hot"), page)
 	} else {
 		let url = get_search_url(
-			api_url.clone(),
+			api_url,
 			title,
 			included_tags,
 			excluded_tags,
@@ -105,7 +105,6 @@ pub fn parse_manga_list(
 			completed,
 			page,
 		);
-
 		let mut mangas: Vec<Manga> = Vec::new();
 		let json = Request::new(&url, HttpMethod::Get)
 			.json()
@@ -123,22 +122,8 @@ pub fn parse_manga_list(
 					Err(_) => continue,
 				};
 
-				let manga_url = format!(
-					"{}/comic/{}?tachiyomi=true",
-					api_url,
-					id.split('|').next().unwrap_or("")
-				);
 				id += "|";
-				let json = Request::new(manga_url, HttpMethod::Get)
-					.json()
-					.expect("Failed to load JSON")
-					.as_object()
-					.expect("Failed to get JSON as object");
-				let data = json
-					.get("comic")
-					.as_object()
-					.expect("Failed to get JSON as object");
-				id += &data.get("id").as_int().unwrap_or(-1).to_string();
+				id += &data_obj.get("id").as_int().unwrap_or(-1).to_string();
 				let cover = match data_obj.get("cover_url").as_string() {
 					Ok(node) => node.read(),
 					Err(_) => continue,
@@ -342,7 +327,6 @@ pub fn parse_manga_details(api_url: String, id: String) -> Result<Manga> {
 }
 
 pub fn parse_chapter_list(api_url: String, id: String) -> Result<Vec<Chapter>> {
-
 	let mut chapters: Vec<Chapter> = Vec::new();
 	let mut chapter_limit = 100;
 	let page = 1;

@@ -38,7 +38,7 @@ impl OtakuSanctuarySource {
 		for elem in elems {
 			let node = elem.as_node();
 			let id = node.select("div.mdl-card__title a").attr("href").read();
-			if (id.contains("http://") || id.contains("https://")) && !id.contains(&self.base_url) {
+			if (id.contains("http://") || id.contains("https://")) && !id.contains(self.base_url) {
 				continue;
 			}
 			let cover = node

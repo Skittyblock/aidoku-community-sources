@@ -3,19 +3,34 @@
 		"id": "multi.nhentai",
 		"lang": "multi",
 		"name": "NHentai",
-		"version": 2,
+		"version": 3,
 		"url": "https://nhentai.net/",
 		"nsfw": 2
 	},
 	"languages": [
-		{ "code": "en", "default": true },
-		{ "code": "ja" },
-		{ "code": "zh" }
+		{
+			"code": "en",
+			"default": true
+		},
+		{
+			"code": "ja"
+		},
+		{
+			"code": "zh"
+		}
 	],
 	"listings": [
-		{ "name": "Latest" },
-		{ "name": "Popular - Today" },
-		{ "name": "Popular - This Week" },
-		{ "name": "Popular - All Time" }
+		{
+			"name": "Latest"
+		},
+		{
+			"name": "Popular - Today"
+		},
+		{
+			"name": "Popular - This Week"
+		},
+		{
+			"name": "Popular - All Time"
+		}
 	]
 }

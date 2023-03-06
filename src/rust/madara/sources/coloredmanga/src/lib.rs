@@ -1,7 +1,7 @@
 #![no_std]
 use aidoku::{
-	error::Result, prelude::*, std::String, std::Vec, Chapter, DeepLink, Filter, Listing, Manga,
-	MangaPageResult, Page,
+	error::Result, prelude::*, std::net::Request, std::String, std::Vec, Chapter, DeepLink, Filter,
+	Listing, Manga, MangaPageResult, Page,
 };
 
 use madara_template::template;
@@ -39,6 +39,11 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 #[get_page_list]
 fn get_page_list(id: String) -> Result<Vec<Page>> {
 	template::get_page_list(id, get_data())
+}
+
+#[modify_image_request]
+fn modify_image_request(request: Request) {
+	template::modify_image_request(get_data().base_url, request)
 }
 
 #[handle_url]

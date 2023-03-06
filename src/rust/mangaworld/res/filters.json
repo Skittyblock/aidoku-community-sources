@@ -1,0 +1,176 @@
+[
+	{
+		"type": "title"
+	},
+	{
+		"type": "group",
+		"name": "Generi",
+		"filters": [
+			{
+				"id": "adulti",
+				"name": "Adulti",
+				"type": "genre"
+			},
+			{
+				"id": "arti-marziali",
+				"name": "Arti Marziali",
+				"type": "genre"
+			},
+			{
+				"id": "avventura",
+				"name": "Avventura",
+				"type": "genre"
+			},
+			{
+				"id": "azione",
+				"name": "Azione",
+				"type": "genre"
+			},
+			{
+				"id": "commedia",
+				"name": "Commedia",
+				"type": "genre"
+			},
+			{
+				"id": "doujinshi",
+				"name": "Doujinshi",
+				"type": "genre"
+			},
+			{
+				"id": "drammatico",
+				"name": "Drammatico",
+				"type": "genre"
+			},
+			{
+				"id": "ecchi",
+				"name": "Ecchi",
+				"type": "genre"
+			},
+			{
+				"id": "fantasy",
+				"name": "Fantasy",
+				"type": "genre"
+			},
+			{
+				"id": "gender-bender",
+				"name": "Gender Bender",
+				"type": "genre"
+			},
+			{
+				"id": "harem",
+				"name": "Harem",
+				"type": "genre"
+			},
+			{
+				"id": "hentai",
+				"name": "Hentai",
+				"type": "genre"
+			},
+			{
+				"id": "horror",
+				"name": "Horror",
+				"type": "genre"
+			},
+			{
+				"id": "josei",
+				"name": "Josei",
+				"type": "genre"
+			},
+			{
+				"id": "lolicon",
+				"name": "Lolicon",
+				"type": "genre"
+			},
+			{
+				"id": "maturo",
+				"name": "Maturo",
+				"type": "genre"
+			},
+			{
+				"id": "mecha",
+				"name": "Mecha",
+				"type": "genre"
+			},
+			{
+				"id": "mistero",
+				"name": "Mistero",
+				"type": "genre"
+			},
+			{
+				"id": "psicologico",
+				"name": "Psicologico",
+				"type": "genre"
+			},
+			{
+				"id": "romantico",
+				"name": "Romantico",
+				"type": "genre"
+			},
+			{
+				"id": "sci-fi",
+				"name": "Sci-fi",
+				"type": "genre"
+			},
+			{
+				"id": "scolastico",
+				"name": "Scolastico",
+				"type": "genre"
+			},
+			{
+				"id": "seinen",
+				"name": "Seinen",
+				"type": "genre"
+			},
+			{
+				"id": "shotacon",
+				"name": "Shotacon",
+				"type": "genre"
+			},
+			{
+				"id": "shoujo",
+				"name": "Shoujo",
+				"type": "genre"
+			},
+			{
+				"id": "shoujo-ai",
+				"name": "Shoujo Ai",
+				"type": "genre"
+			},
+			{
+				"id": "shounen",
+				"name": "Shounen",
+				"type": "genre"
+			},
+			{
+				"id": "shounen-ai",
+				"name": "Shounen Ai",
+				"type": "genre"
+			}
+		]
+	},
+	{
+		"type": "select",
+		"name": "Stato",
+		"options": [
+			"All",
+			"In corso",
+			"Finito",
+			"Droppato",
+			"In pausa",
+			"Cancellato"
+		]
+	},
+	{
+		"type": "select",
+		"name": "Tipo",
+		"options": [
+			"All",
+			"Manga",
+			"Manhwa",
+			"Manhua",
+			"Oneshot",
+			"Thai",
+			"Vietnamita"
+		]
+	}
+]
