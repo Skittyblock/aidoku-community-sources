@@ -169,7 +169,7 @@ impl Default for MadaraSiteData {
 					MangaContentRating::Safe
 				}
 			},
-            // Ignore MangaPageResult manga with this class from a listing. Usually used for novels.
+			// Ignore MangaPageResult manga with this class from a listing. Usually used for novels.
 			ignore_class: String::from(".web-novel"),
 			// Localization stuff
 			status_filter_ongoing: String::from("Ongoing"),
@@ -208,12 +208,7 @@ pub fn get_search_result(data: MadaraSiteData, url: String) -> Result<MangaPageR
 	for item in html.select(data.search_selector.as_str()).array() {
 		let obj = item.as_node();
 
-        if !obj
-			.select(&data.ignore_class)
-			.text()
-			.read()
-			.is_empty()
-		{
+		if !obj.select(&data.ignore_class).text().read().is_empty() {
 			continue;
 		}
 
@@ -268,12 +263,7 @@ pub fn get_series_page(data: MadaraSiteData, listing: &str, page: i32) -> Result
 	for item in html.select("div.page-item-detail").array() {
 		let obj = item.as_node();
 
-		if !obj
-			.select(&data.ignore_class)
-			.text()
-			.read()
-			.is_empty()
-		{
+		if !obj.select(&data.ignore_class).text().read().is_empty() {
 			continue;
 		}
 

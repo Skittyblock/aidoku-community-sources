@@ -1,7 +1,7 @@
 #![no_std]
 use aidoku::{
-	error::Result, prelude::*, std::net::Request, std::String, std::Vec, Chapter, DeepLink, Filter, Listing, Manga,
-	MangaPageResult, MangaStatus, Page,
+	error::Result, prelude::*, std::net::Request, std::String, std::Vec, Chapter, DeepLink, Filter,
+	Listing, Manga, MangaPageResult, MangaStatus, Page,
 };
 use madara_template::template;
 
