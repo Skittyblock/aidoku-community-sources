@@ -208,9 +208,6 @@ pub fn get_search_result(data: MadaraSiteData, url: String) -> Result<MangaPageR
 	for item in html.select(data.search_selector.as_str()).array() {
 		let obj = item.as_node();
 
-		if !obj.select(&data.ignore_class).text().read().is_empty() {
-			continue;
-		}
 
 		let id = obj
 			.select("a")
