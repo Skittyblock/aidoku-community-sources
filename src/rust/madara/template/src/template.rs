@@ -49,7 +49,7 @@ pub struct MadaraSiteData {
 	pub status: fn(&Node) -> MangaStatus,
 	pub nsfw: fn(&Node, &Vec<String>) -> MangaContentRating,
 
-	pub ignore_manga_with_class: String,
+	pub ignore_class: String,
 }
 
 impl Default for MadaraSiteData {
@@ -169,8 +169,8 @@ impl Default for MadaraSiteData {
 					MangaContentRating::Safe
 				}
 			},
-            // Ignore MangaPageResult manga with this class. Usually used for novels.
-			ignore_manga_with_class: String::from(".web-novel"),
+            // Ignore MangaPageResult manga with this class from a listing. Usually used for novels.
+			ignore_class: String::from(".web-novel"),
 			// Localization stuff
 			status_filter_ongoing: String::from("Ongoing"),
 			status_filter_completed: String::from("Completed"),
@@ -209,7 +209,7 @@ pub fn get_search_result(data: MadaraSiteData, url: String) -> Result<MangaPageR
 		let obj = item.as_node();
 
         if !obj
-			.select(&data.ignore_manga_with_class)
+			.select(&data.ignore_class)
 			.text()
 			.read()
 			.is_empty()
@@ -269,7 +269,7 @@ pub fn get_series_page(data: MadaraSiteData, listing: &str, page: i32) -> Result
 		let obj = item.as_node();
 
 		if !obj
-			.select(&data.ignore_manga_with_class)
+			.select(&data.ignore_class)
 			.text()
 			.read()
 			.is_empty()
