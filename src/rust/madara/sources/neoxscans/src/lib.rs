@@ -26,6 +26,7 @@ fn get_data() -> template::MadaraSiteData {
 		},
 		description_selector: String::from("div.manga-excerpt p"),
 		alt_ajax: true,
+		ignore_class: String::from(".manga-title-badges.custom.novel"),
 		..Default::default()
 	};
 	data

@@ -48,6 +48,8 @@ pub struct MadaraSiteData {
 	pub viewer: fn(&Node, &Vec<String>) -> MangaViewer,
 	pub status: fn(&Node) -> MangaStatus,
 	pub nsfw: fn(&Node, &Vec<String>) -> MangaContentRating,
+
+	pub ignore_class: String,
 }
 
 impl Default for MadaraSiteData {
@@ -167,6 +169,8 @@ impl Default for MadaraSiteData {
 					MangaContentRating::Safe
 				}
 			},
+			// Ignore MangaPageResult manga with this class from a listing. Usually used for novels.
+			ignore_class: String::from(".web-novel"),
 			// Localization stuff
 			status_filter_ongoing: String::from("Ongoing"),
 			status_filter_completed: String::from("Completed"),
@@ -255,8 +259,7 @@ pub fn get_series_page(data: MadaraSiteData, listing: &str, page: i32) -> Result
 	for item in html.select("div.page-item-detail").array() {
 		let obj = item.as_node();
 
-		let w_novel = obj.select(".web-novel").text().read();
-		if !w_novel.is_empty() {
+		if !obj.select(&data.ignore_class).text().read().is_empty() {
 			continue;
 		}
 
