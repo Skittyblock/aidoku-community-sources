@@ -3,8 +3,11 @@
 		"id": "en.hiperdex",
 		"lang": "en",
 		"name": "Hiperdex",
-		"version": 1,
-		"url": "https://1sthiperdex.com",
+		"version": 2,
+		"urls": [
+			"https://hiperdex.com",
+			"https://1sthiperdex.com"
+		],
 		"nsfw": 2
 	},
 	"listings": [

@@ -10,6 +10,20 @@
 				"title": "High Resolution Covers",
 				"subtitle": "For Home page and Search page",
 				"default": true
+			},
+			{
+				"type": "select",
+				"key": "sourceURL",
+				"title": "Source",
+				"values": [
+					"https://hiperdex.com",
+					"https://1sthiperdex.com"
+				],
+				"titles": [
+					"Hiperdex",
+					"1sthiperdex"
+				],
+				"default": "https://hiperdex.com"
 			}
 		]
 	}
