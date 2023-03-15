@@ -7,10 +7,10 @@ use aidoku::{
 use madara_template::template;
 
 fn get_data() -> template::MadaraSiteData {
-	let mut url = String::new();
-	if let Ok(url_str) = defaults_get("sourceURL").as_string() {
-		url.push_str(url_str.read().as_str());
-	}
+	let url = match defaults_get("sourceURL").as_string() {
+		Ok(url_str) => url_str.read(),
+		Err(_) => panic!("missing sourceURL"),
+	};
 	let data: template::MadaraSiteData = template::MadaraSiteData {
 		base_url: url,
 		alt_ajax: true,
