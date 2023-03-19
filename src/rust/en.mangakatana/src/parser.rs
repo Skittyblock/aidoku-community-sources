@@ -10,7 +10,7 @@ use crate::helper::*;
 pub fn parse_manga_list(html: Node, base_url: String) -> MangaPageResult {
 	let mut manga: Vec<Manga> = Vec::new();
 
-	// MangaKatana is fucking retarded, and the last page of their pagination redirects to the manga
+	// MangaKatana is silly, and the last page of their pagination redirects to the manga
 	// page of the last list entry, so if #single_book exists, we know we have been redirected to
 	// a manga page and there are no more pages, so just parse the manga details of that last entry
 	// and append it to the results and return no more pages
