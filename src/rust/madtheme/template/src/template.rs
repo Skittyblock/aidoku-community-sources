@@ -262,43 +262,8 @@ pub trait MadTheme {
 		} else {
 			format!("{}{id}", self.base_url())
 		};
-		let request = Request::get(&url).header("Referer", self.base_url());
+		let request = Request::get(url).header("Referer", self.base_url());
 		let html = request.string()?;
-
-		if !html.contains("var mainServer = \"") {
-			let document = Node::new_with_uri(html, url)?;
-			let page_nodes = document.select("#chapter-images img");
-
-			let page_list = page_nodes
-				.array()
-				.enumerate()
-				.filter_map(|(idx, v)| {
-					if let Ok(v) = v.as_node() {
-						Some(Page {
-							index: idx as i32 + 1,
-							url: v.attr("abs:data-src").read(),
-							..Default::default()
-						})
-					} else {
-						None
-					}
-				})
-				.collect::<Vec<_>>();
-			return Ok(page_list);
-		}
-
-		let scheme = self
-			.base_url()
-			.split("://")
-			.next()
-			.expect("base_url should have a scheme")
-			.to_string() + ":";
-		let main_cdn = scheme
-			+ html
-				.substring_after("var mainServer = \"")
-				.expect("mainServer should exist on this branch")
-				.substring_before("\"")
-				.expect("mainServer should have closing quote");
 
 		let page_list = html
 			.substring_after("var chapImages = '")
@@ -309,7 +274,7 @@ pub trait MadTheme {
 			.enumerate()
 			.map(|(idx, v)| Page {
 				index: idx as i32 + 1,
-				url: main_cdn.clone() + v,
+				url: v.to_string(),
 				..Default::default()
 			})
 			.collect::<Vec<_>>();
