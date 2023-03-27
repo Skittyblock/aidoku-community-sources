@@ -6,7 +6,9 @@ extern crate alloc;
 
 use aidoku::{
 	error::Result,
-	prelude::{format, get_chapter_list, get_manga_details, get_manga_list, get_page_list},
+	prelude::{
+		format, get_chapter_list, get_manga_details, get_manga_list, get_page_list, println,
+	},
 	std::{
 		net::{HttpMethod, Request},
 		*,
@@ -62,13 +64,15 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	let url = format!("{BASE_URL}/hentai-list/advanced-search/");
 
 	let body_data = create_advanced_search_body(
-		Some(manga_title),
-		Some(artist_name),
-		Some(status),
-		Some(tag_search_mode),
-		Some(included_tags),
-		Some(excluded_tags),
+		Some(&manga_title),
+		Some(&artist_name),
+		status,
+		Some(&tag_search_mode),
+		included_tags,
+		excluded_tags,
 	);
+
+	println!("{:?}", body_data);
 
 	let mut has_next = false;
 
@@ -97,6 +101,9 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 			manga_arr = parse_search(&html);
 		}
 	}
+
+	println!("{:?}", manga_arr.len());
+	println!("{:?}", has_next);
 
 	Ok(MangaPageResult {
 		manga: manga_arr,
