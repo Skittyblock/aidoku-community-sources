@@ -17,10 +17,7 @@ pub fn create_advanced_search_body(
 	query.set("cmd_wpm_pag_mng_sch_sbm", Some(""));
 	query.set("txt_wpm_pag_mng_sch_nme", manga_title);
 	query.set("txt_wpm_pag_mng_sch_ats", artist_name);
-	query.set(
-		"rad_wpm_pag_mng_sch_sts",
-		Some(status.to_string().as_str()),
-	);
+	query.set("rad_wpm_pag_mng_sch_sts", Some(status.to_string().as_str()));
 	query.set("rad_wpm_pag_mng_sch_tag_mde", tag_search_mode);
 
 	for tag in include_tags.iter() {
