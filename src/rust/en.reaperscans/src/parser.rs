@@ -1,7 +1,10 @@
 use aidoku::{
-	error::Result, prelude::format, std::html::Node, std::net::HttpMethod, std::net::Request,
-	std::String, std::Vec, Chapter, Listing, Manga, MangaContentRating, MangaPageResult,
-	MangaStatus, MangaViewer, Page,
+	error::Result,
+	prelude::format,
+	std::html::Node,
+	std::net::{HttpMethod, Request},
+	std::{String, Vec},
+	Chapter, Listing, Manga, MangaContentRating, MangaPageResult, MangaStatus, MangaViewer, Page,
 };
 
 use crate::helper::*;
@@ -10,9 +13,12 @@ use crate::request_helper::*;
 pub fn parse_manga_list(base_url: String, page: i32) -> Result<MangaPageResult> {
 	let url = format!("{}/comics?page={}", base_url, page);
 
-	let html = Request::new(url, HttpMethod::Get).html().expect(
+	let html = Request::new(url, HttpMethod::Get)
+		.header("User-Agent", &get_user_agent())
+		.html()
+		.expect(
 		"ReaperScans: Could not display All listing. Check the website and your internet connection on https://reaperscans.com",
-	);
+		);
 
 	let mut mangas: Vec<Manga> = Vec::new();
 
@@ -51,7 +57,7 @@ pub fn parse_manga_list(base_url: String, page: i32) -> Result<MangaPageResult> 
 
 pub fn parse_search(base_url: String, query: String) -> Result<MangaPageResult> {
 	let html: Node = create_search_request_object(String::from(&base_url), query)
-		.expect("Reaperscans: Search POST request was unsuccesful");
+		.expect("Reaperscans: Search POST request was unsuccessful");
 
 	let mut mangas: Vec<Manga> = Vec::new();
 	for i in html.select("ul li").array() {
@@ -103,6 +109,7 @@ pub fn parse_manga_listing(
 	let url = format!("{}/latest/comics?page={}", base_url, page);
 
 	let html = Request::new(&url, HttpMethod::Get)
+		.header("User-Agent", &get_user_agent())
 		.html()
 		.expect("ReaperScans: Could not display a listing. Check the website and your internet connection on https://reaperscans.com");
 
@@ -148,6 +155,7 @@ pub fn parse_manga_details(base_url: String, manga_id: String) -> Result<Manga> 
 	let url = get_manga_url(manga_id.clone(), base_url);
 
 	let html = Request::new(&url, HttpMethod::Get)
+		.header("User-Agent", &get_user_agent())
 		.html()
 		.expect("Reaperscans: Failed to access the comic page. Try accessing the website on a browser and check your internet connection");
 
@@ -226,7 +234,9 @@ pub fn parse_manga_details(base_url: String, manga_id: String) -> Result<Manga> 
 pub fn parse_chapter_list(base_url: String, manga_id: String) -> Result<Vec<Chapter>> {
 	let mut chapters: Vec<Chapter> = Vec::new();
 	let url = get_manga_url(manga_id, base_url.clone());
-	let initial_request = Request::new(url, HttpMethod::Get)
+	let request = Request::new(url, HttpMethod::Get).header("User-Agent", &get_user_agent());
+
+	let initial_request = request
 		.html()
 		.expect("Reaperscans: Could not retreive the chapter list html");
 
@@ -234,32 +244,39 @@ pub fn parse_chapter_list(base_url: String, manga_id: String) -> Result<Vec<Chap
 
 	let mut page = 2;
 	loop {
-		let response_html = create_chapter_request_object(
+		// If let here gracefully handles the case where cloudflare blocks the request.
+		// If the request is blocked, then the loop will continue and try again.
+		// The cloudflare popup should appear and once validated, the next request will
+		// be successful.
+		if let Ok(response_html) = create_chapter_request_object(
 			initial_request.clone(),
 			base_url.clone(),
 			i32_to_string(page),
-		)
-		.expect(
-			"Reaperscans: Chapter POST request was unsuccesful. This maybe due to
-	changes in the website",
-		);
-		parse_chapter_list_helper(response_html.clone(), &mut chapters); // checks if next-page button exists.
-		if response_html
-			.select("button[wire:click*=nextPage]")
-			.html()
-			.read()
-			.is_empty()
-		{
-			break;
+		) {
+			parse_chapter_list_helper(response_html.clone(), &mut chapters);
+
+			// checks if next-page button exists.
+			if response_html
+				.select("button[wire:click*=nextPage]")
+				.html()
+				.read()
+				.is_empty()
+			{
+				break;
+			}
+
+			page += 1;
+		} else {
+			continue;
 		}
-		page += 1;
 	}
 	Ok(chapters)
 }
+
 pub fn parse_chapter_list_helper(html: Node, chapters: &mut Vec<Chapter>) {
 	for chapter in html.select("div[wire:id] div > ul > li").array() {
 		let chapter_node = chapter.as_node().expect(
-			"Reaperscans: Failed to parse a chapter node. The chapter list request was unsuccesful",
+			"Reaperscans: Failed to parse a chapter node. The chapter list request was unsuccessful",
 		);
 
 		let mut title = String::new();
@@ -328,6 +345,7 @@ pub fn parse_page_list(
 	let url = get_chapter_url(chapter_id, manga_id, base_url);
 
 	let html = Request::new(&url, HttpMethod::Get)
+		.header("User-Agent", &get_user_agent())
 		.html()
 		.expect("Reaperscans: Failed to display the chapter. Check your internet connection");
 
@@ -338,7 +356,7 @@ pub fn parse_page_list(
 	for page in html.select("main div img.max-w-full").array() {
 		let page_node = page
 			.as_node()
-			.expect("Reaperscans: Failed to parse a chapter node. The chapter pages request was unsuccesful");
+			.expect("Reaperscans: Failed to parse a chapter node. The chapter pages request was unsuccessful");
 
 		let url = page_node.attr("src").read();
 

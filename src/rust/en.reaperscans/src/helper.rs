@@ -5,6 +5,11 @@ use aidoku::{
 	Filter, FilterType,
 };
 
+/// Returns the proper user agent to use.
+pub fn get_user_agent() -> String {
+	String::from("Mozilla/5.0 (iPhone; CPU iPhone OS 16_1_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.1 Mobile/15E148 Safari/604.1")
+}
+
 /// Returns an array of f32s contained within a string.
 pub fn extract_f32_from_string(text: String) -> Vec<f32> {
 	let mut last_char_was_digit: bool = false;
