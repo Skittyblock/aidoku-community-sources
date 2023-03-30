@@ -104,7 +104,8 @@
 				"type": "genre",
 				"name": "Erotica",
 				"id": "erotica",
-				"canExclude": true
+				"canExclude": true,
+				"default": false
 			},
 			{
 				"type": "genre",
@@ -122,7 +123,8 @@
 				"type": "genre",
 				"name": "Gore",
 				"id": "gore",
-				"canExclude": true
+				"canExclude": true,
+				"default": false
 			},
 			{
 				"type": "genre",
@@ -254,7 +256,8 @@
 				"type": "genre",
 				"name": "Sexual violence",
 				"id": "sexual-violence",
-				"canExclude": true
+				"canExclude": true,
+				"default": false
 			},
 			{
 				"type": "genre",

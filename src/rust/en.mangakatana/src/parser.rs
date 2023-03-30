@@ -10,6 +10,26 @@ use crate::helper::*;
 pub fn parse_manga_list(html: Node, base_url: String) -> MangaPageResult {
 	let mut manga: Vec<Manga> = Vec::new();
 
+	// MangaKatana is silly, and the last page of their pagination redirects to the manga
+	// page of the last list entry, so if #single_book exists, we know we have been redirected to
+	// a manga page and there are no more pages, so just parse the manga details of that last entry
+	// and append it to the results and return no more pages
+	if !html.select("#single_book").array().is_empty() {
+		let url = {
+			let raw_url = html.select("link[rel=canonical]").attr("href").read();
+			// Converting the raw_url into an absolute url, ie: go-toubun-no-hanayome.18224 => id.18224
+			let manga_id = get_manga_id(raw_url);
+			get_manga_url(manga_id, base_url)
+		};
+
+		manga.push(parse_manga_details(html, url));
+
+		return MangaPageResult {
+			manga,
+			has_more: false,
+		};
+	}
+
 	for node in html.select("#book_list > .item").array() {
 		let node = node.as_node().expect("Failed to get node");
 
