@@ -67,7 +67,13 @@ jobs:
         sudo chmod +x /usr/local/bin/sccache
     -
       name: Build Rust sources
-      run: cd ./src/rust/mangastream && ./build.sh acescans
+      run: |
+        for src in ./src/rust/*; do
+          (
+            cd "$src"
+            ./build.sh -a
+          )
+        done
     # -
     #   name: Building source list
     #   run: |
