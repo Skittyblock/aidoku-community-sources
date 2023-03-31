@@ -16,7 +16,7 @@ strip = true
 lto = true
 
 [dependencies]
-aidoku = { git = "https://github.com/beerpiss/aidoku-rs", branch = "qol-improvements", features = ["helpers"] }
+aidoku = { git = "https://github.com/Aidoku/aidoku-rs", features = ["helpers"] }
 base64 = { version = "0.13.0", default-features = false }
 itoa = "1.0.2"
 serde = { version = "1.0.140", default-features = false, features = ["derive", "alloc"] }
