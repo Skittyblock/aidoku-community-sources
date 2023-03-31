@@ -8,6 +8,36 @@ use super::helper::{chapter_image, chapter_url_encode};
 extern crate alloc;
 use alloc::string::ToString;
 
+const COVER_SERVER: &str = "https://temp.compsci88.com/cover/{{Result.i}}.jpg";
+
+// Parse manga with title and cover
+pub fn parse_manga_listing(manga_object: ObjectRef) -> Result<Manga> {
+	let id = manga_object.get("IndexName").as_string()?.read();
+	let title = manga_object.get("SeriesName").as_string()?.read();
+	let cover = String::from(COVER_SERVER).replace("{{Result.i}}", &id);
+
+	let mut url = defaults_get("sourceURL")
+		.expect("missing sourceURL")
+        .as_string()
+        ?.read();
+	url.push_str("/manga/");
+	url.push_str(&id);
+
+	Ok(Manga {
+		id,
+		cover,
+		title,
+		author: String::new(),
+		artist: String::new(),
+		description: String::new(),
+		url,
+		categories: Vec::new(),
+		status: MangaStatus::Unknown,
+		nsfw: MangaContentRating::Safe,
+		viewer: MangaViewer::Default,
+	})
+}
+
 // Parse manga with title and cover
 pub fn parse_basic_manga(manga_object: ObjectRef, cover_url: String) -> Result<Manga> {
 	let id = manga_object.get("i").as_string()?.read();
