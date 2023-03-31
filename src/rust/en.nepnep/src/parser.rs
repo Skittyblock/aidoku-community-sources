@@ -14,7 +14,7 @@ pub fn parse_basic_manga(manga_object: ObjectRef, cover_url: String) -> Result<M
 	let title = manga_object.get("s").as_string()?.read();
 	let cover = cover_url.replace("{{Result.i}}", &id);
 
-	let mut url = defaults_get("sourceURL").as_string()?.read();
+	let mut url = defaults_get("sourceURL")?.as_string()?.read();
 	url.push_str("/manga/");
 	url.push_str(&id);
 
@@ -22,14 +22,8 @@ pub fn parse_basic_manga(manga_object: ObjectRef, cover_url: String) -> Result<M
 		id,
 		cover,
 		title,
-		author: String::new(),
-		artist: String::new(),
-		description: String::new(),
 		url,
-		categories: Vec::new(),
-		status: MangaStatus::Unknown,
-		nsfw: MangaContentRating::Safe,
-		viewer: MangaViewer::Default,
+		..Default::default()
 	})
 }
 
@@ -54,7 +48,7 @@ pub fn parse_full_manga(id: String, url: String, manga_node: Node) -> Result<Man
 	manga_node
 		.select("li.list-group-item:has(span:contains(Genre)) a")
 		.array()
-		.for_each(|tag| categories.push(tag.as_node().text().read()));
+		.for_each(|tag| categories.push(tag.as_node().expect("node array").text().read()));
 
 	let status = match manga_node
 		.select(
@@ -101,13 +95,13 @@ pub fn parse_full_manga(id: String, url: String, manga_node: Node) -> Result<Man
 		cover,
 		title,
 		author,
-		artist: String::new(),
 		description,
 		url,
 		categories,
 		status,
 		nsfw,
 		viewer,
+		..Default::default()
 	})
 }
 
@@ -196,8 +190,8 @@ pub fn parse_chapter(manga_id: &str, chapter_object: ObjectRef) -> Result<Chapte
 		volume,
 		chapter,
 		date_updated,
-		scanlator: String::new(),
 		url,
 		lang: String::from("en"),
+		..Default::default()
 	})
 }

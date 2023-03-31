@@ -56,10 +56,13 @@ pub fn manga_status(status: String) -> MangaStatus {
 }
 
 pub fn get_page_number(id: String) -> i32 {
-	let html = Request::new(id.as_str(), HttpMethod::Get).html();
+	let html = match Request::new(id.as_str(), HttpMethod::Get).html() {
+		Ok(html) => html,
+		Err(_) => return 1,
+	};
 	let mut url = String::new();
 	for manga in html.select(".ui.pagination.menu a").array() {
-		let manga_node = manga.as_node();
+		let manga_node = manga.as_node().expect("node array");
 		let last_page_string = manga_node.text().read();
 		if last_page_string == "Last" {
 			url = String::from(manga_node.attr("href").read().as_str());

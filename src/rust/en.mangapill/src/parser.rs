@@ -5,7 +5,7 @@ use aidoku::{
 
 pub fn parse_recents(html: Node, result: &mut Vec<Manga>) {
 	for page in html.select("div.grid div:not([class])").array() {
-		let obj = page.as_node();
+		let obj = page.as_node().expect("node array");
 
 		let id = obj.select("a.text-secondary").attr("href").read();
 		let title = obj.select("a.text-secondary").text().read();
@@ -15,21 +15,14 @@ pub fn parse_recents(html: Node, result: &mut Vec<Manga>) {
 			id,
 			cover: img,
 			title,
-			author: String::new(),
-			artist: String::new(),
-			description: String::new(),
-			url: String::new(),
-			categories: Vec::new(),
-			status: MangaStatus::Unknown,
-			nsfw: MangaContentRating::Safe,
-			viewer: MangaViewer::Default,
+			..Default::default()
 		});
 	}
 }
 
 pub fn parse_search(html: Node, result: &mut Vec<Manga>) {
 	for page in html.select(".grid.gap-3 div").array() {
-		let obj = page.as_node();
+		let obj = page.as_node().expect("node array");
 
 		let id = obj.select("a").attr("href").read();
 		let title = obj.select("div a ").text().read();
@@ -40,14 +33,7 @@ pub fn parse_search(html: Node, result: &mut Vec<Manga>) {
 				id,
 				cover: img,
 				title,
-				author: String::new(),
-				artist: String::new(),
-				description: String::new(),
-				url: String::new(),
-				categories: Vec::new(),
-				status: MangaStatus::Unknown,
-				nsfw: MangaContentRating::Safe,
-				viewer: MangaViewer::Default,
+				..Default::default()
 			});
 		}
 	}
@@ -73,7 +59,7 @@ pub fn parse_manga(obj: Node, id: String) -> Result<Manga> {
 	let mut categories: Vec<String> = Vec::new();
 	obj.select("a[href*=genre]")
 		.array()
-		.for_each(|tag| categories.push(tag.as_node().text().read()));
+		.for_each(|tag| categories.push(tag.as_node().expect("node array").text().read()));
 
 	let status = if status_str.contains("publishing") {
 		MangaStatus::Ongoing
@@ -106,14 +92,13 @@ pub fn parse_manga(obj: Node, id: String) -> Result<Manga> {
 		id,
 		cover,
 		title,
-		author: String::new(),
-		artist: String::new(),
 		description,
 		url,
 		categories,
 		status,
 		nsfw,
 		viewer,
+		..Default::default()
 	})
 }
 
@@ -121,7 +106,7 @@ pub fn get_chaper_list(obj: Node) -> Result<Vec<Chapter>> {
 	let mut chapters: Vec<Chapter> = Vec::new();
 
 	for chapter in obj.select(".p-1").array() {
-		let obj = chapter.as_node();
+		let obj = chapter.as_node().expect("node array");
 		let id = obj.attr("href").read();
 		let url = format!("https://www.mangapill.com{}", &id);
 		if id == "Read Chapters" {
@@ -134,13 +119,10 @@ pub fn get_chaper_list(obj: Node) -> Result<Vec<Chapter>> {
 
 		chapters.push(Chapter {
 			id,
-			title: String::new(),
-			volume: -1.0,
 			chapter: chap_num,
-			date_updated: -1.0,
-			scanlator: String::new(),
 			url,
 			lang: String::from("en"),
+			..Default::default()
 		});
 	}
 	Ok(chapters)
@@ -150,14 +132,13 @@ pub fn get_page_list(obj: Node) -> Result<Vec<Page>> {
 	let mut pages: Vec<Page> = Vec::new();
 
 	for (i, page) in obj.select("picture img").array().enumerate() {
-		let obj = page.as_node();
+		let obj = page.as_node().expect("node array");
 		let url = obj.attr("data-src").read();
 
 		pages.push(Page {
 			index: i as i32,
 			url,
-			base64: String::new(),
-			text: String::new(),
+			..Default::default()
 		});
 	}
 	Ok(pages)

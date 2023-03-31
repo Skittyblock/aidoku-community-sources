@@ -1,7 +1,7 @@
 use aidoku::{
 	error::Result, prelude::format, std::net::HttpMethod, std::net::Request, std::String, std::Vec,
-	Chapter, DeepLink, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
-	MangaViewer, Page,
+	Chapter, DeepLink, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaViewer,
+	Page,
 };
 
 use crate::helper::*;
@@ -41,7 +41,7 @@ pub fn parse_manga_list(
 			.header("X-Requested-With", "XMLHttpRequest")
 			.header("Content-Type", "application/x-www-form-urlencoded")
 			.body(body_data.as_bytes())
-			.json()
+			.json()?
 			.as_object()?;
 
 		let data = json.get("manga").as_array()?;
@@ -55,14 +55,8 @@ pub fn parse_manga_list(
 				id,
 				cover,
 				title,
-				author: String::new(),
-				artist: String::new(),
-				description: String::new(),
 				url,
-				categories: Vec::new(),
-				status: MangaStatus::Unknown,
-				nsfw: MangaContentRating::Safe,
-				viewer: MangaViewer::Default,
+				..Default::default()
 			});
 		}
 
@@ -80,9 +74,9 @@ pub fn parse_manga_list(
 	} else {
 		let mut mangas: Vec<Manga> = Vec::new();
 		let url = format!("{}/category/{}/watch/{}", base_url, tag, page);
-		let html = Request::new(url.as_str(), HttpMethod::Get).html();
+		let html = Request::new(url.as_str(), HttpMethod::Get).html()?;
 		for manga in html.select(".filter-results .mb-lg").array() {
-			let manga_node = manga.as_node();
+			let manga_node = manga.as_node().expect("node array");
 			let title = manga_node.select("h2").text().read();
 			let id = get_manga_id(manga_node.select("a").attr("href").read());
 			let cover = base_url.clone() + &get_image_src(manga_node);
@@ -90,14 +84,7 @@ pub fn parse_manga_list(
 				id,
 				cover,
 				title,
-				author: String::new(),
-				artist: String::new(),
-				description: String::new(),
-				url: String::new(),
-				categories: Vec::new(),
-				status: MangaStatus::Unknown,
-				nsfw: MangaContentRating::Safe,
-				viewer: MangaViewer::Default,
+				..Default::default()
 			});
 		}
 		let last_page = html.select("div.ui.pagination.menu li").text().read();
@@ -115,10 +102,10 @@ pub fn parse_manga_listing(
 	list_type: String,
 ) -> Result<MangaPageResult> {
 	let mut mangas: Vec<Manga> = Vec::new();
-	let html = Request::new(url.as_str(), HttpMethod::Get).html();
+	let html = Request::new(url.as_str(), HttpMethod::Get).html()?;
 	if list_type == "Hot" {
 		for manga in html.select("#manga-hot-updates .item").array() {
-			let manga_node = manga.as_node();
+			let manga_node = manga.as_node().expect("node array");
 			let title = manga_node.select("strong").text().read();
 			let id = get_manga_id(manga_node.select("a").attr("href").read());
 			let cover =
@@ -127,14 +114,7 @@ pub fn parse_manga_listing(
 				id,
 				cover,
 				title,
-				author: String::new(),
-				artist: String::new(),
-				description: String::new(),
-				url: String::new(),
-				categories: Vec::new(),
-				status: MangaStatus::Unknown,
-				nsfw: MangaContentRating::Safe,
-				viewer: MangaViewer::Default,
+				..Default::default()
 			});
 		}
 		Ok(MangaPageResult {
@@ -143,7 +123,7 @@ pub fn parse_manga_listing(
 		})
 	} else if list_type == "Popular" {
 		for manga in html.select(".filter-results .mb-lg").array() {
-			let manga_node = manga.as_node();
+			let manga_node = manga.as_node().expect("node array");
 			let title = manga_node.select("h2").text().read();
 			let id = get_manga_id(manga_node.select("a").attr("href").read());
 			let cover =
@@ -152,14 +132,7 @@ pub fn parse_manga_listing(
 				id,
 				cover,
 				title,
-				author: String::new(),
-				artist: String::new(),
-				description: String::new(),
-				url: String::new(),
-				categories: Vec::new(),
-				status: MangaStatus::Unknown,
-				nsfw: MangaContentRating::Safe,
-				viewer: MangaViewer::Default,
+				..Default::default()
 			});
 		}
 		let last_page = html.select("div.ui.pagination.menu li").text().read();
@@ -170,7 +143,7 @@ pub fn parse_manga_listing(
 		})
 	} else if list_type == "Latest" {
 		for manga in html.select(".latest-updates .poster.poster-xs").array() {
-			let manga_node = manga.as_node();
+			let manga_node = manga.as_node().expect("node array");
 			let title = manga_node.select("h2").text().read();
 			let id = get_manga_id(manga_node.select("a").attr("href").read());
 			let cover =
@@ -179,14 +152,7 @@ pub fn parse_manga_listing(
 				id,
 				cover,
 				title,
-				author: String::new(),
-				artist: String::new(),
-				description: String::new(),
-				url: String::new(),
-				categories: Vec::new(),
-				status: MangaStatus::Unknown,
-				nsfw: MangaContentRating::Safe,
-				viewer: MangaViewer::Default,
+				..Default::default()
 			});
 		}
 		let last_page = html.select("div.ui.pagination.menu li").text().read();
@@ -197,7 +163,7 @@ pub fn parse_manga_listing(
 		})
 	} else {
 		for manga in html.select(".clearfix.mb-0 li").array() {
-			let manga_node = manga.as_node();
+			let manga_node = manga.as_node().expect("node array");
 			let title = manga_node.select("h2").text().read();
 			let id = get_manga_id(manga_node.select("a").attr("href").read());
 			let cover = base_url.clone()
@@ -211,14 +177,7 @@ pub fn parse_manga_listing(
 				id,
 				cover,
 				title,
-				author: String::new(),
-				artist: String::new(),
-				description: String::new(),
-				url: String::new(),
-				categories: Vec::new(),
-				status: MangaStatus::Unknown,
-				nsfw: MangaContentRating::Safe,
-				viewer: MangaViewer::Default,
+				..Default::default()
 			});
 		}
 		Ok(MangaPageResult {
@@ -230,7 +189,7 @@ pub fn parse_manga_listing(
 
 pub fn parse_manga_details(base_url: String, raw_id: String) -> Result<Manga> {
 	let id = get_full_url(raw_id);
-	let html = Request::new(id.as_str(), HttpMethod::Get).html();
+	let html = Request::new(id.as_str(), HttpMethod::Get).html()?;
 	let title = html.select(".page-title").text().read();
 	let cover = base_url + html.select(".image img").attr("src").read().as_str().trim();
 	let author = html.select("#first_episode small").text().read();
@@ -249,7 +208,7 @@ pub fn parse_manga_details(base_url: String, raw_id: String) -> Result<Manga> {
 	let mut categories = Vec::new();
 	let mut nsfw = MangaContentRating::Safe;
 	for node in html.select(".series-summary-wrapper a").array() {
-		let category = node.as_node().text().read();
+		let category = node.as_node().expect("node array").text().read();
 		if category.clone().as_str() == "Mature" || category.clone().as_str() == "Ecchi" {
 			nsfw = MangaContentRating::Nsfw;
 		}
@@ -283,9 +242,9 @@ pub fn parse_manga_details(base_url: String, raw_id: String) -> Result<Manga> {
 
 pub fn parse_chapter_list(id: String) -> Result<Vec<Chapter>> {
 	let mut chapters: Vec<Chapter> = Vec::new();
-	let html = Request::new(id.as_str(), HttpMethod::Get).html();
+	let html = Request::new(id.as_str(), HttpMethod::Get).html()?;
 	for chapter in html.select(".season_start").array() {
-		let chapter_node = chapter.as_node();
+		let chapter_node = chapter.as_node().expect("node array");
 		let title = String::from(chapter_node.select("h6").text().read().as_str().trim());
 		let chapter_id = get_full_url(chapter_node.select("a").attr("href").read());
 		let chapter_url = get_full_url(chapter_node.select("a").attr("href").read());
@@ -294,12 +253,11 @@ pub fn parse_chapter_list(id: String) -> Result<Vec<Chapter>> {
 		chapters.push(Chapter {
 			id: chapter_id,
 			title,
-			volume: -1.0,
 			chapter: chapter_number,
 			date_updated: date,
-			scanlator: String::new(),
 			url: chapter_url,
 			lang: String::from("en"),
+			..Default::default()
 		});
 	}
 	Ok(chapters)
@@ -307,15 +265,14 @@ pub fn parse_chapter_list(id: String) -> Result<Vec<Chapter>> {
 
 pub fn parse_page_list(id: String) -> Result<Vec<Page>> {
 	let mut pages: Vec<Page> = Vec::new();
-	let html = Request::new(id.as_str(), HttpMethod::Get).html();
+	let html = Request::new(id.as_str(), HttpMethod::Get).html()?;
 	for (index, page) in html.select("div.ch-images img").array().enumerate() {
-		let page_node = page.as_node();
+		let page_node = page.as_node().expect("node array");
 		let page_url = get_full_url(page_node.attr("src").read());
 		pages.push(Page {
 			index: index.try_into().unwrap_or(-1),
 			url: page_url,
-			base64: String::new(),
-			text: String::new(),
+			..Default::default()
 		});
 	}
 	Ok(pages)
