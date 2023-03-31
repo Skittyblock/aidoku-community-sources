@@ -39,7 +39,7 @@ impl MangaChanSource {
 		let has_more = elems.len() == page_size;
 		let manga = elems
 			.map(|elem| {
-				let manga_node = elem.as_node();
+				let manga_node = elem.as_node().expect("node array");
 				let title = manga_node.select("div.manga_row1 h2 a").text().read();
 				let url = manga_node.select("div.manga_row1 h2 a").attr("href").read();
 				let id = url.replace(self.base_url, "");
@@ -53,7 +53,7 @@ impl MangaChanSource {
 				let mut categories = manga_node
 					.select("div.manga_row3:contains(Тэги) a")
 					.array()
-					.map(|elem| elem.as_node().text().read())
+					.map(|elem| elem.as_node().expect("node array").text().read())
 					.collect::<Vec<_>>();
 				categories.push(
 					manga_node
@@ -167,7 +167,7 @@ impl MangaChanSource {
 				need_sort_date=if order_by_date_when_search { "&need_sort_date=true" } else { "" },
 			)
 		};
-		let html = Request::new(&url, HttpMethod::Get).html();
+		let html = Request::new(&url, HttpMethod::Get).html()?;
 		self.parse_manga_list(html, if !title.is_empty() { 40 } else { 20 })
 	}
 
@@ -177,7 +177,7 @@ impl MangaChanSource {
 				format!("{}/manga/random", self.base_url).as_str(),
 				HttpMethod::Get,
 			)
-			.html();
+			.html()?;
 			self.parse_manga_list(html, 10)
 		} else {
 			Err(AidokuError {
@@ -189,14 +189,14 @@ impl MangaChanSource {
 	pub fn get_manga_details(&self, id: String) -> Result<Manga> {
 		let url = format!("{}{id}", self.base_url);
 		cache_manga_page(&url);
-		let html = Node::new(unsafe { &CACHED_MANGA.clone().unwrap() });
+		let html = Node::new(unsafe { &CACHED_MANGA.clone().unwrap() })?;
 		let cover = html.select("img#cover").attr("src").read();
 		let title = html.select("a.title_top_a").text().read();
 		let author = html
 			.select(self.author_selector)
 			.array()
 			.filter_map(|elem| {
-				let text = elem.as_node().text().read();
+				let text = elem.as_node().expect("node array").text().read();
 				if text.is_empty() {
 					None
 				} else {
@@ -209,7 +209,7 @@ impl MangaChanSource {
 		let mut categories = html
 			.select("li.sidetag a:not([title])")
 			.array()
-			.map(|elem| elem.as_node().text().read())
+			.map(|elem| elem.as_node().expect("node array").text().read())
 			.collect::<Vec<_>>();
 		let comictype = html.select("a[href*=type]").text().read();
 		if !comictype.is_empty() {
@@ -244,13 +244,13 @@ impl MangaChanSource {
 
 	pub fn get_chapter_list(&self, id: String) -> Result<Vec<Chapter>> {
 		cache_manga_page(&format!("{}{id}", self.base_url));
-		let html = Node::new(unsafe { &CACHED_MANGA.clone().unwrap() });
+		let html = Node::new(unsafe { &CACHED_MANGA.clone().unwrap() })?;
 		let manga_title = html.select("a.title_top_a").text().read();
 		let scanlator = html
 			.select("a[href*=translation][title]")
 			.array()
 			.filter_map(|elem| {
-				let text = elem.as_node().text().read();
+				let text = elem.as_node().expect("node array").text().read();
 				if text.is_empty() {
 					None
 				} else {
@@ -263,7 +263,7 @@ impl MangaChanSource {
 		Ok(node
 			.array()
 			.map(|elem| {
-				let chapter_node = elem.as_node();
+				let chapter_node = elem.as_node().expect("node array");
 				let id = chapter_node.select("a").attr("href").read();
 				let url = format!("{}{id}", self.base_url);
 				let date_updated = chapter_node
@@ -306,7 +306,7 @@ impl MangaChanSource {
 		} else {
 			format!("{}{id}", self.base_url)
 		};
-		let html = Request::new(&url, HttpMethod::Get).html().html().read();
+		let html = Request::new(&url, HttpMethod::Get).html()?.html().read();
 		let (begin, end) = if let Some(begin_) = html.find("fullimg\":[") {
 			// manga-chan and yaoi-chan
 			let begin = begin_ + 10;
@@ -347,7 +347,7 @@ impl MangaChanSource {
 				chapter: None,
 			})
 		} else if split[3] == "online" {
-			let html = Request::new(&url, HttpMethod::Get).html().html().read();
+			let html = Request::new(&url, HttpMethod::Get).html()?.html().read();
 			let begin = if let Some(begin_) = html.find("meta\":{") {
 				begin_ + 7
 			} else if let Some(begin_) = html.find("meta\": {") {
@@ -358,7 +358,7 @@ impl MangaChanSource {
 				});
 			};
 			let end = html[begin..].find("},").map(|i| i + begin).unwrap_or(0);
-			let meta = json::parse(format!("{{{}}}", &html[begin..end - 1]).as_bytes());
+			let meta = json::parse(format!("{{{}}}", &html[begin..end - 1]).as_bytes())?;
 			let metaobj = meta.as_object()?;
 			let manga_id = if let Ok(id) = metaobj.get("content_id").as_string() {
 				id.read()

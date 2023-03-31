@@ -36,7 +36,7 @@ impl OtakuSanctuarySource {
 		let mut manga: Vec<Manga> = Vec::with_capacity(elems.len());
 		let has_more = elems.len() > 0;
 		for elem in elems {
-			let node = elem.as_node();
+			let node = elem.as_node().expect("node array");
 			let id = node.select("div.mdl-card__title a").attr("href").read();
 			if (id.contains("http://") || id.contains("https://")) && !id.contains(self.base_url) {
 				continue;
@@ -81,7 +81,7 @@ impl OtakuSanctuarySource {
 		let has_more = elems.len() > 0;
 		let mut manga: Vec<Manga> = Vec::with_capacity(elems.len());
 		for elem in elems {
-			let node = elem.as_node();
+			let node = elem.as_node().expect("node array");
 			let id = node.select("a").attr("href").read();
 			let url = format!("{}{id}", &self.base_url);
 			let cover = node
@@ -128,7 +128,7 @@ impl OtakuSanctuarySource {
 		let resp = if !title.is_empty() {
 			let url = format!("{}/Home/Search?search={title}", self.base_url);
 			search_request = true;
-			Request::new(&url, HttpMethod::Get).html()
+			Request::new(&url, HttpMethod::Get).html()?
 		} else {
 			let mut request = format!(
 				"Lang={}&Page={page}&Type=Include&Dir=NewPostedDate",
@@ -146,13 +146,13 @@ impl OtakuSanctuarySource {
 				"Content-Type",
 				"application/x-www-form-urlencoded; charset=UTF-8",
 			)
-			.html()
+			.html()?
 		};
 		let (manga, has_more) = if search_request {
 			let collections_node = resp.select("div.collection");
 			let collections = collections_node.array();
 			let manga_section = collections.get(collections.len() - 3);
-			let node = manga_section.as_node();
+			let node = manga_section.as_node().expect("node array");
 			let (mut manga_list, _) = self.parse_manga_list(node.select("div.mdl-card").array());
 
 			let wallpaper_elems = resp.select("div.picture-mason");
@@ -189,7 +189,7 @@ impl OtakuSanctuarySource {
 						"Content-Type",
 						"application/x-www-form-urlencoded; charset=UTF-8",
 					)
-					.html();
+					.html()?;
 				let (manga, has_more) = self.parse_manga_list(resp.select("div.mdl-card").array());
 				Ok(MangaPageResult { manga, has_more })
 			}
@@ -198,7 +198,7 @@ impl OtakuSanctuarySource {
 					format!("{}{}", url, (page - 1) * 18).as_str(),
 					HttpMethod::Get,
 				)
-				.html();
+				.html()?;
 				let node = resp.select("div.picture-mason");
 				let elems = node.array();
 				let (manga, has_more) = self.parse_image_list(elems);
@@ -211,7 +211,7 @@ impl OtakuSanctuarySource {
 	pub fn get_manga_details(&self, id: String) -> Result<Manga> {
 		let url = format!("{}{id}", self.base_url);
 		cache_manga_page(&url);
-		let html = unsafe { Node::new(&CACHED_MANGA.clone().unwrap()) };
+		let html = unsafe { Node::new(&CACHED_MANGA.clone().unwrap()) }?;
 		if id.contains("manga-detail") {
 			let title = capitalize_first_letter(String::from(
 				html.select("h1.title.text-lg-left.text-overflow-2-line")
@@ -234,13 +234,14 @@ impl OtakuSanctuarySource {
 			let categories = html
 				.select("div.genres a")
 				.array()
-				.map(|val| val.as_node().text().read())
+				.map(|val| val.as_node().expect("node array").text().read())
 				.collect::<Vec<String>>();
 			let status = match html
 				.select("tr:contains(Tình Trạng) td")
 				.array()
 				.get(0)
 				.as_node()
+				.expect("node array")
 				.text()
 				.read()
 				.trim()
@@ -254,6 +255,7 @@ impl OtakuSanctuarySource {
 				.array()
 				.get(0)
 				.as_node()
+				.expect("node array")
 				.text()
 				.read()
 				.trim()
@@ -320,6 +322,7 @@ impl OtakuSanctuarySource {
 					.array()
 					.get(0)
 					.as_node()
+					.expect("node array")
 					.text()
 					.read()
 					.trim()
@@ -347,7 +350,7 @@ impl OtakuSanctuarySource {
 	pub fn get_chapter_list(&self, id: String) -> Result<Vec<Chapter>> {
 		let url = format!("{}{id}", self.base_url);
 		cache_manga_page(&url);
-		let html = unsafe { Node::new(&CACHED_MANGA.clone().unwrap()) };
+		let html = unsafe { Node::new(&CACHED_MANGA.clone().unwrap()) }?;
 		if id.contains("manga-detail") {
 			let scanlator = html
 				.select("tr:contains(Nhóm Dịch) a")
@@ -370,7 +373,7 @@ impl OtakuSanctuarySource {
 			let elems = node.array();
 			let mut chapters: Vec<Chapter> = Vec::with_capacity(elems.len());
 			for elem in elems {
-				let elem_node = elem.as_node();
+				let elem_node = elem.as_node().expect("node array");
 				let cells_node = elem_node.select("td");
 				let cells = cells_node.array();
 				let mut chapter: Chapter = Chapter {
@@ -388,7 +391,7 @@ impl OtakuSanctuarySource {
 					lang: lang.clone(),
 				};
 				for (idx, cell) in cells.enumerate() {
-					let node = cell.as_node();
+					let node = cell.as_node().expect("node array");
 					match idx {
 						0 => {
 							chapter.chapter =
@@ -436,7 +439,7 @@ impl OtakuSanctuarySource {
 	pub fn get_page_list(&self, id: String) -> Result<Vec<Page>> {
 		if id.contains("chapter") {
 			let resp =
-				Request::new(format!("{}{id}", self.base_url).as_str(), HttpMethod::Get).html();
+				Request::new(format!("{}{id}", self.base_url).as_str(), HttpMethod::Get).html()?;
 			let vi = resp.select("#dataip").attr("value").read();
 			let numeric_id = resp.select("#inpit-c").attr("data-chapter-id").read();
 			let json = Request::new(
@@ -448,7 +451,7 @@ impl OtakuSanctuarySource {
 				"Content-Type",
 				"application/x-www-form-urlencoded; charset=UTF-8",
 			)
-			.json();
+			.json()?;
 			let json_object = json.as_object()?;
 			let raw_pages_arr_value = json_object.get("Content");
 			let raw_pages_arr = if raw_pages_arr_value.is_none() {
@@ -461,14 +464,14 @@ impl OtakuSanctuarySource {
 					"Content-Type",
 					"application/x-www-form-urlencoded; charset=UTF-8",
 				)
-				.json();
+				.json()?;
 				let json_object = json.as_object()?;
 				let raw_pages_arr_value = json_object.get("view");
 				raw_pages_arr_value.as_string()?.read()
 			} else {
 				raw_pages_arr_value.as_string()?.read()
 			};
-			let pages = json::parse(raw_pages_arr.as_bytes()).as_array()?;
+			let pages = json::parse(raw_pages_arr.as_bytes())?.as_array()?;
 			let mut page_arr: Vec<Page> = Vec::with_capacity(pages.len());
 			for (index, page) in pages.enumerate() {
 				let url = url_replacer(page.as_string()?.read(), vi.clone());
@@ -485,7 +488,7 @@ impl OtakuSanctuarySource {
 				format!("{}{}", self.base_url, id.replace("/image", "")).as_str(),
 				HttpMethod::Get,
 			)
-			.html();
+			.html()?;
 			let mut page_arr: Vec<Page> = Vec::with_capacity(1);
 			let url = html.select("div#image_content img").attr("src").read();
 			page_arr.push(Page {
@@ -512,7 +515,7 @@ impl OtakuSanctuarySource {
 				chapter: None,
 			})
 		} else if url.contains("chapter") {
-			let resp = Request::new(&url, HttpMethod::Get).html();
+			let resp = Request::new(&url, HttpMethod::Get).html()?;
 			let breadcrumbs_node = resp.select("a.itemcrumb.active");
 			let manga_id = breadcrumbs_node.attr("href").read();
 			let manga = Some(self.get_manga_details(manga_id)?);

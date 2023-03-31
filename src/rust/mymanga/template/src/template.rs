@@ -55,7 +55,7 @@ impl MyMangaSource {
 		let mut manga: Vec<Manga> = Vec::with_capacity(elems.len());
 		let has_more = elems.len() > 0;
 		for elem in elems {
-			let node = elem.as_node();
+			let node = elem.as_node().expect("node array");
 			let url = node.select("a").attr("href").read();
 			let id = String::from(&url[self.base_url.len()..]);
 			let cover = node
@@ -141,7 +141,7 @@ impl MyMangaSource {
 		if !included_tags.is_empty() {
 			url.push_str(format!("&accept_genres={}", included_tags.join(",")).as_str());
 		}
-		let html = Request::new(&url, HttpMethod::Get).html();
+		let html = Request::new(&url, HttpMethod::Get).html()?;
 		let node = html.select("div.thumb-item-flow.col-6.col-md-2");
 		let elems = node.array();
 		let (manga, has_more) = self.parse_manga_list(elems);
@@ -151,7 +151,7 @@ impl MyMangaSource {
 	pub fn get_manga_details(&self, id: String) -> Result<Manga> {
 		let url = format!("{}{id}", self.base_url);
 		cache_manga_page(&url);
-		let html = unsafe { Node::new(&CACHED_MANGA.clone().unwrap()) };
+		let html = unsafe { Node::new(&CACHED_MANGA.clone().unwrap()) }?;
 		let title = String::from(html.select("span.series-name").text().read().trim());
 		let author = String::from(
 			html.select("div.info-item:contains(Tác giả) span.info-value")
@@ -181,7 +181,7 @@ impl MyMangaSource {
 			.select("a[href*=the-loai] span.badge")
 			.array()
 			.map(|elem| {
-				let node = elem.as_node();
+				let node = elem.as_node().expect("node array");
 				String::from(node.text().read().trim())
 			})
 			.collect::<Vec<_>>();
@@ -204,7 +204,7 @@ impl MyMangaSource {
 	pub fn get_chapter_list(&self, id: String) -> Result<Vec<Chapter>> {
 		let url = format!("{}{id}", self.base_url);
 		cache_manga_page(&url);
-		let html = unsafe { Node::new(&CACHED_MANGA.clone().unwrap()) };
+		let html = unsafe { Node::new(&CACHED_MANGA.clone().unwrap()) }?;
 		let scanlator = {
 			let original = String::from(html.select("div.fantrans-value a").text().read().trim());
 			let temp = decode_html_entities(&original);
@@ -218,7 +218,7 @@ impl MyMangaSource {
 		let elems = node.array();
 		let mut chapters = Vec::with_capacity(elems.len());
 		for elem in elems {
-			let chapter_node = elem.as_node();
+			let chapter_node = elem.as_node().expect("node array");
 			let url = chapter_node.attr("href").read();
 			let id = String::from(&url[self.base_url.len()..]);
 			let date_updated = if self.should_split_to_get_date {
@@ -270,12 +270,12 @@ impl MyMangaSource {
 
 	pub fn get_page_list(&self, id: String) -> Result<Vec<Page>> {
 		let url = format!("{}{id}", self.base_url);
-		let html = Request::new(&url, HttpMethod::Get).html();
+		let html = Request::new(&url, HttpMethod::Get).html()?;
 		let node = html.select("div#chapter-content img");
 		let elems = node.array();
 		let mut pages = Vec::with_capacity(elems.len());
 		for (idx, elem) in elems.enumerate() {
-			let node = elem.as_node();
+			let node = elem.as_node().expect("node array");
 			let url = node.attr("data-src").read();
 			pages.push(Page {
 				index: idx as i32,

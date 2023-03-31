@@ -13,7 +13,7 @@ use alloc::string::ToString;
 
 pub fn parse_listing(html: &Node, result: &mut Vec<Manga>) {
 	for page in html.select(".col.item").array() {
-		let obj = page.as_node();
+		let obj = page.as_node().expect("node array");
 
 		let id = obj
 			.select(".item-cover")
@@ -27,21 +27,14 @@ pub fn parse_listing(html: &Node, result: &mut Vec<Manga>) {
 			id,
 			cover: img,
 			title,
-			author: String::new(),
-			artist: String::new(),
-			description: String::new(),
-			url: String::new(),
-			categories: Vec::new(),
-			status: MangaStatus::Unknown,
-			nsfw: MangaContentRating::Safe,
-			viewer: MangaViewer::Default,
+			..Default::default()
 		});
 	}
 }
 
 pub fn parse_search(html: &Node, result: &mut Vec<Manga>) {
 	for page in html.select("#series-list .item").array() {
-		let obj = page.as_node();
+		let obj = page.as_node().expect("node array");
 
 		let id = obj
 			.select(".item-cover")
@@ -56,14 +49,7 @@ pub fn parse_search(html: &Node, result: &mut Vec<Manga>) {
 				id,
 				cover: img,
 				title,
-				author: String::new(),
-				artist: String::new(),
-				description: String::new(),
-				url: String::new(),
-				categories: Vec::new(),
-				status: MangaStatus::Unknown,
-				nsfw: MangaContentRating::Safe,
-				viewer: MangaViewer::Default,
+				..Default::default()
 			});
 		}
 	}
@@ -83,7 +69,7 @@ pub fn parse_manga(obj: Node, id: String) -> Result<Manga> {
 	let mut is_webtoon = false;
 
 	for i in obj.select(".attr-item").array() {
-		let item = i.as_node();
+		let item = i.as_node().expect("node array");
 		let label_title = item.select("b").text().read();
 		if label_title.contains("Author") {
 			author = item.select("span").text().read();
@@ -96,7 +82,7 @@ pub fn parse_manga(obj: Node, id: String) -> Result<Manga> {
 		}
 		if label_title.contains("Genre") {
 			for genre_span in item.select("span span").array() {
-				let genre_string = genre_span.as_node();
+				let genre_string = genre_span.as_node().expect("node array");
 				categories.push(genre_string.text().read());
 				if genre_string.text().read() == "Webtoon" {
 					is_webtoon = true;
@@ -116,7 +102,10 @@ pub fn parse_manga(obj: Node, id: String) -> Result<Manga> {
 	}
 
 	let mut url = String::new();
-	if let Ok(url_str) = defaults_get("sourceURL").as_string() {
+	if let Ok(url_str) = defaults_get("sourceURL")
+		.expect("missing sourceURL")
+		.as_string()
+	{
 		url.push_str(url_str.read().as_str());
 		url.push_str("/series/");
 		url.push_str(&id);
@@ -162,7 +151,7 @@ pub fn parse_manga(obj: Node, id: String) -> Result<Manga> {
 pub fn get_chaper_list(obj: Node) -> Result<Vec<Chapter>> {
 	let mut chapters: Vec<Chapter> = Vec::new();
 	for item in obj.select(".item").array() {
-		let chapter_node = item.as_node();
+		let chapter_node = item.as_node().expect("node array");
 		// Id
 		let id = chapter_node
 			.select("a")
@@ -215,7 +204,7 @@ pub fn get_chaper_list(obj: Node) -> Result<Vec<Chapter>> {
 
 		let mut lang = String::from("en");
 		for i in obj.select(".attr-item").array() {
-			let item = i.as_node();
+			let item = i.as_node().expect("node array");
 			let label_title = item.select("b").text().read();
 			if label_title.contains("Translated") {
 				let lang_str = item.select("span").text().read();
@@ -224,7 +213,10 @@ pub fn get_chaper_list(obj: Node) -> Result<Vec<Chapter>> {
 		}
 
 		// Url
-		if let Ok(url_str) = defaults_get("sourceURL").as_string() {
+		if let Ok(url_str) = defaults_get("sourceURL")
+			.expect("missing sourceURL")
+			.as_string()
+		{
 			let mut url = url_str.read();
 			url.push_str("/chapter/");
 			url.push_str(&id);
@@ -248,7 +240,7 @@ pub fn get_page_list(obj: Node) -> Result<Vec<Page>> {
 	let mut pages: Vec<Page> = Vec::new();
 
 	for item in obj.select("body script").array() {
-		let script = item.as_node();
+		let script = item.as_node().expect("node array");
 		let script_text = script.html().read();
 		if !script_text.contains("your_email") {
 			continue;
@@ -289,8 +281,7 @@ pub fn get_page_list(obj: Node) -> Result<Vec<Page>> {
 			pages.push(Page {
 				index: ind,
 				url,
-				base64: String::new(),
-				text: String::new(),
+				..Default::default()
 			});
 		}
 	}
@@ -301,7 +292,10 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32) -> (String, bool) {
 	let mut url = String::new();
 	let mut search = false;
 
-	if let Ok(url_str) = defaults_get("sourceURL").as_string() {
+	if let Ok(url_str) = defaults_get("sourceURL")
+		.expect("missing sourceURL")
+		.as_string()
+	{
 		url.push_str(url_str.read().as_str());
 	}
 	for filter in filters {
@@ -326,12 +320,14 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32) -> (String, bool) {
 }
 
 pub fn get_list_url(url: &mut String, sort_type: &str, page: i32) {
-	if let Ok(languages) = defaults_get("languages").as_array() {
-		url.push_str("/browse?langs=");
-		for lang in languages {
-			if let Ok(lang) = lang.as_string() {
-				url.push_str(&lang.read());
-				url.push(',');
+	if let Ok(languages_val) = defaults_get("languages") {
+		if let Ok(languages) = languages_val.as_array() {
+			url.push_str("/browse?langs=");
+			for lang in languages {
+				if let Ok(lang) = lang.as_string() {
+					url.push_str(&lang.read());
+					url.push(',');
+				}
 			}
 		}
 	}
@@ -363,7 +359,7 @@ pub fn is_last_page(html: Node) -> bool {
 	// return html.select(".page-item").last().has_class("disabled");
 	let mut classes = String::new();
 	for i in html.select(".page-item").array() {
-		classes = String::from(&i.as_node().class_name().read());
+		classes = String::from(&i.as_node().expect("node array").class_name().read());
 	}
 	classes.contains("disabled")
 }

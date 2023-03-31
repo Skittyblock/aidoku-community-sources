@@ -5,11 +5,21 @@ use aidoku::{
 };
 
 fn get_md_localized_string(obj: ObjectRef) -> String {
-	let language = if let Ok(langs) = defaults_get("languages").as_array()
-		&& let Ok(lang) = langs.get(0).as_string()
-		&& defaults_get("usePreferredLanguage").as_bool().unwrap_or(false)
-	{
-		lang.read()
+	let use_preferred_lang = match defaults_get("usePreferredLanguage") {
+		Ok(value) => value.as_bool().unwrap_or(false),
+		Err(_) => false,
+	};
+	let language = if use_preferred_lang {
+		match defaults_get("languages") {
+			Ok(langs) => match langs.as_array() {
+				Ok(langs) => match langs.get(0).as_string() {
+					Ok(lang) => lang.read(),
+					Err(_) => String::from("en"),
+				},
+				Err(_) => return String::from("en"),
+			},
+			Err(_) => String::from("en"),
+		}
 	} else {
 		String::from("en")
 	};
@@ -68,26 +78,21 @@ pub fn parse_basic_manga(manga_object: ObjectRef) -> Result<Manga> {
 		cover.push_str(&id);
 		cover.push('/');
 		cover.push_str(&cover_file);
-		cover.push_str(
-			&defaults_get("coverQuality")
-				.as_string()
-				.map(|v| v.read())
-				.unwrap_or_default(),
-		);
+		if let Ok(cover_quality) = defaults_get("coverQuality") {
+			cover.push_str(
+				&cover_quality
+					.as_string()
+					.map(|v| v.read())
+					.unwrap_or_default(),
+			);
+		}
 	}
 
 	Ok(Manga {
 		id,
 		cover,
 		title,
-		author: String::new(),
-		artist: String::new(),
-		description: String::new(),
-		url: String::new(),
-		categories: Vec::new(),
-		status: MangaStatus::Unknown,
-		nsfw: MangaContentRating::Safe,
-		viewer: MangaViewer::Default,
+		..Default::default()
 	})
 }
 
@@ -128,12 +133,14 @@ pub fn parse_full_manga(manga_object: ObjectRef) -> Result<Manga> {
 	cover.push_str(&id);
 	cover.push('/');
 	cover.push_str(&cover_file);
-	cover.push_str(
-		&defaults_get("coverQuality")
-			.as_string()
-			.map(|v| v.read())
-			.unwrap_or_default(),
-	);
+	if let Ok(cover_quality) = defaults_get("coverQuality") {
+		cover.push_str(
+			&cover_quality
+				.as_string()
+				.map(|v| v.read())
+				.unwrap_or_default(),
+		);
+	}
 
 	// Description
 	let description = attributes

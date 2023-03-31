@@ -76,12 +76,14 @@ pub fn get_image_url(obj: Node) -> String {
 	}
 	img = String::from(img.trim());
 
-	if defaults_get("highres").as_bool().unwrap_or(false) && !img.contains("width") {
-		img = img
-			.replace("-350x476", "")
-			.replace("-193x278", "")
-			.replace("-110x150", "")
-			.replace("-175x238", "");
+	if let Ok(highres) = defaults_get("highres") {
+		if highres.as_bool().unwrap_or(false) && !img.contains("width") {
+			img = img
+				.replace("-350x476", "")
+				.replace("-193x278", "")
+				.replace("-110x150", "")
+				.replace("-175x238", "");
+		}
 	}
 	// encoding last part of the url as some scanlations use non-alphanumerical
 	// chars which need to be encoded
@@ -184,17 +186,22 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32, data: &MadaraSiteData) 
 
 pub fn get_int_manga_id(manga_id: String, base_url: String, path: String) -> String {
 	let url = base_url + "/" + path.as_str() + "/" + manga_id.as_str();
-	let html = Request::new(url.as_str(), HttpMethod::Get).html();
-	let id_html = html.select("script#wp-manga-js-extra").html().read();
-	let id = &id_html[id_html.find("manga_id").expect("Could not find manga_id") + 11
-		..id_html.find("\"}").expect("Could not find end of manga_id")];
-	String::from(id)
+	if let Ok(html) = Request::new(url.as_str(), HttpMethod::Get).html() {
+		let id_html = html.select("script#wp-manga-js-extra").html().read();
+		let id = &id_html[id_html.find("manga_id").expect("Could not find manga_id") + 11
+			..id_html.find("\"}").expect("Could not find end of manga_id")];
+		String::from(id)
+	} else {
+		String::new()
+	}
 }
 
 pub fn get_lang_code() -> Option<String> {
-	if let Ok(languages) = defaults_get("languages").as_array() {
-		if let Ok(language) = languages.get(0).as_string() {
-			return Some(language.read());
+	if let Ok(languages_val) = defaults_get("languages") {
+		if let Ok(languages) = languages_val.as_array() {
+			if let Ok(language) = languages.get(0).as_string() {
+				return Some(language.read());
+			}
 		}
 	}
 	None
