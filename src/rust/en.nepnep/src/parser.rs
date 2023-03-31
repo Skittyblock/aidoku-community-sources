@@ -16,7 +16,7 @@ pub fn parse_manga_listing(manga_object: ObjectRef) -> Result<Manga> {
 	let title = manga_object.get("SeriesName").as_string()?.read();
 	let cover = String::from(COVER_SERVER).replace("{{Result.i}}", &id);
 
-	let mut url = defaults_get("sourceURL")
+    let mut url = defaults_get("sourceURL")
         .expect("missing sourceURL")
         .as_string()
         ?.read();

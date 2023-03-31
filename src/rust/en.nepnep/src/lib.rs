@@ -187,7 +187,7 @@ fn get_manga_details(id: String) -> Result<Manga> {
 	cache_manga_page(&id);
 	let html = unsafe { Node::new(CACHED_MANGA.clone().unwrap().as_bytes()) }?;
 
-	let mut url = defaults_get("sourceURL")
+    let mut url = defaults_get("sourceURL")
         .expect("missing sourceURL")
         .as_string()
         ?.read();
@@ -221,11 +221,11 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 
 #[get_page_list]
 fn get_page_list(chapter_id: String, _manga_id: String) -> Result<Vec<Page>> {
-	let mut url = defaults_get("sourceURL")
+    let mut url = defaults_get("sourceURL")
         .expect("missing sourceURL")
         .as_string()
         ?.read();
-	url.push_str("/read-online/");
+    url.push_str("/read-online/");
 	url.push_str(&chapter_id);
 
 	let result = Request::new(&url, HttpMethod::Get).string()?;
