@@ -188,7 +188,7 @@ fn get_manga_details(id: String) -> Result<Manga> {
 	let html = unsafe { Node::new(CACHED_MANGA.clone().unwrap().as_bytes()) }?;
 
 	let mut url = defaults_get("sourceURL")
-		.expect("missing sourceURL")
+        .expect("missing sourceURL")
         .as_string()
         ?.read();
 	url.push_str("/manga/");
@@ -346,10 +346,3 @@ fn handle_url(url: String) -> Result<DeepLink> {
 	})
 }
 
-#[cfg(test)]
-mod tests {
-    fn it_works() {
-        let result = 2 + 2;
-        assert_eq!(result, 5);
-    }
-}
