@@ -402,7 +402,15 @@ impl MangaStreamSource {
 		} else {
 			for (at, page) in html.select(self.page_selector).array().enumerate() {
 				let page_node = page.as_node().expect("Failed to get page as node");
-				let page_url = if self.protocol { format!("{}{}", "https:", urlencode(page_node.attr(self.page_url).read())) } else { urlencode(page_node.attr(self.page_url).read()) } ;
+				let page_url = if self.protocol {
+					format!(
+						"{}{}",
+						"https:",
+						urlencode(page_node.attr(self.page_url).read())
+					)
+				} else {
+					urlencode(page_node.attr(self.page_url).read())
+				};
 				// avoid svgs
 				if page_url.starts_with("data") {
 					continue;
