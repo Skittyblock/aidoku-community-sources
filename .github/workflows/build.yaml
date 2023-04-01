@@ -6,7 +6,6 @@ on:
     paths:
     - 'src/**'
     - '.github/workflows/build.yaml'
-  workflow_dispatch: 
 
 concurrency:
   group: ${{ github.workflow }}
@@ -74,35 +73,34 @@ jobs:
             ./build.sh -a
           )
         done
-    # -
-    #   name: Building source list
-    #   run: |
-    #     aidoku build ./**/*.aix
-    # -
-    #   name: Deploy to GitHub Pages
-    #   uses: JamesIves/github-pages-deploy-action@v4.2.5
-    #   if: ${{ github.ref == 'refs/heads/main' }}
-    #   with:
-    #     branch: gh-pages
-    #     folder: public
-    #     git-config-name: GitHub Actions
-    #     git-config-email: github-actions[bot]@users.noreply.github.com
-    #     commit-message: Update source list
-    #     single-commit: true
-    # - 
-    #   name: Uploading packages as artifact
-    #   uses: actions/upload-artifact@v3
-    #   if: always()
-    #   with:
-    #     name: packages
-    #     path: public/sources/*.aix
-    #     if-no-files-found: ignore
-    # -
-    #   name: Uploading gh-pages deployment as artifact
-    #   uses: actions/upload-artifact@v3
-    #   if: always()
-    #   with:
-    #     name: gh-pages
-    #     path: public
-    #     if-no-files-found: ignore
-
+    -
+      name: Building source list
+      run: |
+        aidoku build ./**/*.aix
+    -
+      name: Deploy to GitHub Pages
+      uses: JamesIves/github-pages-deploy-action@v4.2.5
+      if: ${{ github.ref == 'refs/heads/main' }}
+      with:
+        branch: gh-pages
+        folder: public
+        git-config-name: GitHub Actions
+        git-config-email: github-actions[bot]@users.noreply.github.com
+        commit-message: Update source list
+        single-commit: true
+    - 
+      name: Uploading packages as artifact
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: packages
+        path: public/sources/*.aix
+        if-no-files-found: ignore
+    -
+      name: Uploading gh-pages deployment as artifact
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: gh-pages
+        path: public
+        if-no-files-found: ignore
