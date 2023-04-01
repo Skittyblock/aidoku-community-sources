@@ -55,10 +55,10 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 
 	let url = helper::build_search_url(query, tags.clone(), sort, page);
 
-	let html = Request::new(url.as_str(), HttpMethod::Get).html();
+	let html = Request::new(url.as_str(), HttpMethod::Get).html()?;
 
 	for result in html.select(".lc_galleries .thumb").array() {
-		let res_node = result.as_node();
+		let res_node = result.as_node().expect("Failed to get node");
 		let a_tag = res_node.select(".caption .g_title a");
 		let title = a_tag.text().read();
 		let href = a_tag.attr("href").read();
@@ -82,7 +82,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	}
 
 	for paging_res in html.select(".pagination .page-item a").array() {
-		let paging = paging_res.as_node();
+		let paging = paging_res.as_node().expect("Failed to get node");
 		let href = paging.attr("href").read();
 		if href == "#" {
 			continue;
@@ -106,7 +106,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 #[get_manga_details]
 fn get_manga_details(id: String) -> Result<Manga> {
 	let url = format!("https://hentaifox.com/gallery/{}", id);
-	let html = Request::new(url.as_str(), HttpMethod::Get).html();
+	let html = Request::new(url.as_str(), HttpMethod::Get).html()?;
 
 	let cover = html
 		.select(".gallery_top .gallery_left img")
@@ -126,7 +126,7 @@ fn get_manga_details(id: String) -> Result<Manga> {
 		.select(".gallery_top .gallery_right .tags li a")
 		.array()
 	{
-		let tags = tags_arr.as_node();
+		let tags = tags_arr.as_node().expect("Failed to get node");
 		let tag = tags.attr("href").read();
 		let tag_str = helper::get_tag_slug(tag);
 
@@ -166,9 +166,9 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 }
 
 #[get_page_list]
-fn get_page_list(id: String) -> Result<Vec<Page>> {
-	let url = format!("https://hentaifox.com/gallery/{}", id);
-	let html = Request::new(url.as_str(), HttpMethod::Get).html();
+fn get_page_list(chapter_id: String, _manga_id: String) -> Result<Vec<Page>> {
+	let url = format!("https://hentaifox.com/gallery/{chapter_id}");
+	let html = Request::new(url.as_str(), HttpMethod::Get).html()?;
 
 	let g_id = html.select("#load_id").attr("value").read();
 	let img_dir = html.select("#load_dir").attr("value").read();
@@ -178,7 +178,7 @@ fn get_page_list(id: String) -> Result<Vec<Page>> {
 
 	let total = helper::numbers_only_from_string(total_pages);
 	for i in 1..=total {
-		let img_url = format!("https://i2.hentaifox.com/{}/{}/{}.jpg", img_dir, g_id, i);
+		let img_url = format!("https://i2.hentaifox.com/{img_dir}/{g_id}/{i}.jpg");
 		pages.push(Page {
 			index: i,
 			url: img_url,

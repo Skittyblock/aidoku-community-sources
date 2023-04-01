@@ -10,7 +10,6 @@ fn get_instance() -> MangaStreamSource {
 	MangaStreamSource {
 		base_url: String::from("https://luminousscans.com"),
 		traverse_pathname: "series",
-		has_permanent_manga_url: true,
 		alt_pages: true,
 		..Default::default()
 	}

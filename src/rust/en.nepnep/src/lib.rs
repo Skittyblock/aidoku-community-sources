@@ -26,11 +26,17 @@ static mut COVER_SERVER: Option<String> = None;
 // Cache full manga directory
 // Done to avoid repeated requests and speed up parsing
 pub fn initialize_directory() {
-	if let Ok(url_str) = defaults_get("sourceURL").as_string() {
+	if let Ok(url_str) = defaults_get("sourceURL")
+		.expect("missing sourceURL")
+		.as_string()
+	{
 		let mut url = url_str.read();
 		url.push_str("/search/");
 
-		let html = Request::new(&url, HttpMethod::Get).html();
+		let html = match Request::new(&url, HttpMethod::Get).html() {
+			Ok(html) => html,
+			Err(_) => return,
+		};
 		let node = html.select(".SearchResult > .SearchResultCover img");
 		unsafe {
 			COVER_SERVER = if node.has_attr("ng-src") {
@@ -45,7 +51,10 @@ pub fn initialize_directory() {
 		let result = html.outer_html().read();
 		let final_str = helper::string_between(&result, "vm.Directory = ", "];", 1);
 
-		let mut directory_parsed = parse(final_str.as_bytes());
+		let mut directory_parsed = match parse(final_str.as_bytes()) {
+			Ok(parsed) => parsed,
+			Err(_) => return,
+		};
 		directory_parsed.1 = false;
 		unsafe {
 			DIRECTORY_RID = directory_parsed.0;
@@ -58,12 +67,15 @@ pub fn cache_manga_page(id: &str) {
 	if unsafe { CACHED_MANGA.is_some() } && unsafe { CACHED_MANGA_ID.clone().unwrap() } == id {
 		return;
 	}
-	if let Ok(url_str) = defaults_get("sourceURL").as_string() {
+	if let Ok(url_str) = defaults_get("sourceURL")
+		.expect("missing sourceURL")
+		.as_string()
+	{
 		let mut url = url_str.read();
 		url.push_str("/manga/");
 		url.push_str(id);
 		unsafe {
-			CACHED_MANGA = Some(Request::new(&url, HttpMethod::Get).string());
+			CACHED_MANGA = Request::new(&url, HttpMethod::Get).string().ok();
 			CACHED_MANGA_ID = Some(String::from(id));
 		};
 	}
@@ -153,9 +165,9 @@ fn get_manga_listing(_listing: Listing, _page: i32) -> Result<MangaPageResult> {
 #[get_manga_details]
 fn get_manga_details(id: String) -> Result<Manga> {
 	cache_manga_page(&id);
-	let html = unsafe { Node::new(CACHED_MANGA.clone().unwrap().as_bytes()) };
+	let html = unsafe { Node::new(CACHED_MANGA.clone().unwrap().as_bytes()) }?;
 
-	let mut url = defaults_get("sourceURL").as_string()?.read();
+	let mut url = defaults_get("sourceURL")?.as_string()?.read();
 	url.push_str("/manga/");
 	url.push_str(&id);
 
@@ -172,7 +184,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 	let json_end = half_json.find("];").unwrap_or(half_json.len() - 1) + 1;
 	let json = &half_json[..json_end];
 
-	let chapter_arr = parse(json.as_bytes()).as_array()?;
+	let chapter_arr = parse(json.as_bytes())?.as_array()?;
 
 	let mut chapters: Vec<Chapter> = Vec::with_capacity(chapter_arr.len());
 
@@ -185,18 +197,18 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 }
 
 #[get_page_list]
-fn get_page_list(id: String) -> Result<Vec<Page>> {
-	let mut url = defaults_get("sourceURL").as_string()?.read();
+fn get_page_list(chapter_id: String, _manga_id: String) -> Result<Vec<Page>> {
+	let mut url = defaults_get("sourceURL")?.as_string()?.read();
 	url.push_str("/read-online/");
-	url.push_str(&id);
+	url.push_str(&chapter_id);
 
-	let result = Request::new(&url, HttpMethod::Get).string();
+	let result = Request::new(&url, HttpMethod::Get).string()?;
 
 	// create base image url
 	let base_url = helper::string_between(&result, "vm.CurPathName = \"", "\";", 0);
 	let title_uri = helper::string_between(&result, "vm.IndexName = \"", "\";", 0);
 
-	let chapter = parse(helper::string_between(&result, "vm.CurChapter = ", "};", 1).as_bytes())
+	let chapter = parse(helper::string_between(&result, "vm.CurChapter = ", "};", 1).as_bytes())?
 		.as_object()?;
 
 	let directory = match chapter.get("Directory").as_string() {
@@ -245,8 +257,7 @@ fn get_page_list(id: String) -> Result<Vec<Page>> {
 		pages.push(Page {
 			index: i as i32,
 			url: page_url,
-			base64: String::new(),
-			text: String::new(),
+			..Default::default()
 		})
 	}
 
@@ -294,13 +305,8 @@ fn handle_url(url: String) -> Result<DeepLink> {
 		let manga = get_manga_details(String::from(manga_id))?;
 		let chapter = Chapter {
 			id: String::from(id),
-			title: String::new(),
-			volume: -1.0,
-			chapter: -1.0,
-			date_updated: -1.0,
-			scanlator: String::new(),
 			url,
-			lang: String::new(),
+			..Default::default()
 		};
 
 		return Ok(DeepLink {

@@ -272,16 +272,15 @@ pub fn get_search_url(base_url: String, query: String, tag: String, page: i32) -
 
 pub fn text_with_newlines(html: String) -> Option<String> {
 	if !String::from(html.trim()).is_empty() {
-		Some(
-			Node::new_fragment(
-				html.replace("<br>", "{{ .LINEBREAK }}")
-					.replace("</p><p>", "{{ .LINEBREAK }}")
-					.as_bytes(),
-			)
-			.text()
-			.read()
-			.replace("{{ .LINEBREAK }}", "\n"),
-		)
+		if let Ok(node) = Node::new_fragment(
+			html.replace("<br>", "{{ .LINEBREAK }}")
+				.replace("</p><p>", "{{ .LINEBREAK }}")
+				.as_bytes(),
+		) {
+			Some(node.text().read().replace("{{ .LINEBREAK }}", "\n"))
+		} else {
+			None
+		}
 	} else {
 		None
 	}

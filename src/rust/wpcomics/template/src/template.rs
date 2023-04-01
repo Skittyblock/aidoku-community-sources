@@ -75,19 +75,22 @@ impl WPComicsSource {
 				unsafe { VINAHOST_COOKIE.clone().unwrap() }.as_str(),
 			)
 		} else if self.vinahost_protection {
-			let blocked_html = Request::new(url, HttpMethod::Get).html();
-			let script = blocked_html.select("script").html().read();
-			let cookie = script
-				.replace("document.cookie=\"", "")
-				.replace("\";window.location.reload(true);", "")
-				.replace("\"+\"", "");
-			unsafe {
-				VINAHOST_COOKIE = Some(cookie);
-			};
-			Request::new(url, HttpMethod::Get).header(
-				"Cookie",
-				unsafe { VINAHOST_COOKIE.clone().unwrap() }.as_str(),
-			)
+			if let Ok(blocked_html) = Request::new(url, HttpMethod::Get).html() {
+				let script = blocked_html.select("script").html().read();
+				let cookie = script
+					.replace("document.cookie=\"", "")
+					.replace("\";window.location.reload(true);", "")
+					.replace("\"+\"", "");
+				unsafe {
+					VINAHOST_COOKIE = Some(cookie);
+				};
+				Request::new(url, HttpMethod::Get).header(
+					"Cookie",
+					unsafe { VINAHOST_COOKIE.clone().unwrap() }.as_str(),
+				)
+			} else {
+				Request::new(url, HttpMethod::Get)
+			}
 		} else {
 			Request::new(url, HttpMethod::Get)
 		}
@@ -103,10 +106,10 @@ impl WPComicsSource {
 		#[allow(clippy::needless_match)]
 		let mut viewer = match self.viewer {
 			MangaViewer::Rtl => MangaViewer::Rtl,
-			MangaViewer::Default => MangaViewer::Default,
 			MangaViewer::Ltr => MangaViewer::Ltr,
 			MangaViewer::Scroll => MangaViewer::Scroll,
 			MangaViewer::Vertical => MangaViewer::Vertical,
+			_ => MangaViewer::Rtl,
 		};
 		for category in categories {
 			match category.as_str() {
@@ -126,12 +129,12 @@ impl WPComicsSource {
 
 	pub fn get_manga_list(&self, search_url: String) -> Result<MangaPageResult> {
 		let mut has_next_page = !self.next_page.is_empty();
-		let html = self.request_vinahost(&search_url).html();
+		let html = self.request_vinahost(&search_url).html()?;
 		let node = html.select(self.manga_cell);
 		let elems = node.array();
 		let mut mangas: Vec<Manga> = Vec::with_capacity(elems.len());
 		for item in elems {
-			let item_node = item.as_node();
+			let item_node = item.as_node().expect("node array");
 			let title = item_node
 				.select(self.manga_cell_title)
 				.first()
@@ -160,14 +163,7 @@ impl WPComicsSource {
 				id,
 				cover,
 				title: (self.manga_details_title_transformer)(title),
-				author: String::new(),
-				artist: String::new(),
-				description: String::new(),
-				url: String::new(),
-				categories: Vec::new(),
-				status: MangaStatus::Unknown,
-				nsfw: MangaContentRating::Safe,
-				viewer: MangaViewer::Default,
+				..Default::default()
 			});
 		}
 		if !self.next_page.is_empty() {
@@ -192,7 +188,7 @@ impl WPComicsSource {
 
 	pub fn get_manga_details(&self, id: String) -> Result<Manga> {
 		cache_manga_page(self, id.as_str());
-		let details = unsafe { Node::new(&CACHED_MANGA.clone().unwrap()) };
+		let details = unsafe { Node::new(&CACHED_MANGA.clone().unwrap())? };
 		let title = details.select(self.manga_details_title).text().read();
 		let cover = append_protocol(details.select(self.manga_details_cover).attr("src").read());
 		let author = (self.manga_details_author_transformer)(
@@ -206,7 +202,7 @@ impl WPComicsSource {
 				categories = details
 					.select(self.manga_details_tags)
 					.array()
-					.map(|elem| elem.as_node().text().read())
+					.map(|elem| elem.as_node().expect("node array").text().read())
 					.collect::<Vec<_>>();
 			} else {
 				for node in details
@@ -242,7 +238,7 @@ impl WPComicsSource {
 		let mut skipped_first = false;
 		let mut chapters: Vec<Chapter> = Vec::new();
 		cache_manga_page(self, id.as_str());
-		let html = unsafe { Node::new(&CACHED_MANGA.clone().unwrap()) };
+		let html = unsafe { Node::new(&CACHED_MANGA.clone().unwrap())? };
 		let title_untrimmed = (self.manga_details_title_transformer)(
 			html.select(self.manga_details_title).text().read(),
 		);
@@ -252,7 +248,7 @@ impl WPComicsSource {
 				skipped_first = true;
 				continue;
 			}
-			let chapter_node = chapter.as_node();
+			let chapter_node = chapter.as_node().expect("node array");
 			let mut chapter_url = chapter_node
 				.select(self.chapter_anchor_selector)
 				.attr("href")
@@ -308,12 +304,12 @@ impl WPComicsSource {
 		Ok(chapters)
 	}
 
-	pub fn get_page_list(&self, id: String) -> Result<Vec<Page>> {
+	pub fn get_page_list(&self, chapter_id: String) -> Result<Vec<Page>> {
 		let mut pages: Vec<Page> = Vec::new();
-		let url = format!("{}{}", &id, self.manga_viewer_page_url_suffix);
-		let html = self.request_vinahost(&url).html();
+		let url = format!("{}{}", &chapter_id, self.manga_viewer_page_url_suffix);
+		let html = self.request_vinahost(&url).html()?;
 		for (at, page) in html.select(self.manga_viewer_page).array().enumerate() {
-			let page_node = page.as_node();
+			let page_node = page.as_node().expect("node array");
 			let mut page_url = page_node.attr("data-original").read();
 			if !page_url.starts_with("http") {
 				page_url = String::from("https:") + &page_url;
@@ -330,13 +326,14 @@ impl WPComicsSource {
 
 	pub fn handle_url(&self, url: String) -> Result<DeepLink> {
 		cache_manga_page(self, url.as_str());
-		let html = unsafe { Node::new(&CACHED_MANGA.clone().unwrap()) };
+		let html = unsafe { Node::new(&CACHED_MANGA.clone().unwrap())? };
 		if html.select(self.manga_viewer_page).array().len() > 0 {
 			let node = html.select(".breadcrumb li");
 			let breadcrumbs = node.array();
 			let mut manga_id = breadcrumbs
 				.get(breadcrumbs.len() / 2 - 2)
 				.as_node()
+				.expect("node array")
 				.select("a")
 				.attr("href")
 				.read();
