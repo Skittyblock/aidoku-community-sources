@@ -298,9 +298,3 @@ Checklist:
 - [ ] Set appropriate `nsfw` value
 - [ ] Did not change `id` even if a source's name or language were changed
 - [ ] Tested the modifications by running it on the simulator or a test device 
-
-## Common Errors
-
-### `wasm32-unknown-unknown` target may not be installed
-
-Run `rustup target add wasm32-unknown-unknown --toolchain nightly`. Ref: https://github.com/rustwasm/wasm-bindgen/issues/929#issuecomment-427124646

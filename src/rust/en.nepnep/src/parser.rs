@@ -16,33 +16,24 @@ pub fn parse_manga_listing(manga_object: ObjectRef) -> Result<Manga> {
 	let title = manga_object.get("SeriesName").as_string()?.read();
 	let cover = String::from(COVER_SERVER).replace("{{Result.i}}", &id);
 
-    let mut url = defaults_get("sourceURL")
-        .expect("missing sourceURL")
-        .as_string()
-        ?.read();
+	let mut url = defaults_get("sourceURL")?.as_string()?.read();
 	url.push_str("/manga/");
 	url.push_str(&id);
 
 	Ok(Manga {
 		id,
-		cover,
 		title,
-		author: String::new(),
-		artist: String::new(),
-		description: String::new(),
+		cover,
 		url,
-		categories: Vec::new(),
-		status: MangaStatus::Unknown,
-		nsfw: MangaContentRating::Safe,
-		viewer: MangaViewer::Default,
+		..Default::default()
 	})
 }
 
 // Parse manga with title and cover
-pub fn parse_basic_manga(manga_object: ObjectRef, cover_url: String) -> Result<Manga> {
+pub fn parse_basic_manga(manga_object: ObjectRef) -> Result<Manga> {
 	let id = manga_object.get("i").as_string()?.read();
 	let title = manga_object.get("s").as_string()?.read();
-	let cover = cover_url.replace("{{Result.i}}", &id);
+	let cover = String::from(COVER_SERVER).replace("{{Result.i}}", &id);
 
 	let mut url = defaults_get("sourceURL")?.as_string()?.read();
 	url.push_str("/manga/");
