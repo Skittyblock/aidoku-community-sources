@@ -1,0 +1,18 @@
+{
+	"info": {
+		"id": "id.pojokmanga",
+		"lang": "id",
+		"name": "PojokManga",
+		"version": 1,
+		"url": "https://pojokmanga.net",
+		"nsfw": 0
+	},
+	"listings": [
+		{
+			"name": "Trending"
+		},
+		{
+			"name": "Popular"
+		}
+	]
+}

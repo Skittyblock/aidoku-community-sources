@@ -1,10 +1,10 @@
 {
 	"info": {
-		"id": "id.manhwaindo",
+		"id": "id.manhwalist",
 		"lang": "id",
-		"name": "ManhwaIndo",
-		"version": 3,
-		"url": "https://manhwaindo.id"
+		"name": "Manhwalist",
+		"version": 1,
+		"url": "https://manhwalist.in"
 	},
 	"listings": [
 		{

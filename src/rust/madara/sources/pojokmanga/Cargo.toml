@@ -1,5 +1,5 @@
 [package]
-name = "manhwaindo"
+name = "pojokmanga"
 version = "0.1.0"
 edition = "2021"
 publish = false
@@ -9,4 +9,4 @@ crate-type = ["cdylib"]
 
 [dependencies]
 aidoku = { git = "https://github.com/Aidoku/aidoku-rs/" }
-mangastream_template = { path = "../../template" }
+madara_template = { path = "../../template" }
