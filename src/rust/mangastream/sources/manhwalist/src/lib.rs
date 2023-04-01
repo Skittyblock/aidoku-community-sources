@@ -8,12 +8,9 @@ use mangastream_template::template::MangaStreamSource;
 
 fn get_instance() -> MangaStreamSource {
 	MangaStreamSource {
-		base_url: String::from("https://manhwaland.mom"),
-		manga_title_trim: ["Manhwa ".into()].to_vec(),
-		is_nsfw: true,
-		traverse_pathname: "series",
+		base_url: String::from("https://manhwalist.in"),
 		chapter_date_format: "MMMM d, yyyy",
-		locale: "id",
+		locale: "en",
 		alt_pages: true,
 		..Default::default()
 	}
