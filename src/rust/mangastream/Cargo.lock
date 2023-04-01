@@ -189,15 +189,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "manhwaindo"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "mangastream_template",
-]
-
-[[package]]
-name = "manhwaland"
+name = "manhwalist"
 version = "0.1.0"
 dependencies = [
  "aidoku",
