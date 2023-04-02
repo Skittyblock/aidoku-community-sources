@@ -53,16 +53,10 @@ pub fn urlencode(string: String) -> String {
 pub fn text_with_newlines(node: Node) -> String {
 	let html = node.html().read();
 	if !String::from(html.trim()).is_empty() {
-		Node::new_fragment(
-			node.html()
-				.read()
-				.replace("<br>", "{{ .LINEBREAK }}")
-				.as_bytes(),
-		)
-		.expect("Failed to create new fragment")
-		.text()
-		.read()
-		.replace("{{ .LINEBREAK }}", "\n")
+		html.split("<br>")
+			.map(|a| a.trim())
+			.collect::<Vec<&str>>()
+			.join("\n")
 	} else {
 		String::new()
 	}
