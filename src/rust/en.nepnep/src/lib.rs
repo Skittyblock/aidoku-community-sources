@@ -164,10 +164,7 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 			}
 		}
 		_ => {
-			println!("Received unexpected listing: {}", listing_name);
-			return Err(aidoku::error::AidokuError {
-				reason: aidoku::error::AidokuErrorKind::Unimplemented,
-			});
+			panic!("Received unexpected listing: {}", listing_name);
 		}
 	}
 	let directory_arr = unsafe { ValueRef::new(copy(HOT_UPDATE_RID)) }.as_array()?;
