@@ -353,12 +353,29 @@ pub fn parse_page_list(
 	// Stores the indices of the pages so duplicates can be incremented.
 	let mut indices: Vec<i32> = Vec::new();
 
-	for page in html.select("main div img.max-w-full").array() {
+	// Select all images that are not children of a noscript tag.
+	for page in html
+		.select("main div img.max-w-full:not(noscript *)")
+		.array()
+	{
 		let page_node = page
 			.as_node()
 			.expect("Reaperscans: Failed to parse a chapter node. The chapter pages request was unsuccessful");
 
-		let url = page_node.attr("src").read();
+		let url = {
+			let src = page_node.attr("src").read();
+			let data_cfsrc = page_node.attr("data-cfsrc").read();
+
+			if !src.is_empty() {
+				src
+			} else {
+				if !data_cfsrc.is_empty() {
+					data_cfsrc
+				} else {
+					panic!("Reaperscans: Failed to get the image url");
+				}
+			}
+		};
 
 		let image_name = url
 			.split('/')
