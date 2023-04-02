@@ -1,11 +1,10 @@
 {
 	"info": {
-		"id": "id.manhwaland",
+		"id": "id.manhwalist",
 		"lang": "id",
-		"name": "Manhwaland",
-		"version": 2,
-		"url": "https://manhwaland.mom",
-		"nsfw": 2
+		"name": "Manhwalist",
+		"version": 1,
+		"url": "https://manhwalist.in"
 	},
 	"listings": [
 		{

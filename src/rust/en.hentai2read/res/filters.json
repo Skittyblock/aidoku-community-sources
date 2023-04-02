@@ -1,0 +1,3781 @@
+[
+	{
+		"type": "title"
+	},
+	{
+		"type": "author"
+	},
+	{
+		"type": "group",
+		"name": "Categories",
+		"filters": [
+			{
+				"type": "genre",
+				"id": "category_34",
+				"name": "Adult",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "category_7",
+				"name": "Anal",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "category_20",
+				"name": "Big Breasts",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "category_43",
+				"name": "Comedy",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "category_46",
+				"name": "Compilation",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "category_42",
+				"name": "Doujinshi",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "category_40",
+				"name": "Ecchi",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "category_14",
+				"name": "Futanari",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "category_26",
+				"name": "Gender Bender",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "category_31",
+				"name": "Harem",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "category_15",
+				"name": "Incest",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "category_16",
+				"name": "Lactation",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "category_50",
+				"name": "Licensed",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "category_17",
+				"name": "Lolicon",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "category_18",
+				"name": "Masturbation",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "category_33",
+				"name": "Oneshot",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "category_23",
+				"name": "Rape",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "category_30",
+				"name": "Robotics",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Romance",
+				"canExclude": true,
+				"id": "category_41"
+			},
+			{
+				"type": "genre",
+				"name": "School Life",
+				"canExclude": true,
+				"id": "category_48"
+			},
+			{
+				"type": "genre",
+				"name": "Serialized",
+				"canExclude": true,
+				"id": "category_32"
+			},
+			{
+				"type": "genre",
+				"name": "Shotacon",
+				"canExclude": true,
+				"id": "category_44"
+			},
+			{
+				"type": "genre",
+				"name": "Tentacles",
+				"canExclude": true,
+				"id": "category_24"
+			},
+			{
+				"type": "genre",
+				"name": "Tragedy",
+				"canExclude": true,
+				"id": "category_49"
+			},
+			{
+				"type": "genre",
+				"name": "Un-censored",
+				"canExclude": true,
+				"id": "category_47"
+			},
+			{
+				"type": "genre",
+				"name": "Yaoi",
+				"canExclude": true,
+				"id": "category_27"
+			},
+			{
+				"type": "genre",
+				"name": "Yuri",
+				"canExclude": true,
+				"id": "category_28"
+			}
+		]
+	},
+	{
+		"type": "group",
+		"name": "Tags",
+		"filters": [
+			{
+				"type": "genre",
+				"id": "tag_529",
+				"name": "Abortion",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1423",
+				"name": "Absent Parents",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_878",
+				"name": "Abusive Lover",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1587",
+				"name": "Abusive",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_416",
+				"name": "Adapted to H-Anime",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1438",
+				"name": "Addiction",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1634",
+				"name": "Adopted Sister",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_522",
+				"name": "Adoption",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1451",
+				"name": "Adoptive Siblings",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_661",
+				"name": "Adultery",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1459",
+				"name": "Affair",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1599",
+				"name": "Aggressive Lover",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1702",
+				"name": "Ahegao",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1807",
+				"name": "Airheads",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_347",
+				"name": "All-Girls School",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_666",
+				"name": "Alternative Ending",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1365",
+				"name": "Anal Play",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_2298",
+				"name": "Analingus (Rimjob)",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1093",
+				"name": "Angels",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1904",
+				"name": "Animal Girls",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_710",
+				"name": "Animal Transformation",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_589",
+				"name": "Anthology",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_913",
+				"name": "Anthropomorphism",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_975",
+				"name": "Apron",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_2360",
+				"name": "Armpit Licking",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1843",
+				"name": "Armpit Sex",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_846",
+				"name": "Arranged Marriage",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1719",
+				"name": "Artificial Intelligence",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_2190",
+				"name": "Assjob",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_327",
+				"name": "Aunt-Nephew Relationship",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1661",
+				"name": "Aunts",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1821",
+				"name": "Authority Figures",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_2188",
+				"name": "Bad Grammar",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_350",
+				"name": "Bathroom Intercourse",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1867",
+				"name": "BBW",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_831",
+				"name": "BDSM",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_403",
+				"name": "Beach",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1227",
+				"name": "Best Friends",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_372",
+				"name": "Bestiality",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_610",
+				"name": "Betrayal",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1591",
+				"name": "Big Ass",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1514",
+				"name": "Bikini",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_645",
+				"name": "Bishoujo",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1439",
+				"name": "Bittersweet Ending",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_391",
+				"name": "Blackmail",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1875",
+				"name": "Blind Characters",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1177",
+				"name": "Blindfold",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1444",
+				"name": "Bloomers",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_952",
+				"name": "Blow job",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_2542",
+				"name": "Blowjob Face",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1760",
+				"name": "Body Modification",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_444",
+				"name": "Body Swap",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_2183",
+				"name": "Body Writing",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_317",
+				"name": "Bondage",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_395",
+				"name": "Borderline H",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1321",
+				"name": "Brainwash",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_2191",
+				"name": "Breast Expansion",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1351",
+				"name": "Brides",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1305",
+				"name": "Brother and Sister",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_574",
+				"name": "Brother Complex",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1782",
+				"name": "Brother-in-law",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1263",
+				"name": "BSDM",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_551",
+				"name": "Bukkake",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_600",
+				"name": "Bullying",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1226",
+				"name": "Bunny Girls",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1633",
+				"name": "Cat Ears",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_957",
+				"name": "Cat Girls",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_339",
+				"name": "Caught in the Act",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1196",
+				"name": "Censored",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_2184",
+				"name": "Cervix Penetration",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1512",
+				"name": "CGs",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_549",
+				"name": "Character Who Bullies the One They Love",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_351",
+				"name": "Cheating",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1339",
+				"name": "Cheerleaders",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1852",
+				"name": "Child Abuse",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_575",
+				"name": "Child Born From Incest",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1663",
+				"name": "Child Prostitute",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_309",
+				"name": "Childhood Friends",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_310",
+				"name": "Childhood Love",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_2344",
+				"name": "Chinese Dress",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1819",
+				"name": "Chubby",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1586",
+				"name": "Club President",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1808",
+				"name": "Clumsy Character",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1739",
+				"name": "Co-workers",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_415",
+				"name": "Collection of Inter-Linked Stories",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_352",
+				"name": "Collection of Short Stories/Oneshots",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_834",
+				"name": "Confession",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_755",
+				"name": "Corruption",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_379",
+				"name": "Cosplay",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1340",
+				"name": "Cousins",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1371",
+				"name": "Cow Girls",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1037",
+				"name": "Creampie",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_343",
+				"name": "Crossdressing",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1754",
+				"name": "Cunnilingus",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1277",
+				"name": "Dark Skin",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1364",
+				"name": "Debt-Motivated Prostitution",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1154",
+				"name": "Debts",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_516",
+				"name": "Deception",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1436",
+				"name": "Deep Throat",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1246",
+				"name": "Defloration",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_680",
+				"name": "Delinquents",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1453",
+				"name": "Demon Girls",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1666",
+				"name": "Demon Hunters",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1152",
+				"name": "Demons",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_900",
+				"name": "Doctor-Patient Relationship",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_353",
+				"name": "Dog Girls",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_427",
+				"name": "Double Penetration",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_446",
+				"name": "Drugs",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_438",
+				"name": "Drunk Intercourse",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_864",
+				"name": "Drunk",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1370",
+				"name": "Elf-Elves",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_2312",
+				"name": "Emotionless Sex",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1740",
+				"name": "Enema Play",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_803",
+				"name": "Enemies Become Lovers",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_302",
+				"name": "Ero-Guro",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_404",
+				"name": "Exhibitionism",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1831",
+				"name": "Facesitting",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1368",
+				"name": "Fairy-Fairies",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1616",
+				"name": "Family Love",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1623",
+				"name": "Family Secrets",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1021",
+				"name": "Father and Daughter",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1922",
+				"name": "Father-in-Law",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_320",
+				"name": "Female Dominance",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1030",
+				"name": "Fetish",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1745",
+				"name": "Fight Between Lovers",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1389",
+				"name": "Fingering",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_670",
+				"name": "First Love",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_428",
+				"name": "Fisting",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1058",
+				"name": "Foot job",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_2505",
+				"name": "Foot Licking",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1746",
+				"name": "Forced into a Relationship",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1617",
+				"name": "Forced Marriage",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1320",
+				"name": "Forced Sex",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_330",
+				"name": "Foursome",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1268",
+				"name": "Fox Girls",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1769",
+				"name": "Friends Become Lovers",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_468",
+				"name": "Full Color",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_2315",
+				"name": "Furry",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_2309",
+				"name": "Futa on Female",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1850",
+				"name": "Futa on Male",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_429",
+				"name": "Gang Rape",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_462",
+				"name": "Gangbang",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_696",
+				"name": "Ganguro",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_2278",
+				"name": "Giantess",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1960",
+				"name": "Girls Only",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_465",
+				"name": "Glasses",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_720",
+				"name": "God-Human Relationship",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1309",
+				"name": "Goddess",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_311",
+				"name": "Group Intercourse",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_2185",
+				"name": "Gyaru",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_2359",
+				"name": "Hairy Armpit",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_534",
+				"name": "Hand Job",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_491",
+				"name": "Happy Sex",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1397",
+				"name": "Hardcore",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1487",
+				"name": "Harem-seeking Male Lead",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1744",
+				"name": "Hot Springs",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_555",
+				"name": "Housewife-Housewives",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1853",
+				"name": "Human Pet",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1724",
+				"name": "Human Toilets",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_459",
+				"name": "Human-Nonhuman Relationship",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_552",
+				"name": "Humiliation",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1732",
+				"name": "Hypnotism",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1211",
+				"name": "Idols",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1358",
+				"name": "Impregnation",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_2506",
+				"name": "Inari",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_753",
+				"name": "Incest as a Subplot",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_423",
+				"name": "Infidelity",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_2186",
+				"name": "Inflation",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_431",
+				"name": "Inverted Nipples",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_441",
+				"name": "Jealous Lover",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_331",
+				"name": "Jealousy",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_408",
+				"name": "Kidnapping",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1283",
+				"name": "Kimono",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_2507",
+				"name": "Konkon",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_2158",
+				"name": "Korean Comic",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1759",
+				"name": "Kunoichi (Ninja Girls)",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_990",
+				"name": "Large Dicks",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_2187",
+				"name": "Leotard",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_332",
+				"name": "Lingerie",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1580",
+				"name": "Little Sisters",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1771",
+				"name": "Live-in Lover",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1326",
+				"name": "Love At First Sight",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1490",
+				"name": "Love Rivals",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1167",
+				"name": "Love Triangles",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_539",
+				"name": "Magic",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_565",
+				"name": "Magical Girls",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_912",
+				"name": "Maids",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_681",
+				"name": "Male Dominance",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_659",
+				"name": "Mangaka",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_662",
+				"name": "Masochists",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_880",
+				"name": "Master-Pet Relationship",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_460",
+				"name": "Master-Servant Relationship",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_389",
+				"name": "Master-Slave Relationship",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1714",
+				"name": "Mermaids",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_354",
+				"name": "MILFs",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_303",
+				"name": "Mind Break",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_304",
+				"name": "Mind Control",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1114",
+				"name": "Molesters",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1409",
+				"name": "Monster Girls",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1243",
+				"name": "Monster Sex",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1175",
+				"name": "Monsters",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_784",
+				"name": "Mother and Daughter",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_393",
+				"name": "Mother and Son",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_342",
+				"name": "Mother Complex",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1716",
+				"name": "Mother-in-Law",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1826",
+				"name": "Multiple Penetration",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1741",
+				"name": "Neighbors",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_370",
+				"name": "Netorare",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_2243",
+				"name": "Netori",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_451",
+				"name": "Newlyweds",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1717",
+				"name": "Nipple Intercourse",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_944",
+				"name": "Nipple Play",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_2503",
+				"name": "No Penetration",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_461",
+				"name": "Non-Human Pregnancy",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1185",
+				"name": "Nuns",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1046",
+				"name": "Nurses",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_605",
+				"name": "Obsessive Love",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1738",
+				"name": "Office Ladies",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_2331",
+				"name": "Old Man",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1366",
+				"name": "Older Brother",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1648",
+				"name": "Older Female Young Boy",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_355",
+				"name": "Older Female Younger Male",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1229",
+				"name": "Older Male Younger Female",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1241",
+				"name": "Older Sister",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_504",
+				"name": "Outdoor Intercourse",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_360",
+				"name": "Paizuri",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1275",
+				"name": "Pantyhose",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_2303",
+				"name": "Partial Censorship",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_665",
+				"name": "Partially Colored",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1736",
+				"name": "Pegging",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_576",
+				"name": "Personality Change",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_387",
+				"name": "Perverted Boss",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_300",
+				"name": "Perverted Characters",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_366",
+				"name": "Perverted Teachers",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1526",
+				"name": "Perverts",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1328",
+				"name": "Pets",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1465",
+				"name": "Piercings",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1657",
+				"name": "Plain Girls",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_688",
+				"name": "Plastic Surgery",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_312",
+				"name": "Polygamy",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1317",
+				"name": "Poor Characters",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_2282",
+				"name": "Poor Grammar",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1440",
+				"name": "Porn Industry",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_367",
+				"name": "Porn Stars",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_530",
+				"name": "Porn with Plot",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1656",
+				"name": "Possessed",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_677",
+				"name": "Possession",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1602",
+				"name": "Possessive Lover",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_305",
+				"name": "Pregnancy",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1543",
+				"name": "Pretend Rape",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1662",
+				"name": "Priestesses",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1140",
+				"name": "Priests",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1160",
+				"name": "Princes",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1161",
+				"name": "Princesses",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_618",
+				"name": "Prisoners",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1608",
+				"name": "Proactive Protagonist",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1528",
+				"name": "Producers",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_394",
+				"name": "Prostitution",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_507",
+				"name": "Public Intercourse",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_406",
+				"name": "Public Nudity",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_787",
+				"name": "Punishment Sex",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1418",
+				"name": "Punishment",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1434",
+				"name": "Queens",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_470",
+				"name": "Rabbit Girls",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_567",
+				"name": "Reverse Harem",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_376",
+				"name": "Reverse Rape",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_2281",
+				"name": "Rewrite",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_726",
+				"name": "Rich Boy",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_727",
+				"name": "Rich Family",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_368",
+				"name": "Rich Girl",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_505",
+				"name": "Rushed Ending/Axed",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_663",
+				"name": "Sadist",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_499",
+				"name": "Sadomasochism",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_432",
+				"name": "Scat",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_995",
+				"name": "School Girls",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_313",
+				"name": "School Intercourse",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_478",
+				"name": "School Nurse-Student Relationship",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1491",
+				"name": "Secret Crush",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_399",
+				"name": "Secret Relationship",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1556",
+				"name": "Seduction",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_443",
+				"name": "Senpai-Kouhai Relationship",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_301",
+				"name": "Sex Addicts",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_400",
+				"name": "Sex Friends Become Lovers",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_629",
+				"name": "Sex Friends",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_450",
+				"name": "Sex Industry",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1273",
+				"name": "Sex Slaves",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_837",
+				"name": "Sex Toys",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_695",
+				"name": "Sexual Abuse",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_476",
+				"name": "Sexual Assault",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1611",
+				"name": "Sexual Frustration",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_2325",
+				"name": "Shemale",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_652",
+				"name": "Shy Characters",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_655",
+				"name": "Sibling Love",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1403",
+				"name": "Sister and Brother",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_440",
+				"name": "Sister Complex",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1330",
+				"name": "Sisters",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_811",
+				"name": "Sketchy Art Style",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_583",
+				"name": "Sleep Intercourse",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1377",
+				"name": "Sluts",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_434",
+				"name": "Small Breasts",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_909",
+				"name": "Son Complex",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1387",
+				"name": "Spirits",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1346",
+				"name": "Star-Crossed Lover/s",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_531",
+				"name": "Step-Daughter",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_532",
+				"name": "Step-Father",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_533",
+				"name": "Step-Father/Step-Daughter Relationship",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_770",
+				"name": "Step-Mother",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_334",
+				"name": "Step-Mother/Step-Son Relationship",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_371",
+				"name": "Step-Sibling Love",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_521",
+				"name": "Step-Siblings",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_833",
+				"name": "Step-Son",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1327",
+				"name": "Stockings",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_641",
+				"name": "Student Council",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_315",
+				"name": "Student-Tutor Relationship",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_378",
+				"name": "Succubus",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_609",
+				"name": "Sudden Appearance",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_425",
+				"name": "Sudden Confession",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1179",
+				"name": "Swimsuit/s",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1479",
+				"name": "Tanned",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1126",
+				"name": "Teacher-Student Relationship",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_369",
+				"name": "Teacher-Teacher Relationship",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1388",
+				"name": "Teachers",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1686",
+				"name": "Threesome (MFF)",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1688",
+				"name": "Threesome (MMF)",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_335",
+				"name": "Threesome (Other)",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_2300",
+				"name": "Time Stop",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_650",
+				"name": "Tomboy",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_2189",
+				"name": "Torture",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_518",
+				"name": "Transgender",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_344",
+				"name": "Trap",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_553",
+				"name": "Tribadism",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_653",
+				"name": "Tsundere",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_591",
+				"name": "Tutors",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_578",
+				"name": "Twincest",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_336",
+				"name": "Twins",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1923",
+				"name": "Uncle and Niece",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_414",
+				"name": "Unlucky Character/s",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1284",
+				"name": "Unrequited Love",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_2313",
+				"name": "Unusual Pupils",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1157",
+				"name": "Urethral Intercourse",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_817",
+				"name": "Urethral Play",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_435",
+				"name": "Urination",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1136",
+				"name": "Vampires",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1137",
+				"name": "Virgins",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_588",
+				"name": "Virtual Reality",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1841",
+				"name": "Vore",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_361",
+				"name": "Voyeurism",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1334",
+				"name": "Waitresses",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_877",
+				"name": "Werewolf",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_544",
+				"name": "Widow",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_613",
+				"name": "Wife Corruption",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_545",
+				"name": "Wife Depravity",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1385",
+				"name": "Wife-Wives",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1485",
+				"name": "Witches",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1412",
+				"name": "Wolf Girls",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1071",
+				"name": "X-Ray",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_873",
+				"name": "Yandere",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_1029",
+				"name": "Youkai",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_500",
+				"name": "Young Master",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "tag_2342",
+				"name": "Yuri as a Subplot",
+				"canExclude": true
+			}
+		]
+	},
+	{
+		"type": "group",
+		"name": "Doujins",
+		"filters": [
+			{
+				"type": "genre",
+				"id": "doujin_2335",
+				"name": "Shinken",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1748",
+				"name": "Shinmai Fukei Kiruko-san",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2084",
+				"name": "Shinmai Maou no Keiyakusha",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1842",
+				"name": "Shinrabansho",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1953",
+				"name": "Shinryaku! Ika Musume",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2220",
+				"name": "Shinsekai Yori",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2045",
+				"name": "Shirobako",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2085",
+				"name": "Shirokuma Cafe",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1956",
+				"name": "Shokugeki no Soma",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1981",
+				"name": "Shota Eater",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2504",
+				"name": "Shoujo Kageki Revue Starlight",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2414",
+				"name": "Shoujo Shuumatsu Ryokou",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2291",
+				"name": "Shounen Maid",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2095",
+				"name": "Show by Rock!!",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2019",
+				"name": "Shugo Chara",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2178",
+				"name": "Shuriken Sentai Ninninger",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2073",
+				"name": "Shut Hell",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2211",
+				"name": "Silent Hill",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1936",
+				"name": "Simoun",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2089",
+				"name": "Sket Dance",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2159",
+				"name": "Skullgirls",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1214",
+				"name": "Slayers",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1637",
+				"name": "Smile Precure!",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2260",
+				"name": "So-Ra-No-Wo-To",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2409",
+				"name": "Sokkou Seitokai",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2052",
+				"name": "Solatorobo",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1094",
+				"name": "Solty Rei",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2055",
+				"name": "Sonic",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2082",
+				"name": "Sora no Manimani",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2094",
+				"name": "Sora no Method",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1025",
+				"name": "Sora no Otoshimono",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1193",
+				"name": "Sora o Kakeru Shoujo",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2482",
+				"name": "Sora Yori Mo Tooi Basho",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1174",
+				"name": "Soredemo Machi wa Mawatteiru",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1296",
+				"name": "Soreyuke Marin-chan",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_992",
+				"name": "Soul Calibur",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1408",
+				"name": "Soul Eater",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2066",
+				"name": "Sound Voltex",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2272",
+				"name": "Sousei No Onmyouji",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1792",
+				"name": "Space Battleship Yamato 2199",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2062",
+				"name": "Space Dandy",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2365",
+				"name": "Space Patrol Luluco",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2407",
+				"name": "Space Pirate Mito",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1411",
+				"name": "Spice and Wolf",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2099",
+				"name": "Splatoon",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2479",
+				"name": "SSSS.Gridman",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1172",
+				"name": "Star Driver",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2327",
+				"name": "Star Fox",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1210",
+				"name": "Star Ocean 3",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1655",
+				"name": "Star Ocean",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2514",
+				"name": "Star Twinkle Precure",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2208",
+				"name": "Starry Sky",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2410",
+				"name": "Starting Gate!: Uma Musume Pretty Derby",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1050",
+				"name": "Steins;Gate",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1298",
+				"name": "Stellvia Of The Universe",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2434",
+				"name": "Steven Universe",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2036",
+				"name": "Stratos 4",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1279",
+				"name": "Strawberry Panic",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1081",
+				"name": "Street Fighters",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2222",
+				"name": "Strike The Blood",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1437",
+				"name": "Strike Witches",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_419",
+				"name": "Suberu",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1814",
+				"name": "Suisei no Gargantia",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1020",
+				"name": "Suite PreCure",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1393",
+				"name": "Sukatto Golf Pangya",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1131",
+				"name": "Summer Wars",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2323",
+				"name": "Summon Night",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1697",
+				"name": "Sumomomo Momomo",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2197",
+				"name": "Sunohara-sou no Kanrinin-san",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1208",
+				"name": "Super Black Jack",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1988",
+				"name": "Super Danganronpa 2",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2182",
+				"name": "Super Dimensional Fortress Macross",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1539",
+				"name": "Super Mario",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_824",
+				"name": "Super Powers",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2513",
+				"name": "Super Real Mahjong",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1700",
+				"name": "Super Robot Wars",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1774",
+				"name": "Super Sonico",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_918",
+				"name": "Suzumiya Haruhi no Yuuutsu",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1473",
+				"name": "Sword Art Online",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1747",
+				"name": "Tactics Ogre: Wheel of Fate",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2035",
+				"name": "Taimanin Asagi",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1753",
+				"name": "Tales of Graces",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1845",
+				"name": "Tales of Symphonia",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_928",
+				"name": "Tales of the Abyss",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1743",
+				"name": "Tales of Vesperia",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1756",
+				"name": "Tales of Xillia",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2396",
+				"name": "Tales of Zestiria",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1863",
+				"name": "Tamako Market",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2415",
+				"name": "Tanaka-kun wa Itsumo Kedaruge",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2280",
+				"name": "Tanken Driland",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2174",
+				"name": "Tantei Opera Milky Holmes",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1860",
+				"name": "Tari Tari",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1750",
+				"name": "Tasogare Otome x Amnesia",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2492",
+				"name": "Tate no Yuusha no Nariagari",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1594",
+				"name": "Teen Titans",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2205",
+				"name": "Tejina Senpai",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1203",
+				"name": "Tekken",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1315",
+				"name": "Tenchi Muyou",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1112",
+				"name": "Tengen Toppa Gurren Lagann",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1108",
+				"name": "Tenjo Tenge",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2370",
+				"name": "Tenkai Knights",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2538",
+				"name": "Tenki no Ko",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2330",
+				"name": "Tenkuu no Escaflowne",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2469",
+				"name": "Tensei Shitara Slime Datta Ken",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2500",
+				"name": "Tenshi no 3P!",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1809",
+				"name": "TERA Online",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1894",
+				"name": "TERA The Exiled Realm of Arborea",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2515",
+				"name": "Terminator",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2153",
+				"name": "Terra Formars",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2468",
+				"name": "The Elder Scrolls",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_948",
+				"name": "The Idolm@sters",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1987",
+				"name": "The Legend of Heroes",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1793",
+				"name": "The Legend of Zelda",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1689",
+				"name": "The Lord of Elemental",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2332",
+				"name": "The Ring",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2005",
+				"name": "The Seven Deadly Sins",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1123",
+				"name": "The World God Only Knows",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1237",
+				"name": "They Are My Noble Masters",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1176",
+				"name": "Tiger and Bunny",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1557",
+				"name": "To Aru Kagaku no Railgun",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_960",
+				"name": "To Aru Majutsu no Index",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_987",
+				"name": "To Heart 2",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_984",
+				"name": "To Heart",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_949",
+				"name": "To Love-Ru Darkness",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1056",
+				"name": "To Love-Ru",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1680",
+				"name": "Tobaku Mokushiroku Kaiji",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2420",
+				"name": "Toji No Miko",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1913",
+				"name": "Toki o Kakeru Shoujo",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1480",
+				"name": "Tokidensho Angel Eyes",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1535",
+				"name": "Tokimeki Memorial 4",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1812",
+				"name": "Tokimeki Memorial",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2142",
+				"name": "Tokyo 7th Sisters",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2056",
+				"name": "Tokyo Ghoul",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1961",
+				"name": "Tokyo Ravens",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2391",
+				"name": "Tonari No Miko-san Wa Minna Warau",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1372",
+				"name": "Top wo Nerae 2!",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1095",
+				"name": "Toradora!",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2425",
+				"name": "Toriko",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_916",
+				"name": "Touhou",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2166",
+				"name": "Touken Ranbu",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2038",
+				"name": "Trinity Seven",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1446",
+				"name": "Tsukihime",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1077",
+				"name": "Tsukumogami",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2518",
+				"name": "Tsuujou Kougeki ga Zentai Kougeki de Ni-kai Kougeki no Okaa-san wa Suki desu ka?",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1763",
+				"name": "Turn A Gundam",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2536",
+				"name": "Twin Angels",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2489",
+				"name": "Uchi No Maid Ga Uzasugiru",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2204",
+				"name": "Uchi No Musume Ni Te O Dasuna",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1189",
+				"name": "Uchuu Kaizoku Captain Harlock",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1289",
+				"name": "Uchuu no Stellvia",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2087",
+				"name": "Ultimate Girls",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2451",
+				"name": "Ultraman",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1149",
+				"name": "Umineko no Naku Koro ni",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1910",
+				"name": "Umineko",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1995",
+				"name": "UN-GO",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1405",
+				"name": "Unbalance x Unbalance",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2301",
+				"name": "Under Night In-Birth",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2193",
+				"name": "Under the Moon",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2356",
+				"name": "Undertale",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1862",
+				"name": "Unlight",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1592",
+				"name": "Upotte!!",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1991",
+				"name": "UQ Holder!",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1466",
+				"name": "Urusei Yatsura",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2105",
+				"name": "Usagi Drop",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1347",
+				"name": "Usavich",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1929",
+				"name": "Uta no Prince-sama",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1062",
+				"name": "Utawarerumono",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2456",
+				"name": "Uzaki-chan wa Asobitai!",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1643",
+				"name": "Valkyria Chronicles II",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_925",
+				"name": "Valkyria Chronicles",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2259",
+				"name": "Valkyrie Drive",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1447",
+				"name": "Vampire Hunters",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2061",
+				"name": "Vampire Princess Miyu",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1448",
+				"name": "Vampire Savior",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1462",
+				"name": "Vandread",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2172",
+				"name": "Violated Heroine",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2007",
+				"name": "Viper",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1838",
+				"name": "Vividred Operation",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1013",
+				"name": "Vocaloid",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2306",
+				"name": "Voiceroid",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2484",
+				"name": "Wagaya no Oinari-sama",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1906",
+				"name": "Waiting in the Summer",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2000",
+				"name": "Walkure Romanze",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1684",
+				"name": "Warriors Orochi Z",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2349",
+				"name": "Warship Girls",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2497",
+				"name": "Watari-kun no xx ga Houkai Sunzen",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1621",
+				"name": "Watashi ga Motenai no wa Dou Kangaete mo Omaera ga Warui!",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2481",
+				"name": "Watashi ni Tenshi ga Maiorita!",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2288",
+				"name": "Wedding Peach",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_982",
+				"name": "Wild Arms 2",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1804",
+				"name": "Wild Arms 3",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_997",
+				"name": "Witch Blade",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_924",
+				"name": "Witch Craft Works",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1130",
+				"name": "Working",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2050",
+				"name": "World Masterpiece Theater",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2149",
+				"name": "World Trigger",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1267",
+				"name": "Wrestle Angels",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2486",
+				"name": "X Change",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2307",
+				"name": "Xenoblade",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1777",
+				"name": "Xenogears",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1928",
+				"name": "Xenosaga",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2417",
+				"name": "xxxHoLic",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1796",
+				"name": "Yahari Ore no Seishun Rabukome wa Machigatte Iru.",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1499",
+				"name": "Yakitate!! Japan",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2267",
+				"name": "Yakushiji Ryouko no Kaiki Jikenbo",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1967",
+				"name": "Yama no Susume",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1307",
+				"name": "Yes! Precure 5",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2443",
+				"name": "Yokohama Kaidashi Kikou",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1978",
+				"name": "Yondemasu yo Azazeru-san",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2171",
+				"name": "Yoru no Yatterman",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2140",
+				"name": "Yosuga No Sora",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1234",
+				"name": "Yotsuba!",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1943",
+				"name": "Yotsubato!",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2369",
+				"name": "You Are Under Arrest!",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2430",
+				"name": "Youjo Senki",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2337",
+				"name": "Youkoso Jitsuryoku Shijou Shugi no Kyoushitsu e",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2086",
+				"name": "Yowamushi Pedal",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2494",
+				"name": "YS",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1084",
+				"name": "Yu-Gi-Oh!",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2539",
+				"name": "Yu-No",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2024",
+				"name": "Yumekui Merry",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2379",
+				"name": "Yuragi-sou no Yuuna-san",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2273",
+				"name": "Yuri On Ice",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2395",
+				"name": "Yuru Camp",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1861",
+				"name": "Yuru Yuri",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2058",
+				"name": "Yuuki Yuuna wa Yuusha de Aru",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1932",
+				"name": "Yuusha ni Narenakatta",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2010",
+				"name": "Yuyushiki",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1530",
+				"name": "Zegapain",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1858",
+				"name": "Zero In",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1148",
+				"name": "Zero no Tsukaima",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2194",
+				"name": "Zettai Junpaku Mahou Shoujo",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1022",
+				"name": "Zettai Karen Children",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1052",
+				"name": "Zoids Genesis",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_2458",
+				"name": "Zombie Land Saga",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"id": "doujin_1997",
+				"name": "Zone of the Enders",
+				"canExclude": true
+			}
+		]
+	},
+	{
+		"type": "select",
+		"name": "Status",
+		"options": [
+			"All",
+			"Ongoing",
+			"Completed"
+		]
+	},
+	{
+		"type": "select",
+		"name": "Tag Search Mode",
+		"options": [
+			"AND",
+			"OR"
+		]
+	}
+]
