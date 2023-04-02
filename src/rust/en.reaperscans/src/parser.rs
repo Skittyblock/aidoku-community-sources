@@ -368,12 +368,10 @@ pub fn parse_page_list(
 
 			if !src.is_empty() {
 				src
+			} else if !data_cfsrc.is_empty() {
+				data_cfsrc
 			} else {
-				if !data_cfsrc.is_empty() {
-					data_cfsrc
-				} else {
-					panic!("Reaperscans: Failed to get the image url");
-				}
+				panic!("Reaperscans: Failed to get the image url");
 			}
 		};
 
