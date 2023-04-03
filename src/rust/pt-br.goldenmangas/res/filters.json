@@ -354,7 +354,7 @@
 	},
 	{
 		"type": "select",
-		"name": "ByLetter",
+		"name": "Por letra",
 		"options": [
 			"Todos",
 			"A",
