@@ -1,0 +1,10 @@
+{
+	"info": {
+		"id": "en.mangakatana",
+		"lang": "en",
+		"name": "MangaKatana",
+		"version": 3,
+		"url": "https://mangakatana.com",
+		"nsfw": 1
+	}
+}

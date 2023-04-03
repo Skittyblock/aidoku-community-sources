@@ -30,8 +30,10 @@ pub unsafe extern "C" fn initialize() {
 
 	for key in ["blockedGroups", "blockedUploaders"] {
 		let arrkey = key.to_owned() + "Array";
-		if defaults_get(&arrkey).as_array().is_err() {
-			handle_notification(String::from(key));
+		if let Ok(arr_val) = defaults_get(&arrkey) {
+			if arr_val.as_array().is_err() {
+				handle_notification(String::from(key));
+			}
 		}
 	}
 }
@@ -75,13 +77,15 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 						"Has available chapters" => {
 							if value == 1 {
 								url.push_str("&hasAvailableChapters=true");
-								if let Ok(languages) = defaults_get("languages").as_array() {
-									languages.for_each(|lang| {
-										if let Ok(lang) = lang.as_string() {
-											url.push_str("&availableTranslatedLanguage[]=");
-											url.push_str(&lang.read());
-										}
-									})
+								if let Ok(languages_value) = defaults_get("languages") {
+									if let Ok(languages) = languages_value.as_array() {
+										languages.for_each(|lang| {
+											if let Ok(lang) = lang.as_string() {
+												url.push_str("&availableTranslatedLanguage[]=");
+												url.push_str(&lang.read());
+											}
+										})
+									}
 								}
 							}
 						}
@@ -191,29 +195,35 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 			&limit=40\
 			&offset=",
 		) + itoa::Buffer::new().format(offset);
-		if let Ok(languages) = defaults_get("languages").as_array() {
-			languages.for_each(|lang| {
-				if let Ok(lang) = lang.as_string() {
-					url.push_str("&translatedLanguage[]=");
-					url.push_str(&lang.read());
-				}
-			})
+		if let Ok(languages_value) = defaults_get("languages") {
+			if let Ok(languages) = languages_value.as_array() {
+				languages.for_each(|lang| {
+					if let Ok(lang) = lang.as_string() {
+						url.push_str("&translatedLanguage[]=");
+						url.push_str(&lang.read());
+					}
+				})
+			}
 		}
-		if let Ok(groups) = defaults_get("blockedGroupsArray").as_array() {
-			groups.for_each(|group| {
-				if let Ok(group) = group.as_string() {
-					url.push_str("&excludedGroups[]=");
-					url.push_str(&group.read());
-				}
-			});
+		if let Ok(groups_value) = defaults_get("blockedGroupsArray") {
+			if let Ok(groups) = groups_value.as_array() {
+				groups.for_each(|group| {
+					if let Ok(group) = group.as_string() {
+						url.push_str("&excludedGroups[]=");
+						url.push_str(&group.read());
+					}
+				});
+			}
 		}
-		if let Ok(groups) = defaults_get("blockedUploadersArray").as_array() {
-			groups.for_each(|group| {
-				if let Ok(group) = group.as_string() {
-					url.push_str("&excludedUploaders[]=");
-					url.push_str(&group.read());
-				}
-			});
+		if let Ok(groups_value) = defaults_get("blockedUploadersArray") {
+			if let Ok(groups) = groups_value.as_array() {
+				groups.for_each(|group| {
+					if let Ok(group) = group.as_string() {
+						url.push_str("&excludedUploaders[]=");
+						url.push_str(&group.read());
+					}
+				});
+			}
 		}
 
 		let mut json = Request::new(&url, HttpMethod::Get).json_rl().as_object()?;
@@ -227,7 +237,7 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 					if let Ok(relationships) = obj.get("relationships").as_array() {
 						for relationship in relationships {
 							if let Ok(relationship) = relationship.as_object()
-								   && let Ok(relation_type) = relationship.get("type").as_string() 
+								   && let Ok(relation_type) = relationship.get("type").as_string()
 								   && relation_type.read() == "manga"
 								   && let Ok(id) = relationship.get("id").as_string() {
 									let mut ret = String::from("&ids[]=");
@@ -294,31 +304,38 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 		&contentRating[]=erotica\
 		&contentRating[]=suggestive\
 		&contentRating[]=safe\
+		&includes[]=user\
 		&includes[]=scanlation_group";
 
-	if let Ok(languages) = defaults_get("languages").as_array() {
-		languages.for_each(|lang| {
-			if let Ok(lang) = lang.as_string() {
-				url.push_str("&translatedLanguage[]=");
-				url.push_str(&lang.read());
-			}
-		})
+	if let Ok(languages_value) = defaults_get("languages") {
+		if let Ok(languages) = languages_value.as_array() {
+			languages.for_each(|lang| {
+				if let Ok(lang) = lang.as_string() {
+					url.push_str("&translatedLanguage[]=");
+					url.push_str(&lang.read());
+				}
+			})
+		}
 	}
-	if let Ok(groups) = defaults_get("blockedGroupsArray").as_array() {
-		groups.for_each(|group| {
-			if let Ok(group) = group.as_string() {
-				url.push_str("&excludedGroups[]=");
-				url.push_str(&group.read());
-			}
-		});
+	if let Ok(groups_value) = defaults_get("blockedGroupsArray") {
+		if let Ok(groups) = groups_value.as_array() {
+			groups.for_each(|group| {
+				if let Ok(group) = group.as_string() {
+					url.push_str("&excludedGroups[]=");
+					url.push_str(&group.read());
+				}
+			});
+		}
 	}
-	if let Ok(groups) = defaults_get("blockedUploadersArray").as_array() {
-		groups.for_each(|group| {
-			if let Ok(group) = group.as_string() {
-				url.push_str("&excludedUploaders[]=");
-				url.push_str(&group.read());
-			}
-		});
+	if let Ok(groups_value) = defaults_get("blockedUploadersArray") {
+		if let Ok(groups) = groups_value.as_array() {
+			groups.for_each(|group| {
+				if let Ok(group) = group.as_string() {
+					url.push_str("&excludedUploaders[]=");
+					url.push_str(&group.read());
+				}
+			});
+		}
 	}
 	let json = Request::new(&url, HttpMethod::Get).json_rl().as_object()?;
 	let total = json.get("total").as_int().unwrap_or(0);
@@ -358,25 +375,27 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 }
 
 #[get_page_list]
-fn get_page_list(id: String) -> Result<Vec<Page>> {
-	let mut url = String::from("https://api.mangadex.org/at-home/server/") + &id;
-	if defaults_get("standardHttpsPort").as_bool().unwrap_or(false) {
-		url.push_str("?forcePort443=true");
+fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
+	let mut url = String::from("https://api.mangadex.org/at-home/server/") + &chapter_id;
+	if let Ok(port_value) = defaults_get("standardHttpsPort") {
+		if port_value.as_bool().unwrap_or(false) {
+			url.push_str("?forcePort443=true");
+		}
 	}
 	let json = Request::new(&url, HttpMethod::Get).json_rl().as_object()?;
 
 	let chapter = json.get("chapter").as_object()?;
+	let data_saver = match defaults_get("dataSaver") {
+		Ok(data_saver) => data_saver.as_bool().unwrap_or(false),
+		Err(_) => false,
+	};
 	let data = chapter
-		.get(if defaults_get("dataSaver").as_bool().unwrap_or(false) {
-			"dataSaver"
-		} else {
-			"data"
-		})
+		.get(if data_saver { "dataSaver" } else { "data" })
 		.as_array()?;
 
 	let base_url = json.get("baseUrl").as_string()?.read();
 	let hash = chapter.get("hash").as_string()?.read();
-	let path = if defaults_get("dataSaver").as_bool().unwrap_or(false) {
+	let path = if data_saver {
 		String::from("/data-saver/")
 	} else {
 		String::from("/data/")
@@ -457,15 +476,17 @@ pub fn handle_url(url: String) -> Result<DeepLink> {
 fn handle_notification(notification: String) {
 	match notification.as_str() {
 		"blockedGroups" | "blockedUploaders" => {
-			if let Ok(groups_string) = defaults_get(&notification).as_string() {
-				let mut arr = ArrayRef::new();
-				groups_string.read().split(',').for_each(|group| {
-					let trimmed = group.trim();
-					if !trimmed.is_empty() {
-						arr.insert(StringRef::from(trimmed).0);
-					}
-				});
-				defaults_set((notification + "Array").as_str(), arr.0);
+			if let Ok(groups) = defaults_get(&notification) {
+				if let Ok(groups_string) = groups.as_string() {
+					let mut arr = ArrayRef::new();
+					groups_string.read().split(',').for_each(|group| {
+						let trimmed = group.trim();
+						if !trimmed.is_empty() {
+							arr.insert(StringRef::from(trimmed).0);
+						}
+					});
+					defaults_set((notification + "Array").as_str(), arr.0);
+				}
 			}
 		}
 		_ => {}

@@ -1,0 +1,66 @@
+[
+	{
+		"type": "title"
+	},
+	{
+		"type": "group",
+		"name": "Status",
+		"filters": [
+			{
+				"type": "check",
+				"name": "Ended",
+				"id": "&status=ENDED"
+			},
+			{
+				"type": "check",
+				"name": "Ongoing",
+				"id": "&status=ONGOING"
+			},
+			{
+				"type": "check",
+				"name": "Abandoned",
+				"id": "&status=ABANDONED"
+			},
+			{
+				"type": "check",
+				"name": "Hiatus",
+				"id": "&status=HIATUS"
+			}
+		]
+	},
+	{
+		"type": "group",
+		"name": "Read status",
+		"filters": [
+			{
+				"type": "check",
+				"name": "Unread",
+				"id": "&read_status=UNREAD"
+			},
+			{
+				"type": "check",
+				"name": "Read",
+				"id": "&read_status=READ"
+			},
+			{
+				"type": "check",
+				"name": "In progress",
+				"id": "&read_status=IN_PROGRESS"
+			}
+		]
+	},
+	{
+		"type": "sort",
+		"name": "Sort by",
+		"canAscend": true,
+		"options": [
+			"Title",
+			"Date added",
+			"Date updated"
+		],
+		"default": {
+			"index": 0,
+			"ascending": true
+		}
+	}
+]

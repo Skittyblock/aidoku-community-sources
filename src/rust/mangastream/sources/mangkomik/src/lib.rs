@@ -41,13 +41,13 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 }
 
 #[get_page_list]
-fn get_page_list(id: String) -> Result<Vec<Page>> {
+fn get_page_list(_manga_id: String, id: String) -> Result<Vec<Page>> {
 	let mut pages: Vec<Page> = Vec::new();
 	let html = Request::new(&id, HttpMethod::Get)
 		.header("Referer", &get_instance().base_url)
-		.html();
+		.html()?;
 	let externaljs = html.select("script[data-minify]").attr("src").read();
-	let raw_text = Request::new(&externaljs, HttpMethod::Get).string();
+	let raw_text = Request::new(&externaljs, HttpMethod::Get).string()?;
 	let trimmed_json = &raw_text
 		[raw_text.find(r#":[{"s"#).unwrap_or(0) + 2..raw_text.rfind("}],").unwrap_or(0) + 1];
 	let trimmed_text = if trimmed_json.contains("Default 2") {
@@ -55,7 +55,7 @@ fn get_page_list(id: String) -> Result<Vec<Page>> {
 	} else {
 		trimmed_json
 	};
-	let json = parse(trimmed_text.as_bytes()).as_object()?;
+	let json = parse(trimmed_text.as_bytes())?.as_object()?;
 	let images = json.get("images").as_array()?;
 	for (index, page) in images.enumerate() {
 		let page_url = urlencode(page.as_string()?.read());

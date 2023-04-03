@@ -41,15 +41,16 @@ pub fn urlencode(string: String) -> String {
 pub fn text_with_newlines(node: Node) -> String {
 	let html = node.html().read();
 	if !String::from(html.trim()).is_empty() {
-		Node::new_fragment(
+		if let Ok(node) = Node::new_fragment(
 			node.html()
 				.read()
 				.replace("<br>", "{{ .LINEBREAK }}")
 				.as_bytes(),
-		)
-		.text()
-		.read()
-		.replace("{{ .LINEBREAK }}", "\n")
+		) {
+			node.text().read().replace("{{ .LINEBREAK }}", "\n")
+		} else {
+			String::new()
+		}
 	} else {
 		String::new()
 	}

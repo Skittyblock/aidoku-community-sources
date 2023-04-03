@@ -1,0 +1,380 @@
+[
+	{
+		"type": "title"
+	},
+	{
+		"type": "author"
+	},
+	{
+		"type": "sort",
+		"name": "Order By",
+		"canAscend": false,
+		"options": [
+			"A-Z",
+			"Latest Update",
+			"New Manga",
+			"Number of Chapters"
+		],
+		"default": {
+			"index": 1
+		}
+	},
+	{
+		"type": "select",
+		"name": "Status",
+		"options": [
+			"Any",
+			"Ongoing",
+			"Completed",
+			"Cancelled"
+		],
+		"default": 0
+	},
+	{
+		"type": "group",
+		"name": "Genres",
+		"filters": [
+			{
+				"type": "genre",
+				"name": "4 koma",
+				"id": "4-koma",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Action",
+				"id": "action",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Adult",
+				"id": "adult",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Adventure",
+				"id": "adventure",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Artbook",
+				"id": "artbook",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Award winning",
+				"id": "award-winning",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Comedy",
+				"id": "comedy",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Cooking",
+				"id": "cooking",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Doujinshi",
+				"id": "doujinshi",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Drama",
+				"id": "drama",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Ecchi",
+				"id": "ecchi",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Erotica",
+				"id": "erotica",
+				"canExclude": true,
+				"default": false
+			},
+			{
+				"type": "genre",
+				"name": "Fantasy",
+				"id": "fantasy",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Gender Bender",
+				"id": "gender-bender",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Gore",
+				"id": "gore",
+				"canExclude": true,
+				"default": false
+			},
+			{
+				"type": "genre",
+				"name": "Harem",
+				"id": "harem",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Historical",
+				"id": "historical",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Horror",
+				"id": "horror",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Isekai",
+				"id": "isekai",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Josei",
+				"id": "josei",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Loli",
+				"id": "loli",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Manhua",
+				"id": "manhua",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Manhwa",
+				"id": "manhwa",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Martial Arts",
+				"id": "martial-arts",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Mecha",
+				"id": "mecha",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Medical",
+				"id": "medical",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Music",
+				"id": "music",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Mystery",
+				"id": "mystery",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "One shot",
+				"id": "one-shot",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Overpowered MC",
+				"id": "overpowered-mc",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Psychological",
+				"id": "psychological",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Reincarnation",
+				"id": "reincarnation",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Romance",
+				"id": "romance",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "School Life",
+				"id": "school-life",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Sci-fi",
+				"id": "sci-fi",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Seinen",
+				"id": "seinen",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Sexual violence",
+				"id": "sexual-violence",
+				"canExclude": true,
+				"default": false
+			},
+			{
+				"type": "genre",
+				"name": "Shota",
+				"id": "shota",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Shoujo",
+				"id": "shoujo",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Shoujo Ai",
+				"id": "shoujo-ai",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Shounen",
+				"id": "shounen",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Shounen Ai",
+				"id": "shounen-ai",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Slice of Life",
+				"id": "slice-of-life",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Sports",
+				"id": "sports",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Super power",
+				"id": "super-power",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Supernatural",
+				"id": "supernatural",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Survival",
+				"id": "survival",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Time Travel",
+				"id": "time-travel",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Tragedy",
+				"id": "tragedy",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Webtoon",
+				"id": "webtoon",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Yaoi",
+				"id": "yaoi",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Yuri",
+				"id": "yuri",
+				"canExclude": true
+			}
+		]
+	},
+	{
+		"type": "select",
+		"name": "Genre Inclusion Mode",
+		"options": [
+			"AND (All Selected Genres)",
+			"OR (Any Selected Genre)"
+		],
+		"default": 0
+	},
+	{
+		"type": "select",
+		"name": "Chapter Count",
+		"options": [
+			"=1",
+			"1+",
+			"5+",
+			"10+",
+			"20+",
+			"30+",
+			"50+",
+			"100+",
+			"150+",
+			"200+"
+		],
+		"default": 1
+	}
+]

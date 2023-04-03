@@ -1,6 +1,8 @@
 use aidoku::{
 	prelude::format,
-	std::{html::Node, String, StringRef, Vec},
+	std::defaults::defaults_get,
+	std::html::Node,
+	std::{String, StringRef, Vec},
 	MangaStatus,
 };
 
@@ -75,7 +77,35 @@ pub fn i32_to_string(mut integer: i32) -> String {
 	string
 }
 
-// return chpater number from string
+/// Converts `<br>` and `\n` into newlines.
+pub fn text_with_newlines(node: Node) -> String {
+	let html = node.html().read();
+	if !String::from(html.trim()).is_empty() {
+		String::from(
+			Node::new_fragment(
+				node.html()
+				.read()
+				// This also replaces `\n` because mangastream sources split their
+				// description text into multiple p tags, and this causes newlines
+				// to be lost if you call `text()` on the node.
+				// So to fix that we replace all newlines with a placeholder, and
+				// then replace the placeholder with a newline after calling `text()`.
+				.replace('\n', "{{ .LINEBREAK }}")
+				.replace("<br>", "{{ .LINEBREAK }}")
+				.as_bytes(),
+			)
+			.expect("Failed to create new fragment")
+			.text()
+			.read()
+			.replace("{{ .LINEBREAK }}", "\n")
+			.trim(),
+		)
+	} else {
+		String::new()
+	}
+}
+
+// return chapter number from string
 pub fn get_chapter_number(id: String) -> f32 {
 	id.chars()
 		.filter(|a| (*a >= '0' && *a <= '9') || *a == ' ' || *a == '.')
@@ -258,8 +288,8 @@ pub fn urlencode<T: AsRef<[u8]>>(url: T) -> String {
 ///
 /// This is done by removing the random number near the end of the url
 ///
-/// This will work for most if not all sources that use randomized url's for the `manga url`,
-/// but for the `chapter url` it will only work for some sources
+/// This will work for most if not all sources that use randomized url's for the
+/// `manga url`, but for the `chapter url` it will only work for some sources
 pub fn get_permanet_url(original_url: String) -> String {
 	let mut original_url = original_url;
 
@@ -280,9 +310,9 @@ pub fn get_permanet_url(original_url: String) -> String {
 		.next()
 		.expect("Failed to split url by -");
 
-	// check if the garbage is a 10 digit number to prevent removing the wrong part of the url
-	// the garbage should always be a 10 digit number
-	if garbage.parse::<u32>().is_ok() && garbage.len() == 10 {
+	// check if the garbage is a 10 digit number to prevent removing the wrong part
+	// of the url the garbage should always be a 10 digit number
+	if garbage.parse::<u64>().is_ok() && garbage.len() == 10 {
 		// remove the garbage from the url
 		// example https://luminousscans.com/series/1671729411-a-bad-person/
 		// will return https://luminousscans.com/series/a-bad-person
@@ -290,4 +320,36 @@ pub fn get_permanet_url(original_url: String) -> String {
 	} else {
 		original_url
 	}
+}
+
+/// This function is used to get the id from a url
+///
+/// The id is the last part of the url
+pub fn get_id_from_url(url: String) -> String {
+	let mut url = url;
+
+	// remove trailing slash
+	if url.ends_with('/') {
+		url.pop();
+	};
+
+	// this will get the last part of the url
+	// example https://flamescans.org/series/the-world-after-the-fall
+	// will return the-world-after-the-fall
+	// example https://flamescans.org/the-world-after-the-fall-chapter-55
+	// will return the-world-after-the-fall-chapter-55
+	let id = url.split('/').last().expect("Failed to parse id from url");
+
+	String::from(id)
+}
+
+pub fn get_lang_code() -> String {
+	if let Ok(languages) = defaults_get("languages") {
+		if let Ok(arr) = languages.as_array() {
+			if let Ok(language) = arr.get(0).as_string() {
+				return language.read();
+			}
+		}
+	}
+	String::new()
 }

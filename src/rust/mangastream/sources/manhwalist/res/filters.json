@@ -1,0 +1,221 @@
+[
+	{
+		"type": "title"
+	},
+	{
+		"type": "group",
+		"name": "Tags",
+		"filters": [
+			{
+				"type": "genre",
+				"name": "Action",
+				"id": "279"
+			},
+			{
+				"type": "genre",
+				"name": "Adult",
+				"id": "280"
+			},
+			{
+				"type": "genre",
+				"name": "Adventure",
+				"id": "281"
+			},
+			{
+				"type": "genre",
+				"name": "Color",
+				"id": "282"
+			},
+			{
+				"type": "genre",
+				"name": "Comedy",
+				"id": "283"
+			},
+			{
+				"type": "genre",
+				"name": "Drama",
+				"id": "284"
+			},
+			{
+				"type": "genre",
+				"name": "Ecchi",
+				"id": "285"
+			},
+			{
+				"type": "genre",
+				"name": "Fanstasy",
+				"id": "286"
+			},
+			{
+				"type": "genre",
+				"name": "Game",
+				"id": "287"
+			},
+			{
+				"type": "genre",
+				"name": "Gender Bender",
+				"id": "288"
+			},
+			{
+				"type": "genre",
+				"name": "Harem",
+				"id": "289"
+			},
+			{
+				"type": "genre",
+				"name": "Historical",
+				"id": "290"
+			},
+			{
+				"type": "genre",
+				"name": "Horror",
+				"id": "291"
+			},
+			{
+				"type": "genre",
+				"name": "Hot",
+				"id": "292"
+			},
+			{
+				"type": "genre",
+				"name": "Josei",
+				"id": "293"
+			},
+			{
+				"type": "genre",
+				"name": "Magic",
+				"id": "294"
+			},
+			{
+				"type": "genre",
+				"name": "Manhwa",
+				"id": "295"
+			},
+			{
+				"type": "genre",
+				"name": "Manhwalist",
+				"id": "296"
+			},
+			{
+				"type": "genre",
+				"name": "Martial Arts",
+				"id": "297"
+			},
+			{
+				"type": "genre",
+				"name": "Mature",
+				"id": "298"
+			},
+			{
+				"type": "genre",
+				"name": "Mystery",
+				"id": "299"
+			},
+			{
+				"type": "genre",
+				"name": "Ongoing",
+				"id": "300"
+			},
+			{
+				"type": "genre",
+				"name": "Project",
+				"id": "301"
+			},
+			{
+				"type": "genre",
+				"name": "Psychological",
+				"id": "302"
+			},
+			{
+				"type": "genre",
+				"name": "Reincarnation",
+				"id": "303"
+			},
+			{
+				"type": "genre",
+				"name": "Romance",
+				"id": "304"
+			},
+			{
+				"type": "genre",
+				"name": "School Life",
+				"id": "305"
+			},
+			{
+				"type": "genre",
+				"name": "Sci-fi",
+				"id": "306"
+			},
+			{
+				"type": "genre",
+				"name": "Seinen",
+				"id": "307"
+			},
+			{
+				"type": "genre",
+				"name": "Series",
+				"id": "308"
+			},
+			{
+				"type": "genre",
+				"name": "Shoujo",
+				"id": "309"
+			},
+			{
+				"type": "genre",
+				"name": "Shounen",
+				"id": "310"
+			},
+			{
+				"type": "genre",
+				"name": "Slice of Life",
+				"id": "311"
+			},
+			{
+				"type": "genre",
+				"name": "Sports",
+				"id": "312"
+			},
+			{
+				"type": "genre",
+				"name": "Supernatural",
+				"id": "313"
+			},
+			{
+				"type": "genre",
+				"name": "Terbaru",
+				"id": "314"
+			},
+			{
+				"type": "genre",
+				"name": "Tragedy",
+				"id": "315"
+			},
+			{
+				"type": "genre",
+				"name": "Webtoon",
+				"id": "316"
+			}
+		]
+	},
+	{
+		"type": "select",
+		"name": "Status",
+		"options": [
+			"All",
+			"Ongoing",
+			"Completed",
+			"Hiatus"
+		]
+	},
+	{
+		"type": "select",
+		"name": "Type",
+		"options": [
+			"All",
+			"Manga",
+			"Manhwa",
+			"Manhua"
+		]
+	}
+]

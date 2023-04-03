@@ -30,10 +30,7 @@ pub fn urlencode(string: String) -> String {
 
 	for byte in bytes {
 		let curr = *byte;
-		if (b'a'..=b'z').contains(&curr)
-			|| (b'A'..=b'Z').contains(&curr)
-			|| (b'0'..=b'9').contains(&curr)
-		{
+		if curr.is_ascii_lowercase() || curr.is_ascii_uppercase() || curr.is_ascii_digit() {
 			result.push(curr);
 		} else {
 			result.push(b'%');
@@ -47,15 +44,16 @@ pub fn urlencode(string: String) -> String {
 pub fn text_with_newlines(node: Node) -> String {
 	let html = node.html().read();
 	if !String::from(html.trim()).is_empty() {
-		Node::new_fragment(
+		if let Ok(node) = Node::new_fragment(
 			node.html()
 				.read()
 				.replace("<br>", "{{ .LINEBREAK }}")
 				.as_bytes(),
-		)
-		.text()
-		.read()
-		.replace("{{ .LINEBREAK }}", "\n")
+		) {
+			node.text().read().replace("{{ .LINEBREAK }}", "\n")
+		} else {
+			String::new()
+		}
 	} else {
 		String::new()
 	}

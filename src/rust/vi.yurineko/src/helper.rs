@@ -235,10 +235,7 @@ pub fn urlencode(string: String) -> String {
 
 	for byte in bytes {
 		let curr = *byte;
-		if (b'a'..=b'z').contains(&curr)
-			|| (b'A'..=b'Z').contains(&curr)
-			|| (b'0'..=b'9').contains(&curr)
-		{
+		if curr.is_ascii_lowercase() || curr.is_ascii_uppercase() || curr.is_ascii_digit() {
 			result.push(curr);
 		} else {
 			result.push(b'%');
@@ -265,7 +262,7 @@ pub fn extract_f32_from_string(title: String, text: String) -> f32 {
 
 pub fn get_search_url(base_url: String, query: String, tag: String, page: i32) -> String {
 	if !query.is_empty() {
-		return format!("{base_url}/search?query={query}&page={page}");
+		format!("{base_url}/search?query={query}&page={page}")
 	} else if !tag.is_empty() {
 		return format!("{base_url}/searchType?type=tag&id={tag}&page={page}");
 	} else {
@@ -275,16 +272,15 @@ pub fn get_search_url(base_url: String, query: String, tag: String, page: i32) -
 
 pub fn text_with_newlines(html: String) -> Option<String> {
 	if !String::from(html.trim()).is_empty() {
-		Some(
-			Node::new_fragment(
-				html.replace("<br>", "{{ .LINEBREAK }}")
-					.replace("</p><p>", "{{ .LINEBREAK }}")
-					.as_bytes(),
-			)
-			.text()
-			.read()
-			.replace("{{ .LINEBREAK }}", "\n"),
-		)
+		if let Ok(node) = Node::new_fragment(
+			html.replace("<br>", "{{ .LINEBREAK }}")
+				.replace("</p><p>", "{{ .LINEBREAK }}")
+				.as_bytes(),
+		) {
+			Some(node.text().read().replace("{{ .LINEBREAK }}", "\n"))
+		} else {
+			None
+		}
 	} else {
 		None
 	}

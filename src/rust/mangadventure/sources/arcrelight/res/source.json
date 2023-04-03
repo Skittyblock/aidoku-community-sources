@@ -8,7 +8,11 @@
 		"nsfw": 0
 	},
 	"listings": [
-		{"name": "Most Viewed"},
-		{"name": "Latest Updates"}
+		{
+			"name": "Most Viewed"
+		},
+		{
+			"name": "Latest Updates"
+		}
 	]
 }

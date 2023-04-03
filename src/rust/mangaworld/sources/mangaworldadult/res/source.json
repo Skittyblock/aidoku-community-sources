@@ -1,0 +1,18 @@
+{
+	"info": {
+		"id": "it.mangaworldadult",
+		"lang": "it",
+		"name": "MangaWorldAdult",
+		"version": 2,
+		"url": "https://www.mangaworldadult.com",
+		"nsfw": 2
+	},
+	"listings": [
+		{
+			"name": "Più letti"
+		},
+		{
+			"name": "Più recenti"
+		}
+	]
+}

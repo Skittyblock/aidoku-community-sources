@@ -1,0 +1,21 @@
+{
+	"info": {
+		"id": "en.hiperdex",
+		"lang": "en",
+		"name": "Hiperdex",
+		"version": 2,
+		"urls": [
+			"https://hiperdex.com",
+			"https://1sthiperdex.com"
+		],
+		"nsfw": 2
+	},
+	"listings": [
+		{
+			"name": "Trending"
+		},
+		{
+			"name": "Popular"
+		}
+	]
+}

@@ -18,12 +18,23 @@
 	{
 		"type": "select",
 		"name": "Tình trạng",
-		"options": ["Tất cả", "Đang tiến hành", "Đã hoàn thành"]
+		"options": [
+			"Tất cả",
+			"Đang tiến hành",
+			"Đã hoàn thành"
+		]
 	},
 	{
 		"type": "select",
 		"name": "Quốc gia",
-		"options": ["Tất cả", "Trung Quốc", "Việt Nam", "Hàn Quốc", "Nhật Bản", "Mỹ"]
+		"options": [
+			"Tất cả",
+			"Trung Quốc",
+			"Việt Nam",
+			"Hàn Quốc",
+			"Nhật Bản",
+			"Mỹ"
+		]
 	},
 	{
 		"type": "select",

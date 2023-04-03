@@ -24,11 +24,7 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 		"Popular" => format!("{}/popular-manga/{}", BASE_URL, page),
 		_ => String::from(BASE_URL),
 	};
-	parser::parse_manga_listing(
-		String::from(BASE_URL),
-		url,
-		listing.name,
-	)
+	parser::parse_manga_listing(String::from(BASE_URL), url, listing.name)
 }
 
 #[get_manga_details]
@@ -42,8 +38,8 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 }
 
 #[get_page_list]
-fn get_page_list(id: String) -> Result<Vec<Page>> {
-	parser::parse_page_list(id)
+fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
+	parser::parse_page_list(chapter_id)
 }
 
 #[modify_image_request]
