@@ -66,7 +66,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 			format!("https://readcomicsbook.com/ajax/search?q={title}").as_str(),
 			HttpMethod::Get,
 		)
-		.json()
+		.json()?
 		.as_object()?;
 		let result = json.get("data").as_array()?;
 		let mut manga_arr: Vec<Manga> = Vec::new();
@@ -105,8 +105,8 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 }
 
 #[get_page_list]
-fn get_page_list(id: String) -> Result<Vec<Page>> {
-	get_instance().get_page_list(id)
+fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
+	get_instance().get_page_list(chapter_id)
 }
 
 #[modify_image_request]

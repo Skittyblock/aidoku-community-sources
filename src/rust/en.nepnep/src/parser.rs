@@ -5,13 +5,37 @@ use aidoku::{
 
 use super::helper::{chapter_image, chapter_url_encode};
 
+extern crate alloc;
+use alloc::string::ToString;
+
+const COVER_SERVER: &str = "https://temp.compsci88.com/cover/{{Result.i}}.jpg";
+
 // Parse manga with title and cover
-pub fn parse_basic_manga(manga_object: ObjectRef, cover_url: String) -> Result<Manga> {
+pub fn parse_manga_listing(manga_object: ObjectRef) -> Result<Manga> {
+	let id = manga_object.get("IndexName").as_string()?.read();
+	let title = manga_object.get("SeriesName").as_string()?.read();
+	let cover = String::from(COVER_SERVER).replace("{{Result.i}}", &id);
+
+	let mut url = defaults_get("sourceURL")?.as_string()?.read();
+	url.push_str("/manga/");
+	url.push_str(&id);
+
+	Ok(Manga {
+		id,
+		title,
+		cover,
+		url,
+		..Default::default()
+	})
+}
+
+// Parse manga with title and cover
+pub fn parse_basic_manga(manga_object: ObjectRef) -> Result<Manga> {
 	let id = manga_object.get("i").as_string()?.read();
 	let title = manga_object.get("s").as_string()?.read();
-	let cover = cover_url.replace("{{Result.i}}", &id);
+	let cover = String::from(COVER_SERVER).replace("{{Result.i}}", &id);
 
-	let mut url = defaults_get("sourceURL").as_string()?.read();
+	let mut url = defaults_get("sourceURL")?.as_string()?.read();
 	url.push_str("/manga/");
 	url.push_str(&id);
 
@@ -19,14 +43,8 @@ pub fn parse_basic_manga(manga_object: ObjectRef, cover_url: String) -> Result<M
 		id,
 		cover,
 		title,
-		author: String::new(),
-		artist: String::new(),
-		description: String::new(),
 		url,
-		categories: Vec::new(),
-		status: MangaStatus::Unknown,
-		nsfw: MangaContentRating::Safe,
-		viewer: MangaViewer::Default,
+		..Default::default()
 	})
 }
 
@@ -51,7 +69,7 @@ pub fn parse_full_manga(id: String, url: String, manga_node: Node) -> Result<Man
 	manga_node
 		.select("li.list-group-item:has(span:contains(Genre)) a")
 		.array()
-		.for_each(|tag| categories.push(tag.as_node().text().read()));
+		.for_each(|tag| categories.push(tag.as_node().expect("node array").text().read()));
 
 	let status = match manga_node
 		.select(
@@ -98,13 +116,13 @@ pub fn parse_full_manga(id: String, url: String, manga_node: Node) -> Result<Man
 		cover,
 		title,
 		author,
-		artist: String::new(),
 		description,
 		url,
 		categories,
 		status,
 		nsfw,
 		viewer,
+		..Default::default()
 	})
 }
 
@@ -127,11 +145,44 @@ pub fn parse_chapter(manga_id: &str, chapter_object: ObjectRef) -> Result<Chapte
 		title.push_str(&chapter_image(&id, false));
 	}
 
+	let mut volume = -1.0;
+
 	let cleaned_title = {
 		let mut cleaned_title = title.split_whitespace().collect::<Vec<&str>>();
 
+		// Remove leading season text and set volume accordingly
+		// This is for titles like "S1 - Chapter 1"
+		if title.len() >= 2 {
+			let title_chars = cleaned_title[0].chars().collect::<Vec<char>>();
+
+			if title_chars[0] == 'S' && title_chars[1].to_string().parse::<f64>().is_ok() {
+				volume = title_chars[1].to_string().parse::<f32>().unwrap_or(-1.0);
+				cleaned_title.remove(0);
+			}
+
+			// Remove leading symbols
+			if !cleaned_title.is_empty() && cleaned_title[0] == "-" {
+				cleaned_title.remove(0);
+			}
+		}
+
+		// Remove leading volume text and set volume accordingly
 		if cleaned_title.len() >= 2
-			&& (cleaned_title[0] == "Chapter" || cleaned_title[0] == "Episode")
+			&& (cleaned_title[0] == "Volume")
+			&& cleaned_title[1].parse::<f64>().is_ok()
+		{
+			volume = cleaned_title[1].parse::<f32>().unwrap_or(-1.0);
+			cleaned_title.remove(0);
+			cleaned_title.remove(0);
+		}
+
+		// Remove leading chapter text
+		if cleaned_title.len() >= 2
+			&& (cleaned_title[0] == "Chapter"
+				|| cleaned_title[0] == "Episode"
+				|| cleaned_title[0] == "episode."
+				|| cleaned_title[0] == "No."
+				|| cleaned_title[0] == "#")
 			&& cleaned_title[1].parse::<f64>().is_ok()
 		{
 			cleaned_title.remove(0);
@@ -157,11 +208,11 @@ pub fn parse_chapter(manga_id: &str, chapter_object: ObjectRef) -> Result<Chapte
 	Ok(Chapter {
 		id: path,
 		title: cleaned_title,
-		volume: -1.0,
+		volume,
 		chapter,
 		date_updated,
-		scanlator: String::new(),
 		url,
 		lang: String::from("en"),
+		..Default::default()
 	})
 }

@@ -1,0 +1,64 @@
+{
+	"info": {
+		"id": "multi.webtoon",
+		"lang": "multi",
+		"name": "WEBTOON",
+		"version": 1,
+		"urls": [
+			"https://www.webtoons.com",
+			"https://m.webtoons.com"
+		],
+		"nsfw": 0
+	},
+	"languages": [
+		{
+			"code": "en",
+			"value": "en"
+		},
+		{
+			"code": "zh-Hant",
+			"value": "zh-hant"
+		},
+		{
+			"code": "th",
+			"value": "th"
+		},
+		{
+			"code": "id",
+			"value": "id"
+		},
+		{
+			"code": "es",
+			"value": "es"
+		},
+		{
+			"code": "fr",
+			"value": "fr"
+		},
+		{
+			"code": "de",
+			"value": "de"
+		}
+	],
+	"languageSelectType": "single",
+	"listings": [
+		{
+			"name": "Latest"
+		},
+		{
+			"name": "Popular"
+		},
+		{
+			"name": "Top"
+		},
+		{
+			"name": "Canvas Latest"
+		},
+		{
+			"name": "Canvas Popular"
+		},
+		{
+			"name": "Canvas Top"
+		}
+	]
+}

@@ -1,0 +1,231 @@
+[
+	{
+		"type": "title"
+	},
+	{
+		"type": "group",
+		"name": "Status",
+		"filters": [
+			{
+				"type": "check",
+				"name": "En cours"
+			},
+			{
+				"type": "check",
+				"name": "En pause"
+			},
+			{
+				"type": "check",
+				"name": "Annulé"
+			},
+			{
+				"type": "check",
+				"name": "Terminé"
+			}
+		]
+	},
+	{
+		"type": "select",
+		"name": "Genre Condition",
+		"options": [
+			"OU (ayant l'un des genres sélectionnés)",
+			"ET (ayant tous les genres sélectionnés)"
+		]
+	},
+	{
+		"type": "group",
+		"name": "Genres",
+		"filters": [
+			{
+				"type": "genre",
+				"name": "Action",
+				"id": "action"
+			},
+			{
+				"type": "genre",
+				"name": "Adulte",
+				"id": "adulte"
+			},
+			{
+				"type": "genre",
+				"name": "Anti-Héros",
+				"id": "anti-heros"
+			},
+			{
+				"type": "genre",
+				"name": "Arts Martiaux",
+				"id": "arts-martiaux"
+			},
+			{
+				"type": "genre",
+				"name": "Aventure",
+				"id": "aventure"
+			},
+			{
+				"type": "genre",
+				"name": "Comédie",
+				"id": "comedie"
+			},
+			{
+				"type": "genre",
+				"name": "Crime",
+				"id": "crime"
+			},
+			{
+				"type": "genre",
+				"name": "Drame",
+				"id": "drame"
+			},
+			{
+				"type": "genre",
+				"name": "Ecchi",
+				"id": "ecchi"
+			},
+			{
+				"type": "genre",
+				"name": "Fantaisie",
+				"id": "fantaisie"
+			},
+			{
+				"type": "genre",
+				"name": "Fantastique",
+				"id": "fantastique"
+			},
+			{
+				"type": "genre",
+				"name": "Gaming",
+				"id": "gaming"
+			},
+			{
+				"type": "genre",
+				"name": "Gang",
+				"id": "gang"
+			},
+			{
+				"type": "genre",
+				"name": "Harem",
+				"id": "harem"
+			},
+			{
+				"type": "genre",
+				"name": "Horreur",
+				"id": "horreur"
+			},
+			{
+				"type": "genre",
+				"name": "Isekai",
+				"id": "isekai"
+			},
+			{
+				"type": "genre",
+				"name": "Manhua",
+				"id": "manhua"
+			},
+			{
+				"type": "genre",
+				"name": "Manwha",
+				"id": "manwha"
+			},
+			{
+				"type": "genre",
+				"name": "Mature",
+				"id": "mature"
+			},
+			{
+				"type": "genre",
+				"name": "Médical",
+				"id": "medical"
+			},
+			{
+				"type": "genre",
+				"name": "Mystère",
+				"id": "mystere"
+			},
+			{
+				"type": "genre",
+				"name": "Novel",
+				"id": "novel"
+			},
+			{
+				"type": "genre",
+				"name": "Partenaire",
+				"id": "partenaire"
+			},
+			{
+				"type": "genre",
+				"name": "Psychologie",
+				"id": "psychologie"
+			},
+			{
+				"type": "genre",
+				"name": "Revanche",
+				"id": "revanche"
+			},
+			{
+				"type": "genre",
+				"name": "Roman",
+				"id": "roman"
+			},
+			{
+				"type": "genre",
+				"name": "Romance",
+				"id": "romance"
+			},
+			{
+				"type": "genre",
+				"name": "School Life",
+				"id": "school-life"
+			},
+			{
+				"type": "genre",
+				"name": "Science-Fiction",
+				"id": "science-fiction"
+			},
+			{
+				"type": "genre",
+				"name": "Seinen",
+				"id": "seinen"
+			},
+			{
+				"type": "genre",
+				"name": "Shojo",
+				"id": "shojo"
+			},
+			{
+				"type": "genre",
+				"name": "Shonen",
+				"id": "shonen"
+			},
+			{
+				"type": "genre",
+				"name": "Slice of life",
+				"id": "slice-of-life"
+			},
+			{
+				"type": "genre",
+				"name": "Supernaturel",
+				"id": "supernaturel"
+			},
+			{
+				"type": "genre",
+				"name": "Tragédie",
+				"id": "tragedie"
+			},
+			{
+				"type": "genre",
+				"name": "Vengeance",
+				"id": "vengeance"
+			},
+			{
+				"type": "genre",
+				"name": "Webtoon",
+				"id": "webtoon"
+			},
+			{
+				"type": "genre",
+				"name": "Yuri",
+				"id": "yuri"
+			}
+		]
+	}
+]

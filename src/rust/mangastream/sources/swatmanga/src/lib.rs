@@ -10,8 +10,9 @@ mod helper;
 
 fn get_instance() -> MangaStreamSource {
 	MangaStreamSource {
+		has_random_chapter_prefix: true,
 		listing: ["الرائج", "آخر", "جَديد"],
-		base_url: String::from("https://swatmanga.co"),
+		base_url: String::from("https://swatmanga.net"),
 		manga_details_title: ".infox h1",
 		manga_details_author: "td:contains(Autor)+td",
 		manga_details_description: ".desc",
@@ -48,8 +49,8 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 }
 
 #[get_page_list]
-fn get_page_list(id: String) -> Result<Vec<Page>> {
-	helper::parse_page_list(&get_instance(), id)
+fn get_page_list(_manga_id: String, id: String) -> Result<Vec<Page>> {
+	get_instance().parse_page_list(id)
 }
 
 #[modify_image_request]

@@ -1,0 +1,23 @@
+[package]
+name = "komga"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib"]
+
+[profile.dev]
+panic = "abort"
+
+[profile.release]
+panic = "abort"
+opt-level = "s"
+strip = true
+lto = true
+
+[dependencies]
+aidoku = { git = "https://github.com/Aidoku/aidoku-rs", features = ["helpers"] }
+base64 = { version = "0.13.0", default-features = false }
+itoa = "1.0.2"
+serde = { version = "1.0.140", default-features = false, features = ["derive", "alloc"] }
+serde_json = { version = "1.0.82", default-features = false, features = ["alloc"] }

@@ -1,362 +1,362 @@
 [
-    {
-        "type": "title"
-    },
-    {
-        "type": "group",
-        "name": "Tags",
-        "filters": [
-            {
-                "type": "genre",
-                "name": "4-Koma",
-                "id": "2268"
-            },
-            {
-                "type": "genre",
-                "name": "AC",
-                "id": "6286"
-            },
-            {
-                "type": "genre",
-                "name": "Action",
-                "id": "14"
-            },
-            {
-                "type": "genre",
-                "name": "Adult",
-                "id": "3574"
-            },
-            {
-                "type": "genre",
-                "name": "Adventure",
-                "id": "15"
-            },
-            {
-                "type": "genre",
-                "name": "Comedy",
-                "id": "2"
-            },
-            {
-                "type": "genre",
-                "name": "Cooking",
-                "id": "772"
-            },
-            {
-                "type": "genre",
-                "name": "Crime",
-                "id": "3741"
-            },
-            {
-                "type": "genre",
-                "name": "Demons",
-                "id": "45"
-            },
-            {
-                "type": "genre",
-                "name": "Drama",
-                "id": "11"
-            },
-            {
-                "type": "genre",
-                "name": "Ecchi",
-                "id": "28"
-            },
-            {
-                "type": "genre",
-                "name": "Fantasy",
-                "id": "16"
-            },
-            {
-                "type": "genre",
-                "name": "Game",
-                "id": "84"
-            },
-            {
-                "type": "genre",
-                "name": "Gender Bender",
-                "id": "74"
-            },
-            {
-                "type": "genre",
-                "name": "Gore",
-                "id": "3354"
-            },
-            {
-                "type": "genre",
-                "name": "Harem",
-                "id": "29"
-            },
-            {
-                "type": "genre",
-                "name": "Historical",
-                "id": "24"
-            },
-            {
-                "type": "genre",
-                "name": "Horror",
-                "id": "136"
-            },
-            {
-                "type": "genre",
-                "name": "Isekai",
-                "id": "17"
-            },
-            {
-                "type": "genre",
-                "name": "Josei",
-                "id": "1155"
-            },
-            {
-                "type": "genre",
-                "name": "Loli",
-                "id": "4596"
-            },
-            {
-                "type": "genre",
-                "name": "Lolicon",
-                "id": "6353"
-            },
-            {
-                "type": "genre",
-                "name": "Magic",
-                "id": "41"
-            },
-            {
-                "type": "genre",
-                "name": "Manhwa",
-                "id": "6103"
-            },
-            {
-                "type": "genre",
-                "name": "Martial Art",
-                "id": "3753"
-            },
-            {
-                "type": "genre",
-                "name": "Martial Arts",
-                "id": "18"
-            },
-            {
-                "type": "genre",
-                "name": "Matrial Arts",
-                "id": "6151"
-            },
-            {
-                "type": "genre",
-                "name": "Mature",
-                "id": "43"
-            },
-            {
-                "type": "genre",
-                "name": "Mecha",
-                "id": "111"
-            },
-            {
-                "type": "genre",
-                "name": "Medical",
-                "id": "3386"
-            },
-            {
-                "type": "genre",
-                "name": "Military",
-                "id": "1476"
-            },
-            {
-                "type": "genre",
-                "name": "Monsters",
-                "id": "4647"
-            },
-            {
-                "type": "genre",
-                "name": "Music",
-                "id": "146"
-            },
-            {
-                "type": "genre",
-                "name": "Mystery",
-                "id": "99"
-            },
-            {
-                "type": "genre",
-                "name": "One-Shot",
-                "id": "50"
-            },
-            {
-                "type": "genre",
-                "name": "Oneshot",
-                "id": "6029"
-            },
-            {
-                "type": "genre",
-                "name": "Police",
-                "id": "5269"
-            },
-            {
-                "type": "genre",
-                "name": "Psychological",
-                "id": "90"
-            },
-            {
-                "type": "genre",
-                "name": "Reincarnation",
-                "id": "4017"
-            },
-            {
-                "type": "genre",
-                "name": "Romance",
-                "id": "3"
-            },
-            {
-                "type": "genre",
-                "name": "School",
-                "id": "12"
-            },
-            {
-                "type": "genre",
-                "name": "School Life",
-                "id": "566"
-            },
-            {
-                "type": "genre",
-                "name": "Sci-fi",
-                "id": "85"
-            },
-            {
-                "type": "genre",
-                "name": "Seinen",
-                "id": "36"
-            },
-            {
-                "type": "genre",
-                "name": "Seinin",
-                "id": "5953"
-            },
-            {
-                "type": "genre",
-                "name": "Shotacon",
-                "id": "4033"
-            },
-            {
-                "type": "genre",
-                "name": "Shoujo",
-                "id": "53"
-            },
-            {
-                "type": "genre",
-                "name": "Shoujo Ai",
-                "id": "31"
-            },
-            {
-                "type": "genre",
-                "name": "Shounen",
-                "id": "5"
-            },
-            {
-                "type": "genre",
-                "name": "Shounen Ai",
-                "id": "2479"
-            },
-            {
-                "type": "genre",
-                "name": "Si-Fi",
-                "id": "3717"
-            },
-            {
-                "type": "genre",
-                "name": "Slice of Life",
-                "id": "13"
-            },
-            {
-                "type": "genre",
-                "name": "Smut",
-                "id": "4630"
-            },
-            {
-                "type": "genre",
-                "name": "Space",
-                "id": "6498"
-            },
-            {
-                "type": "genre",
-                "name": "Sports",
-                "id": "265"
-            },
-            {
-                "type": "genre",
-                "name": "Super Power",
-                "id": "103"
-            },
-            {
-                "type": "genre",
-                "name": "Supernatural",
-                "id": "19"
-            },
-            {
-                "type": "genre",
-                "name": "System",
-                "id": "4331"
-            },
-            {
-                "type": "genre",
-                "name": "Thriller",
-                "id": "143"
-            },
-            {
-                "type": "genre",
-                "name": "Time Travel",
-                "id": "5059"
-            },
-            {
-                "type": "genre",
-                "name": "Tragedy",
-                "id": "20"
-            },
-            {
-                "type": "genre",
-                "name": "Vampire",
-                "id": "634"
-            },
-            {
-                "type": "genre",
-                "name": "Webtoons",
-                "id": "71"
-            },
-            {
-                "type": "genre",
-                "name": "Yaoi",
-                "id": "4557"
-            },
-            {
-                "type": "genre",
-                "name": "Yuri",
-                "id": "75"
-            },
-            {
-                "type": "genre",
-                "name": "Zombie",
-                "id": "4191"
-            }
-        ]
-    },
-    {
-        "type": "select",
-        "name": "Status",
-        "options": [
-            "All",
-            "Ongoing",
-            "Completed",
-            "Hiatus"
-        ]
-    },
-    {
-        "type": "select",
-        "name": "Type",
-        "options": [
-            "All",
-            "Manga",
-            "Manhwa",
-            "Manhua",
-            "Comic"
-        ]
-    }
+	{
+		"type": "title"
+	},
+	{
+		"type": "group",
+		"name": "Tags",
+		"filters": [
+			{
+				"type": "genre",
+				"name": "4-Koma",
+				"id": "2268"
+			},
+			{
+				"type": "genre",
+				"name": "AC",
+				"id": "6286"
+			},
+			{
+				"type": "genre",
+				"name": "Action",
+				"id": "14"
+			},
+			{
+				"type": "genre",
+				"name": "Adult",
+				"id": "3574"
+			},
+			{
+				"type": "genre",
+				"name": "Adventure",
+				"id": "15"
+			},
+			{
+				"type": "genre",
+				"name": "Comedy",
+				"id": "2"
+			},
+			{
+				"type": "genre",
+				"name": "Cooking",
+				"id": "772"
+			},
+			{
+				"type": "genre",
+				"name": "Crime",
+				"id": "3741"
+			},
+			{
+				"type": "genre",
+				"name": "Demons",
+				"id": "45"
+			},
+			{
+				"type": "genre",
+				"name": "Drama",
+				"id": "11"
+			},
+			{
+				"type": "genre",
+				"name": "Ecchi",
+				"id": "28"
+			},
+			{
+				"type": "genre",
+				"name": "Fantasy",
+				"id": "16"
+			},
+			{
+				"type": "genre",
+				"name": "Game",
+				"id": "84"
+			},
+			{
+				"type": "genre",
+				"name": "Gender Bender",
+				"id": "74"
+			},
+			{
+				"type": "genre",
+				"name": "Gore",
+				"id": "3354"
+			},
+			{
+				"type": "genre",
+				"name": "Harem",
+				"id": "29"
+			},
+			{
+				"type": "genre",
+				"name": "Historical",
+				"id": "24"
+			},
+			{
+				"type": "genre",
+				"name": "Horror",
+				"id": "136"
+			},
+			{
+				"type": "genre",
+				"name": "Isekai",
+				"id": "17"
+			},
+			{
+				"type": "genre",
+				"name": "Josei",
+				"id": "1155"
+			},
+			{
+				"type": "genre",
+				"name": "Loli",
+				"id": "4596"
+			},
+			{
+				"type": "genre",
+				"name": "Lolicon",
+				"id": "6353"
+			},
+			{
+				"type": "genre",
+				"name": "Magic",
+				"id": "41"
+			},
+			{
+				"type": "genre",
+				"name": "Manhwa",
+				"id": "6103"
+			},
+			{
+				"type": "genre",
+				"name": "Martial Art",
+				"id": "3753"
+			},
+			{
+				"type": "genre",
+				"name": "Martial Arts",
+				"id": "18"
+			},
+			{
+				"type": "genre",
+				"name": "Matrial Arts",
+				"id": "6151"
+			},
+			{
+				"type": "genre",
+				"name": "Mature",
+				"id": "43"
+			},
+			{
+				"type": "genre",
+				"name": "Mecha",
+				"id": "111"
+			},
+			{
+				"type": "genre",
+				"name": "Medical",
+				"id": "3386"
+			},
+			{
+				"type": "genre",
+				"name": "Military",
+				"id": "1476"
+			},
+			{
+				"type": "genre",
+				"name": "Monsters",
+				"id": "4647"
+			},
+			{
+				"type": "genre",
+				"name": "Music",
+				"id": "146"
+			},
+			{
+				"type": "genre",
+				"name": "Mystery",
+				"id": "99"
+			},
+			{
+				"type": "genre",
+				"name": "One-Shot",
+				"id": "50"
+			},
+			{
+				"type": "genre",
+				"name": "Oneshot",
+				"id": "6029"
+			},
+			{
+				"type": "genre",
+				"name": "Police",
+				"id": "5269"
+			},
+			{
+				"type": "genre",
+				"name": "Psychological",
+				"id": "90"
+			},
+			{
+				"type": "genre",
+				"name": "Reincarnation",
+				"id": "4017"
+			},
+			{
+				"type": "genre",
+				"name": "Romance",
+				"id": "3"
+			},
+			{
+				"type": "genre",
+				"name": "School",
+				"id": "12"
+			},
+			{
+				"type": "genre",
+				"name": "School Life",
+				"id": "566"
+			},
+			{
+				"type": "genre",
+				"name": "Sci-fi",
+				"id": "85"
+			},
+			{
+				"type": "genre",
+				"name": "Seinen",
+				"id": "36"
+			},
+			{
+				"type": "genre",
+				"name": "Seinin",
+				"id": "5953"
+			},
+			{
+				"type": "genre",
+				"name": "Shotacon",
+				"id": "4033"
+			},
+			{
+				"type": "genre",
+				"name": "Shoujo",
+				"id": "53"
+			},
+			{
+				"type": "genre",
+				"name": "Shoujo Ai",
+				"id": "31"
+			},
+			{
+				"type": "genre",
+				"name": "Shounen",
+				"id": "5"
+			},
+			{
+				"type": "genre",
+				"name": "Shounen Ai",
+				"id": "2479"
+			},
+			{
+				"type": "genre",
+				"name": "Si-Fi",
+				"id": "3717"
+			},
+			{
+				"type": "genre",
+				"name": "Slice of Life",
+				"id": "13"
+			},
+			{
+				"type": "genre",
+				"name": "Smut",
+				"id": "4630"
+			},
+			{
+				"type": "genre",
+				"name": "Space",
+				"id": "6498"
+			},
+			{
+				"type": "genre",
+				"name": "Sports",
+				"id": "265"
+			},
+			{
+				"type": "genre",
+				"name": "Super Power",
+				"id": "103"
+			},
+			{
+				"type": "genre",
+				"name": "Supernatural",
+				"id": "19"
+			},
+			{
+				"type": "genre",
+				"name": "System",
+				"id": "4331"
+			},
+			{
+				"type": "genre",
+				"name": "Thriller",
+				"id": "143"
+			},
+			{
+				"type": "genre",
+				"name": "Time Travel",
+				"id": "5059"
+			},
+			{
+				"type": "genre",
+				"name": "Tragedy",
+				"id": "20"
+			},
+			{
+				"type": "genre",
+				"name": "Vampire",
+				"id": "634"
+			},
+			{
+				"type": "genre",
+				"name": "Webtoons",
+				"id": "71"
+			},
+			{
+				"type": "genre",
+				"name": "Yaoi",
+				"id": "4557"
+			},
+			{
+				"type": "genre",
+				"name": "Yuri",
+				"id": "75"
+			},
+			{
+				"type": "genre",
+				"name": "Zombie",
+				"id": "4191"
+			}
+		]
+	},
+	{
+		"type": "select",
+		"name": "Status",
+		"options": [
+			"All",
+			"Ongoing",
+			"Completed",
+			"Hiatus"
+		]
+	},
+	{
+		"type": "select",
+		"name": "Type",
+		"options": [
+			"All",
+			"Manga",
+			"Manhwa",
+			"Manhua",
+			"Comic"
+		]
+	}
 ]

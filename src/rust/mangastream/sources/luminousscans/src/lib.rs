@@ -10,7 +10,6 @@ fn get_instance() -> MangaStreamSource {
 	MangaStreamSource {
 		base_url: String::from("https://luminousscans.com"),
 		traverse_pathname: "series",
-		has_permanent_manga_url: true,
 		alt_pages: true,
 		..Default::default()
 	}
@@ -37,7 +36,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 }
 
 #[get_page_list]
-fn get_page_list(id: String) -> Result<Vec<Page>> {
+fn get_page_list(_manga_id: String, id: String) -> Result<Vec<Page>> {
 	get_instance().parse_page_list(id)
 }
 

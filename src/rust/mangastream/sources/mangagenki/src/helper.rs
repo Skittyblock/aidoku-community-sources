@@ -1,10 +1,11 @@
 use aidoku::{
 	error::Result,
 	prelude::format,
-	std::{defaults::defaults_get, String, Vec},
+	std::{String, Vec},
 	Filter, FilterType, MangaPageResult,
 };
 
+use mangastream_template::helper::*;
 use mangastream_template::template::MangaStreamSource;
 
 pub fn get_listing_url(source: &MangaStreamSource, listing_name: String, page: i32) -> String {
@@ -19,7 +20,7 @@ pub fn get_listing_url(source: &MangaStreamSource, listing_name: String, page: i
 	} else {
 		&source.base_url
 	};
-	let url = match page {
+	match page {
 		1 if list_type != source.base_url => {
 			format!(
 				"{}/{}/?{}",
@@ -31,18 +32,7 @@ pub fn get_listing_url(source: &MangaStreamSource, listing_name: String, page: i
 			source.base_url, source.traverse_pathname, page, list_type
 		),
 		_ => source.base_url.clone(),
-	};
-	url
-}
-
-pub fn get_lang_code() -> String {
-	let mut code = String::new();
-	if let Ok(languages) = defaults_get("languages").as_array() {
-		if let Ok(language) = languages.get(0).as_string() {
-			code = language.read();
-		}
 	}
-	code
 }
 
 pub fn get_title_skip() -> Vec<String> {

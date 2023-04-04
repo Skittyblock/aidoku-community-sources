@@ -31,7 +31,7 @@ pub fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult
 	}
 	let search_url = get_search_url(String::from("https://api.yurineko.net"), query, genre, page);
 	let json = Request::new(search_url.as_str(), HttpMethod::Get)
-		.json()
+		.json()?
 		.as_object()?;
 	let result = json.get("result").as_array()?;
 	let total = json.get("resultCount").as_int().unwrap_or(0);
@@ -57,7 +57,7 @@ pub fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult>
 	);
 
 	let result = Request::new(url.as_str(), HttpMethod::Get)
-		.json()
+		.json()?
 		.as_array()?;
 	let mut manga_arr: Vec<Manga> = Vec::new();
 	for manga in result {
@@ -77,7 +77,7 @@ pub fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult>
 fn get_manga_details(id: String) -> Result<Manga> {
 	let url = format!("https://api.yurineko.net/manga/{id}");
 	let json = Request::new(url.as_str(), HttpMethod::Get)
-		.json()
+		.json()?
 		.as_object()?;
 	parse_manga(json)
 }
@@ -87,7 +87,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 	let url = format!("https://api.yurineko.net/manga/{id}");
 
 	let json = Request::new(url.as_str(), HttpMethod::Get)
-		.json()
+		.json()?
 		.as_object()?;
 	let chapters = json.get("chapters").as_array()?;
 	let scanlators = json.get("team").as_array()?;
@@ -111,20 +111,22 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 }
 
 #[get_page_list]
-fn get_page_list(id: String) -> Result<Vec<Page>> {
-	let url = format!("https://api.yurineko.net/read/{id}");
+fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
+	let url = format!("https://api.yurineko.net/read/{chapter_id}");
 	let mut request = Request::new(url.as_str(), HttpMethod::Get)
 		.header(
 			"Authorization", 
 			"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjE2NjMwLCJyb2xlIjoxLCJpYXQiOjE2NTI3MDk5MzYsImV4cCI6MTY1Nzg5MzkzNn0.q4NSW_AaWnlMJgSYkN9yE__wxpiD2aXDN82cdozfODg"
 		);
-	if let Ok(r18_token) = defaults_get("r18Token").as_string() {
-		request = Request::new(url.as_str(), HttpMethod::Get).header(
-			"Authorization",
-			format!("Bearer {}", r18_token.read()).as_str(),
-		);
+	if let Ok(r18_token_val) = defaults_get("r18Token") {
+		if let Ok(r18_token) = r18_token_val.as_string() {
+			request = Request::new(url.as_str(), HttpMethod::Get).header(
+				"Authorization",
+				format!("Bearer {}", r18_token.read()).as_str(),
+			);
+		}
 	}
-	let json = request.json().as_object()?;
+	let json = request.json()?.as_object()?;
 	let pages = json.get("url").as_array()?;
 	let mut page_arr: Vec<Page> = Vec::new();
 	for (idx, page) in pages.enumerate() {
@@ -168,7 +170,7 @@ pub fn handle_url(url: String) -> Result<DeepLink> {
 
 		let api_url = format!("https://api.yurineko.net/read/{id}");
 		let json = Request::new(api_url.as_str(), HttpMethod::Get)
-			.json()
+			.json()?
 			.as_object()?;
 		let chapter_info = json.get("chapterInfo").as_object()?;
 		let chapter = parse_chapter(String::from(""), chapter_info)?;

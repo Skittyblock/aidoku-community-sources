@@ -56,9 +56,13 @@ fn get_instance() -> WPComicsSource {
 
 		page_url_transformer: |url| {
 			let mut server_two = String::from("https://images2-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&resize_h=0&rewriteMime=image%2F*&url=");
-			if let Ok(2) = defaults_get("serverSelection").as_int() {
-				server_two.push_str(&urlencode(url));
-				server_two
+			if let Ok(server_selection) = defaults_get("serverSelection") {
+				if let Ok(2) = server_selection.as_int() {
+					server_two.push_str(&urlencode(url));
+					server_two
+				} else {
+					url
+				}
 			} else {
 				url
 			}
@@ -173,8 +177,8 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 }
 
 #[get_page_list]
-fn get_page_list(id: String) -> Result<Vec<Page>> {
-	get_instance().get_page_list(id)
+fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
+	get_instance().get_page_list(chapter_id)
 }
 
 #[modify_image_request]

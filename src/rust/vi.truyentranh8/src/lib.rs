@@ -138,7 +138,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	}
 	url.push_str(format!("&baogom={}", included_tags.join(",")).as_str());
 	url.push_str(format!("&khonggom={}", excluded_tags.join(",")).as_str());
-	let html = Request::new(&url, HttpMethod::Get).html();
+	let html = Request::new(&url, HttpMethod::Get).html()?;
 	let node = html.select("div#tblChap figure.col");
 	let elems = node.array();
 	let mut manga = Vec::with_capacity(elems.len());
@@ -147,7 +147,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 		.array()
 		.len() > 0;
 	for elem in elems {
-		let manga_node = elem.as_node();
+		let manga_node = elem.as_node().expect("node array");
 		let title = manga_node.select("figcaption h3 a").text().read();
 		let url = manga_node.select("figcaption h3 a").attr("href").read();
 		let id = url.replace("http://truyentranh86.com", "");
@@ -172,7 +172,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 #[get_manga_details]
 fn get_manga_details(id: String) -> Result<Manga> {
 	cache_manga_page(&id);
-	let html = Node::new(unsafe { &CACHED_MANGA.clone().unwrap() });
+	let html = Node::new(unsafe { &CACHED_MANGA.clone().unwrap() })?;
 	let cover = append_protocol(html.select("img.thumbnail").attr("src").read());
 	let title = String::from(
 		html.select("h1.fs-5")
@@ -185,7 +185,7 @@ fn get_manga_details(id: String) -> Result<Manga> {
 		.select("span[itemprop=author]")
 		.array()
 		.filter_map(|str| {
-			let string = str.as_node().text().read();
+			let string = str.as_node().expect("node array").text().read();
 			if string.is_empty() {
 				None
 			} else {
@@ -201,7 +201,7 @@ fn get_manga_details(id: String) -> Result<Manga> {
 		.select("a[itemprop=genre]")
 		.array()
 		.filter_map(|str| {
-			let string = str.as_node().text().read();
+			let string = str.as_node().expect("node array").text().read();
 			if string.is_empty() {
 				None
 			} else {
@@ -248,13 +248,13 @@ fn get_manga_details(id: String) -> Result<Manga> {
 #[get_chapter_list]
 fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 	cache_manga_page(&id);
-	let html = Node::new(unsafe { &CACHED_MANGA.clone().unwrap() });
+	let html = Node::new(unsafe { &CACHED_MANGA.clone().unwrap() })?;
 	let node = html.select("ul#ChapList li");
 	let mut scanlator = html
 		.select("b[itemprop=editor]")
 		.array()
 		.filter_map(|str| {
-			let string = str.as_node().text().read();
+			let string = str.as_node().expect("node array").text().read();
 			if string.is_empty() {
 				None
 			} else {
@@ -269,7 +269,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 	let elems = node.array();
 	let mut chapters = Vec::with_capacity(elems.len());
 	for elem in elems {
-		let chapter_node = elem.as_node();
+		let chapter_node = elem.as_node().expect("node array");
 		let url = chapter_node.select("a").attr("href").read();
 		let chapter_id = url.replace("http://truyentranh86.com", "");
 		let title = chapter_node
@@ -308,19 +308,18 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 }
 
 #[get_page_list]
-fn get_page_list(id: String) -> Result<Vec<Page>> {
-	let url = format!("http://truyentranh86.com{id}");
-	let html = Request::new(&url, HttpMethod::Get).html();
+fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
+	let url = format!("http://truyentranh86.com{chapter_id}");
+	let html = Request::new(&url, HttpMethod::Get).html()?;
 	let node = html.select("div.page-chapter");
 	let elems = node.array();
 	let mut pages = Vec::with_capacity(elems.len());
 	for (idx, elem) in elems.enumerate() {
-		let page_node = elem.as_node();
+		let page_node = elem.as_node().expect("node array");
 		pages.push(Page {
 			index: idx as i32,
 			url: page_node.select("img").attr("src").read(),
-			base64: String::new(),
-			text: String::new(),
+			..Default::default()
 		})
 	}
 	Ok(pages)

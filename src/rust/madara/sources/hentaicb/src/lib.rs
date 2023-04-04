@@ -78,8 +78,8 @@ fn modify_image_request(request: Request) {
 }
 
 #[get_page_list]
-fn get_page_list(id: String) -> Result<Vec<Page>> {
-	template::get_page_list(id, get_data())
+fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
+	template::get_page_list(chapter_id, get_data())
 }
 
 #[handle_url]
