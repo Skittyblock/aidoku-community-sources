@@ -123,7 +123,7 @@ pub fn parse_manga_list(
 				};
 
 				id += "|";
-				id += &(match data_obj.get("hid").as_string(){
+				id += &(match data_obj.get("hid").as_string() {
 					Ok(node) => node.read(),
 					Err(_) => continue,
 				});
@@ -178,12 +178,11 @@ pub fn parse_manga_listing(
 					Err(_) => continue,
 				};
 				id += "|";
-				
-				id += &(match manga_obj.get("hid").as_string(){
+
+				id += &(match manga_obj.get("hid").as_string() {
 					Ok(node) => node.read(),
 					Err(_) => continue,
 				});
-				
 
 				let cover = match manga_obj.get("cover_url").as_string() {
 					Ok(node) => node.read(),
