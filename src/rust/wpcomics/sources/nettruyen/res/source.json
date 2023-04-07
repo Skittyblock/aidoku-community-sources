@@ -1,11 +1,11 @@
 {
 	"info": {
-    	"id": "vi.nettruyen",
-    	"lang": "vi",
-    	"name": "NetTruyen",
-    	"version": 6,
-    	"url": "https://www.nettruyenvt.com",
-    	"nsfw": 1
+		"id": "vi.nettruyen",
+		"lang": "vi",
+		"name": "NetTruyen",
+		"version": 6,
+		"url": "https://www.nettruyenvt.com",
+		"nsfw": 1
   	},
   	"listings": [
     	{
