@@ -9,7 +9,7 @@ use mangastream_template::template::MangaStreamSource;
 fn get_instance() -> MangaStreamSource {
 	MangaStreamSource {
 		listing: ["الرائج", "آخر", "جَديد"],
-		base_url: String::from("https://aresmanga.net/"),
+		base_url: String::from("https://aresmanga.net"),
 		last_page_text: "التالي",
 		chapter_date_format: "MMMM d, yyyy",
 		locale: "ar_EH",
