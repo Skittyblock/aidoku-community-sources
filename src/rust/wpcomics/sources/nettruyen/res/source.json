@@ -8,14 +8,14 @@
 		"nsfw": 1
   	},
   	"listings": [
-    	{
-      		"name": "Hot"
-    	},
-    	{
-      		"name": "Truyện con gái"
-    	},
-   	 	{
-      		"name": "Truyện con trai"
-    	}
-  	]
+		{
+			"name": "Hot"
+		},
+		{
+			"name": "Truyện con gái"
+		},
+		{
+			"name": "Truyện con trai"
+		}
+	]
 }

@@ -167,7 +167,7 @@ impl WPComicsSource {
 			});
 		}
 		if !self.next_page.is_empty() {
-			has_next_page = html.select(self.next_page).array().len() > 0;
+			has_next_page = html.select(self.next_page).array().is_empty();
 		}
 		Ok(MangaPageResult {
 			manga: mangas,
@@ -326,8 +326,8 @@ impl WPComicsSource {
 
 	pub fn handle_url(&self, url: String) -> Result<DeepLink> {
 		cache_manga_page(self, url.as_str());
-		let html = unsafe { Node::new(&CACHED_MANGA.clone().unwrap())? };
-		if html.select(self.manga_viewer_page).array().len() > 0 {
+		let html = unsafe { Node::new(CACHED_MANGA.clone().unwrap())? };
+		if html.select(self.manga_viewer_page).array().is_empty() {
 			let node = html.select(".breadcrumb li");
 			let breadcrumbs = node.array();
 			let mut manga_id = breadcrumbs
