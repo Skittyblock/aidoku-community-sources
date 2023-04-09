@@ -14,7 +14,7 @@
 			"Year Released - Oldest",
 			"Most Popular (All Time)",
 			"Most Popular (Monthly)",
-			"Least Popular",
+			"Least Popular"
 		],
 		"default": {
 			"index": 0,
