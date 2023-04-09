@@ -9,7 +9,7 @@ json='[
 	{
 		type: "select",
 		name: "Status",
-		options: ["Any", "Completed", "Ongoing"]
+		options: ["Any", "Completed", "Ongoing", "On Hiatus", "Canceled"]
 	},
 	{
 		type: "sort",
