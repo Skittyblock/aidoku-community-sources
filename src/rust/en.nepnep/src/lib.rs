@@ -19,7 +19,7 @@ pub mod helper;
 mod parser;
 
 mod model;
-use model::{to_sort_option, Nepnep, Pattern, Size, SortOptions};
+use model::{Nepnep, Pattern, Size, SortOptions};
 
 pub fn init_cache(cache: &mut Nepnep) {
 	if let Ok(url_str) = defaults_get("sourceURL")
@@ -133,7 +133,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 				};
 
 				let idx = value.get("index").as_int().unwrap_or(0) as i32;
-				let opt = to_sort_option(idx);
+				let opt = SortOptions::from(idx);
 
 				match opt {
 					// Site by default sorts to A-Z
