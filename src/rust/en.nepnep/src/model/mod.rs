@@ -97,18 +97,17 @@ pub enum SortOptions {
 }
 
 impl From<i32> for SortOptions {
-    fn from(value: i32) -> Self {
-        match value {
-            0 => SortOptions::AZ,
-            1 => SortOptions::ZA,
-            2 => SortOptions::RecentlyReleasedChapter,
-            3 => SortOptions::YearReleasedNewest,
-            4 => SortOptions::YearReleasedOldest,
-            5 => SortOptions::MostPopularAllTime,
-            6 => SortOptions::MostPopularMonthly,
-            7 => SortOptions::LeastPopular,
-            _ => SortOptions::AZ,
-        }
-    }
+	fn from(value: i32) -> Self {
+		match value {
+			0 => SortOptions::AZ,
+			1 => SortOptions::ZA,
+			2 => SortOptions::RecentlyReleasedChapter,
+			3 => SortOptions::YearReleasedNewest,
+			4 => SortOptions::YearReleasedOldest,
+			5 => SortOptions::MostPopularAllTime,
+			6 => SortOptions::MostPopularMonthly,
+			7 => SortOptions::LeastPopular,
+			_ => SortOptions::AZ,
+		}
+	}
 }
-
