@@ -84,3 +84,28 @@ pub struct HotUpdate<'a> {
 	#[serde(rename = "SeriesName")]
 	pub title: Cow<'a, str>,
 }
+
+pub enum SortOptions {
+	AZ,
+	ZA,
+	RecentlyReleasedChapter,
+	YearReleasedNewest,
+	YearReleasedOldest,
+	MostPopularAllTime,
+	MostPopularMonthly,
+	LeastPopular,
+}
+
+pub fn to_sort_option(idx: i32) -> SortOptions {
+	match idx {
+		0 => SortOptions::AZ,
+		1 => SortOptions::ZA,
+		2 => SortOptions::RecentlyReleasedChapter,
+		3 => SortOptions::YearReleasedNewest,
+		4 => SortOptions::YearReleasedOldest,
+		5 => SortOptions::MostPopularAllTime,
+		6 => SortOptions::MostPopularMonthly,
+		7 => SortOptions::LeastPopular,
+		_ => panic!("Unexpected idx: {}", idx),
+	}
+}

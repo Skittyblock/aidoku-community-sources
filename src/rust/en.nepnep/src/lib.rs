@@ -19,7 +19,7 @@ pub mod helper;
 mod parser;
 
 mod model;
-use model::{Nepnep, Pattern, Size};
+use model::{to_sort_option, Nepnep, Pattern, Size, SortOptions};
 
 pub fn init_cache(cache: &mut Nepnep) {
 	if let Ok(url_str) = defaults_get("sourceURL")
@@ -133,23 +133,22 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 				};
 
 				let idx = value.get("index").as_int().unwrap_or(0) as i32;
+				let opt = to_sort_option(idx);
 
-				// Site by default sorts A-Z
-				if idx == 0 {
-					continue;
-				}
-
-				match idx {
-					1 => {
-						dir.sort_by(|a, b| b.title.cmp(&a.title));
+				match opt {
+					// Site by default sorts to A-Z
+					SortOptions::AZ => continue,
+					SortOptions::ZA => dir.sort_by(|a, b| b.title.cmp(&a.title)),
+					SortOptions::RecentlyReleasedChapter => {
+						dir.sort_by(|a, b| b.last_updated.cmp(&a.last_updated))
 					}
-					2 => dir.sort_by(|a, b| b.last_updated.cmp(&a.last_updated)),
-					3 => dir.sort_by(|a, b| b.year.cmp(&a.year)),
-					4 => dir.sort_by(|a, b| a.year.cmp(&b.year)),
-					5 => dir.sort_by(|a, b| b.views.cmp(&a.views)),
-					6 => dir.sort_by(|a, b| b.views_month.cmp(&a.views_month)),
-					7 => dir.sort_by(|a, b| a.views.cmp(&b.views)),
-					_ => panic!("Unreachable sort idx reached: {}", idx),
+					SortOptions::YearReleasedNewest => dir.sort_by(|a, b| b.year.cmp(&a.year)),
+					SortOptions::YearReleasedOldest => dir.sort_by(|a, b| a.year.cmp(&b.year)),
+					SortOptions::MostPopularAllTime => dir.sort_by(|a, b| b.views.cmp(&a.views)),
+					SortOptions::MostPopularMonthly => {
+						dir.sort_by(|a, b| b.views_month.cmp(&a.views_month))
+					}
+					SortOptions::LeastPopular => dir.sort_by(|a, b| a.views.cmp(&b.views)),
 				}
 			}
 			_ => continue,
