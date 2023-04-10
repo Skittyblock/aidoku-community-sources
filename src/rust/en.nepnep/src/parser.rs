@@ -3,7 +3,7 @@ use aidoku::{
 	std::Vec, Chapter, Manga, MangaContentRating, MangaStatus, MangaViewer,
 };
 
-use crate::model::{HotUpdate, Directory};
+use crate::model::{Directory, HotUpdate};
 
 use super::helper::{chapter_image, chapter_url_encode};
 
@@ -23,8 +23,8 @@ pub fn parse_manga_listing(manga_object: &HotUpdate) -> Result<Manga> {
 	url.push_str(id);
 
 	Ok(Manga {
-		id: id.clone(),
-		title: title.clone(),
+		id: id.to_string(),
+		title: title.to_string(),
 		cover,
 		url,
 		..Default::default()
@@ -40,8 +40,8 @@ pub fn parse_basic_manga(nepnep: &Directory) -> Result<Manga> {
 	url.push_str("/manga/");
 	url.push_str(id);
 	Ok(Manga {
-		id: id.clone(),
-		title: title.clone(),
+		id: id.to_string(),
+		title: title.to_string(),
 		cover,
 		url,
 		..Default::default()

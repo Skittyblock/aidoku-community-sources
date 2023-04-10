@@ -35,26 +35,22 @@ pub fn init_cache(cache: &mut Nepnep) {
 		};
 
 		let result = html.outer_html().read();
-        let final_str = helper::string_between(&result, cache.start(), cache.end(), 1);
+		let final_str = helper::string_between(&result, cache.start(), cache.end(), 1);
 
-        match cache {
-            Nepnep::Directory { items } => {
-                match serde_json::from_str(final_str.as_str()) {
-                    Ok(dir) => *items = dir,
-                    Err(err) => {
-                        println!("Unable to serialize :{:?}", err);
-                    }
-                }
-            }
-            Nepnep::HotUpdate { items } => {
-                match serde_json::from_str(final_str.as_str()) {
-                    Ok(dir) => *items = dir,
-                    Err(err) => {
-                        println!("Unable to serialize :{:?}", err);
-                    }
-                }
-            }
-        }
+		match cache {
+			Nepnep::Directory { items } => match serde_json::from_str(final_str.as_str()) {
+				Ok(dir) => *items = dir,
+				Err(err) => {
+					println!("Unable to serialize :{:?}", err);
+				}
+			},
+			Nepnep::HotUpdate { items } => match serde_json::from_str(final_str.as_str()) {
+				Ok(dir) => *items = dir,
+				Err(err) => {
+					println!("Unable to serialize :{:?}", err);
+				}
+			},
+		}
 	}
 }
 
@@ -85,14 +81,14 @@ pub fn cache_manga_page(id: &str) {
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
-    if unsafe { &CACHED_DIR }.len() == 0 {
-        init_cache(unsafe { &mut CACHED_DIR })
-    }
-    
-    let mut dir = match unsafe { CACHED_DIR.clone() } {
-        Nepnep::Directory { items } => items,
-        _ => panic!("Unexpected type")
-    };
+	if unsafe { &CACHED_DIR }.len() == 0 {
+		init_cache(unsafe { &mut CACHED_DIR })
+	}
+
+	let mut dir = match unsafe { CACHED_DIR.clone() } {
+		Nepnep::Directory { items } => items,
+		_ => panic!("Unexpected type"),
+	};
 
 	let offset = (page as usize - 1) * 20;
 
@@ -115,16 +111,19 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 						}
 					};
 
-                    // check both series name and alt titles
+					// check both series name and alt titles
 					if manga.title.to_lowercase().contains(&title)
-						|| manga.alt_titles.iter().any(|x| x.to_lowercase().contains(&title))
+						|| manga
+							.alt_titles
+							.iter()
+							.any(|x| x.to_lowercase().contains(&title))
 					{
 						i += 1;
-                        continue;
-					} 
-                    // no match, remove
-                    dir.remove(i);
-                    size -= 1;
+						continue;
+					}
+					// no match, remove
+					dir.remove(i);
+					size -= 1;
 				}
 			}
 			FilterType::Sort => {
@@ -140,44 +139,18 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 					continue;
 				}
 
-                match idx {
-                    1 => {
-                        dir.sort_by(|a, b| {
-                            b.title.cmp(&a.title)
-                        });
-                    }
-                    2 => {
-                        dir.sort_by(|a, b| {
-                            b.last_updated.cmp(&a.last_updated)
-                        })
-                    }
-                    3 => {
-                        dir.sort_by(|a, b| {
-                            b.year.cmp(&a.year)
-                        })
-                    }
-                    4 => {
-                        dir.sort_by(|a, b| {
-                            a.year.cmp(&b.year)
-                        })
-                    }
-                    5 => {
-                        dir.sort_by(|a, b| {
-                            b.views.cmp(&a.views)
-                        })
-                    }
-                    6 => {
-                        dir.sort_by(|a, b| {
-                            b.views_month.cmp(&a.views_month)
-                        })
-                    }
-                    7 => {
-                        dir.sort_by(|a, b| {
-                            a.views.cmp(&b.views)
-                        })
-                    }
-                    _ => panic!("Unreachable sort idx reached: {}", idx)
-                }
+				match idx {
+					1 => {
+						dir.sort_by(|a, b| b.title.cmp(&a.title));
+					}
+					2 => dir.sort_by(|a, b| b.last_updated.cmp(&a.last_updated)),
+					3 => dir.sort_by(|a, b| b.year.cmp(&a.year)),
+					4 => dir.sort_by(|a, b| a.year.cmp(&b.year)),
+					5 => dir.sort_by(|a, b| b.views.cmp(&a.views)),
+					6 => dir.sort_by(|a, b| b.views_month.cmp(&a.views_month)),
+					7 => dir.sort_by(|a, b| a.views.cmp(&b.views)),
+					_ => panic!("Unreachable sort idx reached: {}", idx),
+				}
 			}
 			_ => continue,
 		}
@@ -211,7 +184,7 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 	match listing_name {
 		"Hot Updates" => {
 			if unsafe { &CACHED_HOT_UPDATES }.len() == 0 {
-                init_cache(unsafe { &mut CACHED_HOT_UPDATES })
+				init_cache(unsafe { &mut CACHED_HOT_UPDATES })
 			}
 		}
 		_ => {
@@ -219,10 +192,10 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 		}
 	}
 
-    let dir = match unsafe { CACHED_HOT_UPDATES.clone() } {
-        Nepnep::HotUpdate { items } => items,
-        _ => panic!("Unexpected type")
-    };
+	let dir = match unsafe { CACHED_HOT_UPDATES.clone() } {
+		Nepnep::HotUpdate { items } => items,
+		_ => panic!("Unexpected type"),
+	};
 
 	let offset = (page as usize - 1) * 20;
 

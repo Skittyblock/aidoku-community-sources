@@ -1,86 +1,86 @@
-use aidoku::std::{
-    Vec, String
-};
+use aidoku::std::Vec;
 use serde::Deserialize;
 
+extern crate alloc;
+use alloc::borrow::Cow;
+
 #[derive(Deserialize, Debug, Clone)]
-pub enum Nepnep {
-    Directory { items: Vec<Directory> },
-    HotUpdate { items: Vec<HotUpdate> }
+pub enum Nepnep<'a> {
+	Directory { items: Vec<Directory<'a>> },
+	HotUpdate { items: Vec<HotUpdate<'a>> },
 }
 
 pub trait Pattern {
-    fn start(&self) -> &str;
-    fn end(&self) -> &str;
-    fn path(&self) -> &str;
+	fn start(&self) -> &str;
+	fn end(&self) -> &str;
+	fn path(&self) -> &str;
 }
 
-impl Pattern for Nepnep {
-    fn start(&self) -> &str {
-        match self {
-            Nepnep::Directory { .. } => "vm.Directory =",
-            Nepnep::HotUpdate { .. } => "vm.HotUpdateJSON ="
-        }
-    }
+impl Pattern for Nepnep<'_> {
+	fn start(&self) -> &str {
+		match self {
+			Nepnep::Directory { .. } => "vm.Directory =",
+			Nepnep::HotUpdate { .. } => "vm.HotUpdateJSON =",
+		}
+	}
 
-    fn end(&self) -> &str {
-        "];"
-    }
+	fn end(&self) -> &str {
+		"];"
+	}
 
-    fn path(&self) -> &str {
-        match self {
-            Nepnep::Directory { .. } => "/search/",
-            Nepnep::HotUpdate { .. } => "/hot.php"
-        }
-    }
+	fn path(&self) -> &str {
+		match self {
+			Nepnep::Directory { .. } => "/search/",
+			Nepnep::HotUpdate { .. } => "/hot.php",
+		}
+	}
 }
 
 pub trait Size {
-    fn len(&self) -> usize;
+	fn len(&self) -> usize;
 }
 
-impl Size for Nepnep {
-    fn len(&self) -> usize {
-        match self {
-            Nepnep::Directory { items } => items.len(),
-            Nepnep::HotUpdate { items } => items.len(),
-        }
-    }
+impl Size for Nepnep<'_> {
+	fn len(&self) -> usize {
+		match self {
+			Nepnep::Directory { items } => items.len(),
+			Nepnep::HotUpdate { items } => items.len(),
+		}
+	}
 }
-
 
 #[derive(Default, Deserialize, Debug, Clone)]
 #[serde(default)]
-pub struct Directory {
+pub struct Directory<'a> {
 	#[serde(rename = "i")]
-	pub id: String,
+	pub id: Cow<'a, str>,
 
 	#[serde(rename = "s")]
-	pub title: String,
+	pub title: Cow<'a, str>,
 
-    // time in epoch
+	// time in epoch
 	#[serde(rename = "lt")]
-    pub last_updated: i32,
+	pub last_updated: i32,
 
 	#[serde(rename = "y")]
-    pub year: String,
+	pub year: Cow<'a, str>,
 
 	#[serde(rename = "v")]
-    pub views: String,
+	pub views: Cow<'a, str>,
 
 	#[serde(rename = "vm")]
-    pub views_month: String,
+	pub views_month: Cow<'a, str>,
 
 	#[serde(rename = "al")]
-	pub alt_titles: Vec<String>,
+	pub alt_titles: Vec<Cow<'a, str>>,
 }
 
 #[derive(Default, Deserialize, Debug, Clone)]
 #[serde(default)]
-pub struct HotUpdate {
+pub struct HotUpdate<'a> {
 	#[serde(rename = "IndexName")]
-	pub id: String,
+	pub id: Cow<'a, str>,
 
 	#[serde(rename = "SeriesName")]
-	pub title: String,
+	pub title: Cow<'a, str>,
 }
