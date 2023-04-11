@@ -13,9 +13,11 @@ pub fn make_search_url(
 	page: i32,
 	term: Option<String>,
 	tags: Vec<String>,
+	sort: Option<&str>,
 ) -> String {
 	let mut query = QueryParameters::new();
 	query.set("query", Some(term.unwrap_or_default().as_str()));
+	query.set("sort", sort);
 	query.set("page", Some(page.to_string().as_str()));
 	query.set("filter[language][0]", Some(language));
 	for (i, tag) in tags.iter().enumerate() {

@@ -952,9 +952,9 @@
     "type": "sort",
     "name": "Sort",
     "canAscend": false,
-    "options": ["Latest", "Popularity"],
+    "options": ["Relevance", "Upload Date", "Popularity"],
     "default": {
-      "index": 0,
+      "index": 1,
       "ascending": false
     }
   }

@@ -21,6 +21,7 @@ use parser::{parse_chapter_list, parse_manga, parse_page_list, parse_search};
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	let mut manga_title: Option<String> = None;
 	let mut tags: Vec<String> = Vec::new();
+	let mut sort: Option<&str> = None;
 	let mut language = "English";
 	if let Ok(mut languages) = defaults_get("languages")?.as_array() {
 		if !languages.is_empty() {
@@ -52,11 +53,20 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 				let genre = filter.object.get("name").as_string()?.read();
 				tags.push(genre);
 			}
+			FilterType::Sort => {
+				let sortobj = filter.value.as_object()?;
+				let index = sortobj.get("index").as_int().unwrap_or(1);
+				sort = match index {
+					1 => Some("upload-date"),
+					2 => Some("popularity"),
+					_ => continue,
+				}
+			}
 			_ => continue,
 		}
 	}
 
-	let url = make_search_url(language, page, manga_title, tags);
+	let url = make_search_url(language, page, manga_title, tags, sort);
 
 	let data = Request::new(url, HttpMethod::Get)
 		.header("User-Agent", USER_AGENT)

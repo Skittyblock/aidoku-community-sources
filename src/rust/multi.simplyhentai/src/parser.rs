@@ -6,7 +6,6 @@ use alloc::{
 	string::{String, ToString},
 	vec::Vec,
 };
-use chrono::prelude::*;
 
 use crate::helper::{get_image_quality, BASE_URL};
 
@@ -96,16 +95,13 @@ pub fn parse_manga(id: String, res: ObjectRef) -> Result<Manga> {
 
 pub fn parse_chapter_list(manga_id: String, res: ObjectRef) -> Result<Vec<Chapter>> {
 	let data = res.get("data").as_object()?;
-	let date_updated = data
-		.get("created_at")
-		.as_string()?
-		.read()
-		.parse::<DateTime<Utc>>()
-		.expect("Failed to parse date");
+	let date_updated =
+		data.get("created_at")
+			.as_date("yyyy-MM-dd'T'HH:mm:ss+ss:ss", None, Some("UTC"))?;
 	Ok(Vec::from([Chapter {
 		id: manga_id,
 		title: "Chapter 1".to_string(),
-		date_updated: date_updated.timestamp() as f64,
+		date_updated,
 		..Chapter::default()
 	}]))
 }
