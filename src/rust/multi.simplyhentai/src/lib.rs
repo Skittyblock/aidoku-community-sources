@@ -23,21 +23,23 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	let mut tags: Vec<String> = Vec::new();
 	let mut sort: Option<&str> = None;
 	let mut language = "English";
-	if let Ok(mut languages) = defaults_get("languages")?.as_array() {
-		if !languages.is_empty() {
-			if let Some(lang) = languages.next() {
-				language = match lang.as_string()?.read().as_str() {
-					"en" => "English",
-					"ja" => "Japanese",
-					"fr" => "French",
-					"de" => "German",
-					"it" => "Italian",
-					"ru" => "Russian",
-					"es" => "Spanish",
-					"ko" => "Korean",
-					"pl" => "Polish",
-					"zh" => "Chinese",
-					_ => "English",
+	if let Ok(languagesref) = defaults_get("languages") {
+		if let Ok(mut languages) = languagesref.as_array() {
+			if !languages.is_empty() {
+				if let Some(lang) = languages.next() {
+					language = match lang.as_string()?.read().as_str() {
+						"en" => "English",
+						"ja" => "Japanese",
+						"fr" => "French",
+						"de" => "German",
+						"it" => "Italian",
+						"ru" => "Russian",
+						"es" => "Spanish",
+						"ko" => "Korean",
+						"pl" => "Polish",
+						"zh" => "Chinese",
+						_ => "English",
+					}
 				}
 			}
 		}

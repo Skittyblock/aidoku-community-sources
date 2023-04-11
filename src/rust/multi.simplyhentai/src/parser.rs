@@ -100,7 +100,7 @@ pub fn parse_chapter_list(manga_id: String, res: ObjectRef) -> Result<Vec<Chapte
 			.as_date("yyyy-MM-dd'T'HH:mm:ss+ss:ss", None, Some("UTC"))?;
 	Ok(Vec::from([Chapter {
 		id: manga_id,
-		title: "Chapter 1".to_string(),
+		chapter: 1.0,
 		date_updated,
 		..Chapter::default()
 	}]))
