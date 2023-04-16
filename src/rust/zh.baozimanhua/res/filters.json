@@ -15,15 +15,6 @@
 	},
 	{
 		"type": "select",
-		"name": "連載情況",
-		"options": [
-			"全部",
-			"連載中",
-			"已完結"
-		]
-	},
-	{
-		"type": "select",
 		"name": "類型",
 		"options": [
 			"全部",

@@ -1,0 +1,256 @@
+{
+	"next": "/api/bzmhq/amp_comic_list?type=all&region=all&filter=*&page=2&limit=20&language=tw",
+	"items": [
+		{
+			"comic_id": "wuliandianfeng-pikapi",
+			"type_names": [
+				"冒险",
+				"热血"
+			],
+			"author": "噼咔噼",
+			"name": "武炼巅峰",
+			"topic_img": "wuliandianfeng-pikapi.jpg",
+			"region_name": "国漫",
+			"region": "cn"
+		},
+		{
+			"comic_id": "shashougude-hangzhouyounuodongmanyouxiangongsi",
+			"type_names": [
+				"搞笑"
+			],
+			"author": "杭州友诺动漫有限公司",
+			"name": "杀手古德",
+			"topic_img": "shashougude-hangzhouyounuodongmanyouxiangongsi.jpg",
+			"region_name": "国漫",
+			"region": "cn"
+		},
+		{
+			"comic_id": "gongjiaonannubaoxiaomanhua-wuyiboruntong",
+			"type_names": [
+				"baoxiao",
+				"shenghuo",
+				"热血"
+			],
+			"author": "武汉博润通",
+			"name": "公交男女爆笑漫画",
+			"topic_img": "gongjiaonannubaoxiaomanhua-wuyiboruntong.jpg",
+			"region_name": "国漫",
+			"region": "cn"
+		},
+		{
+			"comic_id": "zhongguoliangqixiansheng-quanyingsheng",
+			"type_names": [
+				"lingyi",
+				"搞笑"
+			],
+			"author": "权迎升",
+			"name": "中国惊奇先生（神鬼七杀令）",
+			"topic_img": "zhongguoliangqixiansheng-quanyingsheng.jpg",
+			"region_name": "国漫",
+			"region": "cn"
+		},
+		{
+			"comic_id": "hanghaiwang-weitianrongyilang",
+			"type_names": [
+				"剧情",
+				"少年",
+				"riman",
+				"热血"
+			],
+			"author": "尾田荣一郎",
+			"name": "航海王",
+			"topic_img": "hanghaiwang-weitianrongyilang.jpg",
+			"region_name": "日本",
+			"region": "jp"
+		},
+		{
+			"comic_id": "feirenzai-fenzihudong",
+			"type_names": [
+				"搞笑",
+				"shenmo",
+				"shenghuo"
+			],
+			"author": "分子互动",
+			"name": "非人哉",
+			"topic_img": "feirenzai-fenzihudong.jpg",
+			"region_name": "国漫",
+			"region": "cn"
+		},
+		{
+			"comic_id": "quanzhifashi-yuewenmanhua",
+			"type_names": [
+				"冒险",
+				"热血"
+			],
+			"author": "阅文漫画",
+			"name": "全职法师",
+			"topic_img": "quanzhifashi-yuewenmanhua.jpg",
+			"region_name": "国漫",
+			"region": "cn"
+		},
+		{
+			"comic_id": "bailianchengshen-fengxingzhe",
+			"type_names": [
+				"冒险",
+				"热血"
+			],
+			"author": "凤行者",
+			"name": "百炼成神",
+			"topic_img": "bailianchengshen-fengxingzhe.jpg",
+			"region_name": "国漫",
+			"region": "cn"
+		},
+		{
+			"comic_id": "yinhun-kongzhiyingqiu",
+			"type_names": [
+				"搞笑",
+				"zhandou"
+			],
+			"author": "空知英秋",
+			"name": "银魂",
+			"topic_img": "yinhun-kongzhiyingqiu.jpg",
+			"region_name": "日本",
+			"region": "jp"
+		},
+		{
+			"comic_id": "1031moshengjie-fenzihudong",
+			"type_names": [
+				"搞笑",
+				"日常"
+			],
+			"author": "分子互动",
+			"name": "1031万圣街",
+			"topic_img": "1031moshengjie-fenzihudong.jpg",
+			"region_name": "国漫",
+			"region": "cn"
+		},
+		{
+			"comic_id": "moxuchenguang-xianlin",
+			"type_names": [
+				"总裁",
+				"恋爱",
+				"都市"
+			],
+			"author": "闲林",
+			"name": "沫许辰光",
+			"topic_img": "moxuchenguang-xianlin.jpg",
+			"region_name": "国漫",
+			"region": "cn"
+		},
+		{
+			"comic_id": "jiachong-rickgriffin",
+			"type_names": [
+				"sige",
+				"奇幻",
+				"搞笑"
+			],
+			"author": "Rick Griffin",
+			"name": "家宠",
+			"topic_img": "jiachong-rickgriffin.jpg",
+			"region": "欧美"
+		},
+		{
+			"comic_id": "nitianjianshen-chuanqimanye",
+			"type_names": [
+				"玄幻",
+				"古风",
+				"xiuzhen"
+			],
+			"author": "传奇漫业",
+			"name": "逆天剑神",
+			"topic_img": "nitianjianshen-chuanqimanye.jpg",
+			"region_name": "国漫",
+			"region": "cn"
+		},
+		{
+			"comic_id": "difuwokaide-erciyuandongman",
+			"type_names": [
+				"热血",
+				"搞笑",
+				"都市"
+			],
+			"author": "二次元动漫",
+			"name": "地府我开的",
+			"topic_img": "difuwokaide-erciyuandongman.jpg",
+			"region_name": "国漫",
+			"region": "cn"
+		},
+		{
+			"comic_id": "dushiheisiredehuo-daoshangproject",
+			"type_names": [
+				"热血",
+				"穿越",
+				"后宫"
+			],
+			"author": "岛上Project",
+			"name": "都是黑丝惹的祸",
+			"topic_img": "dushiheisiredehuo-daoshangproject.jpg",
+			"region_name": "国漫",
+			"region": "cn"
+		},
+		{
+			"comic_id": "dawangraoming-yuedongwenhua",
+			"type_names": [
+				"玄幻",
+				"热血"
+			],
+			"author": "閱動文化",
+			"name": "大王饶命",
+			"topic_img": "dawangraoming-yuedongwenhua.jpg",
+			"region_name": "国漫",
+			"region": "cn"
+		},
+		{
+			"comic_id": "meiziyukexue-zhazhushidede",
+			"type_names": [
+				"穿越",
+				"zhandou"
+			],
+			"author": "诈术师德德",
+			"name": "妹子与科学",
+			"topic_img": "meiziyukexue-zhazhushidede.jpg",
+			"region_name": "国漫",
+			"region": "cn"
+		},
+		{
+			"comic_id": "woshidaxianzun-chuanqimanye",
+			"type_names": [
+				"玄幻",
+				"mangai",
+				"都市",
+				"xiuzhen",
+				"xinzuo"
+			],
+			"author": "传奇漫业",
+			"name": "我是大仙尊",
+			"topic_img": "woshidaxianzun-chuanqimanye.jpg",
+			"region_name": "国漫",
+			"region": "cn"
+		},
+		{
+			"comic_id": "douluodalu-fengxuandongman",
+			"type_names": [
+				"热血",
+				"玄幻",
+				"xiuzhen",
+				"jingpin"
+			],
+			"author": "风炫动漫",
+			"name": "斗罗大陆",
+			"topic_img": "douluodalu-fengxuandongman.jpg",
+			"region_name": "国漫",
+			"region": "cn"
+		},
+		{
+			"comic_id": "wozaiyijiedangjiaofu-chuangjiwenhua",
+			"type_names": [
+				"玄幻"
+			],
+			"author": "创迹文化",
+			"name": "我在异界当教父",
+			"topic_img": "wozaiyijiedangjiaofu-chuangjiwenhua.jpg",
+			"region_name": "国漫",
+			"region": "cn"
+		}
+	]
+}
