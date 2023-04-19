@@ -1,7 +1,7 @@
 use aidoku::{
 	error::Result,
 	helpers::uri::QueryParameters,
-	prelude::format,
+	prelude::{format, println},
 	std::{
 		html::Node,
 		net::{HttpMethod, Request},
@@ -247,10 +247,26 @@ pub fn get_manga_details(html: Node, manga_id: String) -> Result<Manga> {
 	})
 }
 
-pub fn get_chapter_list(html: Node, manga_id: String) -> Result<Vec<Chapter>> {
+pub fn get_chapter_list(html: Node) -> Result<Vec<Chapter>> {
 	let mut chapters: Vec<Chapter> = Vec::new();
 
-	todo!();
+	for item in html.select(".all_data_list a").array() {
+		let chapter_item = item.as_node().expect("chapter node");
+
+		let url = chapter_item.attr("abs:href").read();
+		let id = url.split('/').last().unwrap().replace(".html", "");
+		let title = chapter_item.attr("title").read();
+		let chapter = id.parse().unwrap();
+
+		chapters.push(Chapter {
+			id,
+			title,
+			chapter,
+			url,
+			lang: String::from("zh"),
+			..Default::default()
+		});
+	}
 
 	Ok(chapters)
 }
@@ -258,7 +274,7 @@ pub fn get_chapter_list(html: Node, manga_id: String) -> Result<Vec<Chapter>> {
 pub fn get_page_list(html: Node) -> Result<Vec<Page>> {
 	let mut pages: Vec<Page> = Vec::new();
 
-	todo!();
+	println!("{}", html.outer_html().read());
 
 	Ok(pages)
 }
