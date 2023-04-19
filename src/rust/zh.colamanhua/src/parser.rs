@@ -7,7 +7,7 @@ use aidoku::{
 		net::{HttpMethod, Request},
 		String, Vec,
 	},
-	Chapter, Filter, FilterType, Manga, MangaPageResult, MangaViewer, Page,
+	Chapter, Filter, FilterType, Manga, MangaPageResult, MangaStatus, MangaViewer, Page,
 };
 
 extern crate alloc;
@@ -137,7 +137,71 @@ pub fn parse_search_page(html: Node, page: i32) -> Result<MangaPageResult> {
 	let mut mangas: Vec<Manga> = Vec::new();
 	let mut has_more = false;
 
-	todo!();
+	for item in html.select(".fed-deta-info").array() {
+		let manga_item = item.as_node().expect("manga node");
+		let thumbnail = manga_item.select(".fed-list-pics");
+		let url = thumbnail.attr("abs:href").read();
+		let id = url.split('-').last().unwrap().replace("/", "");
+		let cover = thumbnail.attr("data-original").read();
+		let title = manga_item.select("h1").text().read();
+		let author = manga_item
+			.select("li:contains(作者)")
+			.own_text()
+			.read()
+			.replace("\"", "")
+			.trim()
+			.to_string();
+		let description = manga_item
+			.select("li:contains(简介) > div")
+			.own_text()
+			.read()
+			.replace("\"", "")
+			.trim()
+			.to_string();
+
+		let mut categories: Vec<String> = Vec::new();
+		for genre_item in manga_item.select("li:contains(类别) > a").array() {
+			let genre = genre_item.as_node().expect("genre node").text().read();
+			categories.push(genre);
+		}
+
+		let status_str = manga_item
+			.select("li:contains(状态)")
+			.own_text()
+			.read()
+			.replace("\"", "")
+			.trim()
+			.to_string();
+		let status = if status_str == String::from("连载中") {
+			MangaStatus::Ongoing
+		} else if status_str == String::from("已完结") {
+			MangaStatus::Completed
+		} else {
+			MangaStatus::Unknown
+		};
+
+		mangas.push(Manga {
+			id,
+			cover,
+			title,
+			author: author.clone(),
+			artist: author,
+			description,
+			url,
+			categories,
+			status,
+			viewer: MangaViewer::Scroll,
+			..Default::default()
+		});
+	}
+
+	if (page * 10) < html.select("#fed-count").text().read().parse().unwrap() {
+		if page < 10 {
+			has_more = true;
+		}
+	}
+
+	html.close();
 
 	Ok(MangaPageResult {
 		manga: mangas,
