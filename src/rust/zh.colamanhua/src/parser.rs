@@ -210,18 +210,38 @@ pub fn parse_search_page(html: Node, page: i32) -> Result<MangaPageResult> {
 }
 
 pub fn get_manga_details(html: Node, manga_id: String) -> Result<Manga> {
-	todo!();
+	let info = html.select(".fed-deta-info");
+	let cover = info.select(".fed-list-pics").attr("data-original").read();
+	let title = info.select("h1").text().read();
+	let author = info.select("li:contains(作者) > a").text().read();
+	let description = info.select("li:contains(简介) > div").own_text().read();
+	let url = format!("{}/manga-{}/", BASE_URL, manga_id);
+
+	let mut categories: Vec<String> = Vec::new();
+	for genre_item in info.select("li:contains(类别) > a").array() {
+		let genre = genre_item.as_node().expect("genre node").text().read();
+		categories.push(genre);
+	}
+
+	let status_str = info.select("li:contains(状态) > a").text().read();
+	let status = if status_str == String::from("连载中") {
+		MangaStatus::Ongoing
+	} else if status_str == String::from("已完结") {
+		MangaStatus::Completed
+	} else {
+		MangaStatus::Unknown
+	};
 
 	Ok(Manga {
-		id: todo!(),
-		cover: todo!(),
-		title: todo!(),
-		author: todo!(),
-		artist: todo!(),
-		description: todo!(),
-		url: todo!(),
-		categories: todo!(),
-		status: todo!(),
+		id: manga_id,
+		cover,
+		title,
+		author: author.clone(),
+		artist: author,
+		description,
+		url,
+		categories,
+		status,
 		viewer: MangaViewer::Scroll,
 		..Default::default()
 	})
