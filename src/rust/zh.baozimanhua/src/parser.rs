@@ -1,17 +1,11 @@
 use aidoku::{
 	error::Result,
-	helpers::{substring::Substring, uri::QueryParameters},
-	prelude::format,
-	std::{
-		html::Node,
-		net::{HttpMethod, Request},
-		String, ValueRef, Vec,
-	},
-	Chapter, Filter, FilterType, Manga, MangaPageResult, MangaStatus, MangaViewer, Page,
+	helpers::uri::encode_uri,
+	prelude::{format, println},
+	std::{html::Node, String, ValueRef, Vec},
+	Chapter, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
+	MangaViewer, Page,
 };
-
-extern crate alloc;
-use alloc::string::ToString;
 
 const BASE_URL: &str = "https://www.baozimh.com";
 
@@ -57,10 +51,9 @@ const CLASSIFY_FILTER: [&str; 9] = [
 ];
 
 pub fn get_filtered_url(filters: Vec<Filter>, page: i32, url: &mut String) {
-	url.push_str(BASE_URL);
-
 	let mut is_searching = false;
 	let mut search_str = String::new();
+	url.push_str(BASE_URL);
 
 	let mut c_region: &str = "all";
 	let mut c_type: &str = "all";
@@ -70,7 +63,7 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32, url: &mut String) {
 		match filter.kind {
 			FilterType::Title => {
 				if let Ok(filter_value) = filter.value.as_string() {
-					search_str.push_str(&filter_value.read().as_str());
+					search_str.push_str(encode_uri(&filter_value.read()).as_str());
 					is_searching = true;
 				}
 			}
@@ -87,92 +80,79 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32, url: &mut String) {
 		}
 	}
 
-	let mut query = QueryParameters::new();
 	if is_searching {
-		query.push("q", Some(search_str.as_str()));
-
-		url.push_str(format!("/search?{}", query).as_str());
+		url.push_str(format!("/search?q={}", search_str).as_str());
 	} else {
-		query.push("type", Some(c_type));
-		query.push("region", Some(c_region));
-		query.push("filter", Some(c_filter));
-		query.push("page", Some(page.to_string().as_str()));
-		query.push("limit", Some("20"));
-		query.push("language", Some("tw"));
-
-		url.push_str(format!("/api/bzmhq/amp_comic_list?{}", query).as_str());
+		url.push_str(
+			format!(
+				"/api/bzmhq/amp_comic_list?type={}&region={}&filter={}&page={}",
+				c_type, c_region, c_filter, page
+			)
+			.as_str(),
+		);
 	}
-}
-
-pub fn request_get(url: &mut String) -> Request {
-	Request::new(url.as_str(), HttpMethod::Get).header("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 13_3_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36")
 }
 
 pub fn parse_home_page(json_data: ValueRef) -> Result<MangaPageResult> {
 	let mut mangas: Vec<Manga> = Vec::new();
 
 	let mut has_more = false;
-
-	let object = json_data.as_object().expect("json object");
-	if object.len() != 1 {
+	if json_data.clone().as_object()?.len() != 1 {
 		has_more = true;
 
-		for item in object.get("items").as_array().expect("manga array") {
-			let manga_item = item.as_object().expect("manga object");
-			let id = manga_item
-				.get("comic_id")
-				.as_string()
-				.expect("id String")
-				.read();
-
-			let cover_str = manga_item
-				.get("topic_img")
-				.as_string()
-				.expect("cover String")
-				.read();
-			let cover = format!("https://static-tw.baozimh.com/cover/{}", cover_str);
-
-			let title = manga_item
-				.get("name")
-				.as_string()
-				.expect("title String")
-				.read();
-			let author = manga_item
-				.get("author")
-				.as_string()
-				.expect("author String")
-				.read();
+		for item in json_data.as_object()?.get("items").as_array()? {
+			let manga_item = item.as_object()?;
+			let id = manga_item.get("comic_id").as_string()?.read();
+			let cover = format!("https://static-tw.baozimh.com/cover/{}.jpg", id);
+			let title = manga_item.get("name").as_string()?.read();
+			let author = manga_item.get("author").as_string()?.read();
 			let url = format!("{}/comic/{}", BASE_URL, id);
+			let categories_array = manga_item.get("type_names").as_array()?;
 
 			let mut categories: Vec<String> = Vec::new();
-			let genre_arr = manga_item
-				.get("type_names")
-				.as_array()
-				.expect("genre array");
-			for genre_str in genre_arr {
-				let genre = genre_str.as_string().expect("genre String").read();
-				if !genre.is_ascii() {
-					categories.push(genre);
+			for category in categories_array {
+				let category_str = category.as_node()?.text().read();
+				if !category_str.is_ascii() {
+					categories.push(category_str);
 				}
 			}
 
-			mangas.push(Manga {
+			let manga = Manga {
 				id,
 				cover,
 				title,
 				author: author.clone(),
 				artist: author,
+				description: String::new(),
 				url,
 				categories,
+				status: MangaStatus::Unknown,
+				nsfw: MangaContentRating::Safe,
 				viewer: MangaViewer::Scroll,
-				..Default::default()
-			});
+			};
+			mangas.push(manga);
 		}
 	}
 
+	let mut test: Vec<Manga> = Vec::new();
+	let test_manga = Manga {
+		id: String::from("wuliandianfeng-pikapi"),
+		cover: String::from("https://static-tw.baozimh.com/cover/wuliandianfeng-pikapi.jpg"),
+		title: String::from("武炼巅峰"),
+		author: String::from("噼咔噼"),
+		artist: String::from("噼咔噼"),
+		description: String::new(),
+		url: String::from("https://www.baozimh.com/comic/wuliandianfeng-pikapi"),
+		categories: Vec::new(),
+		status: MangaStatus::Unknown,
+		nsfw: MangaContentRating::Safe,
+		viewer: MangaViewer::Scroll,
+	};
+	test.push(test_manga);
+
 	Ok(MangaPageResult {
-		manga: mangas,
-		has_more,
+		manga: test,
+		has_more: false,
 	})
 }
 
@@ -180,64 +160,71 @@ pub fn parse_search_page(html: Node) -> Result<MangaPageResult> {
 	let mut mangas: Vec<Manga> = Vec::new();
 
 	for item in html.select(".comics-card").array() {
-		let manga_item = item.as_node().expect("manga node");
-
-		let poster = manga_item.select(".comics-card__poster");
-
-		let url = poster.attr("abs:href").read();
-		let id = url.split('/').last().unwrap().to_string();
+		let manga_item = item.as_node()?;
+		let poster = manga_item.select("a").first();
+		let id = String::from(poster.attr("href").read().split('/').last().unwrap());
 		let cover = format!("https://static-tw.baozimh.com/cover/{}.jpg", id);
 		let title = poster.attr("title").read();
-		let author = manga_item.select(".tags").text().read();
+		let author = manga_item.select("a").last().select(".tags").text().read();
+		let url = format!("{}/comic/{}", BASE_URL, id);
+		let categories_array = poster.select(".tab").array();
 
 		let mut categories: Vec<String> = Vec::new();
-		for genre_str in poster.select(".tab").array() {
-			let genre = genre_str.as_node().expect("genre String").text().read();
-			categories.push(genre);
+		for category in categories_array {
+			let category_str = category.as_node()?.text().read();
+			categories.push(category_str);
 		}
 
-		mangas.push(Manga {
+		let manga = Manga {
 			id,
 			cover,
 			title,
 			author: author.clone(),
 			artist: author,
+			description: String::new(),
 			url,
 			categories,
+			status: MangaStatus::Unknown,
+			nsfw: MangaContentRating::Safe,
 			viewer: MangaViewer::Scroll,
-			..Default::default()
-		});
+		};
+		mangas.push(manga);
 	}
 
 	Ok(MangaPageResult {
 		manga: mangas,
-		..Default::default()
+		has_more: false,
 	})
 }
 
 pub fn get_manga_details(html: Node, manga_id: String) -> Result<Manga> {
 	let cover = format!("https://static-tw.baozimh.com/cover/{}.jpg", manga_id);
-	let title = html.select(".comics-detail__title").text().read();
-	let author = html.select(".comics-detail__author").text().read();
+	// let title = html.select(".comics-detail__title").text().read();
+	let title = html
+		.select("meta[name='og:novel:book_name']")
+		.attr("content")
+		.read();
+	// let author = html.select(".comics-detail__author").text().read();
+	let author = html
+		.select("meta[name='og:novel:author']")
+		.attr("content")
+		.read();
 	let description = html.select(".comics-detail__desc").text().read();
 	let url = format!("{}/comic/{}", BASE_URL, manga_id);
-	let mut categories: Vec<String> = Vec::new();
+	let categories_array = html.select(".tag-list").select("span").array();
+	let status_str = html
+		.select("meta[name='og:novel:status']")
+		.attr("content")
+		.read();
 
-	for genre_item in html.select("span.tag").array() {
-		let genre = genre_item
-			.as_node()
-			.expect("genre node")
-			.text()
-			.read()
-			.replace("\"", "")
-			.trim()
-			.to_string();
-		if !genre.is_empty() {
-			categories.push(genre);
+	let mut categories: Vec<String> = Vec::new();
+	for category in categories_array {
+		let category_str = category.as_node()?.text().read();
+		if category_str != "連載中" || category_str != "已完結" || category_str.is_empty() {
+			categories.push(category_str);
 		}
 	}
 
-	let status_str = categories.remove(0);
 	let status = if status_str.contains("連載中") {
 		MangaStatus::Ongoing
 	} else if status_str.contains("已完結") {
@@ -246,7 +233,7 @@ pub fn get_manga_details(html: Node, manga_id: String) -> Result<Manga> {
 		MangaStatus::Unknown
 	};
 
-	Ok(Manga {
+	let manga = Manga {
 		id: manga_id,
 		cover,
 		title,
@@ -256,57 +243,51 @@ pub fn get_manga_details(html: Node, manga_id: String) -> Result<Manga> {
 		url,
 		categories,
 		status,
+		nsfw: MangaContentRating::Safe,
 		viewer: MangaViewer::Scroll,
-		..Default::default()
-	})
+	};
+
+	Ok(manga)
 }
 
 pub fn get_chapter_list(html: Node, manga_id: String) -> Result<Vec<Chapter>> {
 	let mut chapters: Vec<Chapter> = Vec::new();
 
 	let mut new = true;
-	let mut flag = 0.0;
-	let mut index = 0;
+	let mut insert = 0;
+	for item in html.select(".comics-chapters").array() {
+		let chapter_item = item.as_node()?;
 
-	for item in html.select(".comics-chapters__item").array() {
-		let chapter_item = item.as_node().expect("chapter node");
-
-		let title = chapter_item.text().read();
-		let chapter_id = chapter_item
-			.attr("href")
-			.read()
-			.split('=')
-			.last()
-			.unwrap()
-			.parse::<f32>()
-			.unwrap();
-		let url = format!(
-			"{}/comic/chapter/{}/0_{}.html",
-			BASE_URL, manga_id, chapter_id
+		let id: String = String::from(
+			chapter_item
+				.select("a")
+				.attr("href")
+				.read()
+				.split('=')
+				.last()
+				.unwrap(),
 		);
+		let title = chapter_item.select("span").text().read();
+		let index: f32 = id.parse().unwrap();
+		let url = format!("{}/comic/chapter/{}/0_{}.html", BASE_URL, manga_id, id);
 
 		let chapter = Chapter {
-			id: chapter_id.to_string(),
+			id: id.clone(),
 			title,
-			chapter: chapter_id + 1.0,
+			volume: -1.0,
+			chapter: index + 1.0,
+			date_updated: -1.0,
+			scanlator: String::new(),
 			url,
 			lang: String::from("zh"),
-			..Default::default()
 		};
 
-		if chapter_id == 0.0 {
+		if id == String::from("0") {
 			new = false;
-		} else if new {
-			flag = chapter_id;
 		}
-
-		chapters.insert(index, chapter);
-
-		if chapter_id == (flag - 1.0) {
-			break;
-		}
-		if new {
-			index += 1;
+		chapters.insert(insert, chapter);
+		if !new {
+			insert += 1;
 		}
 	}
 
@@ -317,40 +298,18 @@ pub fn get_page_list(html: Node) -> Result<Vec<Page>> {
 	let mut pages: Vec<Page> = Vec::new();
 
 	let mut index = 0;
-	for item in html.select(".comic-contain__item").array() {
-		let url = item.as_node().expect("page url").attr("src").read();
+	for item in html.select("amp-img[data-v-25d25a4e]").array() {
+		let url = item.as_node()?.attr("src").read();
 
-		pages.push(Page {
+		let page = Page {
 			index,
 			url,
-			..Default::default()
-		});
+			base64: String::new(),
+			text: String::new(),
+		};
+		pages.push(page);
 		index += 1;
 	}
 
 	Ok(pages)
-}
-
-pub fn parse_deep_link(deep_link: &mut String) -> (Option<String>, Option<String>) {
-	let mut manga_id = None;
-	let mut chapter_id = None;
-
-	if deep_link.contains("baozimh.com/comic/chapter/") {
-		let mut id = deep_link
-			.substring_after_last("/chapter/")
-			.expect("id &str")
-			.split('/');
-		if id.clone().count() > 1 {
-			chapter_id = Some(
-				id.clone()
-					.last()
-					.unwrap()
-					.replace(".html", "")
-					.replace("0_", ""),
-			);
-		}
-		manga_id = Some(id.nth(0).unwrap().to_string());
-	}
-
-	(manga_id, chapter_id)
 }
