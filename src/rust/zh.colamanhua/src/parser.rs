@@ -97,7 +97,35 @@ pub fn parse_home_page(html: Node, page: i32) -> Result<MangaPageResult> {
 	let mut mangas: Vec<Manga> = Vec::new();
 	let mut has_more = false;
 
-	todo!();
+	for item in html.select(".fed-list-item").array() {
+		let manga_item = item.as_node().expect("manga node");
+		let thumbnail = manga_item.select(".fed-list-pics");
+		let url = thumbnail.attr("abs:href").read();
+		let id = url.split('-').last().unwrap().replace("/", "");
+		let cover = thumbnail.attr("data-original").read();
+		let title = manga_item.select(".fed-list-title").text().read();
+
+		mangas.push(Manga {
+			id,
+			cover,
+			title,
+			url,
+			viewer: MangaViewer::Scroll,
+			..Default::default()
+		});
+	}
+
+	if html
+		.select(".fed-btns-info:containsOwn(下页)")
+		.attr("class")
+		.read() == String::from("fed-btns-info fed-rims-info")
+	{
+		if page < 10 {
+			has_more = true;
+		}
+	}
+
+	html.close();
 
 	Ok(MangaPageResult {
 		manga: mangas,
