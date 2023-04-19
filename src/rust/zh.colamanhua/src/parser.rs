@@ -1,12 +1,17 @@
 use aidoku::{
 	error::Result,
+	helpers::uri::QueryParameters,
+	prelude::format,
 	std::{
 		html::Node,
 		net::{HttpMethod, Request},
 		String, Vec,
 	},
-	Chapter, Filter, Manga, MangaPageResult, MangaViewer, Page,
+	Chapter, Filter, FilterType, Manga, MangaPageResult, MangaViewer, Page,
 };
+
+extern crate alloc;
+use alloc::string::ToString;
 
 const BASE_URL: &str = "https://www.colamanhua.com";
 
@@ -25,7 +30,63 @@ const FILTER_ALPHABET: [&str; 27] = [
 const SORT: [&str; 4] = ["update", "dailyCount", "weeklyCount", "monthlyCount"];
 
 pub fn get_filtered_url(filters: Vec<Filter>, page: i32, url: &mut String) {
-	todo!();
+	url.push_str(BASE_URL);
+
+	let mut is_searching = false;
+	let mut search_str = String::new();
+
+	let mut genre = None;
+	let mut status = None;
+	let mut alphabet = None;
+	let mut sort_by = None;
+
+	for filter in filters {
+		match filter.kind {
+			FilterType::Title => {
+				if let Ok(filter_value) = filter.value.as_string() {
+					search_str.push_str(&filter_value.read());
+					is_searching = true;
+				}
+			}
+			FilterType::Select => {
+				let index = filter.value.as_int().unwrap_or(0) as usize;
+				match filter.name.as_str() {
+					"類型" => genre = (index != 0).then(|| FILTER_GENRE[index]),
+					"狀態" => status = (index != 0).then(|| FILTER_STATUS[index]),
+					"字母" => alphabet = (index != 0).then(|| FILTER_ALPHABET[index]),
+					_ => continue,
+				};
+			}
+			FilterType::Sort => {
+				let index = filter
+					.value
+					.as_object()
+					.expect("value object")
+					.get("index")
+					.as_int()
+					.expect("int index") as usize;
+				sort_by = (index != 2).then(|| SORT[index]);
+			}
+			_ => continue,
+		}
+	}
+
+	let mut query = QueryParameters::new();
+	if is_searching {
+		query.push("type", Some("1"));
+		query.push("searchString", Some(search_str.as_str()));
+		query.push(String::from("page"), (page > 1).then(|| page.to_string()));
+
+		url.push_str(format!("/search?{}", query).as_str());
+	} else {
+		query.push("mainCategoryId", genre);
+		query.push("status", status);
+		query.push("charCategoryId", alphabet);
+		query.push("orderBy", sort_by);
+		query.push(String::from("page"), (page > 1).then(|| page.to_string()));
+
+		url.push_str(format!("/show?{}", query).as_str());
+	}
 }
 
 pub fn request_get(url: &mut String) -> Request {
