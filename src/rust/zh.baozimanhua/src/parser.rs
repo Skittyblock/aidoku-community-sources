@@ -13,7 +13,9 @@ use aidoku::{
 extern crate alloc;
 use alloc::string::ToString;
 
-const BASE_URL: &str = "https://www.baozimh.com";
+pub const BASE_URL: &str = "https://www.baozimh.com";
+pub const USER_AGENT: &str = "Mozilla/5.0 (Macintosh; Intel Mac OS X 13_3_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36";
+const COVER_BASE_URL: &str = "https://static-tw.baozimh.com/cover";
 
 const CLASSIFY_REGION: [&str; 5] = ["all", "cn", "jp", "kr", "en"];
 const CLASSIFY_TYPE: [&str; 26] = [
@@ -105,7 +107,7 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32, url: &mut String) {
 }
 
 pub fn request_get(url: &mut String) -> Request {
-	Request::new(url.as_str(), HttpMethod::Get).header("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 13_3_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36")
+	Request::new(url.as_str(), HttpMethod::Get).header("User-Agent", USER_AGENT)
 }
 
 pub fn parse_home_page(json_data: ValueRef) -> Result<MangaPageResult> {
@@ -130,7 +132,7 @@ pub fn parse_home_page(json_data: ValueRef) -> Result<MangaPageResult> {
 				.as_string()
 				.expect("cover String")
 				.read();
-			let cover = format!("https://static-tw.baozimh.com/cover/{}", cover_str);
+			let cover = format!("{}/{}", COVER_BASE_URL, cover_str);
 
 			let title = manga_item
 				.get("name")
@@ -186,7 +188,7 @@ pub fn parse_search_page(html: Node) -> Result<MangaPageResult> {
 
 		let url = poster.attr("abs:href").read();
 		let id = url.split('/').last().unwrap().to_string();
-		let cover = format!("https://static-tw.baozimh.com/cover/{}.jpg", id);
+		let cover = format!("{}/{}.jpg", COVER_BASE_URL, id);
 		let title = poster.attr("title").read();
 		let author = manga_item.select(".tags").text().read();
 
@@ -217,7 +219,8 @@ pub fn parse_search_page(html: Node) -> Result<MangaPageResult> {
 
 pub fn get_manga_details(html: Node, manga_id: String) -> Result<Manga> {
 	let cover = format!(
-		"https://static-tw.baozimh.com/cover/{}.jpg",
+		"{}/{}.jpg",
+		COVER_BASE_URL,
 		manga_id.substring_before_last("_").unwrap_or(&manga_id)
 	);
 	let title = html.select(".comics-detail__title").text().read();

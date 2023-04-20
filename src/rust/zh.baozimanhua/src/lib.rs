@@ -7,8 +7,7 @@ use aidoku::{
 };
 
 mod parser;
-
-const BASE_URL: &str = "https://www.baozimh.com";
+use parser::{BASE_URL, USER_AGENT};
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
@@ -45,7 +44,9 @@ fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 
 #[modify_image_request]
 fn modify_image_request(request: Request) {
-	request.header("Referer", BASE_URL).header("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 13_3_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36");
+	request
+		.header("Referer", BASE_URL)
+		.header("User-Agent", USER_AGENT);
 }
 
 #[handle_url]
