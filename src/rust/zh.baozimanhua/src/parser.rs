@@ -14,6 +14,7 @@ extern crate alloc;
 use alloc::string::ToString;
 
 pub const BASE_URL: &str = "https://www.baozimh.com";
+pub const API_URL: &str = "/api/bzmhq/amp_comic_list";
 pub const USER_AGENT: &str = "Mozilla/5.0 (Macintosh; Intel Mac OS X 13_3_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36";
 const COVER_BASE_URL: &str = "https://static-tw.baozimh.com/cover";
 
@@ -72,7 +73,7 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32, url: &mut String) {
 		match filter.kind {
 			FilterType::Title => {
 				if let Ok(filter_value) = filter.value.as_string() {
-					search_str.push_str(&filter_value.read().as_str());
+					search_str.push_str(filter_value.read().as_str());
 					is_searching = true;
 				}
 			}
@@ -102,12 +103,12 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32, url: &mut String) {
 		query.push("limit", Some("20"));
 		query.push("language", Some("tw"));
 
-		url.push_str(format!("/api/bzmhq/amp_comic_list?{}", query).as_str());
+		url.push_str(format!("{}?{}", API_URL, query).as_str());
 	}
 }
 
-pub fn request_get(url: &mut String) -> Request {
-	Request::new(url.as_str(), HttpMethod::Get).header("User-Agent", USER_AGENT)
+pub fn request_get(url: String) -> Request {
+	Request::new(url, HttpMethod::Get).header("User-Agent", USER_AGENT)
 }
 
 pub fn parse_home_page(json_data: ValueRef) -> Result<MangaPageResult> {
@@ -115,44 +116,25 @@ pub fn parse_home_page(json_data: ValueRef) -> Result<MangaPageResult> {
 
 	let mut has_more = false;
 
-	let object = json_data.as_object().expect("json object");
+	let object = json_data.as_object()?;
 	if object.len() != 1 {
 		has_more = true;
 
-		for item in object.get("items").as_array().expect("manga array") {
-			let manga_item = item.as_object().expect("manga object");
-			let id = manga_item
-				.get("comic_id")
-				.as_string()
-				.expect("id String")
-				.read();
+		for item in object.get("items").as_array()? {
+			let manga_item = item.as_object()?;
+			let id = manga_item.get("comic_id").as_string()?.read();
 
-			let cover_str = manga_item
-				.get("topic_img")
-				.as_string()
-				.expect("cover String")
-				.read();
+			let cover_str = manga_item.get("topic_img").as_string()?.read();
 			let cover = format!("{}/{}", COVER_BASE_URL, cover_str);
 
-			let title = manga_item
-				.get("name")
-				.as_string()
-				.expect("title String")
-				.read();
-			let author = manga_item
-				.get("author")
-				.as_string()
-				.expect("author String")
-				.read();
+			let title = manga_item.get("name").as_string()?.read();
+			let author = manga_item.get("author").as_string()?.read();
 			let url = format!("{}/comic/{}", BASE_URL, id);
 
 			let mut categories: Vec<String> = Vec::new();
-			let genre_arr = manga_item
-				.get("type_names")
-				.as_array()
-				.expect("genre array");
+			let genre_arr = manga_item.get("type_names").as_array()?;
 			for genre_str in genre_arr {
-				let genre = genre_str.as_string().expect("genre String").read();
+				let genre = genre_str.as_string()?.read();
 				if !genre.is_ascii() {
 					categories.push(genre);
 				}
@@ -182,19 +164,19 @@ pub fn parse_search_page(html: Node) -> Result<MangaPageResult> {
 	let mut mangas: Vec<Manga> = Vec::new();
 
 	for item in html.select(".comics-card").array() {
-		let manga_item = item.as_node().expect("manga node");
+		let manga_item = item.as_node()?;
 
 		let poster = manga_item.select(".comics-card__poster");
 
 		let url = poster.attr("abs:href").read();
-		let id = url.split('/').last().unwrap().to_string();
+		let id = url.split('/').last().expect("manga id").to_string();
 		let cover = format!("{}/{}.jpg", COVER_BASE_URL, id);
 		let title = poster.attr("title").read();
 		let author = manga_item.select(".tags").text().read();
 
 		let mut categories: Vec<String> = Vec::new();
 		for genre_str in poster.select(".tab").array() {
-			let genre = genre_str.as_node().expect("genre String").text().read();
+			let genre = genre_str.as_node()?.text().read();
 			categories.push(genre);
 		}
 
@@ -231,11 +213,10 @@ pub fn get_manga_details(html: Node, manga_id: String) -> Result<Manga> {
 
 	for genre_item in html.select("span.tag").array() {
 		let genre = genre_item
-			.as_node()
-			.expect("genre node")
+			.as_node()?
 			.text()
 			.read()
-			.replace("\"", "")
+			.replace('\"', "")
 			.trim()
 			.to_string();
 		if !genre.is_empty() {
@@ -275,7 +256,7 @@ pub fn get_chapter_list(html: Node, manga_id: String) -> Result<Vec<Chapter>> {
 	let mut index = 0;
 
 	for item in html.select(".comics-chapters__item").array() {
-		let chapter_item = item.as_node().expect("chapter node");
+		let chapter_item = item.as_node()?;
 
 		let title = chapter_item.text().read();
 		let chapter_id = chapter_item
@@ -283,9 +264,9 @@ pub fn get_chapter_list(html: Node, manga_id: String) -> Result<Vec<Chapter>> {
 			.read()
 			.split('=')
 			.last()
-			.unwrap()
+			.expect("chapter id str")
 			.parse::<f32>()
-			.unwrap();
+			.expect("chapter id f32");
 		let url = format!(
 			"{}/comic/chapter/{}/0_{}.html",
 			BASE_URL, manga_id, chapter_id
@@ -322,35 +303,30 @@ pub fn get_chapter_list(html: Node, manga_id: String) -> Result<Vec<Chapter>> {
 pub fn get_page_list(html: Node) -> Result<Vec<Page>> {
 	let mut pages: Vec<Page> = Vec::new();
 
-	let mut index = 0;
-	for item in html.select(".comic-contain__item").array() {
-		let url = item.as_node().expect("page url").attr("src").read();
+	for (index, item) in html.select(".comic-contain__item").array().enumerate() {
+		let url = item.as_node()?.attr("src").read();
 
 		pages.push(Page {
-			index,
+			index: index as i32,
 			url,
 			..Default::default()
 		});
-		index += 1;
 	}
 
 	Ok(pages)
 }
 
-pub fn parse_deep_link(deep_link: &mut String) -> (Option<String>, Option<String>) {
-	let mut manga_id = None;
-	let mut chapter_id = None;
+pub fn parse_deep_link(deep_link: String) -> (String, String) {
+	let mut manga_id = String::new();
+	let mut chapter_id = String::new();
 
 	if deep_link.contains("baozimh.com/comic/") {
 		if deep_link.contains("/chapter/") {
-			let mut id = deep_link
-				.substring_after_last("/chapter/")
-				.expect("id &str")
-				.split('/');
-			manga_id = Some(id.nth(0).unwrap().to_string());
-			chapter_id = Some(id.last().unwrap().replace(".html", "").replace("0_", ""));
+			let id: Vec<&str> = deep_link.rsplit('/').collect();
+			manga_id = id[1].to_string();
+			chapter_id = id[0].replace("0_", "").replace(".html", "");
 		} else {
-			manga_id = Some(deep_link.split('/').last().unwrap().to_string());
+			manga_id = deep_link.split('/').last().unwrap_or("").to_string();
 		}
 	}
 
