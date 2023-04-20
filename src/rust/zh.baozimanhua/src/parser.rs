@@ -216,7 +216,10 @@ pub fn parse_search_page(html: Node) -> Result<MangaPageResult> {
 }
 
 pub fn get_manga_details(html: Node, manga_id: String) -> Result<Manga> {
-	let cover = format!("https://static-tw.baozimh.com/cover/{}.jpg", manga_id);
+	let cover = format!(
+		"https://static-tw.baozimh.com/cover/{}.jpg",
+		manga_id.substring_before_last("_").unwrap_or(&manga_id)
+	);
 	let title = html.select(".comics-detail__title").text().read();
 	let author = html.select(".comics-detail__author").text().read();
 	let description = html.select(".comics-detail__desc").text().read();
@@ -335,21 +338,17 @@ pub fn parse_deep_link(deep_link: &mut String) -> (Option<String>, Option<String
 	let mut manga_id = None;
 	let mut chapter_id = None;
 
-	if deep_link.contains("baozimh.com/comic/chapter/") {
-		let mut id = deep_link
-			.substring_after_last("/chapter/")
-			.expect("id &str")
-			.split('/');
-		if id.clone().count() > 1 {
-			chapter_id = Some(
-				id.clone()
-					.last()
-					.unwrap()
-					.replace(".html", "")
-					.replace("0_", ""),
-			);
+	if deep_link.contains("baozimh.com/comic/") {
+		if deep_link.contains("/chapter/") {
+			let mut id = deep_link
+				.substring_after_last("/chapter/")
+				.expect("id &str")
+				.split('/');
+			manga_id = Some(id.nth(0).unwrap().to_string());
+			chapter_id = Some(id.last().unwrap().replace(".html", "").replace("0_", ""));
+		} else {
+			manga_id = Some(deep_link.split('/').last().unwrap().to_string());
 		}
-		manga_id = Some(id.nth(0).unwrap().to_string());
 	}
 
 	(manga_id, chapter_id)
