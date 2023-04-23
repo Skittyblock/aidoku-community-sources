@@ -375,7 +375,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 }
 
 #[get_page_list]
-fn get_page_list(chapter_id: String, _manga_id: String) -> Result<Vec<Page>> {
+fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 	let mut url = String::from("https://api.mangadex.org/at-home/server/") + &chapter_id;
 	if let Ok(port_value) = defaults_get("standardHttpsPort") {
 		if port_value.as_bool().unwrap_or(false) {

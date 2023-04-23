@@ -237,6 +237,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "rawkuma"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "mangastream_template",
+]
+
+[[package]]
 name = "readkomik"
 version = "0.1.0"
 dependencies = [

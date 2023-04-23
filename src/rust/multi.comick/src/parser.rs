@@ -5,7 +5,7 @@ use aidoku::{
 	Chapter, DeepLink, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
 	MangaViewer, Page,
 };
-use alloc::string::ToString;
+
 extern crate alloc;
 use crate::helper::*;
 
@@ -123,7 +123,10 @@ pub fn parse_manga_list(
 				};
 
 				id += "|";
-				id += &data_obj.get("id").as_int().unwrap_or(-1).to_string();
+				id += &(match data_obj.get("hid").as_string() {
+					Ok(node) => node.read(),
+					Err(_) => continue,
+				});
 				let cover = match data_obj.get("cover_url").as_string() {
 					Ok(node) => node.read(),
 					Err(_) => continue,
@@ -175,7 +178,11 @@ pub fn parse_manga_listing(
 					Err(_) => continue,
 				};
 				id += "|";
-				id += &manga_obj.get("id").as_int().unwrap_or(-1).to_string();
+
+				id += &(match manga_obj.get("hid").as_string() {
+					Ok(node) => node.read(),
+					Err(_) => continue,
+				});
 
 				let cover = match manga_obj.get("cover_url").as_string() {
 					Ok(node) => node.read(),
@@ -332,7 +339,7 @@ pub fn parse_chapter_list(api_url: String, id: String) -> Result<Vec<Chapter>> {
 	let page = 1;
 	let cid = id.split('|').nth(1).unwrap_or("");
 	let url = format!(
-		"{}/comic/{}/chapter?limit={}&page={}&lang={}",
+		"{}/comic/{}/chapters?limit={}&page={}&lang={}",
 		api_url,
 		cid,
 		100,
@@ -349,7 +356,7 @@ pub fn parse_chapter_list(api_url: String, id: String) -> Result<Vec<Chapter>> {
 		chapter_limit = total;
 	}
 	let url = format!(
-		"{}/comic/{}/chapter?limit={}&page={}&lang={}",
+		"{}/comic/{}/chapters?limit={}&page={}&lang={}",
 		api_url,
 		cid,
 		chapter_limit,

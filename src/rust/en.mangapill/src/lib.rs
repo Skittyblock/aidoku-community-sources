@@ -48,7 +48,7 @@ fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 }
 
 #[get_page_list]
-fn get_page_list(chapter_id: String, _manga_id: String) -> Result<Vec<Page>> {
+fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 	let url = format!("https://www.mangapill.com{}", &chapter_id);
 	let html = Request::new(url.as_str(), HttpMethod::Get).html()?;
 	parser::get_page_list(html)

@@ -12,7 +12,6 @@ fn get_instance() -> MangaStreamSource {
 		tagid_mapping: get_tag_id,
 		base_url: get_base_url(),
 		has_permanent_manga_url: true,
-		has_permanent_chapter_url: true,
 		alt_pages: true,
 		last_page_text_2: "Sonraki",
 		chapter_date_format_2: "MMMM d, yyyy",

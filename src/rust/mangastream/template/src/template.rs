@@ -56,6 +56,7 @@ pub struct MangaStreamSource {
 	pub alt_pages: bool,
 	pub page_selector: &'static str,
 	pub page_url: &'static str,
+	pub protocol: bool,
 }
 impl Default for MangaStreamSource {
 	fn default() -> Self {
@@ -105,7 +106,8 @@ impl Default for MangaStreamSource {
 
 			alt_pages: false,
 			page_selector: "#readerarea img",
-			page_url: "src"
+			page_url: "src",
+			protocol: false
 		}
 	}
 }
@@ -400,7 +402,15 @@ impl MangaStreamSource {
 		} else {
 			for (at, page) in html.select(self.page_selector).array().enumerate() {
 				let page_node = page.as_node().expect("Failed to get page as node");
-				let page_url = urlencode(page_node.attr(self.page_url).read());
+				let page_url = if self.protocol {
+					format!(
+						"{}{}",
+						"https:",
+						urlencode(page_node.attr(self.page_url).read())
+					)
+				} else {
+					urlencode(page_node.attr(self.page_url).read())
+				};
 				// avoid svgs
 				if page_url.starts_with("data") {
 					continue;

@@ -101,16 +101,10 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 			let title = result_node.text().read();
 			manga_arr.push(Manga {
 				id: String::from(&manga_url[1..]),
-				cover: String::new(),
 				title,
-				author: String::new(),
-				artist: String::new(),
-				description: String::new(),
-				url: String::new(),
-				categories: Vec::new(),
 				status: MangaStatus::Completed,
 				nsfw: MangaContentRating::Nsfw,
-				viewer: MangaViewer::Rtl,
+				..Default::default()
 			});
 		} else {
 			match helper::get_manga_details(String::from(&manga_url[1..])) {
@@ -206,16 +200,10 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 			let title = result_object.get("name").as_string()?.read();
 			manga_arr.push(Manga {
 				id: id.clone(),
-				cover: String::new(),
 				title,
-				author: String::new(),
-				artist: String::new(),
-				description: String::new(),
-				url: String::new(),
-				categories: Vec::new(),
 				status: MangaStatus::Completed,
 				nsfw: MangaContentRating::Nsfw,
-				viewer: MangaViewer::Rtl,
+				..Default::default()
 			});
 		} else {
 			match helper::get_manga_details(id.clone()) {
@@ -310,8 +298,8 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 }
 
 #[get_page_list]
-fn get_page_list(id: String, _manga_id: String) -> Result<Vec<Page>> {
-	let url = format!("https://dynasty-scans.com/chapters/{}.json", &id);
+fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
+	let url = format!("https://dynasty-scans.com/chapters/{}.json", &chapter_id);
 	let json = Request::new(url.as_str(), HttpMethod::Get)
 		.json()?
 		.as_object()?;
@@ -330,8 +318,7 @@ fn get_page_list(id: String, _manga_id: String) -> Result<Vec<Page>> {
 		pages.push(Page {
 			index: index.try_into().unwrap_or(-1),
 			url,
-			base64: String::new(),
-			text: String::new(),
+			..Default::default()
 		});
 	}
 
