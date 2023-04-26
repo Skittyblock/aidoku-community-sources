@@ -5,7 +5,7 @@ version = 3
 [[package]]
 name = "aidoku"
 version = "0.2.0"
-source = "git+https://github.com/Aidoku/aidoku-rs#5b39ffb250e905b6dd1145d94db1f54125e53b38"
+source = "git+https://github.com/Aidoku/aidoku-rs/#5b39ffb250e905b6dd1145d94db1f54125e53b38"
 dependencies = [
  "aidoku_helpers",
  "aidoku_imports",
@@ -17,7 +17,7 @@ dependencies = [
 [[package]]
 name = "aidoku_helpers"
 version = "0.1.0"
-source = "git+https://github.com/Aidoku/aidoku-rs#5b39ffb250e905b6dd1145d94db1f54125e53b38"
+source = "git+https://github.com/Aidoku/aidoku-rs/#5b39ffb250e905b6dd1145d94db1f54125e53b38"
 dependencies = [
  "aidoku_imports",
 ]
@@ -25,17 +25,17 @@ dependencies = [
 [[package]]
 name = "aidoku_imports"
 version = "0.2.0"
-source = "git+https://github.com/Aidoku/aidoku-rs#5b39ffb250e905b6dd1145d94db1f54125e53b38"
+source = "git+https://github.com/Aidoku/aidoku-rs/#5b39ffb250e905b6dd1145d94db1f54125e53b38"
 
 [[package]]
 name = "aidoku_macros"
 version = "0.1.0"
-source = "git+https://github.com/Aidoku/aidoku-rs#5b39ffb250e905b6dd1145d94db1f54125e53b38"
+source = "git+https://github.com/Aidoku/aidoku-rs/#5b39ffb250e905b6dd1145d94db1f54125e53b38"
 
 [[package]]
 name = "aidoku_proc_macros"
 version = "0.2.0"
-source = "git+https://github.com/Aidoku/aidoku-rs#5b39ffb250e905b6dd1145d94db1f54125e53b38"
+source = "git+https://github.com/Aidoku/aidoku-rs/#5b39ffb250e905b6dd1145d94db1f54125e53b38"
 dependencies = [
  "proc-macro2",
  "quote",
