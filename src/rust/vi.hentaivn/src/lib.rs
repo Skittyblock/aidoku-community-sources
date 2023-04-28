@@ -83,7 +83,7 @@ fn get_page_list(_: String, id: String) -> Result<Vec<Page>> {
 			"600" => "2",
 			_ => "1",
 		};
-		let req = Request::post("https://hentaivn.de/ajax_load_server.php")
+		let req = Request::post(format!("{BASE_URL}/ajax_load_server.php"))
 			.header("Referer", &url)
 			.header("Content-Type", "application/x-www-form-urlencoded")
 			.header("Cookie", "view1=1")
