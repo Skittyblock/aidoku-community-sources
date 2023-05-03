@@ -34,6 +34,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "azoramanga"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "madara_template",
+]
+
+[[package]]
 name = "base64"
 version = "0.13.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
