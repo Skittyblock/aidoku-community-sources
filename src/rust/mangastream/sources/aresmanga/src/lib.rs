@@ -12,6 +12,7 @@ fn get_instance() -> MangaStreamSource {
 		base_url: String::from("https://aresmanga.net"),
 		last_page_text: "التالي",
 		traverse_pathname: "series",
+		manga_details_author: ".imptdt:contains(المؤلف) i",
 		chapter_date_format: "MMMM d, yyyy",
 		locale: "ar_EH",
 		alt_pages: true,
