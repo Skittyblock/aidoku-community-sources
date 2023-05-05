@@ -8,203 +8,213 @@
 		"filters": [
 			{
 				"type": "genre",
-				"name": "100 فصل",
-				"id": "490"
+				"name": "Action",
+				"id": "258"
 			},
 			{
 				"type": "genre",
-				"name": "آلات",
-				"id": "484"
+				"name": "Adventure",
+				"id": "294"
+			},
+			{
+				"type": "genre",
+				"name": "Drama",
+				"id": "259"
+			},
+			{
+				"type": "genre",
+				"name": "Fantasy",
+				"id": "260"
+			},
+			{
+				"type": "genre",
+				"name": "Historical",
+				"id": "295"
+			},
+			{
+				"type": "genre",
+				"name": "Horror",
+				"id": "261"
+			},
+			{
+				"type": "genre",
+				"name": "Martial Arts",
+				"id": "282"
+			},
+			{
+				"type": "genre",
+				"name": "Seinen",
+				"id": "283"
+			},
+			{
+				"type": "genre",
+				"name": "Shounen",
+				"id": "262"
+			},
+			{
+				"type": "genre",
+				"name": "Supernatural",
+				"id": "263"
 			},
 			{
 				"type": "genre",
 				"name": "أكشن",
-				"id": "58"
+				"id": "2"
 			},
 			{
 				"type": "genre",
 				"name": "ألعاب",
-				"id": "124"
+				"id": "121"
 			},
 			{
 				"type": "genre",
 				"name": "إثارة",
-				"id": "59"
+				"id": "107"
 			},
 			{
 				"type": "genre",
 				"name": "إعادة إحياء",
-				"id": "88"
-			},
-			{
-				"type": "genre",
-				"name": "اكشن",
-				"id": "506"
-			},
-			{
-				"type": "genre",
-				"name": "انتقام",
-				"id": "489"
+				"id": "112"
 			},
 			{
 				"type": "genre",
 				"name": "تاريخي",
-				"id": "6"
+				"id": "3"
 			},
 			{
 				"type": "genre",
 				"name": "تراجيدي",
-				"id": "7"
-			},
-			{
-				"type": "genre",
-				"name": "جوسيه",
-				"id": "140"
+				"id": "126"
 			},
 			{
 				"type": "genre",
 				"name": "حريم",
-				"id": "81"
+				"id": "6"
 			},
 			{
 				"type": "genre",
 				"name": "حياة مدرسية",
-				"id": "354"
+				"id": "104"
 			},
 			{
 				"type": "genre",
 				"name": "خارق للطبيعة",
-				"id": "26"
+				"id": "118"
 			},
 			{
 				"type": "genre",
 				"name": "خيال",
-				"id": "8"
+				"id": "4"
 			},
 			{
 				"type": "genre",
 				"name": "خيال علمي",
-				"id": "485"
+				"id": "198"
 			},
 			{
 				"type": "genre",
 				"name": "دراما",
-				"id": "32"
+				"id": "113"
 			},
 			{
 				"type": "genre",
 				"name": "دموي",
-				"id": "16"
+				"id": "123"
 			},
 			{
 				"type": "genre",
 				"name": "رعب",
-				"id": "405"
+				"id": "130"
 			},
 			{
 				"type": "genre",
 				"name": "رومانسي",
-				"id": "9"
-			},
-			{
-				"type": "genre",
-				"name": "رياضي",
-				"id": "541"
+				"id": "111"
 			},
 			{
 				"type": "genre",
 				"name": "زمكاني",
-				"id": "488"
-			},
-			{
-				"type": "genre",
-				"name": "زومبي",
-				"id": "486"
+				"id": "124"
 			},
 			{
 				"type": "genre",
 				"name": "سحر",
-				"id": "28"
+				"id": "105"
 			},
 			{
 				"type": "genre",
 				"name": "سينين",
-				"id": "17"
-			},
-			{
-				"type": "genre",
-				"name": "شوجو",
-				"id": "114"
+				"id": "102"
 			},
 			{
 				"type": "genre",
 				"name": "شونين",
-				"id": "10"
+				"id": "103"
 			},
 			{
 				"type": "genre",
 				"name": "شياطين",
-				"id": "60"
+				"id": "119"
 			},
 			{
 				"type": "genre",
-				"name": "عنف",
-				"id": "487"
+				"name": "طبي",
+				"id": "128"
 			},
 			{
 				"type": "genre",
 				"name": "غموض",
-				"id": "34"
+				"id": "122"
 			},
 			{
 				"type": "genre",
 				"name": "فانتازيا",
-				"id": "78"
+				"id": "110"
 			},
 			{
 				"type": "genre",
 				"name": "فنون قتالية",
-				"id": "11"
+				"id": "101"
 			},
 			{
 				"type": "genre",
 				"name": "قوة خارقة",
-				"id": "18"
+				"id": "116"
 			},
 			{
 				"type": "genre",
 				"name": "كوميدي",
-				"id": "19"
+				"id": "120"
 			},
 			{
 				"type": "genre",
 				"name": "مغامرات",
-				"id": "86"
+				"id": "108"
 			},
 			{
 				"type": "genre",
 				"name": "موريم",
-				"id": "505"
+				"id": "114"
 			},
 			{
 				"type": "genre",
 				"name": "نظام",
-				"id": "436"
+				"id": "115"
 			},
 			{
 				"type": "genre",
 				"name": "نفسي",
-				"id": "24"
+				"id": "117"
 			},
 			{
 				"type": "genre",
 				"name": "وحوش",
-				"id": "41"
+				"id": "109"
 			},
 			{
 				"type": "genre",
 				"name": "ويبتون",
-				"id": "35"
+				"id": "106"
 			}
 		]
 	},
