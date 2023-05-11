@@ -1,0 +1,18 @@
+{
+	"info": {
+		"id": "id.worldmanhwas",
+		"lang": "id",
+		"name": "WorldManhwas",
+		"version": 1,
+		"url": "https://worldmanhwas.info",
+		"nsfw": 2
+	},
+	"listings": [
+		{
+			"name": "Trending"
+		},
+		{
+			"name": "Popular"
+		}
+	]
+}
