@@ -15,6 +15,7 @@ use alloc::string::ToString;
 
 pub const BASE_URL: &str = "https://www.baozimh.com";
 pub const API_URL: &str = "/api/bzmhq/amp_comic_list";
+pub const CHAPTER_URL: &str = "https://www.kukuc.co";
 pub const USER_AGENT: &str = "Mozilla/5.0 (Macintosh; Intel Mac OS X 13_3_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36";
 const COVER_BASE_URL: &str = "https://static-tw.baozimh.com/cover";
 
@@ -271,7 +272,7 @@ pub fn get_chapter_list(html: Node, manga_id: String) -> Result<Vec<Chapter>> {
 			.expect("chapter id f32");
 		let url = format!(
 			"{}/comic/chapter/{}/0_{}.html",
-			BASE_URL, manga_id, chapter_id
+			CHAPTER_URL, manga_id, chapter_id
 		);
 
 		let chapter = Chapter {
