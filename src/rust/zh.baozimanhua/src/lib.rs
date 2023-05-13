@@ -38,8 +38,8 @@ fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 #[get_page_list]
 fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 	let url = format!(
-		"{}/comic/chapter/{}/0_{}.html",
-		BASE_URL, manga_id, chapter_id
+		"https://www.kukuc.co/comic/chapter/{}/0_{}.html",
+		manga_id, chapter_id
 	);
 	let html = parser::request_get(url).html()?;
 	parser::get_page_list(html)
