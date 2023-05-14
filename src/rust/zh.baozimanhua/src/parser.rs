@@ -2,11 +2,7 @@ use aidoku::{
 	error::Result,
 	helpers::{substring::Substring, uri::QueryParameters},
 	prelude::format,
-	std::{
-		html::Node,
-		net::{HttpMethod, Request},
-		String, ValueRef, Vec,
-	},
+	std::{html::Node, net::Request, String, ValueRef, Vec},
 	Chapter, Filter, FilterType, Manga, MangaPageResult, MangaStatus, MangaViewer, Page,
 };
 
@@ -112,7 +108,7 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32) -> String {
 }
 
 pub fn request_get(url: String) -> Request {
-	Request::new(url, HttpMethod::Get).header("User-Agent", USER_AGENT)
+	Request::get(url).header("User-Agent", USER_AGENT)
 }
 
 pub fn parse_home_page(json: ValueRef) -> Result<MangaPageResult> {
