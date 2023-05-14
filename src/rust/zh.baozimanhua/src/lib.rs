@@ -7,7 +7,7 @@ use aidoku::{
 };
 
 mod parser;
-use parser::{API_URL, BASE_URL, CHAPTER_URL, USER_AGENT};
+use parser::{API_URL, BASE_URL, CHAPTER_BASE_URL, USER_AGENT};
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
@@ -39,10 +39,9 @@ fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 	let url = format!(
 		"{}/comic/chapter/{}/0_{}.html",
-		CHAPTER_URL, manga_id, chapter_id
+		CHAPTER_BASE_URL, manga_id, chapter_id
 	);
-	let html = parser::request_get(url).html()?;
-	parser::get_page_list(html)
+	parser::get_page_list(url, chapter_id)
 }
 
 #[modify_image_request]

@@ -15,7 +15,7 @@ use alloc::string::ToString;
 
 pub const BASE_URL: &str = "https://www.baozimh.com";
 pub const API_URL: &str = "/api/bzmhq/amp_comic_list";
-pub const CHAPTER_URL: &str = "https://www.kukuc.co";
+pub const CHAPTER_BASE_URL: &str = "https://www.kukuc.co";
 pub const USER_AGENT: &str = "Mozilla/5.0 (Macintosh; Intel Mac OS X 13_3_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36";
 const COVER_BASE_URL: &str = "https://static-tw.baozimh.com/cover";
 
@@ -272,7 +272,7 @@ pub fn get_chapter_list(html: Node, manga_id: String) -> Result<Vec<Chapter>> {
 			.expect("chapter id f32");
 		let url = format!(
 			"{}/comic/chapter/{}/0_{}.html",
-			CHAPTER_URL, manga_id, chapter_id
+			CHAPTER_BASE_URL, manga_id, chapter_id
 		);
 
 		let chapter = Chapter {
@@ -303,17 +303,28 @@ pub fn get_chapter_list(html: Node, manga_id: String) -> Result<Vec<Chapter>> {
 	Ok(chapters)
 }
 
-pub fn get_page_list(html: Node) -> Result<Vec<Page>> {
+pub fn get_page_list(url: String, chapter_id: String) -> Result<Vec<Page>> {
 	let mut pages: Vec<Page> = Vec::new();
 
-	for (index, item) in html.select(".comic-contain__item").array().enumerate() {
-		let url = item.as_node()?.attr("src").read();
+	let current_chapter = format!("/0_{}_", chapter_id);
+	let mut page_url = url;
+	loop {
+		let html = request_get(page_url).html()?;
 
-		pages.push(Page {
-			index: index as i32,
-			url,
-			..Default::default()
-		});
+		for (index, item) in html.select(".comic-contain__item").array().enumerate() {
+			let url = item.as_node()?.attr("src").read();
+
+			pages.push(Page {
+				index: index as i32,
+				url,
+				..Default::default()
+			});
+		}
+
+		page_url = html.select("#next-chapter").attr("href").read();
+		if !page_url.contains(current_chapter.as_str()) {
+			break;
+		}
 	}
 
 	Ok(pages)
