@@ -1,0 +1,11 @@
+{
+	"info": {
+		"id": "zh.mangabz",
+		"lang": "zh",
+		"name": "Māngabz",
+		"version": 1,
+		"url": "https://www.mangabz.com/",
+		"nsfw": 1
+	},
+	"listings": []
+}
