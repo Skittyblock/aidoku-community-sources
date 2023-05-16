@@ -3,7 +3,7 @@ use aidoku::{
 	helpers::uri::QueryParameters,
 	prelude::{format, println},
 	std::{html::Node, net::Request, String, Vec},
-	Filter, FilterType, Manga, MangaPageResult, MangaStatus,
+	Chapter, Filter, FilterType, Manga, MangaPageResult, MangaStatus,
 };
 
 extern crate alloc;
@@ -36,7 +36,7 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32) -> String {
 				let index = filter.value.as_int().unwrap_or(0) as usize;
 				match filter.name.as_str() {
 					"題材" => genre = GENRE[index],
-					"狀態" => status = index,
+					"狀態" => status = index as u8,
 					_ => continue,
 				}
 			}
@@ -124,7 +124,7 @@ pub fn get_manga_details(html: Node, id: String) -> Result<Manga> {
 		let artist_str = item.as_node()?.text().read();
 		artists.push(artist_str);
 	}
-	let artist = artists.join(",");
+	let artist = artists.join("、");
 
 	let description = html.select("p.detail-info-content").text().read();
 	let url = format!("{}{}bz/", BASE_URL, id);
@@ -157,4 +157,36 @@ pub fn get_manga_details(html: Node, id: String) -> Result<Manga> {
 		status,
 		..Default::default()
 	})
+}
+
+pub fn get_chapter_list(html: Node) -> Result<Vec<Chapter>> {
+	let mut chapters: Vec<Chapter> = Vec::new();
+
+	for (index, item) in html
+		.select("a.detail-list-form-item")
+		.array()
+		.rev()
+		.enumerate()
+	{
+		let chapter_item = item.as_node()?;
+
+		let id = chapter_item.attr("href").read().replace(['/', 'm'], "");
+		let title = chapter_item.own_text().read();
+		let chapter = (index + 1) as f32;
+		let url = format!("{}m{}/", BASE_URL, id);
+
+		chapters.insert(
+			0,
+			Chapter {
+				id,
+				title,
+				chapter,
+				url,
+				lang: String::from("zh"),
+				..Default::default()
+			},
+		);
+	}
+
+	Ok(chapters)
 }

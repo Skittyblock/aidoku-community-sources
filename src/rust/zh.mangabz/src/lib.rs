@@ -28,7 +28,10 @@ fn get_manga_details(id: String) -> Result<Manga> {
 
 #[get_chapter_list]
 fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
-	todo!()
+	let url = format!("{}{}bz/", BASE_URL, id);
+	let html = parser::request_get(url).html()?;
+
+	parser::get_chapter_list(html)
 }
 
 #[get_page_list]
