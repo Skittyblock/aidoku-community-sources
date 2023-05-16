@@ -20,7 +20,10 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 
 #[get_manga_details]
 fn get_manga_details(id: String) -> Result<Manga> {
-	todo!()
+	let url = format!("{}{}bz/", BASE_URL, id);
+	let html = parser::request_get(url).html()?;
+
+	parser::get_manga_details(html, id)
 }
 
 #[get_chapter_list]

@@ -73,7 +73,6 @@ pub fn get_manga_list(html: Node) -> Result<MangaPageResult> {
 	for item in html.select("div.mh-item").array() {
 		let manga_item = item.as_node()?;
 		let title_node = manga_item.select("h2.title > a");
-		let status_str = manga_item.select("span").text().read();
 
 		let id = title_node
 			.attr("href")
@@ -83,6 +82,8 @@ pub fn get_manga_list(html: Node) -> Result<MangaPageResult> {
 		let cover = manga_item.select("img.mh-cover").attr("src").read();
 		let title = title_node.attr("title").read();
 		let url = format!("{}{}bz/", BASE_URL, id);
+
+		let status_str = manga_item.select("span").text().read();
 		let status = match status_str.as_str() {
 			"最新" => MangaStatus::Ongoing,
 			"完結" => MangaStatus::Completed,
@@ -109,5 +110,51 @@ pub fn get_manga_list(html: Node) -> Result<MangaPageResult> {
 	Ok(MangaPageResult {
 		manga: mangas,
 		has_more,
+	})
+}
+
+pub fn get_manga_details(html: Node, id: String) -> Result<Manga> {
+	let manga_info = html.select("p.detail-info-tip");
+
+	let cover = html.select("img.detail-info-cover").attr("src").read();
+	let title = html.select("p.detail-info-title").text().read();
+
+	let mut artists: Vec<String> = Vec::new();
+	for item in manga_info.select("span:contains(作者) > a").array() {
+		let artist_str = item.as_node()?.text().read();
+		artists.push(artist_str);
+	}
+	let artist = artists.join(",");
+
+	let description = html.select("p.detail-info-content").text().read();
+	let url = format!("{}{}bz/", BASE_URL, id);
+
+	let status_str = manga_info
+		.select("span:contains(狀態) > span")
+		.text()
+		.read();
+	let status = match status_str.as_str() {
+		"連載中" => MangaStatus::Ongoing,
+		"已完結" => MangaStatus::Completed,
+		_ => MangaStatus::Unknown,
+	};
+
+	let mut categories: Vec<String> = Vec::new();
+	for item in manga_info.select("span.item").array() {
+		let genre = item.as_node()?.text().read();
+		categories.push(genre);
+	}
+
+	Ok(Manga {
+		id,
+		cover,
+		title,
+		author: artist.clone(),
+		artist,
+		description,
+		url,
+		categories,
+		status,
+		..Default::default()
 	})
 }
