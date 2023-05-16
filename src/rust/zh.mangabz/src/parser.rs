@@ -1,9 +1,9 @@
 use aidoku::{
 	error::Result,
-	helpers::uri::QueryParameters,
+	helpers::substring::Substring,
 	prelude::{format, println},
 	std::{html::Node, net::Request, String, Vec},
-	Chapter, Filter, FilterType, Manga, MangaPageResult, MangaStatus,
+	Chapter, Filter, FilterType, Manga, MangaPageResult, MangaStatus, Page,
 };
 
 extern crate alloc;
@@ -49,11 +49,7 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32) -> String {
 	}
 
 	if is_searching {
-		let mut query = QueryParameters::new();
-		query.push("title", Some(search_str.as_str()));
-		query.push("page", Some(page.to_string().as_str()));
-
-		url.push_str(format!("search?{}", query).as_str());
+		url.push_str(format!("search?title={}&page={}", search_str, page).as_str());
 	} else {
 		url.push_str(format!("manga-list-{}-{}-{}-p{}/", genre, status, sort, page).as_str());
 	}
@@ -189,4 +185,105 @@ pub fn get_chapter_list(html: Node) -> Result<Vec<Chapter>> {
 	}
 
 	Ok(chapters)
+}
+
+pub fn get_page_list(url: String) -> Result<Vec<Page>> {
+	let mut pages: Vec<Page> = Vec::new();
+	let mut page = 1;
+
+	loop {
+		let content = request_get(format!("{}{}", url, page)).string()?;
+		let urls = decode(content);
+		if urls.len() == 1 {
+			break;
+		}
+		for url in urls.clone() {
+			let index = page - 1;
+			pages.push(Page {
+				index,
+				url,
+				..Default::default()
+			});
+			page += 1;
+		}
+		if urls.len() == 1 {
+			break;
+		}
+	}
+
+	Ok(pages)
+}
+
+fn decode(encoded: String) -> Vec<String> {
+	let mut urls: Vec<String> = Vec::new();
+
+	let packed = encoded
+		.substring_after("return p;}")
+		.expect("packed")
+		.to_string();
+
+	let k: Vec<&str> = packed
+		.substring_after(",\'")
+		.expect("k")
+		.substring_before("\'.")
+		.expect("k")
+		.split('|')
+		.collect();
+
+	let chapter = decoded_with_k(
+		packed
+			.substring_after("=\"")
+			.expect("base")
+			.substring_before("\";")
+			.expect("base")
+			.to_string(),
+		k.clone(),
+	);
+	let query = decoded_with_k(
+		packed
+			.substring_before_last("\\\'")
+			.expect("query")
+			.substring_after_last("\\\'")
+			.expect("query")
+			.to_string(),
+		k.clone(),
+	);
+
+	let pages: Vec<&str> = packed
+		.substring_after("=[")
+		.expect("pages")
+		.substring_before("];")
+		.expect("pages")
+		.split(',')
+		.collect();
+	for item in pages {
+		let page = decoded_with_k(item.replace('\"', "").to_string(), k.clone());
+		urls.push(format!("{}{}{}", chapter, page, query));
+	}
+
+	urls
+}
+
+fn decoded_with_k(encoded: String, k: Vec<&str>) -> String {
+	let mut decoded = String::new();
+
+	for char in encoded.chars() {
+		let mut str = String::new();
+
+		if char.is_digit(36) {
+			str = if char.is_ascii_uppercase() {
+				k[(char as usize) - 29].to_string()
+			} else {
+				k[char.to_digit(36).expect("base 36") as usize].to_string()
+			};
+			if str.is_empty() {
+				str = char.to_string();
+			}
+		} else {
+			str = char.to_string();
+		}
+		decoded.push_str(str.as_str());
+	}
+
+	decoded
 }

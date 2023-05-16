@@ -35,8 +35,13 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 }
 
 #[get_page_list]
-fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
-	todo!()
+fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
+	let url = format!(
+		"{}m{}/chapterimage.ashx?cid={1}&page=",
+		BASE_URL, chapter_id
+	);
+
+	parser::get_page_list(url)
 }
 
 #[modify_image_request]
