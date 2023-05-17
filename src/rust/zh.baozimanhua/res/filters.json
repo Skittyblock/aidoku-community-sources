@@ -47,7 +47,7 @@
 	},
 	{
 		"type": "select",
-		"name": "依字母篩選",
+		"name": "字母",
 		"options": [
 			"全部",
 			"ABCD",

@@ -2,11 +2,7 @@ use aidoku::{
 	error::Result,
 	helpers::{substring::Substring, uri::QueryParameters},
 	prelude::format,
-	std::{
-		html::Node,
-		net::{HttpMethod, Request},
-		String, ValueRef, Vec,
-	},
+	std::{html::Node, net::Request, String, ValueRef, Vec},
 	Chapter, Filter, FilterType, Manga, MangaPageResult, MangaStatus, MangaViewer, Page,
 };
 
@@ -15,6 +11,7 @@ use alloc::string::ToString;
 
 pub const BASE_URL: &str = "https://www.baozimh.com";
 pub const API_URL: &str = "/api/bzmhq/amp_comic_list";
+pub const CHAPTER_BASE_URL: &str = "https://www.kukuc.co";
 pub const USER_AGENT: &str = "Mozilla/5.0 (Macintosh; Intel Mac OS X 13_3_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36";
 const COVER_BASE_URL: &str = "https://static-tw.baozimh.com/cover";
 
@@ -59,15 +56,15 @@ const CLASSIFY_FILTER: [&str; 9] = [
 	"0123456789",
 ];
 
-pub fn get_filtered_url(filters: Vec<Filter>, page: i32, url: &mut String) {
-	url.push_str(BASE_URL);
+pub fn get_filtered_url(filters: Vec<Filter>, page: i32) -> String {
+	let mut url = String::from(BASE_URL);
 
 	let mut is_searching = false;
 	let mut search_str = String::new();
 
-	let mut c_region: &str = "all";
-	let mut c_type: &str = "all";
-	let mut c_filter: &str = "*";
+	let mut classify_region: &str = "all";
+	let mut classify_type: &str = "all";
+	let mut classify_filter: &str = "*";
 
 	for filter in filters {
 		match filter.kind {
@@ -80,9 +77,9 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32, url: &mut String) {
 			FilterType::Select => {
 				let index = filter.value.as_int().unwrap_or(0) as usize;
 				match filter.name.as_str() {
-					"地區" => c_region = CLASSIFY_REGION[index],
-					"類型" => c_type = CLASSIFY_TYPE[index],
-					"依字母篩選" => c_filter = CLASSIFY_FILTER[index],
+					"地區" => classify_region = CLASSIFY_REGION[index],
+					"類型" => classify_type = CLASSIFY_TYPE[index],
+					"字母" => classify_filter = CLASSIFY_FILTER[index],
 					_ => continue,
 				};
 			}
@@ -95,74 +92,76 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32, url: &mut String) {
 		query.push("q", Some(search_str.as_str()));
 
 		url.push_str(format!("/search?{}", query).as_str());
-	} else {
-		query.push("type", Some(c_type));
-		query.push("region", Some(c_region));
-		query.push("filter", Some(c_filter));
-		query.push("page", Some(page.to_string().as_str()));
-		query.push("limit", Some("20"));
-		query.push("language", Some("tw"));
 
-		url.push_str(format!("{}?{}", API_URL, query).as_str());
+		return url;
 	}
+	query.push("type", Some(classify_type));
+	query.push("region", Some(classify_region));
+	query.push("filter", Some(classify_filter));
+	query.push("page", Some(page.to_string().as_str()));
+	query.push("limit", Some("20"));
+	query.push("language", Some("tw"));
+
+	url.push_str(format!("{}?{}", API_URL, query).as_str());
+
+	url
 }
 
 pub fn request_get(url: String) -> Request {
-	Request::new(url, HttpMethod::Get).header("User-Agent", USER_AGENT)
+	Request::get(url).header("User-Agent", USER_AGENT)
 }
 
-pub fn parse_home_page(json_data: ValueRef) -> Result<MangaPageResult> {
+pub fn parse_home_page(json: ValueRef) -> Result<MangaPageResult> {
+	let object = json.as_object()?;
+
+	if object.len() == 1 {
+		return Ok(MangaPageResult {
+			..Default::default()
+		});
+	}
+
 	let mut mangas: Vec<Manga> = Vec::new();
+	for item in object.get("items").as_array()? {
+		let manga_item = item.as_object()?;
+		let id = manga_item.get("comic_id").as_string()?.read();
 
-	let mut has_more = false;
+		let cover_str = manga_item.get("topic_img").as_string()?.read();
+		let cover = format!("{}/{}", COVER_BASE_URL, cover_str);
 
-	let object = json_data.as_object()?;
-	if object.len() != 1 {
-		has_more = true;
+		let title = manga_item.get("name").as_string()?.read();
+		let author = manga_item.get("author").as_string()?.read();
+		let url = format!("{}/comic/{}", BASE_URL, id);
 
-		for item in object.get("items").as_array()? {
-			let manga_item = item.as_object()?;
-			let id = manga_item.get("comic_id").as_string()?.read();
-
-			let cover_str = manga_item.get("topic_img").as_string()?.read();
-			let cover = format!("{}/{}", COVER_BASE_URL, cover_str);
-
-			let title = manga_item.get("name").as_string()?.read();
-			let author = manga_item.get("author").as_string()?.read();
-			let url = format!("{}/comic/{}", BASE_URL, id);
-
-			let mut categories: Vec<String> = Vec::new();
-			let genre_arr = manga_item.get("type_names").as_array()?;
-			for genre_str in genre_arr {
-				let genre = genre_str.as_string()?.read();
-				if !genre.is_ascii() {
-					categories.push(genre);
-				}
+		let mut categories: Vec<String> = Vec::new();
+		let genre_arr = manga_item.get("type_names").as_array()?;
+		for genre_str in genre_arr {
+			let genre = genre_str.as_string()?.read();
+			if !genre.is_ascii() {
+				categories.push(genre);
 			}
-
-			mangas.push(Manga {
-				id,
-				cover,
-				title,
-				author: author.clone(),
-				artist: author,
-				url,
-				categories,
-				viewer: MangaViewer::Scroll,
-				..Default::default()
-			});
 		}
+
+		mangas.push(Manga {
+			id,
+			cover,
+			title,
+			author: author.clone(),
+			artist: author,
+			url,
+			categories,
+			viewer: MangaViewer::Scroll,
+			..Default::default()
+		});
 	}
 
 	Ok(MangaPageResult {
 		manga: mangas,
-		has_more,
+		has_more: true,
 	})
 }
 
 pub fn parse_search_page(html: Node) -> Result<MangaPageResult> {
 	let mut mangas: Vec<Manga> = Vec::new();
-
 	for item in html.select(".comics-card").array() {
 		let manga_item = item.as_node()?;
 
@@ -269,7 +268,7 @@ pub fn get_chapter_list(html: Node, manga_id: String) -> Result<Vec<Chapter>> {
 			.expect("chapter id f32");
 		let url = format!(
 			"{}/comic/chapter/{}/0_{}.html",
-			BASE_URL, manga_id, chapter_id
+			CHAPTER_BASE_URL, manga_id, chapter_id
 		);
 
 		let chapter = Chapter {
@@ -300,17 +299,28 @@ pub fn get_chapter_list(html: Node, manga_id: String) -> Result<Vec<Chapter>> {
 	Ok(chapters)
 }
 
-pub fn get_page_list(html: Node) -> Result<Vec<Page>> {
+pub fn get_page_list(url: String, chapter_id: String) -> Result<Vec<Page>> {
 	let mut pages: Vec<Page> = Vec::new();
 
-	for (index, item) in html.select(".comic-contain__item").array().enumerate() {
-		let url = item.as_node()?.attr("src").read();
+	let current_chapter = format!("/0_{}_", chapter_id);
+	let mut page_url = url;
+	loop {
+		let html = request_get(page_url).html()?;
 
-		pages.push(Page {
-			index: index as i32,
-			url,
-			..Default::default()
-		});
+		for (index, item) in html.select(".comic-contain__item").array().enumerate() {
+			let url = item.as_node()?.attr("src").read();
+
+			pages.push(Page {
+				index: index as i32,
+				url,
+				..Default::default()
+			});
+		}
+
+		page_url = html.select("#next-chapter").attr("href").read();
+		if !page_url.contains(current_chapter.as_str()) {
+			break;
+		}
 	}
 
 	Ok(pages)
