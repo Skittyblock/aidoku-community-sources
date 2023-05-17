@@ -1,7 +1,7 @@
 use aidoku::{
 	error::Result,
 	helpers::substring::Substring,
-	prelude::{format, println},
+	prelude::format,
 	std::{html::Node, net::Request, String, Vec},
 	Chapter, Filter, FilterType, Manga, MangaPageResult, MangaStatus, Page,
 };
@@ -41,7 +41,11 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32) -> String {
 				}
 			}
 			FilterType::Sort => {
-				let index = filter.value.as_int().unwrap_or(0) as usize;
+				let value = match filter.value.as_object() {
+					Ok(value) => value,
+					Err(_) => continue,
+				};
+				let index = value.get("index").as_int().unwrap_or(0) as usize;
 				sort = SORT[index];
 			}
 			_ => continue,
@@ -190,14 +194,17 @@ pub fn get_chapter_list(html: Node) -> Result<Vec<Chapter>> {
 pub fn get_page_list(url: String) -> Result<Vec<Page>> {
 	let mut pages: Vec<Page> = Vec::new();
 	let mut page = 1;
+	let mut last_url = String::new();
 
 	loop {
 		let content = request_get(format!("{}{}", url, page)).string()?;
 		let urls = decode(content);
-		if urls.len() == 1 {
-			break;
-		}
 		for url in urls.clone() {
+			if url == last_url {
+				break;
+			}
+			last_url = url.clone();
+
 			let index = page - 1;
 			pages.push(Page {
 				index,
@@ -268,7 +275,7 @@ fn decoded_with_k(encoded: String, k: Vec<&str>) -> String {
 	let mut decoded = String::new();
 
 	for char in encoded.chars() {
-		let mut str = String::new();
+		let mut str;
 
 		if char.is_digit(36) {
 			str = if char.is_ascii_uppercase() {

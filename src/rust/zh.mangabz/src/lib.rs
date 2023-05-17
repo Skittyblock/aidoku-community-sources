@@ -2,6 +2,7 @@
 
 use aidoku::{
 	error::Result,
+	helpers::substring::Substring,
 	prelude::*,
 	std::{net::Request, String, Vec},
 	Chapter, DeepLink, Filter, Manga, MangaPageResult, Page,
@@ -9,6 +10,9 @@ use aidoku::{
 
 mod parser;
 use parser::{BASE_URL, USER_AGENT};
+
+extern crate alloc;
+use alloc::string::ToString;
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
@@ -53,5 +57,25 @@ fn modify_image_request(request: Request) {
 
 #[handle_url]
 fn handle_url(url: String) -> Result<DeepLink> {
-	todo!()
+	let manga = url.contains("bz/").then(|| {
+		let id = url
+			.replace("bz/", "")
+			.substring_after_last("/")
+			.expect("manga id")
+			.to_string();
+		get_manga_details(id).expect("manga")
+	});
+
+	let chapter = url.contains(".com/m").then(|| {
+		let id = url
+			.substring_after_last("/m")
+			.expect("chapter id")
+			.replace('/', "");
+		Chapter {
+			id,
+			..Default::default()
+		}
+	});
+
+	Ok(DeepLink { manga, chapter })
 }
