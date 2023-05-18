@@ -8,6 +8,9 @@ use aidoku::{
 	Chapter, Listing, Manga, MangaContentRating, MangaPageResult, MangaStatus, MangaViewer, Page,
 };
 
+extern crate alloc;
+use alloc::string::ToString;
+
 use crate::helper::*;
 use crate::request_helper::*;
 
@@ -239,7 +242,7 @@ pub fn parse_chapter_list(base_url: String, manga_id: String) -> Result<Vec<Chap
 		if let Ok(response_html) = create_chapter_request_object(
 			initial_request.clone(),
 			base_url.clone(),
-			i32_to_string(page),
+			page.to_string(),
 		) {
 			parse_chapter_list_helper(response_html.clone(), &mut chapters);
 
