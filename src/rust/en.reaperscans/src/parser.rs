@@ -226,9 +226,14 @@ pub fn parse_chapter_list(base_url: String, manga_id: String) -> Result<Vec<Chap
 	parse_chapter_list_helper(initial_request.clone(), &mut chapters);
 
 	let mut page = 2;
-	loop {
+
+	let max_retries = 5;
+	let mut retries = 0;
+
+	while retries < max_retries {
 		// If let here gracefully handles the case where cloudflare blocks the request.
-		// If the request is blocked, then the loop will continue and try again.
+		// If the request is blocked, then the loop will continue and try again, with
+		// a maximum of 5 retries.
 		// The cloudflare popup should appear and once validated, the next request will
 		// be successful.
 		if let Ok(response_html) = create_chapter_request_object(
@@ -248,8 +253,10 @@ pub fn parse_chapter_list(base_url: String, manga_id: String) -> Result<Vec<Chap
 				break;
 			}
 
+			retries = 0;
 			page += 1;
 		} else {
+			retries += 1;
 			continue;
 		}
 	}
