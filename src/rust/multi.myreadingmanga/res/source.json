@@ -1,0 +1,12 @@
+{
+	"info": {
+		"id": "multi.myreadingmanga",
+		"lang": "multi",
+		"name": "MyReadingManga",
+		"version": 1,
+		"url": "https://myreadingmanga.info/",
+		"nsfw": 2
+	},
+	"languages": [],
+	"listings": []
+}
