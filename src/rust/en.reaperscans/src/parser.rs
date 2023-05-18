@@ -14,7 +14,7 @@ pub fn parse_manga_list(base_url: String, page: i32) -> Result<MangaPageResult> 
 	let url = format!("{}/comics?page={}", base_url, page);
 
 	let html = Request::new(url, HttpMethod::Get)
-		.header("User-Agent", &get_user_agent())
+		.header("User-Agent", USER_AGENT)
 		.html()
 		.expect(
 		"ReaperScans: Could not display All listing. Check the website and your internet connection on https://reaperscans.com",
@@ -109,7 +109,7 @@ pub fn parse_manga_listing(
 	let url = format!("{}/latest/comics?page={}", base_url, page);
 
 	let html = Request::new(&url, HttpMethod::Get)
-		.header("User-Agent", &get_user_agent())
+		.header("User-Agent", USER_AGENT)
 		.html()
 		.expect("ReaperScans: Could not display a listing. Check the website and your internet connection on https://reaperscans.com");
 
@@ -155,7 +155,7 @@ pub fn parse_manga_details(base_url: String, manga_id: String) -> Result<Manga> 
 	let url = get_manga_url(manga_id.clone(), base_url);
 
 	let html = Request::new(&url, HttpMethod::Get)
-		.header("User-Agent", &get_user_agent())
+		.header("User-Agent", USER_AGENT)
 		.html()
 		.expect("Reaperscans: Failed to access the comic page. Try accessing the website on a browser and check your internet connection");
 
@@ -234,7 +234,7 @@ pub fn parse_manga_details(base_url: String, manga_id: String) -> Result<Manga> 
 pub fn parse_chapter_list(base_url: String, manga_id: String) -> Result<Vec<Chapter>> {
 	let mut chapters: Vec<Chapter> = Vec::new();
 	let url = get_manga_url(manga_id, base_url.clone());
-	let request = Request::new(url, HttpMethod::Get).header("User-Agent", &get_user_agent());
+	let request = Request::new(url, HttpMethod::Get).header("User-Agent", USER_AGENT);
 
 	let initial_request = request
 		.html()
@@ -345,7 +345,7 @@ pub fn parse_page_list(
 	let url = get_chapter_url(chapter_id, manga_id, base_url);
 
 	let html = Request::new(&url, HttpMethod::Get)
-		.header("User-Agent", &get_user_agent())
+		.header("User-Agent", USER_AGENT)
 		.html()
 		.expect("Reaperscans: Failed to display the chapter. Check your internet connection");
 

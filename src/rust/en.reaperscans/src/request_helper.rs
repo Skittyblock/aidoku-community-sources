@@ -7,7 +7,7 @@ use aidoku::{
 	std::{String, Vec},
 };
 
-use crate::helper::get_user_agent;
+use crate::helper::USER_AGENT;
 
 pub fn create_search_request_object(
 	base_url: String,
@@ -76,7 +76,7 @@ pub fn create_search_request_object(
 	let post_url = format!("{}livewire/message/{}", html.base_uri(), name);
 	let req = Request::new(post_url, HttpMethod::Post)
 		.body(body.as_bytes())
-		.header("User-Agent", &get_user_agent())
+		.header("User-Agent", USER_AGENT)
 		.header("Content-Type", "application/json")
 		.header("X-Livewire", "true")
 		.header("X-CSRF-TOKEN", &csrf);
@@ -167,7 +167,7 @@ pub fn create_chapter_request_object(
 	let post_url = format!("{}/livewire/message/{}", base_url, name);
 	let req = Request::new(post_url, HttpMethod::Post)
 		.body(body.as_bytes())
-		.header("User-Agent", &get_user_agent())
+		.header("User-Agent", USER_AGENT)
 		.header("Content-Type", "application/json")
 		.header("X-Livewire", "true")
 		.header("X-CSRF-TOKEN", &csrf);
