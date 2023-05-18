@@ -1,4 +1,5 @@
 use aidoku::{
+	helpers::uri::encode_uri_component,
 	prelude::format,
 	std::html::Node,
 	std::{current_date, String, Vec},
@@ -25,25 +26,6 @@ pub fn extract_f32_from_string(text: String) -> Vec<f32> {
 		.split(' ')
 		.filter_map(|a| a.parse::<f32>().ok())
 		.collect::<Vec<f32>>()
-}
-
-/// Percent-encode any non-ASCII characters in a string.
-pub fn urlencode(string: String) -> String {
-	let mut result: Vec<u8> = Vec::with_capacity(string.len() * 3);
-	let hex = "0123456789ABCDEF".as_bytes();
-	let bytes = string.as_bytes();
-
-	for byte in bytes {
-		let curr = *byte;
-		if curr.is_ascii_alphanumeric() {
-			result.push(curr);
-		} else {
-			result.push(b'%');
-			result.push(hex[curr as usize >> 4]);
-			result.push(hex[curr as usize & 15]);
-		}
-	}
-	String::from_utf8(result).unwrap_or_default()
 }
 
 /// Converts `<br>` into newlines.
@@ -156,7 +138,9 @@ pub fn check_for_search(filters: Vec<Filter>) -> (String, bool) {
 		match filter.kind {
 			FilterType::Title => {
 				if let Ok(filter_value) = filter.value.as_string() {
-					search_string.push_str(urlencode(filter_value.read().to_lowercase()).as_str());
+					search_string.push_str(
+						encode_uri_component(filter_value.read().to_lowercase()).as_str(),
+					);
 					search = true;
 					break;
 				}

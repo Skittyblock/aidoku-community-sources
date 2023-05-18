@@ -1,5 +1,6 @@
 use aidoku::{
 	error::Result,
+	helpers::uri::encode_uri_component,
 	prelude::format,
 	std::html::Node,
 	std::net::{HttpMethod, Request},
@@ -394,7 +395,7 @@ pub fn parse_page_list(
 		}
 		indices.push(index);
 
-		let encoded_image_name = urlencode(String::from(image_name));
+		let encoded_image_name = encode_uri_component(String::from(image_name));
 		let encoded_url = url.replace(image_name, &encoded_image_name);
 
 		pages.push(Page {
