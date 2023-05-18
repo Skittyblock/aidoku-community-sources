@@ -36,14 +36,9 @@ pub fn parse_manga_list(base_url: String, page: i32) -> Result<MangaPageResult> 
 			id,
 			cover,
 			title,
-			author: String::new(),
-			artist: String::new(),
-			description: String::new(),
 			url,
-			categories: Vec::new(),
-			status: MangaStatus::Unknown,
-			nsfw: MangaContentRating::Safe,
 			viewer: MangaViewer::Scroll,
+			..Default::default()
 		});
 	}
 
@@ -84,14 +79,8 @@ pub fn parse_search(base_url: String, query: String) -> Result<MangaPageResult> 
 			id,
 			cover,
 			title,
-			author: String::new(),
-			artist: String::new(),
-			description: String::new(),
-			url: String::new(),
-			categories: Vec::new(),
-			status: MangaStatus::Unknown,
-			nsfw: MangaContentRating::Safe,
 			viewer: MangaViewer::Scroll,
+			..Default::default()
 		});
 	}
 
@@ -132,14 +121,9 @@ pub fn parse_manga_listing(
 			id,
 			cover,
 			title,
-			author: String::new(),
-			artist: String::new(),
-			description: String::new(),
 			url,
-			categories: Vec::new(),
-			status: MangaStatus::Unknown,
-			nsfw: MangaContentRating::Safe,
 			viewer: MangaViewer::Scroll,
+			..Default::default()
 		});
 	}
 
@@ -221,14 +205,12 @@ pub fn parse_manga_details(base_url: String, manga_id: String) -> Result<Manga> 
 		id: manga_id,
 		cover,
 		title,
-		author: String::new(),
-		artist: String::new(),
 		description,
 		url,
-		categories: Vec::new(),
 		status,
 		nsfw,
 		viewer,
+		..Default::default()
 	})
 }
 
@@ -328,12 +310,11 @@ pub fn parse_chapter_list_helper(html: Node, chapters: &mut Vec<Chapter>) {
 		chapters.push(Chapter {
 			id: chapter_id,
 			title,
-			volume: -1.0,
 			chapter: chapter_number,
 			date_updated,
-			scanlator: String::new(),
 			url: chapter_url,
 			lang: String::from("en"),
+			..Default::default()
 		});
 	}
 }
@@ -401,8 +382,7 @@ pub fn parse_page_list(
 		pages.push(Page {
 			index,
 			url: encoded_url,
-			base64: String::new(),
-			text: String::new(),
+			..Default::default()
 		});
 	}
 
