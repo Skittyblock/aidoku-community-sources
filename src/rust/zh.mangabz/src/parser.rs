@@ -105,8 +105,6 @@ pub fn get_manga_list(html: Node) -> Result<MangaPageResult> {
 		.array()
 		.is_empty();
 
-	html.close();
-
 	Ok(MangaPageResult {
 		manga: mangas,
 		has_more,
