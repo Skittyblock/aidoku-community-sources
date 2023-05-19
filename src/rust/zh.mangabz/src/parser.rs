@@ -1,6 +1,6 @@
 use aidoku::{
 	error::Result,
-	helpers::substring::Substring,
+	helpers::{substring::Substring, uri::QueryParameters},
 	prelude::format,
 	std::{html::Node, net::Request, String, Vec},
 	Chapter, Filter, FilterType, Manga, MangaPageResult, MangaStatus, Page,
@@ -15,21 +15,20 @@ const GENRE: [u8; 10] = [0, 31, 26, 1, 2, 25, 11, 17, 15, 34];
 const SORT: [u8; 2] = [10, 2];
 
 pub fn get_filtered_url(filters: Vec<Filter>, page: i32) -> String {
-	let mut url = String::from(BASE_URL);
-
 	let mut is_searching = false;
-	let mut search_str = String::new();
 
 	let mut genre = 0;
 	let mut status = 0;
 	let mut sort = 10;
+
+	let mut query = QueryParameters::new();
 
 	for filter in filters {
 		match filter.kind {
 			FilterType::Title => {
 				if let Ok(filter_value) = filter.value.as_string() {
 					is_searching = true;
-					search_str = filter_value.read();
+					query.push("title", Some(filter_value.read().as_str()));
 				}
 			}
 			FilterType::Select => {
@@ -52,12 +51,13 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32) -> String {
 		}
 	}
 
+	let mut url = String::from(BASE_URL);
 	if is_searching {
-		url.push_str(format!("search?title={}&page={}", search_str, page).as_str());
+		query.push("page", Some(page.to_string().as_str()));
+		url.push_str(format!("search?{}", query).as_str());
 	} else {
 		url.push_str(format!("manga-list-{}-{}-{}-p{}/", genre, status, sort, page).as_str());
 	}
-
 	url
 }
 
