@@ -3,7 +3,7 @@ use aidoku::{
 	helpers::{substring::Substring, uri::QueryParameters},
 	prelude::{format, println},
 	std::{html::Node, net::Request, String, Vec},
-	Filter, FilterType, Manga, MangaContentRating, MangaPageResult,
+	Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
 };
 
 extern crate alloc;
@@ -19,7 +19,6 @@ const SORT_BY: [&str; 4] = [
 ];
 
 pub fn get_filtered_url(filters: Vec<Filter>, page: i32) -> String {
-	let mut url = String::from(BASE_URL);
 	let mut query = QueryParameters::new();
 
 	let mut is_searching = false;
@@ -52,7 +51,7 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32) -> String {
 	}
 	query.push("wpsolr_page", Some(page.to_string().as_str()));
 
-	url.push_str(format!("search/?{}", query).as_str());
+	let url = format!("{}search/?{}", BASE_URL, query);
 	url
 }
 
@@ -65,8 +64,8 @@ pub fn request_get(url: String) -> Request {
 pub fn get_manga_list(html: Node, page: i32) -> Result<MangaPageResult> {
 	let mut manga: Vec<Manga> = Vec::new();
 
-	for item in html.select("div.results-by-facets > div").array() {
-		let manga_item = item.as_node()?;
+	for manga_item in html.select("div.results-by-facets > div").array() {
+		let manga_item = manga_item.as_node()?;
 		let title_node = manga_item.select("a");
 
 		let title = title_node.text().read();
@@ -102,4 +101,74 @@ pub fn get_manga_list(html: Node, page: i32) -> Result<MangaPageResult> {
 	html.close();
 
 	Ok(MangaPageResult { manga, has_more })
+}
+
+pub fn get_manga_details(html: Node, id: String) -> Result<Manga> {
+	let title = html.select("h1.entry-title").text().read();
+	let artist = title
+		.substring_before("]")
+		.expect("[artist -> &str")
+		.replace('[', "");
+	let url = format!("{}{}/", BASE_URL, id);
+
+	let mut description: Vec<String> = Vec::new();
+	for p in html.select("div.entry-content > p").array() {
+		let p = p.as_node()?.text().read().to_lowercase();
+		if p.starts_with("chapter") {
+			break;
+		}
+		description.push(p);
+	}
+	let description = description.join("\n");
+
+	let mut categories: Vec<String> = Vec::new();
+	let mut status_vec: Vec<String> = Vec::new();
+
+	for span in html.select("footer.entry-footer span").array() {
+		let span = span.as_node()?;
+		let span_text = span.own_text().read();
+
+		let mut is_status = false;
+		if span_text.starts_with("Status:") {
+			is_status = true;
+		} else if span_text.starts_with("Scanlation by:") {
+			continue;
+		}
+
+		for tag in span.select("a").array() {
+			let tag = tag.as_node()?.text().read();
+			if is_status {
+				status_vec.push(tag);
+			} else {
+				categories.push(tag);
+			}
+		}
+	}
+
+	let status = if status_vec.contains(&"Completed".to_string()) {
+		MangaStatus::Completed
+	} else if status_vec.contains(&"Discontinued".to_string())
+		|| status_vec.contains(&"Dropped".to_string())
+	{
+		MangaStatus::Cancelled
+	} else if status_vec.contains(&"Hiatus".to_string()) {
+		MangaStatus::Hiatus
+	} else if status_vec.contains(&"Ongoing".to_string()) {
+		MangaStatus::Ongoing
+	} else {
+		MangaStatus::Unknown
+	};
+
+	Ok(Manga {
+		id,
+		title,
+		author: artist.clone(),
+		artist,
+		description,
+		url,
+		categories,
+		status,
+		nsfw: MangaContentRating::Nsfw,
+		..Default::default()
+	})
 }
