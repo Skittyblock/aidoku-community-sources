@@ -16,33 +16,5 @@
 			"index": 1,
 			"ascending": false
 		}
-	},
-	{
-		"type": "_group",
-		"name": "Language"
-	},
-	{
-		"type": "_group",
-		"name": "Status"
-	},
-	{
-		"type": "_group",
-		"name": "Genre"
-	},
-	{
-		"type": "_group",
-		"name": "Categories"
-	},
-	{
-		"type": "_group",
-		"name": "Tags"
-	},
-	{
-		"type": "_group",
-		"name": "Pairing"
-	},
-	{
-		"type": "_group",
-		"name": "Group"
 	}
 ]
