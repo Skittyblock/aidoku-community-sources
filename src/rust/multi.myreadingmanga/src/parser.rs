@@ -1,9 +1,9 @@
 use aidoku::{
 	error::Result,
 	helpers::{substring::Substring, uri::QueryParameters},
-	prelude::{format, println},
+	prelude::format,
 	std::{html::Node, net::Request, String, Vec},
-	Chapter, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
+	Chapter, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus, Page,
 };
 
 extern crate alloc;
@@ -189,18 +189,16 @@ pub fn get_chapter_list(html: Node, manga_id: String) -> Result<Vec<Chapter>> {
 		pages = 1;
 	}
 	for index in 1..=pages {
-		let id = index.to_string();
-		let chapter = index as f32;
 		let mut url = format!("{}{}/", BASE_URL, manga_id);
 		if index > 1 {
-			url.push_str(format!("{}/", id).as_str());
+			url.push_str(format!("{}/", index).as_str());
 		}
 
 		chapters.insert(
 			0,
 			Chapter {
-				id,
-				chapter,
+				id: index.to_string(),
+				chapter: index as f32,
 				scanlator: scanlator.clone(),
 				url,
 				..Default::default()
@@ -209,4 +207,24 @@ pub fn get_chapter_list(html: Node, manga_id: String) -> Result<Vec<Chapter>> {
 	}
 
 	Ok(chapters)
+}
+
+pub fn get_page_list(html: Node) -> Result<Vec<Page>> {
+	let mut pages: Vec<Page> = Vec::new();
+
+	for (index, item) in html
+		.select("img[decoding=async][src^=https]")
+		.array()
+		.enumerate()
+	{
+		let url = item.as_node()?.attr("src").read();
+
+		pages.push(Page {
+			index: index as i32,
+			url,
+			..Default::default()
+		});
+	}
+
+	Ok(pages)
 }
