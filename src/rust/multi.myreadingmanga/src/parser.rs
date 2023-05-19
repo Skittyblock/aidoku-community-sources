@@ -3,7 +3,7 @@ use aidoku::{
 	helpers::{substring::Substring, uri::QueryParameters},
 	prelude::{format, println},
 	std::{html::Node, net::Request, String, Vec},
-	Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
+	Chapter, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
 };
 
 extern crate alloc;
@@ -64,8 +64,8 @@ pub fn request_get(url: String) -> Request {
 pub fn get_manga_list(html: Node, page: i32) -> Result<MangaPageResult> {
 	let mut manga: Vec<Manga> = Vec::new();
 
-	for manga_item in html.select("div.results-by-facets > div").array() {
-		let manga_item = manga_item.as_node()?;
+	for item in html.select("div.results-by-facets > div").array() {
+		let manga_item = item.as_node()?;
 		let title_node = manga_item.select("a");
 
 		let title = title_node.text().read();
@@ -98,8 +98,6 @@ pub fn get_manga_list(html: Node, page: i32) -> Result<MangaPageResult> {
 	let pages = html.select("a.paginate").array().len() as i32;
 	let has_more = page < pages;
 
-	html.close();
-
 	Ok(MangaPageResult { manga, has_more })
 }
 
@@ -111,21 +109,21 @@ pub fn get_manga_details(html: Node, id: String) -> Result<Manga> {
 		.replace('[', "");
 	let url = format!("{}{}/", BASE_URL, id);
 
-	let mut description: Vec<String> = Vec::new();
-	for p in html.select("div.entry-content > p").array() {
-		let p = p.as_node()?.text().read().to_lowercase();
+	let mut description_vec: Vec<String> = Vec::new();
+	for item in html.select("div.entry-content > p").array() {
+		let p = item.as_node()?.text().read().to_lowercase();
 		if p.starts_with("chapter") {
 			break;
 		}
-		description.push(p);
+		description_vec.push(p);
 	}
-	let description = description.join("\n");
+	let description = description_vec.join("\n");
 
 	let mut categories: Vec<String> = Vec::new();
 	let mut status_vec: Vec<String> = Vec::new();
 
-	for span in html.select("footer.entry-footer span").array() {
-		let span = span.as_node()?;
+	for item in html.select("footer.entry-footer span").array() {
+		let span = item.as_node()?;
 		let span_text = span.own_text().read();
 
 		let mut is_status = false;
@@ -135,8 +133,8 @@ pub fn get_manga_details(html: Node, id: String) -> Result<Manga> {
 			continue;
 		}
 
-		for tag in span.select("a").array() {
-			let tag = tag.as_node()?.text().read();
+		for item in span.select("a").array() {
+			let tag = item.as_node()?.text().read();
 			if is_status {
 				status_vec.push(tag);
 			} else {
@@ -171,4 +169,44 @@ pub fn get_manga_details(html: Node, id: String) -> Result<Manga> {
 		nsfw: MangaContentRating::Nsfw,
 		..Default::default()
 	})
+}
+
+pub fn get_chapter_list(html: Node, manga_id: String) -> Result<Vec<Chapter>> {
+	let mut chapters: Vec<Chapter> = Vec::new();
+
+	let mut scanlator_vec: Vec<String> = Vec::new();
+	for item in html
+		.select("footer.entry-footer span.entry-terms:contains(Scanlation by:) > a")
+		.array()
+	{
+		let scanlator_str = item.as_node()?.text().read();
+		scanlator_vec.push(scanlator_str);
+	}
+	let scanlator = scanlator_vec.join(", ");
+
+	let mut pages = html.select("a.post-page-numbers").array().len();
+	if pages == 0 {
+		pages = 1;
+	}
+	for index in 1..=pages {
+		let id = index.to_string();
+		let chapter = index as f32;
+		let mut url = format!("{}{}/", BASE_URL, manga_id);
+		if index > 1 {
+			url.push_str(format!("{}/", id).as_str());
+		}
+
+		chapters.insert(
+			0,
+			Chapter {
+				id,
+				chapter,
+				scanlator: scanlator.clone(),
+				url,
+				..Default::default()
+			},
+		);
+	}
+
+	Ok(chapters)
 }
