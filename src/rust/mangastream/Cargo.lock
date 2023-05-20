@@ -104,6 +104,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "komikindo"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "mangastream_template",
+]
+
+[[package]]
 name = "komiktap"
 version = "0.1.0"
 dependencies = [
@@ -166,6 +174,14 @@ dependencies = [
 
 [[package]]
 name = "mangasusu"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "mangastream_template",
+]
+
+[[package]]
+name = "mangatale"
 version = "0.1.0"
 dependencies = [
  "aidoku",
@@ -262,6 +278,14 @@ dependencies = [
 
 [[package]]
 name = "realmscans"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "mangastream_template",
+]
+
+[[package]]
+name = "sekaikomik"
 version = "0.1.0"
 dependencies = [
  "aidoku",
