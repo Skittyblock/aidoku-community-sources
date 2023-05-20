@@ -1,0 +1,18 @@
+{
+	"info": {
+		"id": "en.firstkissmanga",
+		"lang": "en",
+		"name": "1ST KISS MANGA",
+		"version": 1,
+		"url": "https://1stkissmanga.me",
+		"nsfw": 1
+	},
+	"listings": [
+		{
+			"name": "Trending"
+		},
+		{
+			"name": "Popular"
+		}
+	]
+}
