@@ -3,6 +3,9 @@ use aidoku::{
 	Manga, MangaContentRating, MangaStatus, MangaViewer, Page,
 };
 
+pub const BASE_URL: &str = "https://www.mangapill.com";
+pub const USER_AGENT: &str = "Mozilla/5.0 (Macintosh; Intel Mac OS X 13_3_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36";
+
 pub fn parse_recents(html: Node, result: &mut Vec<Manga>) {
 	for page in html.select("div.grid div:not([class])").array() {
 		let obj = page.as_node().expect("node array");
