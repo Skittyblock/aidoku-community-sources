@@ -16,5 +16,10442 @@
 			"index": 1,
 			"ascending": false
 		}
+	},
+	{
+		"type": "group",
+		"name": "By Language",
+		"filters": [
+			{
+				"type": "check",
+				"name": "English",
+				"id": "lang_str"
+			},
+			{
+				"type": "check",
+				"name": "Japanese",
+				"id": "lang_str"
+			},
+			{
+				"type": "check",
+				"name": "Korean",
+				"id": "lang_str"
+			},
+			{
+				"type": "check",
+				"name": "Spanish",
+				"id": "lang_str"
+			},
+			{
+				"type": "check",
+				"name": "Chinese",
+				"id": "lang_str"
+			},
+			{
+				"type": "check",
+				"name": "Portuguese",
+				"id": "lang_str"
+			},
+			{
+				"type": "check",
+				"name": "Thai",
+				"id": "lang_str"
+			},
+			{
+				"type": "check",
+				"name": "French",
+				"id": "lang_str"
+			},
+			{
+				"type": "check",
+				"name": "Vietnamese",
+				"id": "lang_str"
+			},
+			{
+				"type": "check",
+				"name": "Bahasa Indonesia",
+				"id": "lang_str"
+			},
+			{
+				"type": "check",
+				"name": "Russian",
+				"id": "lang_str"
+			},
+			{
+				"type": "check",
+				"name": "Traditional Chinese",
+				"id": "lang_str"
+			},
+			{
+				"type": "check",
+				"name": "Italian",
+				"id": "lang_str"
+			},
+			{
+				"type": "check",
+				"name": "German",
+				"id": "lang_str"
+			},
+			{
+				"type": "check",
+				"name": "Filipino",
+				"id": "lang_str"
+			},
+			{
+				"type": "check",
+				"name": "Bulgarian",
+				"id": "lang_str"
+			},
+			{
+				"type": "check",
+				"name": "Hungarian",
+				"id": "lang_str"
+			},
+			{
+				"type": "check",
+				"name": "Cantonese",
+				"id": "lang_str"
+			},
+			{
+				"type": "check",
+				"name": "Swedish",
+				"id": "lang_str"
+			},
+			{
+				"type": "check",
+				"name": "Arabic",
+				"id": "lang_str"
+			},
+			{
+				"type": "check",
+				"name": "Hebrew",
+				"id": "lang_str"
+			},
+			{
+				"type": "check",
+				"name": "Hindi",
+				"id": "lang_str"
+			},
+			{
+				"type": "check",
+				"name": "Polish",
+				"id": "lang_str"
+			},
+			{
+				"type": "check",
+				"name": "Flemish Dutch",
+				"id": "lang_str"
+			},
+			{
+				"type": "check",
+				"name": "Turkish",
+				"id": "lang_str"
+			},
+			{
+				"type": "check",
+				"name": "Persian",
+				"id": "lang_str"
+			},
+			{
+				"type": "check",
+				"name": "Greek",
+				"id": "lang_str"
+			},
+			{
+				"type": "check",
+				"name": "Finnish",
+				"id": "lang_str"
+			},
+			{
+				"type": "check",
+				"name": "Slovak",
+				"id": "lang_str"
+			},
+			{
+				"type": "check",
+				"name": "Croatian",
+				"id": "lang_str"
+			},
+			{
+				"type": "check",
+				"name": "Danish",
+				"id": "lang_str"
+			},
+			{
+				"type": "check",
+				"name": "Norwegian Bokmål",
+				"id": "lang_str"
+			},
+			{
+				"type": "check",
+				"name": "Czech",
+				"id": "lang_str"
+			},
+			{
+				"type": "check",
+				"name": "Malay",
+				"id": "lang_str"
+			},
+			{
+				"type": "check",
+				"name": "Romanian",
+				"id": "lang_str"
+			}
+		]
+	},
+	{
+		"type": "group",
+		"name": "By Status",
+		"filters": [
+			{
+				"type": "check",
+				"name": "Completed",
+				"id": "status_str"
+			},
+			{
+				"type": "check",
+				"name": "Ongoing",
+				"id": "status_str"
+			},
+			{
+				"type": "check",
+				"name": "Licensed",
+				"id": "status_str"
+			},
+			{
+				"type": "check",
+				"name": "Dropped",
+				"id": "status_str"
+			},
+			{
+				"type": "check",
+				"name": "Hiatus",
+				"id": "status_str"
+			},
+			{
+				"type": "check",
+				"name": "Discontinued",
+				"id": "status_str"
+			}
+		]
+	},
+	{
+		"type": "group",
+		"name": "By Genre",
+		"filters": [
+			{
+				"type": "check",
+				"name": "Yaoi",
+				"id": "genre_str"
+			},
+			{
+				"type": "check",
+				"name": "Romance",
+				"id": "genre_str"
+			},
+			{
+				"type": "check",
+				"name": "Bara/ Muscle",
+				"id": "genre_str"
+			},
+			{
+				"type": "check",
+				"name": "Comedy",
+				"id": "genre_str"
+			},
+			{
+				"type": "check",
+				"name": "Drama",
+				"id": "genre_str"
+			},
+			{
+				"type": "check",
+				"name": "Shounen Ai",
+				"id": "genre_str"
+			},
+			{
+				"type": "check",
+				"name": "Shota",
+				"id": "genre_str"
+			},
+			{
+				"type": "check",
+				"name": "Furry",
+				"id": "genre_str"
+			},
+			{
+				"type": "check",
+				"name": "School",
+				"id": "genre_str"
+			},
+			{
+				"type": "check",
+				"name": "Slice of Life",
+				"id": "genre_str"
+			},
+			{
+				"type": "check",
+				"name": "Fantasy",
+				"id": "genre_str"
+			},
+			{
+				"type": "check",
+				"name": "Supernatural",
+				"id": "genre_str"
+			},
+			{
+				"type": "check",
+				"name": "Omegaverse",
+				"id": "genre_str"
+			},
+			{
+				"type": "check",
+				"name": "Tragedy",
+				"id": "genre_str"
+			},
+			{
+				"type": "check",
+				"name": "Sports",
+				"id": "genre_str"
+			},
+			{
+				"type": "check",
+				"name": "HET (heterosexual)/ Hentai",
+				"id": "genre_str"
+			},
+			{
+				"type": "check",
+				"name": "Historical",
+				"id": "genre_str"
+			},
+			{
+				"type": "check",
+				"name": "Action",
+				"id": "genre_str"
+			},
+			{
+				"type": "check",
+				"name": "3D",
+				"id": "genre_str"
+			},
+			{
+				"type": "check",
+				"name": "Mystery",
+				"id": "genre_str"
+			},
+			{
+				"type": "check",
+				"name": "Psychological",
+				"id": "genre_str"
+			},
+			{
+				"type": "check",
+				"name": "Sci-fi",
+				"id": "genre_str"
+			},
+			{
+				"type": "check",
+				"name": "Horror",
+				"id": "genre_str"
+			},
+			{
+				"type": "check",
+				"name": "Dom/Sub verse",
+				"id": "genre_str"
+			},
+			{
+				"type": "check",
+				"name": "Gender bender",
+				"id": "genre_str"
+			},
+			{
+				"type": "check",
+				"name": "Family",
+				"id": "genre_str"
+			},
+			{
+				"type": "check",
+				"name": "Thriller",
+				"id": "genre_str"
+			},
+			{
+				"type": "check",
+				"name": "Biography",
+				"id": "genre_str"
+			},
+			{
+				"type": "check",
+				"name": "Music",
+				"id": "genre_str"
+			},
+			{
+				"type": "check",
+				"name": "Wuxia",
+				"id": "genre_str"
+			},
+			{
+				"type": "check",
+				"name": "Crime",
+				"id": "genre_str"
+			},
+			{
+				"type": "check",
+				"name": "Yuri",
+				"id": "genre_str"
+			},
+			{
+				"type": "check",
+				"name": "War",
+				"id": "genre_str"
+			},
+			{
+				"type": "check",
+				"name": "Documentary",
+				"id": "genre_str"
+			}
+		]
+	},
+	{
+		"type": "group",
+		"name": "By Categories",
+		"filters": [
+			{
+				"type": "check",
+				"name": "One Shot",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Yaoi Manga",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "CG/ Art",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Boku no Hero Academia dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "JoJo's Bizarre Adventure dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Haikyuu!! dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Kuroko no Basuke dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Free! (Iwatobi Swim Club) dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Attack on Titan dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Video",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Osomatsu-san dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "One Piece dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Tiger and Bunny dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Hetalia: Axis Powers dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Jujutsu Kaisen dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Naruto dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Gintama dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Yuri on Ice dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Fate/Grand Order dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Katekyo Hitman Reborn! dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Durarara dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Touken Ranbu dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Pokémon dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Ace of Diamond dj, Daiya no A",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Final Fantasy dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Yu-Gi-Oh! dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Manhwa (Korean)",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Detective Conan dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Yowamushi Pedal dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Tokyo Afterschool Summoners dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Fullmetal Alchemist dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Ensemble Stars dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Kimetsu no Yaiba dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Hypnosis Mic dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Neon Genesis Evangelion dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Dragon Ball dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Dr. Stone dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "One Punch Man dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Magi dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Mob Psycho 100 dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Granblue Fantasy dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Hunter X Hunter dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Dangan Ronpa dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Kuroshitsuji dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Fate/Zero dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "DRAMAtical Murder dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Bleach dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Ookiku Furikabutte dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "[K]/ K Project dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Code Geass dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Tokyo Ghoul dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Ao no Exorcist dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Genshin Impact dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Ace Attorney dj, Gyakuten Saiban",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Justice League dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Persona 4 dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Persona 5 dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Inazuma Eleven dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Vocaloid dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Prince of Tennis dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Avengers dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "South Park dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Kekkai Sensen dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Uta no Prince-sama dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "The Legend of Zelda dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Kingdom Hearts dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Fire Emblem dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Resident Evil dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "THE iDOLM@STER: SideM dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Death Note dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Fate/stay night dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Sengoku Basara dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "League of Legends dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Promare dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Hoozuki no Reitetsu dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Digimon Adventure dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Aldnoah.Zero dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Big Hero 6 dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "SK8 the Infinity dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Batman dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Tokyo Revengers dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Dragon Quest XI dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Kantai Collection dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Summer Wars dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Manhua (Chinese)",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Mobile Suit Gundam Tekketsu no Orphans dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Togainu no Chi dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Spider-Man dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "D.Gray-man dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Berserk dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Monster Hunter dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "BEASTARS dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Voltron dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Supernatural dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Fairy Tail dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Dead by Daylight dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Devil May Cry dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Overwatch dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Disney: Twisted-Wonderland dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Bungo Stray Dogs dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Gundam 00 dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Boruto dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Toriko dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Eyeshield 21 dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "IDOLiSH7 dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Nekojishi dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Psycho-Pass dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Senyuu. dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "X-Men dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "BlazBlue dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Kid Icarus dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Street Fighter dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Whistle! dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Ben 10 dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Tobaku Mokushiroku Kaiji dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Boku dake ga Inai Machi (ERASED) dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Dynasty Warriors dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "King of Fighters dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Natsume Yuujinchou dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Xenoblade Chronicles 2",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Arknights dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Gay Fiction",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Banana Fish dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Fire Force dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Future Card Buddyfight dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Golden Kamuy dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "King's Raid dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Assassination Classroom dj, Ansatsu Kyoushitsu",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Owari no Seraph dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "The Little Mermaid dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Tales of Zestiria dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Yahari Ore no Seishun Lovecome wa Machigatte Iru dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Live A Hero dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Nanatsu no Taizai dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Yakuza dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Arslan Senki dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "DAYS dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Pretty Rhythm dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Baka to Test to Shoukanjuu dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Bakusou Kyoudai Let's & Go!! dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "World Trigger dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Cardfight!! Vanguard dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Gurren Lagann dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Rockman .EXE dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Shokugeki no Soma dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Show by Rock!! dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Slam Dunk dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Giant Killing dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Avatar: The Last Airbender dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Deadpool dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Harry Potter dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Knights College dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "The Transformers dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "xxxHoLic dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Detroit: Become Human dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Eternal Arcadia dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Five Nights at Freddy's dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Hacka Doll dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "No. 6 dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Sword Art Online dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Aladdin dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Fate/Hollow Ataraxia dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "GUILTY GEAR dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Re:Zero kara Hajimeru Isekai Seikatsu dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Smile PreCure! dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Turn A Gundam dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Antique Bakery dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Elden Ring dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Identity V",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Kyou kara Maou dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Saint Seiya dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Venom dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Hidoku Shinaide dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "How to Train Your Dragon dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Melancholy of Haruhi Suzumiya dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Tangled dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Undertale dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Kill la Kill dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Lamento dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Onmyou Taisenki dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Ouran High School Host Club dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Puss in Boots dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Super Smash Bros dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Get Backers dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Hades dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Morenatsu dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Rakudai Ninja Rantarō dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Shin Megami Tensei dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Yu Yu Hakusho dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Barakamon dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Chainsaw Man dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Gundam Build Fighters dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Hataraku Saibou (Cells at Work) dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Oreimo dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Shaman King dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Super Mario Bros. dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Tales of Xillia dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Tenkai Knights dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "The Evil Within (Psycho Break) dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Blue Lock dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Gekkan Shoujo Nozaki-kun dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Grimoire of Zero dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Hercules dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Jormungand dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Metal Gear Solid dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Ninja Turtles dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Octopath Traveler dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Pop'n Music dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Sherlock Holmes dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Hyouka dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Mairimashita! Iruma-kun dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Miraculous Ladybug dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Shinrabansou Choco dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Star Fox dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Tales of Vesperia dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Zootopia dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "commissioned",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Gundam Seed Destiny dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Kemo Coliseum dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Saiyuki dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Shinkansen Henkei Robo Shinkalion dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "The Legend of Korra dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "The Lion King dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "All Out!! dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Binan Koukou Chikyuu Bouei-bu LOVE! dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "BNA: Brand New Animal dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Call of Duty Modern Warfare dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Darkstalkers/ Red Earth dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Drifters dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Ginga e Kickoff!! dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Kyoushou Sentai Danjijaa dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Legendz: Tale of the Dragon Kings dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Mobile Fighter G Gundam dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Tales of the Abyss dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Yuujuu Fudan dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "ACCA: 13-ku Kansatsu-ka dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Adventure Time dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Aggretsuko dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Battle Spirits dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Buraiden Gai dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Gingitsune dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Hataraku Maou-sama! dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Lupin the 3rd dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Sonic the Hedgehog dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "The Witcher dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Touhou Project dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Tsubasa Reservoir Chronicle dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Zetsuai/Bronze dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Cooking Papa dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Dragon Quest III dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "InuYasha dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Mirage of Blaze dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Odd Taxi dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Punch-Out!! dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Shiki dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Suzumiya Haruhi no Yuuutsu dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Tate no Yuusha no Nariagari dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Toward the Terra dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Tsuritama dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Beauty And the Beast dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Devilman dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Dragon Quest: Dai no Daibōken dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Dungeon Fighter Online dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Fake dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Fortnite dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Friday the 13th dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Guardians of the Galaxy dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Gundam Build Divers dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Nier: Automata dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Ragnarok Online dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Saiki Kusuo no Psi Nan dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Stardew Valley dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Steins;Gate dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Bakemono no Ko dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Beelzebub dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Clannad dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Danny Phantom dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "El Shaddai dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Garo: Vanishing Line dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Hajime no Ippo dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Hakkenden dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Hikaru No Go dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Invincible dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Joker Game dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "KAT-TUN dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Log Horizon dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Lucky Dog 1 dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Mass Effect dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Mother 3 dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Onmyoji dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Overlord dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Percy Jackson dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Persona 3 dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Project Sekai dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Puzzle & Dragons dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Ranma ½ dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Soul Eater dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Tensei Shitara Slime datta Ken dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Thor dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Warzard dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Youkai Watch dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Akagi dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "American Dragon: Jake Long dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Animal Crossing dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "AnotherEidos dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Arashi dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Beyblade dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Black Clover dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Crows ZERO dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Dorohedoro dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Doushitemo Furetakunai DJ",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Gay Magazine",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Gravity Falls dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Kichiku Megane dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Kyoukai no Kanata dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Kyuuketsuki Sugu Shinu dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Maria Holic dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Professor Layton dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Rise of The Guardians dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Sarazanmai dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Shining Force EXA dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "SoulCalibur dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Splatoon dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Teen Titans dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Totally Captivated dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Umineko no Naku Koro ni dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Ushio to Tora dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Winnie The Pooh dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "A3! dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Ai no Kusabi DJ",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Ajin: Demi-Human dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Angel Beats! dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Aquaman dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Bakuman dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Castlevania dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Epic Seven dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Fate/ Apocrypha dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Hadaka Shitsuji dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Hannibal dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Initial D dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Johnny Bravo dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Made in Abyss dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Monster Prom dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Mushishi dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Nagi no Asukara dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Omniscient Reader's Viewpoint dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "PriPara dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Scooby-Doo dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Sengoku Taisen dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Space Battleship Yamato 2199 dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Spyro dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Star Wars dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Sweet Pool dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Tactics dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Tarzan dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "The Legend of Heroes: Sen no Kiseki dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "The Owl House dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Tobaku Haouden ZERO dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Ura Brave Kingdom dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Valkyria Chronicles dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Vassalord dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Yondemasuyo Azazel-san dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Zettai Karen Children dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Accel World dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Amagi Brilliant Park dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Bakumatsu Rock dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Breath of Fire dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Burn the Witch dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Cardcaptor Sakura dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Cookie Run dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Darker than Black dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Deadman Wonderland dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Deltarune dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Dream Festival! dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Enzai dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Fate/kaleid liner Prisma Illya dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Gaist Crusher dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Galaxy Express 999 dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Haiyore! Nyaruko-san dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Jinrou Judgement dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Kimi no Na wa dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Kung Fu Panda dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Major dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Megaman NT Warrior dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Mononoke dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Noragami dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Ookami Kodomo no Ame to Yuki (Wolf Children) dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Outlast dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Samurai Flamenco dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Sdorica dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Shingeki no Bahamut Genesis dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Shounen Maid dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Soul Catcher dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Star Ocean dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Submarine 707R dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Suisei no Gargantia dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Summon Night dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Tales of Symphonia dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Terra Formars dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "The Incredibles dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Tokkyuu!! dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Utawarerumono dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Vanitas no Karte dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "We bare bears dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "World of Warcraft dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Yami no Matsuei dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "13 Sentinels dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "91 Days dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "AKIRA dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Assassin's Creed dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Boboiboy dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Border dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Brave 10 dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Captain Tsubasa dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Chousoku Henkei Gyrozetter dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Cluster Edge dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Cyborg 009 dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Danball Senki dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Danshi Koukousei no Nichijou dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Disgaea dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Dog Days dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Dragalia Lost dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Dragon Age: Inquisition dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Dragon Quest VIII DJ",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Dragon Quest X dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Dream Daddy dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Earthbound Zero/ MOTHER dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Frozen dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Gangsta. dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Gatchaman Crowds dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Gin to Kin dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Godzilla dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Hakuouki dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Hataraku Onii-san! dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Hellsing dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Interval dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Kakumeiki Valvrave dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Kami nomi zo Shiru Sekai dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Keroro Gunsou dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Klonoa dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Komi Can't Communicate dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Koutetsujou no Kabaneri dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Legend of the Blue Wolves dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Loveless dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Macross Frontier dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Mobile Suit Gundam dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Momotaro Densetsu dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Net Ghost PiPoPa dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Pandora Hearts dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Phantasy Star dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Phi Brain dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Punishing: Gray Raven dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Quiz Magic Academy dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Rampo Kitan: Game of Laplace dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Rival Schools dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Samurai Champloo dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Scott Pilgrim dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Sengoku Night Blood dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Soukyuu no Fafner dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Spongebob Squarepants dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Squid Game dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "The Idolmaster Cinderella Girls dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "The Walking Dead dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "ThunderCats dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Tsurikichi Sanpei dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Welcome to the Ballroom dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Wild Adapter dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Aikatsu dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Brave Story dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Cowboy Bebop dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "DARK SOULS dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Datenshi ni Sasageru Uta dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Double Decker! Doug & Kirill dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Dragon's Dogma dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Dungeon ni Deai wo Motomeru no wa Machigatteiru Darou ka dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Edens Zero dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "ELSWORD dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Engage Planet Kiss Dum dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Ero Condo dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Fukai ni Nemuru Oujo no Abaddon dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Full Bokko Heroes dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Gakuen Heaven dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Gankutsuou dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Ghost in the Shell dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Ginga Eiyuu Densetsu dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Gundam Unicorn dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Hashihime dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Heybot! dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Homestuck dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Ixion Saga dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Jigoku Sensei Nuubee dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Kaiju No. 8 dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Kaiten Mutenmaru dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Kaitou Joker dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Kimi to boku dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Kirby dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Kiseijuu dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Kumo no Ito dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Laputa Castle in the Sky dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Lilo & Stitch dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Lord of the Rings dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Magic Kaito dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Mamorukun Curse! dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Monster dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Moyashimon dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Mugen no Juunin dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Mulan dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "MUV-LUV dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "NCIS: Los Angeles dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Obey Me dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Persona 2 dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Princess Princess dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Project GeeKeR dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Psychic Force 2012 dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Rick and Morty dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Romeo’s Blue Skies dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Rurouni Kenshin dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "RWBY dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Sakura Wars dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Sayonara Zetsubou Sensei dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Seiken Densetsu 3 dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Sekaiichi Hatsukoi dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Shironeko Project dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Shoshitsu dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Shounen Hollywood dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Silver Spoon dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Space Brothers dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Space Dandy dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "SSSS.Gridman dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Star Driver dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Strider Hiryu dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Sugarless dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "SWAT Kats dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Taiiku Kyoushi Kiwame dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Tales of Hearts dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Tentai Senshi Sunred dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "The Boondocks dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "The Dragon Prince dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "The Flash dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "The Hunchback of Notre Dame dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "The Powerpuff Girls dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "The S-Classes That I Raised dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Tokyo Babylon dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Trigun dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Urban Reign dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Vampire Knight dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Wander Crown dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Warriors Orochi dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "World Flipper dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Air Master dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Arata: The Legend dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Azure Striker Gunvolt dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "B-Daman dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "BanG Dream! dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Basquash! dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Black Cat dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Blend S",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Boondock Saints dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Buriki One dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Candidate for Goddess dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Casshern Sins dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Cheer Danshi!! dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Clamp Gakuen Tanteidan dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Conan the Barbarian dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Crash Bandicoot dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Cyborg Kuro-chan dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "D.N.Angel dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Defense of the Ancients dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Demi-chan wa Kataritai dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Dimension W dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Disco Elysium dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Dota 2 dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Dragon Quest IV dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Drakengard 3 dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Duke Nukem dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Edd n Eddy dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Fate/Extella Link dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Fate/ Extra dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Fist of the North Star dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "FNF Friday Night Funkin dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Fuurai no Shiren dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Gakuen Sousei Nekoten dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Gantz dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Generator Rex dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Ghostbusters dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Giant Robo dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Girls und Panzer dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "God of War dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Gokuto Jihen dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Granado Espada dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Green Lantern dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Gugure! Kokkuri-san dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Gundam Wing dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Guyver dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "H2 dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Halo dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Harukanaru Toki no Naka de dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Harukanarutoki no nakade dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Hataage! Kemono Michi dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "He-Man and the Masters of the Universe dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Heat Guy J dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Heroman dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Hinomaru-Zumou dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Houshin Engi dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Inu x Boku SS dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Invader Zim dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Johnny Test dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Jungle wa Itsumo Hare Nochi Guu dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Jurassic World dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Kagerou Project dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Kanata no Astra dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "ki! PreCure dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Knight's & Magic dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Knights of Sidonia dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Kobayashi-san Chi no Maid Dragon dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Kongou Banchou dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Kono Yoru no Subete dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Kore wa Zombie Desu ka? dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Koukoku no Shugosha dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Kung Fu Chefs dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Kung Fu Jungle dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Kuromukuro dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Last Inning dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Last Period dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Left 4 Dead dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "LEGO dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Looney Tunes dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Lucifer dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Mabinogi dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Mahou Shoujo Ikusei Keikaku dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Mahoutsukai Reimeiki (The Dawn of the Witch) dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Maison de M dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Mobile Suit Gundam: Char's Counterattack dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Mononoke Hime dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Mortal Kombat dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Mushoku Tensei dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "OFF (game) dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Otokonoko wa Maid Fuku ga Osuki!? dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Panty & Stocking with Garterbelt dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Parks and Recreation dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Ping Pong dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Prunus Girl dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Pumpkin Scissors dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Q-Force dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Rokkuman dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Saint Young Men dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Samurai Deeper Kyo dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Servamp dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Shaun of the Dead dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Shouwa Genroku Rakugo Shinjuu dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "ShuMao dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Soccer Spirits dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Soul Hackers dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Squirt Game dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Starry Sky dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Star Trek dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Strange Plus dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Suikoden dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Super Sentai dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Tail Concerto dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Tales of Arise dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Tales of Graces dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Tanken Driland dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Team Fortress 2 dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Teen Wolf dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Ten: Tenhōdōri No Kaidanji dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Terminator dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "The Adventures of Tintin dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "The God of High School dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "The Jungle Book dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "The Kindaichi Case Files dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "The Office dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "The Saga of Darren Shan dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "To Aru Majutsu no Index dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Trash of The Count’s Family dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Uchouten Kazoku dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Uncharted dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Urusei Yatsura dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Usavich dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Vinland Saga dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "VOICEROID dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Weathering with You dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Young Black Jack dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "07-Ghost dj",
+				"id": "categories"
+			}
+		]
+	},
+	{
+		"type": "group",
+		"name": "By Tags",
+		"filters": [
+			{
+				"type": "check",
+				"name": "Hardcore",
+				"id": "tags"
+			},
+			{
+				"type": "check",
+				"name": "Uncensored",
+				"id": "tags"
+			},
+			{
+				"type": "check",
+				"name": "Full Color",
+				"id": "tags"
+			},
+			{
+				"type": "check",
+				"name": "Rape",
+				"id": "tags"
+			},
+			{
+				"type": "check",
+				"name": "Threesome",
+				"id": "tags"
+			},
+			{
+				"type": "check",
+				"name": "Cross-dressing",
+				"id": "tags"
+			},
+			{
+				"type": "check",
+				"name": "Incest",
+				"id": "tags"
+			},
+			{
+				"type": "check",
+				"name": "Western",
+				"id": "tags"
+			},
+			{
+				"type": "check",
+				"name": "Group Sex/ Foursome",
+				"id": "tags"
+			},
+			{
+				"type": "check",
+				"name": "Big Penis",
+				"id": "tags"
+			},
+			{
+				"type": "check",
+				"name": "Masturbation",
+				"id": "tags"
+			},
+			{
+				"type": "check",
+				"name": "Bondage",
+				"id": "tags"
+			},
+			{
+				"type": "check",
+				"name": "Sex toy",
+				"id": "tags"
+			},
+			{
+				"type": "check",
+				"name": "Blowjob",
+				"id": "tags"
+			},
+			{
+				"type": "check",
+				"name": "Dark skin",
+				"id": "tags"
+			},
+			{
+				"type": "check",
+				"name": "Animal Characteristic",
+				"id": "tags"
+			},
+			{
+				"type": "check",
+				"name": "Double Penetration",
+				"id": "tags"
+			},
+			{
+				"type": "check",
+				"name": "Nipple play",
+				"id": "tags"
+			},
+			{
+				"type": "check",
+				"name": "Tentacle",
+				"id": "tags"
+			},
+			{
+				"type": "check",
+				"name": "Chubby/ Fat",
+				"id": "tags"
+			},
+			{
+				"type": "check",
+				"name": "Brother",
+				"id": "tags"
+			},
+			{
+				"type": "check",
+				"name": "Ahegao",
+				"id": "tags"
+			},
+			{
+				"type": "check",
+				"name": "Condom",
+				"id": "tags"
+			},
+			{
+				"type": "check",
+				"name": "Reversible Couple",
+				"id": "tags"
+			},
+			{
+				"type": "check",
+				"name": "Hairy",
+				"id": "tags"
+			},
+			{
+				"type": "check",
+				"name": "mind-break",
+				"id": "tags"
+			},
+			{
+				"type": "check",
+				"name": "Manly Gay Couple",
+				"id": "tags"
+			},
+			{
+				"type": "check",
+				"name": "GangRape",
+				"id": "tags"
+			},
+			{
+				"type": "check",
+				"name": "Anime/ Animation",
+				"id": "tags"
+			},
+			{
+				"type": "check",
+				"name": "Beastality",
+				"id": "tags"
+			},
+			{
+				"type": "check",
+				"name": "Frottage",
+				"id": "tags"
+			},
+			{
+				"type": "check",
+				"name": "Public Sex/ Exhibitionism",
+				"id": "tags"
+			},
+			{
+				"type": "check",
+				"name": "Urethra Insertion",
+				"id": "tags"
+			},
+			{
+				"type": "check",
+				"name": "Tattoo",
+				"id": "tags"
+			},
+			{
+				"type": "check",
+				"name": "Wholesome",
+				"id": "tags"
+			},
+			{
+				"type": "check",
+				"name": "Big Breasts",
+				"id": "tags"
+			},
+			{
+				"type": "check",
+				"name": "Belly Inflation",
+				"id": "tags"
+			},
+			{
+				"type": "check",
+				"name": "Handjobs",
+				"id": "tags"
+			},
+			{
+				"type": "check",
+				"name": "Male Lactation",
+				"id": "tags"
+			},
+			{
+				"type": "check",
+				"name": "Father",
+				"id": "tags"
+			},
+			{
+				"type": "check",
+				"name": "Rimjob",
+				"id": "tags"
+			},
+			{
+				"type": "check",
+				"name": "Mpreg/Male Pregnancy",
+				"id": "tags"
+			},
+			{
+				"type": "check",
+				"name": "Drug",
+				"id": "tags"
+			},
+			{
+				"type": "check",
+				"name": "Hypnosis/ Mind Control",
+				"id": "tags"
+			},
+			{
+				"type": "check",
+				"name": "Office Worker",
+				"id": "tags"
+			}
+		]
+	},
+	{
+		"type": "group",
+		"name": "By Pairing",
+		"filters": [
+			{
+				"type": "check",
+				"name": "Jotaro Kujo x Noriaki Kakyoin",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Katsuki Bakugo x Izuku Midoriya",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Izuku Midoriya x Katsuki Bakugo",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kageyama Tobio x Hinata Shouyou",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Barnaby Brooks Jr. x Kotetsu T. Kaburagi",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kirishima Eijirou x Bakugou Katsuki",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Erwin Smith x Levi Ackerman",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Makoto Tachibana x Haruka Nanase",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Levi Ackerman x Eren Yeager",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Eren Yeager x Levi Ackerman",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Roronoa Zoro x Sanji",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Shouto Todoroki x Izuku Midoriya",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Gintoki Sakata x Toushirou Hijikata",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Victor Nikiforov x Yuuri Katsuki",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Sousuke Yamazaki x Rin Matsuoka",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Shizuo Heiwajima x Izaya Orihara",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Naruto Uzumaki x Sasuke Uchiha",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Gojo Satoru x Itadori Yuuji",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Shoto Todoroki x Katsuki Bakugo",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Aomine Daiki x Kagami Taiga",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "US x UK",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kagami Taiga x Kuroko Tetsuya",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Toushirou Hijikata x Gintoki Sakata",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Yuuri Katsuki x Victor Nikiforov",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Gojo Satoru x Fushiguro Megumi",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Tooru Oikawa x Hajime Iwaizumi",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kise Ryouta x Kuroko Tetsuya",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Tetsurou Kuroo x Kei Tsukishima",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kazuya Miyuki x Eijun Sawamura",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kaworu Nagisa x Shinji Ikari",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Sasuke Uchiha x Naruto Uzumaki",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Joseph x Caesar",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Rin Matsuoka x Haruka Nanase",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Caesar x Joseph",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Ichimatsu x Karamatsu",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Hajime Iwaizumi x Tooru Oikawa",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kotetsu T. Kaburagi x Barnaby Brooks Jr.",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Jotaro Kujo x Jousuke Higashikata",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Jonathan Joestar x Dio Brando",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kakashi Hatake x Iruka Umino",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Haruka Nanase x Makoto Tachibana",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Haruka Nanase x Rin Matsuoka",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Aomine Daiki x Kise Ryouta",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Itadori Yuuji x Fushiguro Megumi",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Shintarou Midorima x Kazunari Takao",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Tsukasa Shishio x Senku Ishigami",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Sebastian Michaelis x Ciel Phantomhive",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Koutarou Bokuto x Keiji Akaashi",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Jousuke Higashikata x Rohan Kishibe",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Shuuichi Akai x Rei Furuya",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kaito Kuroba x Shinichi Kudo",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Noriaki Kakyoin x Jotaro Kujo",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Dio Brando x Jonathan Joestar",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Karamatsu x Osomatsu",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kagami Taiga x Aomine Daiki",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Saitama x Genos",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Aomine Daiki x Kuroko Tetsuya",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Suzaku Kururugi x Lelouch Lamperouge",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Sanji x Roronoa Zoro",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Seijuurou Akashi x Kuroko Tetsuya",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Makoto Tachibana x Rin Matsuoka",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Tooru Oikawa x Kageyama Tobio",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Koutarou Bokuto x Tetsurou Kuroo",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Hibari x Tsuna",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Tetsurou Kuroo x Kenma Kozume",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Izaya Orihara x Shizuo Heiwajima",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "France x England",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Shuu Tsukiyama x Ken Kaneki",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Galo Thymos x Lio Fotia",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kazunari Takao x Shintarou Midorima",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Roy Mustang x Edward Elric",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Bakugou Katsuki x Kirishima Eijirou",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Germany x Italy",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Roronoa Zoro x Monkey D. Luffy",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Yukio Okumura x Rin Okumura",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Gon Freecs x Killua Zoldyck",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kara x Ichi",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Son Goku x Vegeta",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Trafalgar Law x Monkey D. Luffy",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Inaho Kaizuka x Slaine Troyard",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kise Ryouta x Kasamatsu Yukio",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Osomatsu x Karamatsu",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Jousuke Higashikata x Jotaro Kujo",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Mukuro x Tsuna",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Cu Chulainn x Archer, Lancer",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Takeshi Yamamoto x Hayato Gokudera",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Genos x Saitama",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Noctis Lucis Caelum x Prompto Argentum",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Riku x Sora",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Griffith x Guts",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Takaya Abe x Ren Mihashi",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kuroko Tetsuya x Kagami Taiga",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Otabek Altin x Yuri Plisetsky",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Daichi Sawamura x Koushi Sugawara",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Germany x Prussia",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Izuku Midoriya x Shoto Todoroki",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Jinpachi Toudou x Yuusuke Makishima",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kakuzu x Hidan",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Rei Ryuugazaki x Nagisa Hazuki",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Fushiguro Megumi x Itadori Yuuji",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Ryoumen Sukuna x Fushiguro Megumi",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Komaeda x Hinata",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Phoenix Wright X Miles Edgeworth",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Sinbad x Ja'far",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Tadashi Hamada x Hiro Hamada",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kei Tsukishima x Tadashi Yamaguchi",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kise Ryouta x Aomine Daiki",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Langa Hasegawa x Reki Kyan",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Superman x Batman",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Tadashi Yamaguchi x Kei Tsukishima",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Cu Chulainn, Archer x Lancer",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Yagi Toshinori x Aizawa Shouta",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Arataka Reigen x Shigeo Kageyama",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Guido Mista x Giorno Giovanna",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Katsuki Bakugo x Shoto Todoroki",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Hinata Shouyou x Kageyama Tobio",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "UK x USA",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Noiz x Aoba Seragaki",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Prussia x Germany",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Sam Winchester x Dean Winchester",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Getou Suguru x Itadori Yuuji",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kuroko Tetsuya x Kise Ryouta",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Makoto Tachibana x Rei Ryuugazaki",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Alphonse Elric x Edward Elric",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Doflamingo x Crocodile",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Eustass Kid x Trafalgar Law",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kei Tsukishima x Hinata Shouyou",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Tokiya Ichinose x Otoya Ittoki",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Klaus Von Reinherz x Leonardo Watch",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Monkey D. Luffy x Roronoa Zoro",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Sephiroth x Cloud",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Gaku Yashiro x Satoru Fujinuma",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Getou Suguru x Gojo Satoru",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Koujaku x Aoba Seragaki",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Ryoumen Sukuna x Itadori Yuuji",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Shirou Emiya x Cú Chulainn",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Sousuke Yamazaki x Makoto Tachibana",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Tetsurou Kuroo x Daichi Sawamura",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Tom Tanaka x Shizuo Heiwajima",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Shigeo Kageyama x Arataka Reigen",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Atsushi Murasakibara x Tatsuya Himuro",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Eren Yeager x Jean Kirstein",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Zapp Renfro x Leonardo Watch",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Portgas D. Ace x Monkey D. Luffy",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Ren x Aoba Seragaki",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Seto Kaiba x Katsuya Jounouchi",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Hinata x Komaeda",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kageyama Tobio x Sugawara Koushi",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Lev Haiba x Morisuke Yaku",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Shokudaikiri Mitsutada x Heshikiri Hasebe",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kirei Kotomine x Kiritsugu Emiya",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Rengoku Kyoujurou x Kamado Tanjirou",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Sangaku Manami x Sakamichi Onoda",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Dante x Vergil",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Dio Brando x Jotaro Kujo",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Gilgamesh x Tokiomi Toosaka",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Ichimatsu x Juushimatsu",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Jotaro Kujo x Dio Brando",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Russia x America",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Senku Ishigami x Gen Asagiri",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Spain x Romano",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Teppei Kiyoshi x Junpei Hyuuga",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Toogata Mirio x Amajiki Tamaki",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Doumeki Shizuka x Watanuki Kimihiro",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Endeavor x Hawks",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Hisoka x Gon Freecss",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kakashi Hatake x Sasuke Uchiha",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Lance x Keith",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Nagisa Hazuki x Rei Ryuugazaki",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Ross x Alba",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Boruto x Naruto",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Clear x Aoba Seragaki",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kageyama Tobio x Tooru Oikawa",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kakashi Hatake x Naruto Uzumaki",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Killua Zoldyck x Gon Freecs",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kuroko Tetsuya x Aomine Daiki",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Otegine x Doudanuki Masakuni",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Piccolo x Son Gohan",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Saitama x Sonic",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Saruhiko Fushimi x Misaki Yata",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Stanley Snyder x Xeno Wingfied",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Hawks x Endeavor",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Hayato Shinkai x Yasutomo Arakita",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Itachi x Sasuke",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Judar x Hakuryuu Ren, Judal",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Karamatsu x Choromatsu",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Napoleon x Iskandar",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Ritsuka Fujimaru x Gilgamesh",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Cid Highwind x Vincent Valentine",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Daryun x Arslan",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Deadpool x Spider-Man",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Dino x Hibari",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Gladiolus Amicitia x Noctis Lucis Caelum",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Gojo Satoru x Getou Suguru",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Jean Kirstein x Eren Yeager",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Steven A. Starphase x Leonardo Watch",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Takasugi Shinsuke x Sakata Gintoki",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Thor x Loki",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Zack x Cloud",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Dabi x Shoto Todoroki",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Gen Asagiri x Senku Ishigami",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Gladiolus Amicitia x Ignis Scientia",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Gokudera x Tsuna",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Osomatsu x Choromatsu",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Otoya Ittoki x Tokiya Ichinose",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Tooru Oikawa x Koushi Sugawara",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Ash x Eiji",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Eijun Sawamura x Kazuya Miyuki",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Yami Yugi x Yugi Mutou",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Yuuri Katsuki x Yuri Plisetsky",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "America (Alfred) x Canada (Matthew)",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Antonio x Kotetsu",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Ignis Scientia x Noctis Lucis Caelum",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kagami Taiga x Kise Ryouta",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kageyama Tobio x Tsukishima Kei",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kaito x Len Kagamine",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Keiji Akaashi x Koutarou Bokuto",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kise Ryouta x Kagami Taiga",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Masrur x Sharrkan",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Masrur x Sinbad",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Percival x Lancelot",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Rin Matsuoka x Sousuke Yamazaki",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Sebastian Castellanos x Joseph Oda",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Tomioka Giyuu x Kamado Tanjirou",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Tooru Oikawa x Hinata Shouyou",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Corazon x Law",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Edward Elric x Alphonse Elric",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Edward Elric x Roy Mustang",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Jousuke Higashikata x Okuyasu Nijimura",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Katsuya Serizawa x Arataka Reigen",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Orga Itsuka x Mikazuki Augus",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Akaza x Rengoku Kyojuro",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Archer x Shirou Emiya",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Bertolt Hoover x Reiner Braun",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Cú Chulainn x Shirou Emiya",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Goro Akechi x Ren Amamiya",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Horohoro x Tao Ren, Usui Horokeu",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kamado Tanjirou x Tomioka Giyuu",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Miya Atsumu x Hinata Shouyou",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Prompto Argentum x Noctis Lucis Caelum",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Ragna x Jin Kisaragi",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Ryan Goldsmith x Kotetsu T. Kaburagi",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Stan Marsh x Kyle Broflovski",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Taishiro Toyomitsu x Kirishima Eijirou",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Todoroki Shouto x Iida Tenya",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Ushijima Wakatoshi x Tooru Oikawa",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Yamamoto Takeshi x Hibari Kyouya",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Ace x Sabo",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Ekubo x Arataka Reigen",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Giorno Giovanna x Guido Mista",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Gyro C. Zeppeli x Johnny Joestar",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kaoru Indou x Hisahito Mizuki",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Keiji Akaashi x Hinata Shouyou",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Keith x Lance",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Ogata Hyakunosuke x Sugimoto Saichi",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Tyki Mikk x Allen Walker",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Venom x Eddie Brock",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Akira Midousuji x Sakamichi Onoda",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Chris Yuu Takigawa x Eijun Sawamura",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Karamatsu x Todomatsu",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "King Bradley x Selim Bradley",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Lavi x Allen",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Miles Edgeworth x Phoenix Wright",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Nanami Kento x Itadori Yuuji",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Ren Amamiya x Goro Akechi",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Sabito x Tomioka Giyuu",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Shunsuke Imaizumi x Shoukichi Naruko",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Victor Nikiforov x Yuri Plisetsky",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "William x Grell",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Yusuke Kitagawa x Ren Amamiya",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Aizawa Shouta x Katsuki Bakugo",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Avdol x Polnareff",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Choso x Itadori Yuuji",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Dio Brando x Noriaki Kakyoin",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Fushiguro Megumi x Ryoumen Sukuna",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Itadori Yuuji x Gojo Satoru",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Itsuki Tadano x Mei Narumiya",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kisumi Shigino x Rin Matsuoka",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kondou Isao x Hijikata Toushirou",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Miya Osamu x Miya Atsumu",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Reverto x Lute",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Sinbad x Alibaba Saluja",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Sinbad x Judal",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Spider-Man x Deadpool",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Steven A. Starphase x Klaus Von Reinherz",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Yamada Ichiro x Yamada Jiro",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Youichi Kuramochi x Eijun Sawamura",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Chihiro Mayuzumi x Seijuurou Akashi",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Fushiguro Toji x Fushiguro Megumi",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Gray Fullbuster x Natsu Dragneel",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Hifumi x Doppo",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Hirofumi Yoshida x Denji",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Jousuke Higashikata x Noriaki Kakyoin",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kagami Taiga x Teppei Kiyoshi",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Keiji Akaashi x Kei Tsukishima",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kirishima Eijirou x Denki Kaminari",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kirito x Eugeo",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kogitsunemaru x Mikazuki",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kurogane x Fai",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Len Kagamine x Kaito",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Lio Fotia x Galo Thymos",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Midori Takamine x Chiaki Morisawa",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Norba Shino x Yamagi Gilmerton",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Okkotsu Yuuta x Inumaki Toge",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Osomatsu x Ichimatsu",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Ritsu Kageyama x Shigeo Kageyama",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Ryoga Hibiki x Ranma Saotome",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Ryuji Sakamoto x Ren Amamiya",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Sabo x Monkey D. Luffy",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Sakusa Kiyoomi x Ushijima Wakatoshi",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Tetsurou Kuroo xx Tooru Oikawa",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Toriko x Komatsu",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Yamada Hizashi x Aizawa Shouta",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Yamada Saburo x Yamada Jiro",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Yuri Plisetsky x Victor Nikiforov",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Zhongli x Tartaglia",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Aizawa Shouta x Yagi Toshinori",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "America x Japan",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Arash x Ozymandias",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Choromatsu x Karamatsu",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Dabi x Katsuki Bakugo",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Dio Brando x Giorno Giovanna",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Doflamingo x Law",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Furuya Satoru x Sawamura Eijun",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Giorno Giovanna x Dio Brando",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Grell x William",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Jean-Jacques Leroy x Yuri Plisetsky",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Jean-Pierre Polnareff x Noriaki Kakyoin",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kaiba Seto x Yami Yuugi",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kuroko Tetsuya x Seijuurou Akashi",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Lelouch Lamperouge x Suzaku Kururugi",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Leon x Raihan",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Marco Bott x Jean Kirstein",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Monkey D. Luffy x Portgas D. Ace",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Naruto x Boruto",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Ookurikara x Shokudaikiri Mitsutada",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Ootori Choutarou x Shishido Ryou",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Raihan x Leon",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Reiner Braun x Bertolt Hoover",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Reki Kyan x Langa Hasegawa",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Sanemi x Genya",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Shinazugawa Sanemi x Tomioka Giyuu",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Star Platinum x Jotaro Kujo",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Sting Eucliffe x Natsu Dragneel",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Tendou Satori x Ushijima Wakatoshi",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Todomatsu x Karamatsu",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Vergil x Dante",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Akechi x Hero",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Alibaba x Aladdin",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Aohitsugi Samatoki x Yamada Ichiro",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Blue x Red",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Bruno Buccellati x Giorno Giovanna",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Chiaki Morisawa x Midori Takamine",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Gilgamesh x Kirei Kotomine",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Gintoki Sakata x Sougo Okita",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Guts x Griffith",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Harry x Draco",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Hayato Akiyama x Haruna Wakazato",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Higekiri x Hizamaru",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Hotarumaru x Aizen Kunitoshi",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Ingo x Emmet",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Isse Matsukawa x Tooru Oikawa",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Izumi Sena x Makoto Yuuki",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Jack Krauser x Leon S. Kennedy",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Jotaro Kujo x Jonathan Joestar",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Keishin Ukai x Ittetsu Takeda",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kisumi Shigino x Sousuke Yamazaki",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Klavier Gavin x Apollo Justice",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kojiro Nanjo x Kaoru Sakurayashiki",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Mike x Levi",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Okuyasu Nijimura x Jousuke Higashikata",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Ren Mihashi x Takaya Abe",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Rohan Kishibe x Jousuke Higashikata",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Ryuu x Ken",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Saihara Shuichi x Oma Kokichi",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Satoru Furuya x Kazuya Miyuki",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Shigaraki Tomura x Midoriya Izuku",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Son Gohan x Piccolo",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Sora x Riku",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Tartaglia x Zhongli",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Uzui Tengen x Agatsuma Zenitsu",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Yamada Ichiro x Aohitsugi Samatoki",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Yuuichi Jin x Jun Arashiyama",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Aizen Kunitoshi x Hotarumaru",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Akehoshi Subaru x Hidaka Hokuto",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Aoi Todo x Itadori Yuuji",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Aoyagi Hajime x Teshima Junta",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Arthur x Ritsuka Fujimaru",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Azazel x Lucifer",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Azumane Asahi x Nishinoya Yuu",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Childe x Zhongli",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Craig Tucker x Tweek Tweak",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Dazai Osamu x Nakahara Chuuya",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Diluc x Kaeya",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Dio Brando x Polnareff",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Fushiguro Toji x Itadori Yuuji",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Haruichi x Ryousuke",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Hichigo Shirosaki x Ichigo Kurosaki",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Hitoshi Shinso x Izuku Midoriya",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Ike x Ranulf",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Itadori Yuuji x Aoi Todo",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Italy x Japan",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Jamil Viper x Kalim Al-Asim",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Jonathan Joestar x Speedwagon",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Jude Mathis x Alvin",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Jyushi x Kara",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Keisuke Baji x Chifuyu Matsuno",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Levi Ackerman x Erwin Smith",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Marco x Ace",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Mike x Erwin",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Mr. X x Leon S. Kennedy",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Prussia x Japan",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Rei Furuya x Shuuichi Akai",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Rei Sakuma x Ritsu Sakuma",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Rin Okumura x Yukio Okumura",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Sanada x Raichi",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Sengoku x Tatara Fujita",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Shindo Yo x Katsuki Bakugo",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Shinji Ikari x Kaworu Nagisa",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Shuji Hanma x Kazutora Hanemiya",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Shunsuke Imaizumi x Sakamichi Onoda",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Suiryu x Garou",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Teshima Junta x Aoyagi Hajime",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Tomura Shigaraki x Shoto Todoroki",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Toshinori Yagi x Izuku Midoriya",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Vane x Lancelot",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Vane x Percival",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Yoarashi Inasa x Todoroki Shouto",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Youichi Kuramochi x Kazuya Miyuki",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Yuri Plisetsky x Yuuri Katsuki",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Akito Takagi x Moritaka Mashiro",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Atsushi Murasakibara x Rinnosuke Mitobe",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Atsushi Murasakibara x Teppei Kiyoshi",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Beowulf x Ritsuka Fujimaru",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Bokuto Koutarou x Konoha Akinori",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Choromatsu x Ichimatsu",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Choromatsu x Osomatsu",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Chris Redfield x Piers Nivans",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Dean x Castiel",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Denki Kaminari x Izuku Midoriya",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Diego Brando x Johnny Joestar",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Eiji x Ash",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Eijun Sawamura x Tetsuya Yuuki",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Eren Yeager x Armin Arlert",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Eren Yeager x Reiner Braun",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Feather x Gran",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Fergus x Ritsuka Fujimaru",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "France x Canada",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Fugo x Narancia",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Gawain x Lancelot",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Gojo Satoru x Nanami Kento",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Hakuryuu Ren x Alibaba Saluja",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Hannibal x Will",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Haruka Nanase x Sousuke Yamazaki",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Hayakawa Aki x Denji",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Hayato Gokudera x Takeshi Yamamoto",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Hinata Shouyou x Kenma Kozume",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Hokuto Hayasugi x Hayato Hayasugi",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Issei Matsukawa x Takahiro Hanamaki",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Iwatooshi x Doudanuki Masakuni",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Jean Kirstein x Armin Arlert",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Judal x Aladdin",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Juushimatsu x Ichimatsu",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kakashi Hatake x Obito Uchiha",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kamado Tanjirou x Rengoku Kyojuro",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kanda x Allen",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kars x Dio Brando",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Keiji Akaashi x Tetsurou Kuroo",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Keiji Onizuka x Marcos Eringrad Garcia",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kirei Kotomine x Tokiomi Toosaka",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kirishima Eijirou x Izuku Midoriya",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kise Ryouta x Seijuurou Akashi",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Koushi Sugawara x Hinata Shouyou",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kuro Kiryu x Keito Hasumi",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kyle Broflovski x Stan Marsh",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kyoji Takajo x Minori Watanabe",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Lancelot x Ritsuka Fujimaru",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Laxus Dreyar x Natsu Dragneel",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Manjiro Sano x Takemichi Hanagaki",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Mezou Shouji x Fumikage Tokoyami",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Mikey x Takemichi",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Nanami Kento x Gojo Satoru",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Okita Sougo x Hijikata Toushirou",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Percival x Gran",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Ritsu Kageyama x Arataka Reigen",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Ryan Goldsmith x Barnaby Brooks Jr.",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Shanks x Buggy",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Shiro x Keith",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Shuuzou Nijimura x Tatsuya Himuro",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Siegfried x Percival",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Sinbad x Masrur",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Sohayanotsurugi x Oodenta Mitsuyo",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Sorey x Mikleo",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Suzuki Iruma x Asmodeus Alice",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Sylvain Jose Gautier x Felix Hugo Fraldarius",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Tenn Kujo x Riku Nanase",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Tetsurou Kuroo x Suguru Daishou",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Tsukishima Kei x Kageyama Tobio",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Ushijima Wakatoshi x Tendou Satori",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Vane x Gran",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Xiao x Aether (Traveler)",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Yomo Renji x Uta",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Yukinari Kuroda x Yasutomo Arakita",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Yuuma Kuga x Osamu Mikumo",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Zagan x Hakuryuu Ren",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Achilles x Ritsuka Fujimaru",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Aizawa Shota x Shinso Hitoshi",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Aizawa Shouta x Izuku Midoriya",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Amaguni Hitoya x Aimono Jyushi",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Angra Mainyu x Ritsuka Fujimaru",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Arash x Ritsuka Fujimaru",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Ardyn Izunia x Noctis Lucis Caelum",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Arthur x Gudako",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Atsushi Murasakibara x Seijuurou Akashi",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Belial x Gran",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Caligula x Ritsuka Fujimaru",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Castiel x Dean",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Ciel Phantomhive x Sebastian Michaelis",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Cu(Alter and Proto) x Ritsuka Fujimaru",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Dante x Credo",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Denki Kaminari x Katsuki Bakugo",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Deuce Spade x Ace Trappola",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Dwight x Jake",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Eddie Brock x Peter Parker",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Fushiguro Megumi x Gojo Satoru",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Gawain x Ritsuka Fujimaru",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Genos x Sonic",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Gilgamesh x Ritsuka Fujimaru",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Gilgamesh x Shirou Emiya",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Gintoki Sakata x Kotaro Katsura",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Gladiolus Amicitia x Prompto Argentum",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Hachimenroppi x Tsukishima",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Hanazawa Teruki x Kageyama Shigeo",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Hank Anderson x Connor",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Hayato Hayasugi x Hokuto Hayasugi",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Hector x Ritsuka Fujimaru",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Heiji Hattori x Shinichi Kudo",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Hibiki Tokisaka x Shota Kamine",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Higuruma Hiromi x Itadori Yuuji",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Hijikata Toshizo x Ritsuka Fujimaru",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Hiro Hamada x Tadashi Hamada",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Hokuto Hayasugi x Ryuji Kiyosu",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Hozoin x Ritsuka Fujimaru",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Hyakuya Yuuichirou x Hyakuya Mikaela",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Ichimatsu x Osomatsu",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Itadori Yuuji x Ryoumen Sukuna",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Jason Todd x Dick Grayson",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Jean-Jacques Leroy x Lee Seung-gil",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Jotaro Kujo x Rohan Kishibe",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Jousuke Higashikata x Yoshikage Kira",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Juushimatsu x Todomatsu",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kaidan Alenko x Commander Shepard",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kamado Tanjirou x Hashibira Inosuke",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Karamatsu x Jyushimatsu",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Katsunori Harasawa x Aomine Daiki",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kevin x Ben",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kibutsuji Muzan x Shinazugawa Sanemi",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kira x Diavolo",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Klaus Von Reinherz x Steven A. Starphase",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kokushibo x Shinazugawa Sanemi",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Lancelot x Gran",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Legosi x Jack",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Levi Ackerman x Jean Kirstein",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Luminary x Erik",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Makoto Yuuki x Izumi Sena",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Mikado Ryuugamine x Shizuo Heiwajima",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Miya Atsumu x Kita Shinsuke",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Monkey D. Luffy x Trafalgar Law",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Napoleon x Ritsuka Fujimaru",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Natsu Dragneel x Gray Fullbuster",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Noi x Shin",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Noé Archiviste x Vanitas",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Okkotsu Yuuta x Itadori Yuuji",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Osomatsu x Jyushimatsu",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Patxi x Ritsuka Fujimaru",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Pike x Keith",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Ragna x Hazama",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Rei Furuya x Shinichi Kudo",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Ren Amamiya x Ryuji Sakamoto",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Renji x Ichigo",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Rick Grimes x Daryl Dixon",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Risotto Nero x Prosciutto",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Robin Hood x Ritsuka Fujimaru",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Ryou Shimazaki x Teruki Hanazawa",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Ryusui Nanami x Sai Nanami",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Ryusui Nanami x Ukyo Saionji",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Sai x Naruto",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Sam Hanna x G Callen",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Santana x Rudol von Stroheim",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Satoru Furuya x Kominato Haruichi",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Seto Kaiba x Yugi Muto",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Shigaraki Tomura x Katsuki Bakugo",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Shigeo Kageyama x Ritsu Kageyama",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Shinso Hitoshi x Aizawa Shota",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Shoto Todoroki x Denki Kaminari",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Shuuichi Akai x Conan Edogawa",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Siegfried x Ritsuka Fujimaru",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Son Gohan x Son Goku",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Sousuke Yamazaki x Kisumi Shigino",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Speedwagon x Jonathan Joestar",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Tadashi Kikuchi x Ainosuke Shindo",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Taiju Shiba x Takashi Mitsuya",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Takahiro Hanamaki x Issei Matsukawa",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Takasugi x Katsura",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Takemichi x Mikey",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Teppei Kiyoshi x Kuroko Tetsuya",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Tetsurou Kuroo x Koutarou Bokuto",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Trafalgar Law x Sanji",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Trafalgar Law x Smoker",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Uzui Tengen x Rengoku Kyojuro",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Uzui Tengen x Tomioka Giyuu",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Weather Report x Enrico Pucci",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Youichi Kuramochi x Daichi Sawamura",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Youichi Kuramochi x Kominato Ryousuke",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Yuugi x Katsuya Jounouchi",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Yuusuke Makishima x Sakamichi Onoda",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Zagreus x Thanatos",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Ainosuke Shindo x Tadashi Kikuchi",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Aizawa Shouta x Yamada Hizashi",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Akaashi Keiji/Konoha Akinori",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Akabayashi x Shizuo Heiwajima",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Akira Kurusu x Ryuji Sakamoto",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Albert x Kyoma",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Alberu Crossman x Cale Henituse",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "All Might x Endeavor",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Amayado Rei x Yamada Saburo",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Aoba Seragaki xNoiz",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Arakita Yasutomo x Shinkai Hayato",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Arima Kishou x Sasaki Haise",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Asuma x Raidou",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Atsushi Murasakibara x Aomine Daiki",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Avdol x Noriaki Kakyoin",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Axel x Sora",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Canada (Matthew) x America (Alfred)",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Canada x America",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Choromatsu x Todomatsu",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Chris Redfield x Albert Wesker",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Chrollo Lucilfer x Kurapika",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Cliff x Archie",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Cu Chulainn, Gudao x Lancer",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Denji x Hayakawa Aki",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Denki Kaminari x Kirishima Eijirou",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Denmark x Norway",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Dick Gumshoe x Miles Edgeworth",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Doflamingo x Caesar",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Draco x Harry",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Eddie Brock x Venom",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Ekubo x Shigeo Kageyama",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Emil Nekola x Michele Crispino",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "England x Germany",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Eugeo x Kirito",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "France x Russia",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "France x Spain",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Fukutomi Juichi x Arakita Yasutomo",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Fushiguro Toji x Gojo Satoru",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Fushiguro Toji x Zenin Naoya",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Ghiaccio x Melone",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Gilgamesh x Ozymandias",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Giorno Giovanna x Leone Abbacchio",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Giorno Giovanna x Vanilla Ice",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Greed x Selim Bradley",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Hajime Kokonoi x Seisyu Inui",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Hazama x Ragna",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Heshikiri Hasebe x Shokudaikiri Mitsutada",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Hidaka Hokuto x Hibiki Wataru",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Hiei x Kurama",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Hiro x Rei Furuya",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Hisoka x Killua Zoldyck",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Hyoga Akatsuki x Senku Ishigami",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Ibuki x Louis",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Ichikawa Leno x Hibino Kafka",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Ichimatsu x Todomatsu",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Iida Tenya x Izuku Midoriya",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Iida Tenya x Katsuki Bakugo",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Iida Tenya x Todoroki Shouto",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Inumaki Toge x Itadori Yuuji",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Iron Bull x Dorian Pavus",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Itadori Yuuji x Choso",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Itadori Yuuji x Masamichi Yaga",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Iwai Munehisa x Ren Amamiya",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Izaya Orihara x Mikado Ryuugamine",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Izuku Midoriya x Kirishima Eijirou",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Izuku Midoriya x Rody Soul",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "James Potter x Severus Snape",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Japan x America",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Jaskier x Geralt",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Jenos x Train",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Jeralt Reus Eisner x Alois Rangeld",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Johnny Joestar x Diego Brando",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Judal x Sinbad",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kaido x King",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kaito x Kei Nagai",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kamado Tanjirou x Agatsuma Zenitsu",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kamado Tanjirou x Rengoku Senjuro",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kamasaki Yasushi x Futakuchi Kenji",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Karma x Nagisa",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kasen Kanesada x Hotarumaru",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kasuka Heiwajima x Shizuo Heiwajima",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kazuki Kawai x Junta Takase",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kazuya Miyuki x Youichi Kuramochi",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Keito Hasumi x Kuro Kiryu",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kei Tsukishima x Koushi Sugawara",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kenji Gion x Masaru Ebumi",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Ken x Ryuu",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kiritsugu Emiya x Kirei Kotomine",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kiryuu Kurou x Nagumo Tetora",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kominato Haruichi x Sawamura Eijun",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Kuro x Mahiru",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Lancelot x Vane",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Lavi x Kanda",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Lawless x Licht",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Laxus Dreyar x Gray Fullbuster",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Legosi x Louis",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Lehm Brick x Jonathan Mar",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Leonardo Watch x Klaus Von Reinherz",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Leonidas x Ritsuka Fujimaru",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Leo Tsukinaga x Tsukasa Suou",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Louis x Legosi",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Lucifer x Enoch",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "L x Light",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Malleus Draconia X Leona Kingscholar",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Mao Isara x Ritsu Sakuma",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Meis x Lio Fotia",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Mitsuki x Uzumaki Boruto",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Miya Atsumu x Miya Osamu",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Miya Atsumu x Sakusa Kiyoomi",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Miyaji Kiyoshi x Kotaro Hayama",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Miya Osamu x Hinata Shouyou",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Miya Osamu x Kita Shinsuke",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Miya Osamu x Rintarou Suna",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Morofushi Hiromitsu x Rei Furuya",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Naberius Kalego x Suzuki Iruma",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Nakigitsune x Kogitsunemaru",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Narumiya Mei x Tadano Itsuki",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Naruto Uzumaki x Kakashi Hatake",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Nash x Vector",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Natsuki x Shou",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Nimura Furuta x Ken Kaneki",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Noriaki Kakyoin x Jonathan Joestar",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Nurude Sasara x Tsutsujimori Rosho",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Okada Izou x Ritsuka Fujimaru",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Okumura Koushuu x Seto Takuma",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Okumura x Sawamura",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Osomatsu x Todomatsu",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Ozymandias x Arash",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Ozymandias x Gilgamesh",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Piccolo x Son Goku",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Piers Nivans x Chris Redfield",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Polnareff x Avdol",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Ramuda Amemura x Jakurai Jinguji",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Reborn x Lambo",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Red x Blue",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Red x Green",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Rei Hoshijima x Kanata Hoshijima",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Rengoku Kyojuro x Akaza",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Rin Matsuoka x Kisumi Shigino",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Rin Matsuoka x Rei Ryuugazaki",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Ritsu Sakuma x Rei Sakuma",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Rudolf Ushiromiya x Battler Ushiromiya",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Ruggie Bucchi X Leona Kingscholar",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Russia x China",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Ryouga Kamishiro x Yuuma Tsukumo",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Saito Hajime x Ritsuka Fujimaru",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Sai x Yamato",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Sarutobi Konohamaru x Uzumaki Boruto",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Satoru Fujinuma x Gaku Yashiro",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Sentinel x Optimus",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Shiki x Shizuo Heiwajima",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Shimada Makoto x Yamaguchi Tadashi",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Shiraishi Yoshitake x Sugimoto Saichi",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Shirou Emiya x Archer",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Shirou Emiya x Kirei Kotomine",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Shuuzou Nijimura x Haizaki Shougo",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Sin Kiske x Sol Badguy",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Slaine Troyard x Inaho Kaizuka",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Steven A. Starphase x Zapp Renfro",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Sugimoto Saichi x Ogata Hyakunosuke",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Tamaki Yotsuba x Sogo Osaka",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Todomatsu x Jyushimatsu",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Tonio Trussardi x Okuyasu Nijimura",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Trafalgar Law x Caesar",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Tsugaru x Delic",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Turkey x Greece",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Vasily Pavlichenko x Ogata Hyakunosuke",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Vegeta x Son Goku",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Wolfgang Mittermeyer x Oskar von Reuenthal",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Xanxus x Sawada Tsunayoshi",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Xeno Wingfield x Senku Ishigami",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Xeno Wingfield x Stanley Snyder",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "xo_romiiarts",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Yamada Ichiro x Yamada Saburo",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Yamada Jiro x Yamada Saburo",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Yoshikage Kira x Dio Brando",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Yuuichirou Tajima x Ren Mihashi",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Yuya Fungami x Josuke Higashikata",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Zenin Jinichi x Zenin Naoya",
+				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Zhongli x Childe",
+				"id": "pairing_str"
+			}
+		]
+	},
+	{
+		"type": "group",
+		"name": "By Group",
+		"filters": [
+			{
+				"type": "check",
+				"name": "Mysterymeat3 Translations",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Silver Lining",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Team Katsudon",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Otokonoko Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Fujoshi Bitches",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Yuuta's Blog",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Rose Squad Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Nakama",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Exiled Rebels Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Team MilkBoy",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "gachimayan",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Rotti Totti",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Good Girls Scan BL",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Ikemen Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Cesegura, cseg64",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Dangerous Pleasure",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Wayward Hearts",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Nonsense Group HQ",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Anônimo Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Chrima Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Diamond Drop scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Canis Major Scanlations",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Baragaki Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Emerald Crown Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Chin²",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Ebil Trio",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "KCK-Amateur Scan",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Nanashi.Translates",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Hoshikuzuu Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Diamond Dew Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Hero Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Nonsense Group",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Oh My Gay! Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Seraphic Deviltry",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "PornBestsBara",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Pink Cherry Blossom Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "tips’",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Cross the Oceans Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Yaoi Sekai",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "September Scanlations",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Jump Serve Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Cyber Panda Scanlations",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Shinmakoku Scanlations",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Fushigi's Doujinshi Translations",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Shotachan",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "JINJUN",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "BL Tsundoku Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Girls' Generation Scanlations",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Naono Holics",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Xiao's Yaoi Playground",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Yaoi Desire Revolution",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "BangAQUA",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Marumochi Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Zandy no Fansub",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Toratora-chan scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "BARAdise Scanlations",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Self-Serving Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Will Kaplan",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Limbo",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Yo mismito",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Dayment scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Yaoism801",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Relentless MidoTaka Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Simplyfx",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Anzu",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "bunny 's scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Captain's Quarters Scanlation",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Cuchulainn scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Fishtertperson scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Hennojin",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Neptise Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Scan Beans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "chiyoko",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Flex Tape Scan",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "JustBLThings",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "NijiNiji Nikubou Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Not a Scans Group",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "N",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Secluded Yoruhi",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Kedama Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Mint Wood",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "MOY Moe Scanlations",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Non-connoisseur",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Sentimiento Yaoi",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Swe3tMoans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Rainbow D Translations",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Yellow Moth",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "BL DOT CUM",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "butsu butsu",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Hergothical",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Huffly Parfait Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Pink Litchi Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Shinkirou Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "ClockWork Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Jerichi the Mouse",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "JoDan",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Team Karaage",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Yabotira Scan",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "AniBL1412",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Attractive Fascinante",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "HQ!! Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Bottom of the Sea Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Endless Pleasure Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Lyeyed",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "michiruzuki",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "MintVoid",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Pinpin",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "staytrashy",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Arigatomina",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Galaxy does BL",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Ichirouu",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Leon990 Scanlations",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Paradise Love Scanlations",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "peach.kyoudai",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "WDMs Scanlation",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "choco emiya scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Entwined Trees Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "ISS",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Orichalco",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "TheRobotsGhost",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Thúng thóc nhỏ của Chikin",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Tukkeebum",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Ban Linh",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Cosmique Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Shukumei no Rivals",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Sudden Happiness Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Sweet Puriinsu Scanlations",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Whatever",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Yannu no Mahou",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Adventurers' Guild",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Kusottare Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Lamperouge-1",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Lewd4Yaoi",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Midnight Mess Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "MissionStart Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Sea Anemone Team",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Ura",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Alola Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "bibiten translation",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Cat Paws Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Fantasy Shrine",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Maso-Kun",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Noutenki Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "oyasumimi",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Raincraft",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Yaoi Angels Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Acme",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Aisuke Fukasawa",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Aomadara",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Fated Fujoshis",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "GrapeJelly Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Janaron",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "MadameLePoo",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Modan Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "MTLplusPPT",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Muffin Mellow Translations",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "NowTea",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Oyajidesukara",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Passing Ghost",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Random Fujoshis",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Rhapshie",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Salty Potatoes Trans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "sennoakatsuki",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Silver Soul",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "TyroLuuki",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Hachimitsu Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Hikari Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "kudouusagi",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Mori no Kuma Scanlations",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Nekojita",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Rooftop Love BL",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Snow Flower Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Tabunne Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Tenshi no Akuma Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "The End",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "UsayaPride Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Yaoi Is Life",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Ale Vananice",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Angx",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Bara Sekai",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "BC Scanlations",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "BF Scan",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Big no-no scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Blissful Sin",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "CHRONOS",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "cloudtherun",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Coin Laundry Gang",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Crescent Moon Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Dead Soul Scan",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Hitsuji-sama",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Kittenhair",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Kuhaku Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Onigiri Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Rotten Milk Scanlations",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Scott Tt.",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Snowberry Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "TruffleNyan Scanlations",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "UEE Team",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Umako",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Yaoi Toshokan",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Archivist-tan",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "B.E.C. Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Banana-senpai",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "blukkake",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "BonJin",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Cinnamoroll Army",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Countless Time",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Dacent Translate",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Daddy's Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Gallina de Oro",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Iris Cayeux",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "JelekBanget Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "junsuhiro",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Magatsu Agency",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "MRI Squad",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Must Be Endless Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Noname Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Panda Mint Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Rain Over Paradise",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Rainy Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Rose Phoenix Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Sincityklr scanlations",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Spring Turtle Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Stay Gay Scanlations",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Sugar Parade",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Tae-ter Totts",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Tình Thâm Duyên Thiển",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Yoshion L",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Yuzu Scanlations",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "AA",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Aibiri",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "BL-League",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "chili tangerine scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Crusty Rolls",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "elevenxtwelve794",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "eroticyl",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Forgotten Gem Box",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "FujoMelon Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "G.Ku",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Goddess Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Hypnotized Division Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Inky Scanlations",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Jamjam",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "JeikWazTaken",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Kakyoin09",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Lady Phantomhive",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Las viudas de Kakyoin",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Lemonade Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Loobi",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "MIDORI Tora",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "milk and co.",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Milk Mocha Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Moi-xRyu Scanlations",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Natsurei Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Neko's Love",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Nexus Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "NihilAdmi Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Rhyhorn Translations",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Roku-san",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Scandoukai",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Sei's Translations",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Shiki Traducciones",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Sinful Delicacies",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Storm in Heaven",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Taisetsu Project",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Tamago Box",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "The Moon in a Box",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Yaoi Scent",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Yuutousei Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Aarinfantasy",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "alparslan",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "B-ko desu",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Bamboo Feathers",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "blthings",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Blue Spring Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "bunnyamuse",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Bunny Blue Scanlations",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Closeted Fujoshis",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "dark handa",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Dark Room Fansub",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Darling Megumi",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Datenshi Blue",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "dinopseuds",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "disappointment Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Echochi Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "EHCOVE",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "elite daddies",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Exotic Boys Love Scanlation",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "FeebasJay",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "FeelGoodYaoi",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Game Over or Continue",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Get Naughty Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "gooeyghosties",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Gorgeous PP",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "GUCCI Jotaro",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Heart of Gold Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "HTS",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Internet Explorer Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "kenbunshokus",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Komekomeya",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "KoreanBoy369",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Liquid Passion",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Mello Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Milk Yam Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "MJJM",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Mochi Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "nekoumancer",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "NoDeadline",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Not Anon Fujo",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Oasis Translation Group",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Océane",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "One Man Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Perv and Proud",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Pura Bin",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "rasher-translations",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "SaikyouHERE",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Senmou 37",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Shellsea",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "SHIKIORI_id",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Shinwakai",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Stranger by the Sea Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "strawberrymoon (ichigonotsuki)",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "taiga",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Team BAKUDEKU",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "The Unholy Trinity Mafia",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "TS",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Tsuini Koibito Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "umi",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Yes_Rhade",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "YYH Revival",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Ai no Haru Scanlations",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Aki",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "apollogo translation",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Aziria's Translations",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Bakana Inu Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Bakeneko Scanlations",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Be Depressed",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "BL-Gyaru",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Black Sheep",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Blood Link Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Blue Sky Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Boss Kitty Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Broken Heart Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Bunny's Boner Scanlation",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Charleira",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Charopien",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "chas",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Chibi Translates",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Cloudy Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Cocobees",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Coffee Break Scanlations",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Cookoo Team",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Crazy D Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Crown Princess Project",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Cupcake Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Cursed Circuit Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Dear Marionette",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Decadence",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "DokiDoki",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "DORI",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "DUDESARLAN",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Dysania Scanlations",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "D_moonchild & Sherry",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Elegy Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Eternal Dream Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "flrtyjihoon",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Fushichou",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Gakusei Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Gamerjunkie",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Geass Scan",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "GF Duo",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Ginkgo Rabbit Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "GOF",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "GoGoGo",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "gównomatsu",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Hay Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "HoliScans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "honyakusha",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Hotaru",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Humanity's Sassiest",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Jigoku",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Joka Babes",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "kachuya",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "KageHina Kingdom",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Kamakura Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Kawaii Yaoi Scanlations",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "KertAShion",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Kourei",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "koyukiya",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Kris the Translator",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Kruster Kimber",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "KVFG",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "LaboratoryBl",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "La Nemesis",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Lewd Rider Ero",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "loubluefrog",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Love Aholic Scan",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Lucyfur Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Lupo Fantasma Scanlations",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "MafuyuDeesu",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Majin Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Maso Juice",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "meeema",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "MegKF",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Melonpan",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Mi",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Milky Way Scan",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "MirusMayhem",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Misaki's Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Moka Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Morumotto Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Naisu Bodi",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Namae Nashi Team",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "nanodayo",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "NewsMedia",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "NOIR",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "NOKJA",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Nyan Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Owl",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Paper Hat Team",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Para Para Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Penicillin Shock",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "PieFujo",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Pink Is The New Black Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Platonic",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Prebble",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Razuriscans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Ryina's sakuras",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Sakura Pool Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Scarlet blossom Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Scarlet Neko scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "SDTB Translations",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Senku-Cola Inc",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Shigeka",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Shinjisan",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "ShotaconBrasil",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "ShutinOtaku",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Silver Moon Scanlations",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Simply Boys Love",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Sita",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "SMDC-Translations",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Snake Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Sonoff Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Sparkling Hands",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Special Grade Scanlations",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Starry Sky Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Stey Gerd",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Suspicious Team",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Sweet Demons Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Tachibana Chiharu",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "tallvampiremommy",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Team Takoyaki",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Tell Me I'm Cute Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "The BL Zone",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "The Rose Garden",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "things-all-love",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "tiredhyacinth",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "TOOR Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Torunachan",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Trash Explorer Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "TSHH",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "tsundbae",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "umbrella",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Urameshi Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Vices and Devices",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "VV Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Warp Gate Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "williamdunbar",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "xeno_vya",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Yankee Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Yaoi-Sei",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Yay Gay Scans",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "You are my sunshine",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "YukiOnna",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "Z-kun",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "ZBoots",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "zenorocz",
+				"id": "group_str"
+			},
+			{
+				"type": "check",
+				"name": "52SP",
+				"id": "group_str"
+			}
+		]
 	}
 ]

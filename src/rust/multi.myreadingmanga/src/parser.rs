@@ -23,22 +23,32 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32) -> String {
 
 	let mut is_searching = false;
 	let mut sort_by = SORT_BY[1];
+	let mut filter_vec: Vec<(String, String)> = Vec::new();
 
 	for filter in filters {
 		match filter.kind {
 			FilterType::Title => {
-				if let Ok(filter_value) = filter.value.as_string() {
+				if let Ok(value) = filter.value.as_string() {
 					is_searching = true;
-					query.push("wpsolr_q", Some(filter_value.read().as_str()));
+					query.push("wpsolr_q", Some(value.read().as_str()));
 				}
 			}
 			FilterType::Sort => {
-				let value = match filter.value.as_object() {
-					Ok(value) => value,
-					Err(_) => continue,
-				};
-				let index = value.get("index").as_int().unwrap_or(1) as usize;
-				sort_by = SORT_BY[index];
+				if let Ok(value) = filter.value.as_object() {
+					let index = value.get("index").as_int().unwrap_or(1) as usize;
+					sort_by = SORT_BY[index];
+				}
+			}
+			FilterType::Check => {
+				let value = filter.value.as_int().unwrap_or(-1);
+				if value < 1 {
+					continue;
+				}
+				if let Ok(id) = filter.object.get("id").as_string() {
+					let filter_type = id.read();
+					let filter_name = filter.name.as_str().to_string();
+					filter_vec.push((filter_type, filter_name));
+				}
 			}
 			_ => continue,
 		}
@@ -48,6 +58,13 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32) -> String {
 		query.push("wpsolr_sort", Some(SORT_BY[0]));
 	} else {
 		query.push("wpsolr_sort", Some(sort_by));
+		for (index, item) in filter_vec.iter().enumerate() {
+			let (filter_type, filter_value) = item;
+			query.push(
+				format!("wpsolr_fq[{}]", index),
+				Some(format!("{}:{}", filter_type, filter_value)),
+			);
+		}
 	}
 	query.push("wpsolr_page", Some(page.to_string().as_str()));
 

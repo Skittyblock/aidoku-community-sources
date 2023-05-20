@@ -6,52 +6,5 @@
 		"version": 1,
 		"url": "https://myreadingmanga.info/",
 		"nsfw": 2
-	},
-	"_languages": [
-		{
-			"code": "en"
-		},
-		{
-			"code": "ja"
-		},
-		{
-			"code": "ko"
-		},
-		{
-			"code": "es"
-		},
-		{
-			"code": "zh"
-		},
-		{
-			"code": "pt"
-		},
-		{
-			"code": "th"
-		},
-		{
-			"code": "fr"
-		},
-		{
-			"code": "vi"
-		},
-		{
-			"code": "id"
-		},
-		{
-			"code": "ru"
-		},
-		{
-			"code": "zh-Hant"
-		},
-		{
-			"code": "it"
-		},
-		{
-			"code": "de"
-		},
-		{
-			"code": "Others"
-		}
-	]
+	}
 }
