@@ -34,6 +34,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "astrascans"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "madara_template",
+]
+
+[[package]]
 name = "azoramanga"
 version = "0.1.0"
 dependencies = [
