@@ -1,0 +1,18 @@
+{
+	"info": {
+		"id": "en.mangabob",
+		"lang": "en",
+		"name": "MangaBob",
+		"version": 1,
+		"url": "https://mangabob.com",
+		"nsfw": 0
+	},
+	"listings": [
+		{
+			"name": "Trending"
+		},
+		{
+			"name": "Popular"
+		}
+	]
+}

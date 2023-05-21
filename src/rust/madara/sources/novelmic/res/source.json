@@ -1,0 +1,18 @@
+{
+	"info": {
+		"id": "en.novelmic",
+		"lang": "en",
+		"name": "NovelMic",
+		"version": 1,
+		"url": "https://novelmic.com",
+		"nsfw": 0
+	},
+	"listings": [
+		{
+			"name": "Trending"
+		},
+		{
+			"name": "Popular"
+		}
+	]
+}

@@ -3,6 +3,14 @@
 version = 3
 
 [[package]]
+name = "aasq"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "madara_template",
+]
+
+[[package]]
 name = "aidoku"
 version = "0.2.0"
 source = "git+https://github.com/Aidoku/aidoku-rs/#004bddabade7b24c58cf925b08f90dd093b00c9d"
@@ -31,6 +39,14 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn",
+]
+
+[[package]]
+name = "astrascans"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "madara_template",
 ]
 
 [[package]]
@@ -74,6 +90,14 @@ dependencies = [
 
 [[package]]
 name = "fecomic"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "madara_template",
+]
+
+[[package]]
+name = "firstkissmanga"
 version = "0.1.0"
 dependencies = [
  "aidoku",
@@ -150,6 +174,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "mangabob"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "madara_template",
+]
+
+[[package]]
 name = "mangascantrad"
 version = "0.1.0"
 dependencies = [
@@ -198,6 +230,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "manhwatop"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "madara_template",
+]
+
+[[package]]
 name = "mmscans"
 version = "0.1.0"
 dependencies = [
@@ -215,6 +255,14 @@ dependencies = [
 
 [[package]]
 name = "nightcomic"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "madara_template",
+]
+
+[[package]]
+name = "novelmic"
 version = "0.1.0"
 dependencies = [
  "aidoku",
