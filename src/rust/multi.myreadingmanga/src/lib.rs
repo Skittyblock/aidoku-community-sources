@@ -36,7 +36,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 #[get_page_list]
 fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 	let mut url = format!("{}{}/", BASE_URL, manga_id);
-	if chapter_id.as_str() != "1" {
+	if chapter_id != "1" {
 		url.push_str(format!("{}/", chapter_id).as_str());
 	}
 	let html = request_get(url).html()?;
