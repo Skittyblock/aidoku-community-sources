@@ -3,6 +3,14 @@
 version = 3
 
 [[package]]
+name = "aasq"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "madara_template",
+]
+
+[[package]]
 name = "aidoku"
 version = "0.2.0"
 source = "git+https://github.com/Aidoku/aidoku-rs/#004bddabade7b24c58cf925b08f90dd093b00c9d"
