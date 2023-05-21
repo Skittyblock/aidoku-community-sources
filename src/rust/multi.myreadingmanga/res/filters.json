@@ -266,11 +266,6 @@
 			},
 			{
 				"type": "check",
-				"name": "Video",
-				"id": "categories"
-			},
-			{
-				"type": "check",
 				"name": "Osomatsu-san dj",
 				"id": "categories"
 			},
@@ -292,6 +287,11 @@
 			{
 				"type": "check",
 				"name": "Jujutsu Kaisen dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Naruto dj",
 				"id": "categories"
 			}
 		]
