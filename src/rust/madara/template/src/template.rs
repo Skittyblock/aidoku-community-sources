@@ -250,6 +250,7 @@ pub fn get_series_page(data: MadaraSiteData, listing: &str, page: i32) -> Result
 
 	let req = Request::new(url.as_str(), HttpMethod::Post)
 		.body(body_content.as_bytes())
+		.header("Referer", &data.base_url)
 		.header("Content-Type", "application/x-www-form-urlencoded");
 
 	let html = req.html()?;
@@ -376,6 +377,7 @@ pub fn get_chapter_list(manga_id: String, data: MadaraSiteData) -> Result<Vec<Ch
 
 	let req = Request::new(url.as_str(), HttpMethod::Post)
 		.body(body_content.as_bytes())
+		.header("Referer", &data.base_url)
 		.header("Content-Type", "application/x-www-form-urlencoded");
 
 	let html = req.html()?;
