@@ -11,7 +11,9 @@
 		"options": [
 			"Any",
 			"Completed",
-			"Ongoing"
+			"Ongoing",
+			"On Hiatus",
+			"Canceled"
 		]
 	},
 	{
