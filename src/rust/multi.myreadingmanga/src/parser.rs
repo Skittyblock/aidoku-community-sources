@@ -22,7 +22,7 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32) -> String {
 	let mut query = QueryParameters::new();
 
 	let mut is_searching = false;
-	let mut sort_by = SORT_BY[1];
+	let mut sort_by = 1;
 	let mut filter_vec: Vec<(String, String)> = Vec::new();
 
 	for filter in filters {
@@ -35,8 +35,7 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32) -> String {
 			}
 			FilterType::Sort => {
 				if let Ok(value) = filter.value.as_object() {
-					let index = value.get("index").as_int().unwrap_or(1) as usize;
-					sort_by = SORT_BY[index];
+					sort_by = value.get("index").as_int().unwrap_or(1) as u8;
 				}
 			}
 			FilterType::Check => {
@@ -57,7 +56,7 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32) -> String {
 	if is_searching {
 		query.push("wpsolr_sort", Some(SORT_BY[0]));
 	} else {
-		query.push("wpsolr_sort", Some(sort_by));
+		query.push("wpsolr_sort", Some(SORT_BY[sort_by as usize]));
 		for (index, item) in filter_vec.iter().enumerate() {
 			let (filter_type, filter_value) = item;
 			query.push(
@@ -85,6 +84,8 @@ pub fn get_manga_list(html: Node, page: i32) -> Result<MangaPageResult> {
 		let manga_item = item.as_node()?;
 		let title_node = manga_item.select("a");
 
+		// Skip videos
+		// There are some exceptions
 		let title = title_node.text().read();
 		if !title.starts_with('[') {
 			continue;
@@ -128,8 +129,12 @@ pub fn get_manga_details(html: Node, id: String) -> Result<Manga> {
 
 	let mut description_vec: Vec<String> = Vec::new();
 	for item in html.select("div.entry-content > p").array() {
-		let p = item.as_node()?.text().read().to_lowercase();
-		if p.starts_with("chapter") {
+		let p = item.as_node()?.text().read();
+		let is_description = p
+			.replace(|char: char| !char.is_ascii_alphanumeric(), "")
+			.to_lowercase()
+			.starts_with("chapter");
+		if is_description {
 			break;
 		}
 		description_vec.push(p);
