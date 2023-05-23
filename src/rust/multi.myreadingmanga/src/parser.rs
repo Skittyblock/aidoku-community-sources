@@ -22,7 +22,7 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32) -> String {
 	let mut query = QueryParameters::new();
 
 	let mut is_searching = false;
-	let mut sort_by = 1;
+	let mut sort_by_index = 1;
 	let mut filter_vec: Vec<(String, String)> = Vec::new();
 
 	for filter in filters {
@@ -35,7 +35,7 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32) -> String {
 			}
 			FilterType::Sort => {
 				if let Ok(value) = filter.value.as_object() {
-					sort_by = value.get("index").as_int().unwrap_or(1) as u8;
+					sort_by_index = value.get("index").as_int().unwrap_or(1) as u8;
 				}
 			}
 			FilterType::Check => {
@@ -56,7 +56,7 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32) -> String {
 	if is_searching {
 		query.push("wpsolr_sort", Some(SORT_BY[0]));
 	} else {
-		query.push("wpsolr_sort", Some(SORT_BY[sort_by as usize]));
+		query.push("wpsolr_sort", Some(SORT_BY[sort_by_index as usize]));
 		for (index, item) in filter_vec.iter().enumerate() {
 			let (filter_type, filter_value) = item;
 			query.push(
