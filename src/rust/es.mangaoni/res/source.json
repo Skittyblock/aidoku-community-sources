@@ -1,0 +1,14 @@
+{
+	"info": {
+		"id": "es.mangaoni",
+		"lang": "es",
+		"name": "MangaOni",
+		"version": 2,
+		"url": "https://manga-oni.com/"
+	},
+	"listings": [
+    { "name": "New" },
+		{ "name": "Popular" },
+		{ "name": "Latest" }
+	]
+}
