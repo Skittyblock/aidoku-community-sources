@@ -187,6 +187,7 @@ pub fn get_manga_details(html: Node, id: String) -> Result<Manga> {
 		description = description
 			.substring_before_last("</")
 			.expect("description")
+			.trim()
 			.to_string();
 	}
 
