@@ -3,7 +3,7 @@ use aidoku::{
 	helpers::uri::{encode_uri, QueryParameters},
 	prelude::{format, println},
 	std::{html::Node, net::Request, String, ValueRef, Vec},
-	Chapter, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
+	Chapter, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus, Page,
 };
 
 extern crate alloc;
@@ -71,7 +71,7 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32) -> String {
 		};
 		// 1-{}-{}-{}-{}-{}-{type}-{viewing_permission}
 		// type=[1: Manga, 2: Novel]
-		// Login support is needed to view manga for VIP members
+		// Login support is required to view manga for VIP members
 		// viewing_permission=[0: General, 1: VIP, 2: All]
 		url.push_str(
 			format!(
@@ -126,7 +126,11 @@ pub fn get_manga_list(json: ValueRef) -> Result<MangaPageResult> {
 			.replace('&', "、");
 		let description = manga_item.get("desc").as_string()?.read();
 		let url = format!("{}{}index/id/{}", BASE_URL, HTML_URL, id);
-		let categories: Vec<String> = keywords.split(',').map(|tag| tag.to_string()).collect();
+		let categories: Vec<String> = keywords
+			.split(',')
+			.filter(|tag| !tag.is_empty())
+			.map(|tag| tag.to_string())
+			.collect();
 		let status = match manga_item.get("mhstatus").as_int()? {
 			0 => MangaStatus::Ongoing,
 			1 => MangaStatus::Completed,
@@ -178,8 +182,18 @@ pub fn get_manga_details(html: Node, id: String) -> Result<Manga> {
 	let url = format!("{}{}index/id/{}", BASE_URL, HTML_URL, id);
 
 	let mut categories: Vec<String> = Vec::new();
+	let mut nsfw = MangaContentRating::Nsfw;
 	for item in html.select("a.tag > span").array() {
 		let tag = item.as_node()?.text().read();
+
+		if tag.is_empty() {
+			continue;
+		}
+
+		if tag == "清水" {
+			nsfw = MangaContentRating::Safe;
+		}
+
 		categories.push(tag);
 	}
 
@@ -187,11 +201,6 @@ pub fn get_manga_details(html: Node, id: String) -> Result<Manga> {
 		"连载中" => MangaStatus::Ongoing,
 		"完结" => MangaStatus::Completed,
 		_ => MangaStatus::Unknown,
-	};
-	let nsfw = if categories.contains(&"清水".to_string()) {
-		MangaContentRating::Safe
-	} else {
-		MangaContentRating::Nsfw
 	};
 
 	Ok(Manga {
@@ -210,10 +219,10 @@ pub fn get_manga_details(html: Node, id: String) -> Result<Manga> {
 }
 
 pub fn get_chapter_list(json: ValueRef) -> Result<Vec<Chapter>> {
-	let mut chapters: Vec<Chapter> = Vec::new();
-
 	let object = json.as_object()?;
 	let result = object.get("result").as_object()?;
+
+	let mut chapters: Vec<Chapter> = Vec::new();
 
 	for (index, item) in result.get("list").as_array()?.rev().enumerate() {
 		let manga_item = item.as_object()?;
@@ -237,4 +246,24 @@ pub fn get_chapter_list(json: ValueRef) -> Result<Vec<Chapter>> {
 	}
 
 	Ok(chapters)
+}
+
+pub fn get_page_list(html: Node) -> Result<Vec<Page>> {
+	let mut pages: Vec<Page> = Vec::new();
+
+	for (index, item) in html.select("img.lazy[id]").array().enumerate() {
+		let url = format!(
+			"{}{}",
+			BASE_URL,
+			item.as_node()?.attr("data-original").read().trim()
+		);
+
+		pages.push(Page {
+			index: index as i32,
+			url,
+			..Default::default()
+		});
+	}
+
+	Ok(pages)
 }
