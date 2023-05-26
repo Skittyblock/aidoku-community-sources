@@ -7,20 +7,12 @@ use aidoku::{
 };
 
 mod parser;
-use parser::{get_filtered_url, request_get, BASE_URL, HTML_URL, USER_AGENT};
+use parser::{get_filtered_url, request_get, API_URL, BASE_URL, HTML_URL, USER_AGENT};
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	let url = get_filtered_url(filters, page);
-	let json = serde_json::from_str(
-		request_get(url)
-			.html()?
-			.select("body")
-			.text()
-			.read()
-			.as_str(),
-	)
-	.expect("json");
+	let json = request_get(url).json()?;
 
 	parser::get_manga_list(json)
 }
@@ -34,8 +26,11 @@ fn get_manga_details(id: String) -> Result<Manga> {
 }
 
 #[get_chapter_list]
-fn get_chapter_list(_id: String) -> Result<Vec<Chapter>> {
-	todo!()
+fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
+	let url = format!("{}{}chapter_list/tp/{}-0-0-10", BASE_URL, API_URL, id);
+	let json = request_get(url).json()?;
+
+	parser::get_chapter_list(json)
 }
 
 #[get_page_list]

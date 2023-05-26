@@ -2,17 +2,15 @@ use aidoku::{
 	error::Result,
 	helpers::uri::{encode_uri, QueryParameters},
 	prelude::{format, println},
-	std::{html::Node, net::Request, String, Vec},
-	Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
+	std::{html::Node, net::Request, String, ValueRef, Vec},
+	Chapter, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
 };
 
 extern crate alloc;
 use alloc::string::ToString;
 
-use serde_json::Value;
-
 pub const BASE_URL: &str = "https://boylove.cc";
-const API_URL: &str = "/home/api/";
+pub const API_URL: &str = "/home/api/";
 pub const HTML_URL: &str = "/home/book/";
 pub const USER_AGENT: &str = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36";
 const FILTER_STATUS: [u8; 3] = [2, 0, 1];
@@ -96,33 +94,40 @@ pub fn request_get(url: String) -> Request {
 		.header("User-Agent", USER_AGENT)
 }
 
-pub fn get_manga_list(json: Value) -> Result<MangaPageResult> {
-	let result = json["result"].clone();
+pub fn get_manga_list(json: ValueRef) -> Result<MangaPageResult> {
+	let object = json.as_object()?;
+	let result = object.get("result").as_object()?;
 
 	let mut manga: Vec<Manga> = Vec::new();
 
-	for item in result["list"].as_array().expect("manga arr") {
-		// if item["lanmu_id"].as_u64().unwrap_or(0) == 5 {
+	for item in result.get("list").as_array()? {
+		let manga_item = item.as_object()?;
+
+		// if manga_item.get("lanmu_id").as_int().unwrap_or(0) == 5 {
 		// 	continue;
 		// }
 		// There's an ad whose lanmu_id is not 5
-		let keywords = item["keyword"].as_str().expect("keyword");
+		let keywords = manga_item.get("keyword").as_string()?.read();
 		if keywords.contains("公告") {
 			continue;
 		}
 
-		let id = item["id"].as_u64().expect("id").to_string();
+		let id = manga_item.get("id").as_int()?.to_string();
 		let cover = format!(
 			"{}{}",
 			BASE_URL,
-			item["image"].as_str().expect("image").to_string()
+			manga_item.get("image").as_string()?.read()
 		);
-		let title = item["title"].as_str().expect("title").to_string();
-		let artist = item["auther"].as_str().expect("auther").to_string();
-		let description = item["desc"].as_str().expect("desc").to_string();
+		let title = manga_item.get("title").as_string()?.read();
+		let artist = manga_item
+			.get("auther")
+			.as_string()?
+			.read()
+			.replace('&', "、");
+		let description = manga_item.get("desc").as_string()?.read();
 		let url = format!("{}{}index/id/{}", BASE_URL, HTML_URL, id);
 		let categories: Vec<String> = keywords.split(',').map(|tag| tag.to_string()).collect();
-		let status = match item["mhstatus"].as_u64().expect("mhstatus") {
+		let status = match manga_item.get("mhstatus").as_int()? {
 			0 => MangaStatus::Ongoing,
 			1 => MangaStatus::Completed,
 			_ => MangaStatus::Unknown,
@@ -148,7 +153,7 @@ pub fn get_manga_list(json: Value) -> Result<MangaPageResult> {
 		})
 	}
 
-	let has_more = !result["lastPage"].as_bool().expect("lastPage");
+	let has_more = !result.get("lastPage").as_bool()?;
 
 	Ok(MangaPageResult { manga, has_more })
 }
@@ -164,7 +169,12 @@ pub fn get_manga_details(html: Node, id: String) -> Result<Manga> {
 	}
 	let artist = artist_vec.join("、");
 
-	let description = html.select("span.detail-text").text().read();
+	let description = html
+		.select("span.detail-text")
+		.html()
+		.read()
+		.replace("<br> ", "\n")
+		.replace("<br>", "\n");
 	let url = format!("{}{}index/id/{}", BASE_URL, HTML_URL, id);
 
 	let mut categories: Vec<String> = Vec::new();
@@ -197,4 +207,34 @@ pub fn get_manga_details(html: Node, id: String) -> Result<Manga> {
 		nsfw,
 		..Default::default()
 	})
+}
+
+pub fn get_chapter_list(json: ValueRef) -> Result<Vec<Chapter>> {
+	let mut chapters: Vec<Chapter> = Vec::new();
+
+	let object = json.as_object()?;
+	let result = object.get("result").as_object()?;
+
+	for (index, item) in result.get("list").as_array()?.rev().enumerate() {
+		let manga_item = item.as_object()?;
+
+		let id = manga_item.get("id").as_int()?.to_string();
+		let title = manga_item.get("title").as_string()?.read();
+		let chapter = (index + 1) as f32;
+		let url = format!("{}{}capter/id/{}", BASE_URL, HTML_URL, id);
+
+		chapters.insert(
+			0,
+			Chapter {
+				id,
+				title,
+				chapter,
+				url,
+				lang: "zh".to_string(),
+				..Default::default()
+			},
+		);
+	}
+
+	Ok(chapters)
 }
