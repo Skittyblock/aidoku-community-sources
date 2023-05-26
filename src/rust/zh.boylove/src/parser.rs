@@ -1,9 +1,13 @@
 use aidoku::{
 	error::Result,
-	helpers::uri::{encode_uri, QueryParameters},
-	prelude::{format, println},
+	helpers::{
+		substring::Substring,
+		uri::{encode_uri, QueryParameters},
+	},
+	prelude::format,
 	std::{html::Node, net::Request, String, ValueRef, Vec},
-	Chapter, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus, Page,
+	Chapter, DeepLink, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
+	Page,
 };
 
 extern crate alloc;
@@ -173,12 +177,19 @@ pub fn get_manga_details(html: Node, id: String) -> Result<Manga> {
 	}
 	let artist = artist_vec.join("、");
 
-	let description = html
+	let mut description = html
 		.select("span.detail-text")
 		.html()
 		.read()
 		.replace("<br> ", "\n")
 		.replace("<br>", "\n");
+	if description.contains("</") {
+		description = description
+			.substring_before_last("</")
+			.expect("description")
+			.to_string();
+	}
+
 	let url = format!("{}{}index/id/{}", BASE_URL, HTML_URL, id);
 
 	let mut categories: Vec<String> = Vec::new();
@@ -266,4 +277,45 @@ pub fn get_page_list(html: Node) -> Result<Vec<Page>> {
 	}
 
 	Ok(pages)
+}
+
+pub fn parse_deep_link(url: String) -> Result<DeepLink> {
+	if !url.contains("/id/") {
+		return Ok(DeepLink::default());
+	}
+
+	if url.contains("/index/") {
+		let id = url.substring_after_last("/").expect("manga id").to_string();
+
+		return Ok(DeepLink {
+			manga: Some(crate::get_manga_details(id)?),
+			chapter: None,
+		});
+	}
+
+	if url.contains("/capter/") {
+		let html = request_get(url.clone()).html()?;
+		let manga_id = html
+			.select("a.icon-only.link.back")
+			.attr("href")
+			.read()
+			.substring_after_last("/")
+			.expect("manga id")
+			.to_string();
+
+		let chapter_id = url
+			.substring_after_last("/")
+			.expect("chapter id")
+			.to_string();
+
+		return Ok(DeepLink {
+			manga: Some(crate::get_manga_details(manga_id)?),
+			chapter: Some(Chapter {
+				id: chapter_id,
+				..Default::default()
+			}),
+		});
+	}
+
+	Ok(DeepLink::default())
 }

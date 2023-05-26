@@ -7,7 +7,9 @@ use aidoku::{
 };
 
 mod parser;
-use parser::{get_filtered_url, request_get, API_URL, BASE_URL, HTML_URL, USER_AGENT};
+use parser::{
+	get_filtered_url, parse_deep_link, request_get, API_URL, BASE_URL, HTML_URL, USER_AGENT,
+};
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
@@ -49,6 +51,6 @@ fn modify_image_request(request: Request) {
 }
 
 #[handle_url]
-fn handle_url(_url: String) -> Result<DeepLink> {
-	todo!()
+fn handle_url(url: String) -> Result<DeepLink> {
+	parse_deep_link(url)
 }
