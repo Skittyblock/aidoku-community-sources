@@ -2,7 +2,7 @@ use aidoku::{
 	error::Result,
 	helpers::uri::{encode_uri, QueryParameters},
 	prelude::{format, println},
-	std::{net::Request, String, Vec},
+	std::{html::Node, net::Request, String, Vec},
 	Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
 };
 
@@ -13,7 +13,7 @@ use serde_json::Value;
 
 pub const BASE_URL: &str = "https://boylove.cc";
 const API_URL: &str = "/home/api/";
-const HTML_URL: &str = "/home/book/";
+pub const HTML_URL: &str = "/home/book/";
 pub const USER_AGENT: &str = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36";
 const FILTER_STATUS: [u8; 3] = [2, 0, 1];
 
@@ -151,4 +151,50 @@ pub fn get_manga_list(json: Value) -> Result<MangaPageResult> {
 	let has_more = !result["lastPage"].as_bool().expect("lastPage");
 
 	Ok(MangaPageResult { manga, has_more })
+}
+
+pub fn get_manga_details(html: Node, id: String) -> Result<Manga> {
+	let cover = html.select("a.play").attr("abs:data-original").read();
+	let title = html.select("div.title > h1").text().read();
+
+	let mut artist_vec: Vec<String> = Vec::new();
+	for item in html.select("p.data:contains(作者：) > a").array() {
+		let artist_str = item.as_node()?.text().read();
+		artist_vec.push(artist_str);
+	}
+	let artist = artist_vec.join("、");
+
+	let description = html.select("span.detail-text").text().read();
+	let url = format!("{}{}index/id/{}", BASE_URL, HTML_URL, id);
+
+	let mut categories: Vec<String> = Vec::new();
+	for item in html.select("a.tag > span").array() {
+		let tag = item.as_node()?.text().read();
+		categories.push(tag);
+	}
+
+	let status = match html.select("p.data").first().text().read().as_str() {
+		"连载中" => MangaStatus::Ongoing,
+		"完结" => MangaStatus::Completed,
+		_ => MangaStatus::Unknown,
+	};
+	let nsfw = if categories.contains(&"清水".to_string()) {
+		MangaContentRating::Safe
+	} else {
+		MangaContentRating::Nsfw
+	};
+
+	Ok(Manga {
+		id,
+		cover,
+		title,
+		author: artist.clone(),
+		artist,
+		description,
+		url,
+		categories,
+		status,
+		nsfw,
+		..Default::default()
+	})
 }
