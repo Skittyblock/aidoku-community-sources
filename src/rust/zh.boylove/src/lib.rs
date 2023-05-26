@@ -3,19 +3,26 @@ use aidoku::{
 	error::Result,
 	prelude::*,
 	std::{net::Request, String, Vec},
-	Chapter, DeepLink, Filter, Listing, Manga, MangaPageResult, Page,
+	Chapter, DeepLink, Filter, Manga, MangaPageResult, Page,
 };
 
 mod parser;
+use parser::{get_filtered_url, request_get, BASE_URL, USER_AGENT};
 
 #[get_manga_list]
-fn get_manga_list(_filters: Vec<Filter>, _page: i32) -> Result<MangaPageResult> {
-	todo!()
-}
+fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
+	let url = get_filtered_url(filters, page);
+	let json = serde_json::from_str(
+		request_get(url)
+			.html()?
+			.select("body")
+			.text()
+			.read()
+			.as_str(),
+	)
+	.expect("json");
 
-#[get_manga_listing]
-fn get_manga_listing(_listing: Listing, _page: i32) -> Result<MangaPageResult> {
-	todo!()
+	parser::get_manga_list(json)
 }
 
 #[get_manga_details]
@@ -34,8 +41,10 @@ fn get_page_list(_manga_id: String, _chapter_id: String) -> Result<Vec<Page>> {
 }
 
 #[modify_image_request]
-fn modify_image_request(_request: Request) {
-	todo!()
+fn modify_image_request(request: Request) {
+	request
+		.header("Referer", BASE_URL)
+		.header("User-Agent", USER_AGENT);
 }
 
 #[handle_url]
