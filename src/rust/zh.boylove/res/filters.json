@@ -1,0 +1,102 @@
+[
+	{
+		"type": "title"
+	},
+	{
+		"type": "select",
+		"name": "連載狀態",
+		"options": [
+			"全部",
+			"連載中",
+			"已完結"
+		]
+	},
+	{
+		"type": "select",
+		"name": "內容分級",
+		"options": [
+			"全部",
+			"清水",
+			"有肉"
+		]
+	},
+	{
+		"type": "group",
+		"name": "標籤",
+		"filters": [
+			{
+				"type": "genre",
+				"name": "日漫"
+			},
+			{
+				"type": "genre",
+				"name": "高H"
+			},
+			{
+				"type": "genre",
+				"name": "韓漫"
+			},
+			{
+				"type": "genre",
+				"name": "甜文"
+			},
+			{
+				"type": "genre",
+				"name": "年下攻"
+			},
+			{
+				"type": "genre",
+				"name": "校園"
+			},
+			{
+				"type": "genre",
+				"name": "腹黑攻"
+			},
+			{
+				"type": "genre",
+				"name": "健氣受"
+			},
+			{
+				"type": "genre",
+				"name": "誘受"
+			},
+			{
+				"type": "genre",
+				"name": "可愛受"
+			},
+			{
+				"type": "genre",
+				"name": "傲嬌受"
+			},
+			{
+				"type": "genre",
+				"name": "美人受"
+			},
+			{
+				"type": "genre",
+				"name": "同人"
+			},
+			{
+				"type": "genre",
+				"name": "青梅竹馬"
+			},
+			{
+				"type": "genre",
+				"name": "淫蕩受"
+			}
+		]
+	},
+	{
+		"type": "sort",
+		"name": "排序依據",
+		"canAscend": false,
+		"options": [
+			"人氣",
+			"最新"
+		],
+		"default": {
+			"index": 1,
+			"ascending": false
+		}
+	}
+]
