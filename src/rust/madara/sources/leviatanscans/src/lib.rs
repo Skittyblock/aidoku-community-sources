@@ -10,27 +10,31 @@ use madara_template::template;
 fn get_data() -> template::MadaraSiteData {
 	let lang_code = helper::get_lang_code();
 	let base_url;
-	let source_path;
+	let description_selector;
 
 	match lang_code.as_deref() {
 		Some("es") => {
 			base_url = String::from("https://es.leviatanscans.com");
-			source_path = String::from("manga");
+			description_selector =
+				String::from("div.summary_content div.post-content div.post-content_item div p");
 		}
+
+		// LeviatanScans english site uses Data URI images for chapters that are
+		// chopped up into 4 parts, 2 vertically and 2 horizontally.
+		// There is no way to stitch these images together in Aidoku, so effectively
+		// the english site is not usable for the foreseeable future.
 		// Default to English
 		_ => {
 			base_url = String::from("https://en.leviatanscans.com");
-			source_path = String::from("home/manga");
+			description_selector =
+				String::from("div.summary_content div.post-content div.manga-summary span");
 		}
 	}
 
 	let data: template::MadaraSiteData = template::MadaraSiteData {
 		base_url,
-		source_path,
+		description_selector,
 		chapter_selector: String::from("li.wp-manga-chapter.free-chap"),
-		description_selector: String::from(
-			"div.summary_content div.post-content div.post-content_item div p",
-		),
 		alt_ajax: true,
 		..Default::default()
 	};
