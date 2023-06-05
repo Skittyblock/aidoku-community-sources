@@ -1,3 +1,4 @@
+rm -f package.aix
 cargo +nightly build --release
 mkdir -p target/wasm32-unknown-unknown/release/Payload
 cp res/* target/wasm32-unknown-unknown/release/Payload
