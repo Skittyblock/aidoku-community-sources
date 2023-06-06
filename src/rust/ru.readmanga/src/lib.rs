@@ -15,7 +15,7 @@ extern crate alloc;
 use alloc::string::ToString;
 
 #[get_manga_list]
-fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
+pub fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	let url = parser::get_filtered_url(filters, page);
 	let html = Request::new(url.as_str(), HttpMethod::Get)
 		.html()
@@ -24,7 +24,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 }
 
 #[get_manga_listing]
-fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
+pub fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 	let url_query = match listing.name.as_str() {
 		"Latest" => "latest",
 		"Updated Rating" => "rating",
@@ -42,7 +42,7 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 }
 
 #[get_manga_details]
-fn get_manga_details(manga_id: String) -> Result<Manga> {
+pub fn get_manga_details(manga_id: String) -> Result<Manga> {
 	let url = format!("https://www.fanfox.net/manga/{}", &manga_id);
 	let html = Request::new(url.as_str(), HttpMethod::Get)
 		.html()
@@ -51,7 +51,7 @@ fn get_manga_details(manga_id: String) -> Result<Manga> {
 }
 
 #[get_chapter_list]
-fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
+pub fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 	let url = format!("https://www.fanfox.net/manga/{}", &manga_id);
 	let html = Request::new(url.as_str(), HttpMethod::Get)
 		.header("Cookie", "isAdult=1")
@@ -61,7 +61,7 @@ fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 }
 
 #[get_page_list]
-fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
+pub fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 	let url = format!("https://m.fanfox.net/roll_manga/{}/1.html", chapter_id);
 	let html = Request::new(url.as_str(), HttpMethod::Get)
 		.header("Cookie", "readway=2")
