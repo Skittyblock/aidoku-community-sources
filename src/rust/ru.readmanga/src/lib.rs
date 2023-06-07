@@ -16,11 +16,17 @@ use alloc::string::ToString;
 
 #[get_manga_list]
 pub fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
-	let url = parser::get_filtered_url_mangafox(filters, page);
-	let html = Request::new(url.as_str(), HttpMethod::Get)
+	let url_or_error = parser::get_filtered_url(filters.clone(), page);
+	println!("filtered url: {:?}", url_or_error);
+	let result = url_or_error
+		.and_then(|url| Request::new(url, HttpMethod::Get).html())
+		.and_then(|html| parser::parse_directory(html));
+
+	let mangafox_url = parser::get_filtered_url_mangafox(filters, page);
+	let mangafox_html = Request::new(mangafox_url.as_str(), HttpMethod::Get)
 		.html()
 		.expect("");
-	parser::parse_directory_mangafox(html)
+	parser::parse_directory_mangafox(mangafox_html)
 }
 
 #[get_manga_listing]

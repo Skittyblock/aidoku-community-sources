@@ -1,5 +1,5 @@
 use aidoku::{
-	error::Result,
+	error::{AidokuError, AidokuErrorKind, Result},
 	helpers::{substring::Substring, uri::encode_uri},
 	prelude::*,
 	std::{html::Node, String, Vec},
@@ -8,7 +8,13 @@ use aidoku::{
 };
 
 extern crate alloc;
-use alloc::string::ToString;
+use alloc::{boxed::Box, string::ToString};
+
+pub fn parse_directory(html: Node) -> Result<MangaPageResult> {
+	Err(AidokuError {
+		reason: AidokuErrorKind::Unimplemented,
+	})
+}
 
 pub fn parse_directory_mangafox(html: Node) -> Result<MangaPageResult> {
 	let mut result: Vec<Manga> = Vec::new();
@@ -199,6 +205,39 @@ pub fn get_page_list_mangafox(html: Node) -> Result<Vec<Page>> {
 	}
 
 	Ok(pages)
+}
+
+pub fn get_filtered_url(filters: Vec<Filter>, page: i32) -> Result<String> {
+	if page > 1 {
+		return Err(AidokuError {
+			reason: AidokuErrorKind::DefaultNotFound,
+		});
+	}
+
+	const BASE_SEARCH_URL: &str = "https://readmanga.live/search/advancedResults?";
+
+	fn get_handler(operation: &'static str) -> Box<dyn Fn(AidokuError) -> AidokuError> {
+		return Box::new(move |err: AidokuError| {
+			println!("Error {:?} while {}", err.reason, operation);
+			err
+		});
+	}
+
+	let filter_parts: Vec<_> = filters
+		.iter()
+		.filter_map(|filter| match filter.kind {
+			FilterType::Title => filter
+				.value
+				.clone()
+				.as_string()
+				.map_err(get_handler("casting to string"))
+				.ok()
+				.map(|title| format!("q={}", encode_uri(title.read()))),
+			_ => None,
+		})
+		.collect();
+
+	Ok(format!("{}{}", BASE_SEARCH_URL, filter_parts.join("&")))
 }
 
 pub fn get_filtered_url_mangafox(filters: Vec<Filter>, page: i32) -> String {
