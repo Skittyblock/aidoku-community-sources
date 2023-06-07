@@ -16,11 +16,11 @@ use alloc::string::ToString;
 
 #[get_manga_list]
 pub fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
-	let url = parser::get_filtered_url(filters, page);
+	let url = parser::get_filtered_url_mangafox(filters, page);
 	let html = Request::new(url.as_str(), HttpMethod::Get)
 		.html()
 		.expect("");
-	parser::parse_directory(html)
+	parser::parse_directory_mangafox(html)
 }
 
 #[get_manga_listing]
@@ -38,7 +38,7 @@ pub fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult>
 	let html = Request::new(url.as_str(), HttpMethod::Get)
 		.html()
 		.expect("");
-	parser::parse_directory(html)
+	parser::parse_directory_mangafox(html)
 }
 
 #[get_manga_details]
@@ -47,7 +47,7 @@ pub fn get_manga_details(manga_id: String) -> Result<Manga> {
 	let html = Request::new(url.as_str(), HttpMethod::Get)
 		.html()
 		.expect("");
-	parser::parse_manga(html, manga_id)
+	parser::parse_manga_mangafox(html, manga_id)
 }
 
 #[get_chapter_list]
@@ -57,7 +57,7 @@ pub fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 		.header("Cookie", "isAdult=1")
 		.html()
 		.expect("");
-	parser::parse_chapters(html)
+	parser::parse_chapters_mangafox(html)
 }
 
 #[get_page_list]
@@ -67,7 +67,7 @@ pub fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>>
 		.header("Cookie", "readway=2")
 		.html()
 		.expect("");
-	parser::get_page_list(html)
+	parser::get_page_list_mangafox(html)
 }
 
 #[modify_image_request]
@@ -77,7 +77,7 @@ pub fn modify_image_request(request: Request) {
 
 #[handle_url]
 pub fn handle_url(url: String) -> Result<DeepLink> {
-	let parsed_manga_id = parser::parse_incoming_url(url);
+	let parsed_manga_id = parser::parse_incoming_url_mangafox(url);
 
 	Ok(DeepLink {
 		manga: Some(get_manga_details(parsed_manga_id)?),

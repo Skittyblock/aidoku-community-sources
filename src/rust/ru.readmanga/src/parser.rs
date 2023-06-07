@@ -10,9 +10,9 @@ use aidoku::{
 extern crate alloc;
 use alloc::string::ToString;
 
-pub fn parse_directory(html: Node) -> Result<MangaPageResult> {
+pub fn parse_directory_mangafox(html: Node) -> Result<MangaPageResult> {
 	let mut result: Vec<Manga> = Vec::new();
-	let has_more: bool = !is_last_page(html.clone());
+	let has_more: bool = !is_last_page_mangafox(html.clone());
 
 	for page in html.select("ul.line li").array() {
 		let obj = page.as_node().expect("html array not an array of nodes");
@@ -42,7 +42,7 @@ pub fn parse_directory(html: Node) -> Result<MangaPageResult> {
 	})
 }
 
-pub fn parse_manga(obj: Node, id: String) -> Result<Manga> {
+pub fn parse_manga_mangafox(obj: Node, id: String) -> Result<Manga> {
 	let cover = obj.select(".detail-info-cover-img").attr("src").read();
 	let title = obj
 		.select("span.detail-info-right-title-font")
@@ -104,7 +104,7 @@ pub fn parse_manga(obj: Node, id: String) -> Result<Manga> {
 	})
 }
 
-pub fn parse_chapters(obj: Node) -> Result<Vec<Chapter>> {
+pub fn parse_chapters_mangafox(obj: Node) -> Result<Vec<Chapter>> {
 	let mut chapters: Vec<Chapter> = Vec::new();
 
 	for item in obj.select(".detail-main-list li").array() {
@@ -174,7 +174,7 @@ pub fn parse_chapters(obj: Node) -> Result<Vec<Chapter>> {
 	Ok(chapters)
 }
 
-pub fn get_page_list(html: Node) -> Result<Vec<Page>> {
+pub fn get_page_list_mangafox(html: Node) -> Result<Vec<Page>> {
 	// Unpacker script
 	// https://github.com/Skittyblock/aidoku-community-sources/commit/616199e0ccb3704c45438b9f863641e1aa0cfa19
 	let mut pages: Vec<Page> = Vec::new();
@@ -201,7 +201,7 @@ pub fn get_page_list(html: Node) -> Result<Vec<Page>> {
 	Ok(pages)
 }
 
-pub fn get_filtered_url(filters: Vec<Filter>, page: i32) -> String {
+pub fn get_filtered_url_mangafox(filters: Vec<Filter>, page: i32) -> String {
 	let mut is_searching = false;
 	let mut search_query = String::new();
 	let mut url = String::from("https://fanfox.net");
@@ -291,7 +291,7 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32) -> String {
 	encode_uri(url)
 }
 
-pub fn parse_incoming_url(url: String) -> String {
+pub fn parse_incoming_url_mangafox(url: String) -> String {
 	// https://fanfox.net/manga/solo_leveling
 	// https://fanfox.net/manga/solo_leveling/c183/1.html#ipg2
 	// https://m.fanfox.net/manga/chainsaw_man/
@@ -305,7 +305,7 @@ pub fn parse_incoming_url(url: String) -> String {
 	manga_id.to_string()
 }
 
-pub fn is_last_page(html: Node) -> bool {
+pub fn is_last_page_mangafox(html: Node) -> bool {
 	let length = &html.select("div.pager-list-left a").array().len();
 	for (index, page) in html.select("div.pager-list-left a").array().enumerate() {
 		let page_node = page.as_node().expect("Failed to get page node");
