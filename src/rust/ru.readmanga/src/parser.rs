@@ -10,7 +10,17 @@ use aidoku::{
 extern crate alloc;
 use alloc::{boxed::Box, string::ToString};
 
+use crate::wrappers::{debug, WNode};
+
 pub fn parse_directory(html: Node) -> Result<MangaPageResult> {
+	let html = WNode::new(html);
+	let nodes = html.select("div.tile");
+	debug!("{:?}", nodes);
+
+	nodes.into_iter().take(3).for_each(|n| {
+		debug!("{:?}", n);
+	});
+
 	Err(AidokuError {
 		reason: AidokuErrorKind::Unimplemented,
 	})

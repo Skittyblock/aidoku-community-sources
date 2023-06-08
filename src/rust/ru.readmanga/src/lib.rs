@@ -1,6 +1,9 @@
 #![no_std]
 #![feature(pattern)]
 
+mod parser;
+mod wrappers;
+
 use aidoku::{
 	error::Result,
 	prelude::*,
@@ -9,10 +12,10 @@ use aidoku::{
 	Chapter, DeepLink, Filter, Listing, Manga, MangaPageResult, Page,
 };
 
-mod parser;
-
 extern crate alloc;
 use alloc::string::ToString;
+
+use crate::wrappers::debug;
 
 #[get_manga_list]
 pub fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
@@ -21,6 +24,7 @@ pub fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult
 	let result = url_or_error
 		.and_then(|url| Request::new(url, HttpMethod::Get).html())
 		.and_then(|html| parser::parse_directory(html));
+	debug!("{:?}", result);
 
 	let mangafox_url = parser::get_filtered_url_mangafox(filters, page);
 	let mangafox_html = Request::new(mangafox_url.as_str(), HttpMethod::Get)
