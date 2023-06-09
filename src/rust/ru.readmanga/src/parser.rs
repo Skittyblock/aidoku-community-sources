@@ -41,10 +41,22 @@ pub fn parse_directory(html: Node) -> Result<MangaPageResult> {
 			let title = img_node.attr("title")?;
 			debug!("title: {title}");
 
+			let div_desc_node = node.select("div.desc").pop()?;
+
+			let div_tile_info_node = div_desc_node.select("div.tile-info").pop()?;
+			let a_person_link_nodes = div_tile_info_node.select("a.person-link");
+			let author = a_person_link_nodes
+				.iter()
+				.map(WNode::text)
+				.intersperse(", ".to_string())
+				.collect();
+			debug!("author: {:?}", author);
+
 			Some(Manga {
 				id,
 				cover,
 				title,
+				author,
 				..Default::default()
 			})
 		})

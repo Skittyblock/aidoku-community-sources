@@ -17,4 +17,7 @@ lto = true
 
 [dependencies]
 aidoku = { git = "https://github.com/Aidoku/aidoku-rs", features = ["helpers"] }
+itertools = { version = "0.10.5", default-features = false, features = [
+    "use_alloc",
+] }
 unpacker = { git = "https://github.com/beerpiss/unpacker.rs.git" }
