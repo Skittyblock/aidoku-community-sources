@@ -29,9 +29,9 @@ pub fn parse_directory(html: Node) -> Result<MangaPageResult> {
 			// debug!("div_img_node: {div_img_node:?}");
 
 			let id = {
-				let a_with_id_node = div_img_node.select("a.non-hover").pop()?;
-				// debug!("a_with_id_node: {a_with_id_node:?}");
-				a_with_id_node
+				let a_non_hover_node = div_img_node.select("a.non-hover").pop()?;
+				// debug!("a_non_hover_node: {a_non_hover_node:?}");
+				a_non_hover_node
 					.attr("href")?
 					.trim_start_matches('/')
 					.to_string()
@@ -57,18 +57,19 @@ pub fn parse_directory(html: Node) -> Result<MangaPageResult> {
 				.collect();
 			debug!("author: {author}");
 
-			let div_html_popover_holder = div_desc_node.select("div.html-popover-holder").pop()?;
+			let div_html_popover_holder_node =
+				div_desc_node.select("div.html-popover-holder").pop()?;
 
-			let div_manga_description = div_html_popover_holder
+			let div_manga_description_node = div_html_popover_holder_node
 				.select("div.manga-description")
 				.pop()?;
-			let description = div_manga_description.text();
+			let description = div_manga_description_node.text();
 			debug!("description: {description}");
 
 			let url = format!("{}/{}", BASE_URL, id);
 			debug!("url: {}", url);
 
-			let categories = div_html_popover_holder
+			let categories = div_html_popover_holder_node
 				.select("span.badge-light")
 				.iter()
 				.map(WNode::text)
@@ -77,8 +78,8 @@ pub fn parse_directory(html: Node) -> Result<MangaPageResult> {
 
 			// TODO: implement more correct status parsing
 			let status = {
-				if let [span] = &node.select("span.mangaTranslationCompleted")[..] {
-					if span.text() == "переведено" {
+				if let [span_node] = &node.select("span.mangaTranslationCompleted")[..] {
+					if span_node.text() == "переведено" {
 						MangaStatus::Completed
 					} else {
 						MangaStatus::Unknown
