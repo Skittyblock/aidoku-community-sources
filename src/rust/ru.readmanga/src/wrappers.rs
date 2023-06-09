@@ -1,4 +1,4 @@
-use aidoku::{prelude::*, std::html::Node};
+use aidoku::{helpers::substring::Substring, prelude::*, std::html::Node};
 use alloc::{string::String, vec::Vec};
 
 macro_rules! debug {
@@ -32,6 +32,30 @@ impl WNode {
 			res.push(WNode::new(node_res.unwrap()));
 		}
 		res
+	}
+
+	pub fn attr<T: AsRef<str>>(&self, attr: T) -> Option<String> {
+		let attributes_str = self
+			.repr
+			.substring_before(">")?
+			.substring_after("<")?
+			.split_once(" ")?
+			.1;
+
+		let attr_idx = attributes_str.find(attr.as_ref()).unwrap();
+		let val: String = attributes_str[attr_idx..]
+			.chars()
+			.skip_while(|c| c != &'=')
+			.skip_while(|c| c != &'"')
+			.skip(1)
+			.take_while(|c| c != &'"')
+			.collect();
+
+		if val.is_empty() {
+			None
+		} else {
+			Some(val)
+		}
 	}
 
 	fn to_node(&self) -> Node {
