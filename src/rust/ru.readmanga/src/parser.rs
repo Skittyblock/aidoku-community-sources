@@ -10,7 +10,12 @@ use aidoku::{
 extern crate alloc;
 use alloc::{boxed::Box, string::ToString};
 
+use const_format::formatcp;
+
 use crate::wrappers::{debug, WNode};
+
+const BASE_URL: &str = "https://readmanga.live";
+const BASE_SEARCH_URL: &str = formatcp!("{}/{}", BASE_URL, "search/advancedResults?");
 
 pub fn parse_directory(html: Node) -> Result<MangaPageResult> {
 	let html = WNode::from_node(html);
@@ -60,6 +65,9 @@ pub fn parse_directory(html: Node) -> Result<MangaPageResult> {
 			let description = div_manga_description.text();
 			debug!("description: {description}");
 
+			let url = format!("{}/{}", BASE_URL, id);
+			debug!("url: {}", url);
+
 			Some(Manga {
 				id,
 				cover,
@@ -67,6 +75,7 @@ pub fn parse_directory(html: Node) -> Result<MangaPageResult> {
 				author,
 				artist: "".to_string(),
 				description,
+				url,
 				..Default::default()
 			})
 		})
@@ -274,8 +283,6 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32) -> Result<String> {
 			reason: AidokuErrorKind::DefaultNotFound,
 		});
 	}
-
-	const BASE_SEARCH_URL: &str = "https://readmanga.live/search/advancedResults?";
 
 	fn get_handler(operation: &'static str) -> Box<dyn Fn(AidokuError) -> AidokuError> {
 		return Box::new(move |err: AidokuError| {
