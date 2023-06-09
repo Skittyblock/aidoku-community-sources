@@ -15,22 +15,31 @@ use crate::wrappers::{debug, WNode};
 pub fn parse_directory(html: Node) -> Result<MangaPageResult> {
 	let html = WNode::from_node(html);
 	let nodes = html.select("div.tile");
-	debug!("{:?}", nodes);
+	// debug!("{:?}", nodes);
 
 	let mangas: Vec<_> = nodes
 		.into_iter()
 		.filter_map(|node| {
-			let img_node = node.select("div.img").pop()?;
+			let div_img_node = node.select("div.img").pop()?;
+			// debug!("div_img_node: {div_img_node:?}");
 
 			let id = {
-				let a_with_id = img_node.select("a.non_hover").pop()?;
+				let a_with_id = div_img_node.select("a.non-hover").pop()?;
 				debug!("a_with_id: {a_with_id:?}");
 				a_with_id.attr("href")?.trim_start_matches('/').to_string()
 			};
-			println!("id: {id:?}");
+			debug!("id: {id}");
+
+			let cover = {
+				let img = div_img_node.select("img").pop()?;
+				debug!("img: {img:?}");
+				img.attr("original")?
+			};
+			debug!("cover: {cover}");
 
 			Some(Manga {
 				id,
+				cover,
 				..Default::default()
 			})
 		})
