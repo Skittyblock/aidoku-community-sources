@@ -75,6 +75,22 @@ pub fn parse_directory(html: Node) -> Result<MangaPageResult> {
 				.collect();
 			debug!("categories: {categories:?}");
 
+			// TODO: implement more correct status parsing
+			let status = {
+				if let [span] = &node.select("span.mangaTranslationCompleted")[..] {
+					if span.text() == "переведено" {
+						MangaStatus::Completed
+					} else {
+						MangaStatus::Unknown
+					}
+				} else if let [_] = &div_img_node.select("div.manga-updated")[..] {
+					MangaStatus::Ongoing
+				} else {
+					MangaStatus::Unknown
+				}
+			};
+			debug!("status: {status:?}");
+
 			Some(Manga {
 				id,
 				cover,
@@ -84,6 +100,7 @@ pub fn parse_directory(html: Node) -> Result<MangaPageResult> {
 				description,
 				url,
 				categories,
+				status,
 				..Default::default()
 			})
 		})
