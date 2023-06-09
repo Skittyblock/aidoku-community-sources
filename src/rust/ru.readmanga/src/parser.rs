@@ -50,13 +50,23 @@ pub fn parse_directory(html: Node) -> Result<MangaPageResult> {
 				.map(WNode::text)
 				.intersperse(", ".to_string())
 				.collect();
-			debug!("author: {:?}", author);
+			debug!("author: {author}");
+
+			let div_html_popover_holder = div_desc_node.select("div.html-popover-holder").pop()?;
+
+			let div_manga_description = div_html_popover_holder
+				.select("div.manga-description")
+				.pop()?;
+			let description = div_manga_description.text();
+			debug!("description: {description}");
 
 			Some(Manga {
 				id,
 				cover,
 				title,
 				author,
+				artist: "".to_string(),
+				description,
 				..Default::default()
 			})
 		})
