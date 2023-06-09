@@ -6,10 +6,9 @@ macro_rules! debug {
 		println!("ru.readmanga:: {}:{}: {}", file!(), line!(), format!($($arg)*))
 	}};
 }
-
 pub(crate) use debug;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct WNode {
 	repr: String,
 }
@@ -17,7 +16,7 @@ pub struct WNode {
 impl WNode {
 	pub fn new(node: Node) -> Self {
 		WNode {
-			repr: node.html().read(),
+			repr: node.outer_html().read(),
 		}
 	}
 
