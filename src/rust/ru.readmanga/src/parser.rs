@@ -13,13 +13,28 @@ use alloc::{boxed::Box, string::ToString};
 use crate::wrappers::{debug, WNode};
 
 pub fn parse_directory(html: Node) -> Result<MangaPageResult> {
-	let html = WNode::new(html);
+	let html = WNode::from_node(html);
 	let nodes = html.select("div.tile");
 	debug!("{:?}", nodes);
 
-	nodes.into_iter().take(3).for_each(|n| {
-		debug!("{:?}", n);
-	});
+	let mangas: Vec<_> = nodes
+		.into_iter()
+		.filter_map(|node| {
+			let img_node = node.select("div.img").pop()?;
+
+			let id = {
+				let a_with_id = img_node.select("a.non_hover").pop()?;
+				debug!("a_with_id: {a_with_id:?}");
+				a_with_id.attr("href")?.trim_start_matches('/').to_string()
+			};
+			println!("id: {id:?}");
+
+			Some(Manga {
+				id,
+				..Default::default()
+			})
+		})
+		.collect();
 
 	Err(AidokuError {
 		reason: AidokuErrorKind::Unimplemented,

@@ -14,9 +14,21 @@ pub struct WNode {
 }
 
 impl WNode {
-	pub fn new(node: Node) -> Self {
-		WNode {
-			repr: node.outer_html().read(),
+	pub fn new(repr: String) -> Self {
+		WNode { repr }
+	}
+
+	pub fn from_node(node: Node) -> Self {
+		let repr = node.outer_html().read();
+		// debug!("repr: \"{}\"", repr);
+		if repr.starts_with("<html>") {
+			let lines: Vec<_> = repr.lines().collect();
+			// debug!("lines: {:?}", lines);
+			WNode {
+				repr: lines[3..lines.len() - 2].join("\n"),
+			}
+		} else {
+			WNode { repr }
 		}
 	}
 
@@ -29,7 +41,7 @@ impl WNode {
 			if node_res.is_err() {
 				debug!("failed conversion to Node");
 			}
-			res.push(WNode::new(node_res.unwrap()));
+			res.push(WNode::from_node(node_res.unwrap()));
 		}
 		res
 	}
