@@ -24,22 +24,27 @@ pub fn parse_directory(html: Node) -> Result<MangaPageResult> {
 			// debug!("div_img_node: {div_img_node:?}");
 
 			let id = {
-				let a_with_id = div_img_node.select("a.non-hover").pop()?;
-				debug!("a_with_id: {a_with_id:?}");
-				a_with_id.attr("href")?.trim_start_matches('/').to_string()
+				let a_with_id_node = div_img_node.select("a.non-hover").pop()?;
+				// debug!("a_with_id_node: {a_with_id_node:?}");
+				a_with_id_node
+					.attr("href")?
+					.trim_start_matches('/')
+					.to_string()
 			};
 			debug!("id: {id}");
 
-			let cover = {
-				let img = div_img_node.select("img").pop()?;
-				debug!("img: {img:?}");
-				img.attr("original")?
-			};
+			let img_node = div_img_node.select("img").pop()?;
+			// debug!("img_node: {img_node:?}");
+			let cover = img_node.attr("original")?;
 			debug!("cover: {cover}");
+
+			let title = img_node.attr("title")?;
+			debug!("title: {title}");
 
 			Some(Manga {
 				id,
 				cover,
+				title,
 				..Default::default()
 			})
 		})
