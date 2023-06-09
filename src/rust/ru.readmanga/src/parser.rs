@@ -68,6 +68,13 @@ pub fn parse_directory(html: Node) -> Result<MangaPageResult> {
 			let url = format!("{}/{}", BASE_URL, id);
 			debug!("url: {}", url);
 
+			let categories = div_html_popover_holder
+				.select("span.badge-light")
+				.iter()
+				.map(WNode::text)
+				.collect();
+			debug!("categories: {categories:?}");
+
 			Some(Manga {
 				id,
 				cover,
@@ -76,6 +83,7 @@ pub fn parse_directory(html: Node) -> Result<MangaPageResult> {
 				artist: "".to_string(),
 				description,
 				url,
+				categories,
 				..Default::default()
 			})
 		})
