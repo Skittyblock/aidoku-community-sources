@@ -39,10 +39,11 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32) -> String {
 				}
 			}
 			FilterType::Check => {
-				let value = filter.value.as_int().unwrap_or(-1);
-				if value < 1 {
+				let checked = filter.value.as_int().unwrap_or(-1) == 1;
+				if !checked {
 					continue;
 				}
+
 				if let Ok(id) = filter.object.get("id").as_string() {
 					let filter_type = id.read();
 					let filter_name = filter.name.as_str().to_string();
@@ -53,16 +54,17 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32) -> String {
 		}
 	}
 
-	if is_searching {
-		query.push("wpsolr_sort", Some(SORT_BY[0]));
-	} else {
-		query.push("wpsolr_sort", Some(SORT_BY[sort_by_index as usize]));
-		for (index, item) in filter_vec.iter().enumerate() {
-			let (filter_type, filter_value) = item;
-			query.push(
-				format!("wpsolr_fq[{}]", index),
-				Some(format!("{}:{}", filter_type, filter_value)),
-			);
+	match is_searching {
+		true => query.push("wpsolr_sort", Some(SORT_BY[0])),
+		false => {
+			query.push("wpsolr_sort", Some(SORT_BY[sort_by_index as usize]));
+			for (index, item) in filter_vec.iter().enumerate() {
+				let (filter_type, filter_value) = item;
+				query.push(
+					format!("wpsolr_fq[{}]", index),
+					Some(format!("{}:{}", filter_type, filter_value)),
+				);
+			}
 		}
 	}
 	query.push("wpsolr_page", Some(page.to_string().as_str()));
@@ -94,10 +96,10 @@ pub fn get_manga_list(html: Node, page: i32) -> Result<MangaPageResult> {
 		let url = title_node.attr("href").read();
 		let id = url.replace(BASE_URL, "").replace('/', "");
 		let cover = manga_item.select("img").attr("src").read();
-		let artist = title
-			.substring_before(']')
-			.expect("artist &str")
-			.replace('[', "");
+		let artist = match title.substring_before(']') {
+			Some(name) => name.replace('[', ""),
+			None => String::new(),
+		};
 		let description = manga_item.select("div.p_content").text().read();
 
 		manga.push(Manga {
@@ -121,10 +123,10 @@ pub fn get_manga_list(html: Node, page: i32) -> Result<MangaPageResult> {
 
 pub fn get_manga_details(html: Node, id: String) -> Result<Manga> {
 	let title = html.select("h1.entry-title").text().read();
-	let artist = title
-		.substring_before("]")
-		.expect("[artist -> &str")
-		.replace('[', "");
+	let artist = match title.substring_before("]") {
+		Some(name) => name.replace('[', ""),
+		None => String::new(),
+	};
 	let url = format!("{}{}/", BASE_URL, id);
 
 	let mut description_vec: Vec<String> = Vec::new();
@@ -157,10 +159,9 @@ pub fn get_manga_details(html: Node, id: String) -> Result<Manga> {
 
 		for item in span.select("a").array() {
 			let tag = item.as_node()?.text().read();
-			if is_status {
-				status_vec.push(tag);
-			} else {
-				categories.push(tag);
+			match is_status {
+				true => status_vec.push(tag),
+				false => categories.push(tag),
 			}
 		}
 	}
