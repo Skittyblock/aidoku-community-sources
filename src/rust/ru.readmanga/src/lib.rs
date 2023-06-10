@@ -40,7 +40,7 @@ pub fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult
 	let request = parser::get_html(search_url)?;
 	let mangas = parser::parse_directory(request)?;
 	let result = parser::create_manga_page_result(mangas);
-	debug!("{:?}", result);
+	// debug!("{:?}", result);
 
 	let mangafox_url = parser::get_filtered_url_mangafox(filters, page);
 	let mangafox_html = Request::new(mangafox_url.as_str(), HttpMethod::Get)
@@ -56,7 +56,7 @@ pub fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult>
 	let html = parser::get_html(url)?;
 	let mangas = parser::parse_directory(html)?;
 	let result = parser::create_manga_page_result(mangas);
-	debug!("{:?}", result);
+	// debug!("{:?}", result);
 
 	let url_query = match listing.name.as_str() {
 		"Latest" => "latest",

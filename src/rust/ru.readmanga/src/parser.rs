@@ -61,6 +61,10 @@ pub fn get_html(url: String) -> Result<WNode> {
 		.map(WNode::from_node)
 }
 
+pub fn get_manga_url<T: AsRef<str>>(id: &T) -> String {
+	format!("{}/{}", BASE_URL, id.as_ref())
+}
+
 pub fn create_manga_page_result(mangas: Vec<Manga>) -> MangaPageResult {
 	let has_more = mangas.len() == SEARCH_OFFSET_STEP as usize;
 	MangaPageResult {
@@ -87,15 +91,15 @@ pub fn parse_directory(html: WNode) -> Result<Vec<Manga>> {
 					.trim_start_matches('/')
 					.to_string()
 			};
-			debug!("id: {id}");
+			// debug!("id: {id}");
 
 			let img_node = div_img_node.select("img").pop()?;
 			// debug!("img_node: {img_node:?}");
 			let cover = img_node.attr("original")?;
-			debug!("cover: {cover}");
+			// debug!("cover: {cover}");
 
 			let title = img_node.attr("title")?;
-			debug!("title: {title}");
+			// debug!("title: {title}");
 
 			let div_desc_node = node.select("div.desc").pop()?;
 
@@ -106,7 +110,7 @@ pub fn parse_directory(html: WNode) -> Result<Vec<Manga>> {
 				.map(WNode::text)
 				.intersperse(", ".to_string())
 				.collect();
-			debug!("author: {author}");
+			// debug!("author: {author}");
 
 			let div_html_popover_holder_node =
 				div_desc_node.select("div.html-popover-holder").pop()?;
@@ -115,17 +119,17 @@ pub fn parse_directory(html: WNode) -> Result<Vec<Manga>> {
 				.select("div.manga-description")
 				.pop()?;
 			let description = div_manga_description_node.text();
-			debug!("description: {description}");
+			// debug!("description: {description}");
 
-			let url = format!("{}/{}", BASE_URL, id);
-			debug!("url: {}", url);
+			let url = get_manga_url(&id);
+			// debug!("url: {}", url);
 
 			let categories = div_html_popover_holder_node
 				.select("span.badge-light")
 				.iter()
 				.map(WNode::text)
 				.collect();
-			debug!("categories: {categories:?}");
+			// debug!("categories: {categories:?}");
 
 			// TODO: implement more correct status parsing
 			let status = {
@@ -141,7 +145,7 @@ pub fn parse_directory(html: WNode) -> Result<Vec<Manga>> {
 					MangaStatus::Unknown
 				}
 			};
-			debug!("status: {status:?}");
+			// debug!("status: {status:?}");
 
 			Some(Manga {
 				id,
