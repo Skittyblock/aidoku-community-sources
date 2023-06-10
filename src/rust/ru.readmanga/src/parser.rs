@@ -2,7 +2,11 @@ use aidoku::{
 	error::{AidokuError, AidokuErrorKind, Result},
 	helpers::{substring::Substring, uri::encode_uri},
 	prelude::*,
-	std::{html::Node, String, Vec},
+	std::{
+		html::Node,
+		net::{HttpMethod, Request},
+		String, Vec,
+	},
 	Chapter, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
 	MangaViewer, Page,
 };
@@ -19,8 +23,13 @@ const BASE_SEARCH_URL: &str = formatcp!("{}/{}", BASE_URL, "search/advancedResul
 
 const SEARCH_OFFSET: i32 = 50;
 
-pub fn parse_directory(html: Node) -> Result<Vec<Manga>> {
-	let html = WNode::from_node(html);
+pub fn new_get_request(url: String) -> Result<WNode> {
+	Request::new(url, HttpMethod::Get)
+		.html()
+		.map(WNode::from_node)
+}
+
+pub fn parse_directory(html: WNode) -> Result<Vec<Manga>> {
 	let nodes = html.select("div.tile");
 	// debug!("{:?}", nodes);
 

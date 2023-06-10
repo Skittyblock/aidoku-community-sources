@@ -38,8 +38,8 @@ pub fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult
 	let url_or_error = parser::get_filtered_url(&filters, page);
 	println!("filtered url: {:?}", url_or_error);
 	let mangas = url_or_error
-		.and_then(|url| Request::new(url, HttpMethod::Get).html())
-		.and_then(|html| parser::parse_directory(html))?;
+		.and_then(parser::new_get_request)
+		.and_then(parser::parse_directory)?;
 	// debug!("{:?}", mangas);
 	let result = MangaPageResult {
 		manga: mangas,
