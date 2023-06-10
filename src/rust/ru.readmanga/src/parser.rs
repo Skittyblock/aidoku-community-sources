@@ -62,7 +62,7 @@ pub fn new_get_request(url: String) -> Result<WNode> {
 }
 
 pub fn create_manga_page_result(mangas: Vec<Manga>) -> MangaPageResult {
-	let has_more = !mangas.is_empty();
+	let has_more = mangas.len() == SEARCH_OFFSET_STEP as usize;
 	MangaPageResult {
 		manga: mangas,
 		has_more,
