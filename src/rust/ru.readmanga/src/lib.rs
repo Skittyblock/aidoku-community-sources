@@ -1,5 +1,6 @@
 #![no_std]
 #![feature(pattern)]
+#![feature(iter_intersperse)]
 
 mod parser;
 mod wrappers;
@@ -8,7 +9,7 @@ use aidoku::{
 	error::Result,
 	prelude::*,
 	std::net::{HttpMethod, Request},
-	std::{String, Vec},
+	std::{html::Node, String, Vec},
 	Chapter, DeepLink, Filter, Listing, Manga, MangaPageResult, Page,
 };
 
@@ -17,14 +18,33 @@ use alloc::string::ToString;
 
 use crate::wrappers::debug;
 
+#[initialize]
+pub fn initialize() {
+	// println!(
+	// 	"{}",
+	// 	Node::new_fragment(b"<a href=\"foo\"><div>foo</div></a>")
+	// 		.unwrap()
+	// 		.outer_html()
+	// 		.read()
+	// );
+	// debug!(
+	// 	"{:?}",
+	// 	WNode::new("<a href=\"foo\"><div>foo</div></a>".to_string()).attr("href")
+	// );
+}
+
 #[get_manga_list]
 pub fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
-	let url_or_error = parser::get_filtered_url(filters.clone(), page);
+	let url_or_error = parser::get_filtered_url(&filters, page);
 	println!("filtered url: {:?}", url_or_error);
-	let result = url_or_error
+	let mangas = url_or_error
 		.and_then(|url| Request::new(url, HttpMethod::Get).html())
-		.and_then(|html| parser::parse_directory(html));
-	debug!("{:?}", result);
+		.and_then(|html| parser::parse_directory(html))?;
+	// debug!("{:?}", mangas);
+	let result = MangaPageResult {
+		manga: mangas,
+		has_more: false,
+	};
 
 	let mangafox_url = parser::get_filtered_url_mangafox(filters, page);
 	let mangafox_html = Request::new(mangafox_url.as_str(), HttpMethod::Get)

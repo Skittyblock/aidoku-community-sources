@@ -17,7 +17,9 @@ use crate::wrappers::{debug, WNode};
 const BASE_URL: &str = "https://readmanga.live";
 const BASE_SEARCH_URL: &str = formatcp!("{}/{}", BASE_URL, "search/advancedResults?");
 
-pub fn parse_directory(html: Node) -> Result<MangaPageResult> {
+const SEARCH_OFFSET: i32 = 50;
+
+pub fn parse_directory(html: Node) -> Result<Vec<Manga>> {
 	let html = WNode::from_node(html);
 	let nodes = html.select("div.tile");
 	// debug!("{:?}", nodes);
@@ -102,14 +104,13 @@ pub fn parse_directory(html: Node) -> Result<MangaPageResult> {
 				url,
 				categories,
 				status,
-				..Default::default()
+				nsfw: MangaContentRating::Suggestive,
+				viewer: MangaViewer::Rtl,
 			})
 		})
 		.collect();
 
-	Err(AidokuError {
-		reason: AidokuErrorKind::Unimplemented,
-	})
+	Ok(mangas)
 }
 
 pub fn parse_directory_mangafox(html: Node) -> Result<MangaPageResult> {
@@ -303,7 +304,7 @@ pub fn get_page_list_mangafox(html: Node) -> Result<Vec<Page>> {
 	Ok(pages)
 }
 
-pub fn get_filtered_url(filters: Vec<Filter>, page: i32) -> Result<String> {
+pub fn get_filtered_url(filters: &Vec<Filter>, page: i32) -> Result<String> {
 	if page > 1 {
 		return Err(AidokuError {
 			reason: AidokuErrorKind::DefaultNotFound,
