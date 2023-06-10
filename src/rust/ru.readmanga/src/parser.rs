@@ -1,5 +1,7 @@
+use core::iter::once;
+
 use aidoku::{
-	error::{AidokuError, AidokuErrorKind, Result},
+	error::{AidokuError, Result},
 	helpers::{substring::Substring, uri::encode_uri},
 	prelude::*,
 	std::{
@@ -21,7 +23,7 @@ use crate::wrappers::{debug, WNode};
 const BASE_URL: &str = "https://readmanga.live";
 const BASE_SEARCH_URL: &str = formatcp!("{}/{}", BASE_URL, "search/advancedResults?");
 
-const SEARCH_OFFSET: i32 = 50;
+const SEARCH_OFFSET_STEP: i32 = 50;
 
 pub fn new_get_request(url: String) -> Result<WNode> {
 	Request::new(url, HttpMethod::Get)
@@ -313,13 +315,7 @@ pub fn get_page_list_mangafox(html: Node) -> Result<Vec<Page>> {
 	Ok(pages)
 }
 
-pub fn get_filtered_url(filters: &Vec<Filter>, page: i32) -> Result<String> {
-	if page > 1 {
-		return Err(AidokuError {
-			reason: AidokuErrorKind::DefaultNotFound,
-		});
-	}
-
+pub fn get_filter_url(filters: &Vec<Filter>, page: i32) -> Result<String> {
 	fn get_handler(operation: &'static str) -> Box<dyn Fn(AidokuError) -> AidokuError> {
 		return Box::new(move |err: AidokuError| {
 			println!("Error {:?} while {}", err.reason, operation);
@@ -341,7 +337,16 @@ pub fn get_filtered_url(filters: &Vec<Filter>, page: i32) -> Result<String> {
 		})
 		.collect();
 
-	Ok(format!("{}{}", BASE_SEARCH_URL, filter_parts.join("&")))
+	let offset = format!("offset={}", (page - 1) * SEARCH_OFFSET_STEP);
+
+	Ok(format!(
+		"{}{}",
+		BASE_SEARCH_URL,
+		once(offset)
+			.chain(filter_parts.into_iter())
+			.intersperse("&".to_string())
+			.collect::<String>()
+	))
 }
 
 pub fn get_filtered_url_mangafox(filters: Vec<Filter>, page: i32) -> String {
