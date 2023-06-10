@@ -9,7 +9,7 @@ use aidoku::{
 	error::Result,
 	prelude::*,
 	std::net::{HttpMethod, Request},
-	std::{html::Node, String, Vec},
+	std::{String, Vec},
 	Chapter, DeepLink, Filter, Listing, Manga, MangaPageResult, Page,
 };
 
@@ -35,16 +35,18 @@ pub fn initialize() {
 
 #[get_manga_list]
 pub fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
-	let url_or_error = parser::get_filter_url(&filters, page);
-	println!("filtered url: {:?}", url_or_error);
-	let mangas = url_or_error
-		.and_then(parser::new_get_request)
-		.and_then(parser::parse_directory)?;
-	// debug!("{:?}", mangas);
+	let search_url = parser::get_filter_url(&filters, page)?;
+	debug!("search url: {}", search_url);
+	let request = parser::new_get_request(search_url)?;
+	let mangas = parser::parse_directory(request)?;
+
+	let has_more = !mangas.is_empty();
 	let result = MangaPageResult {
 		manga: mangas,
-		has_more: false,
+		has_more,
 	};
+
+	debug!("{:?}", result);
 
 	let mangafox_url = parser::get_filtered_url_mangafox(filters, page);
 	let mangafox_html = Request::new(mangafox_url.as_str(), HttpMethod::Get)
