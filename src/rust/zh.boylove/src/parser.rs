@@ -49,11 +49,10 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32) -> String {
 				}
 			}
 			FilterType::Genre => {
-				let value = filter.value.as_int().unwrap_or(-1);
-				if value < 1 {
-					continue;
+				let checked = filter.value.as_int().unwrap_or(-1) == 1;
+				if checked {
+					filter_tag_vec.push(filter.name)
 				}
-				filter_tag_vec.push(filter.name)
 			}
 			FilterType::Sort => {
 				if let Ok(value) = filter.value.as_object() {
@@ -65,30 +64,33 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32) -> String {
 	}
 
 	let mut url = format!("{}{}", BASE_URL, API_URL);
+
 	if is_searching {
 		url.push_str(format!("searchk?{}", query).as_str());
-	} else {
-		let filter_tag = if filter_tag_vec.is_empty() {
-			"0".to_string()
-		} else {
-			filter_tag_vec.join("+")
-		};
-		// 1-{}-{}-{}-{}-{}-{type}-{viewing_permission}
-		// type=[1: Manga, 2: Novel]
-		// Login support is required to view manga for VIP members
-		// viewing_permission=[0: General, 1: VIP, 2: All]
-		url.push_str(
-			format!(
-				"cate/tp/1-{}-{}-{}-{}-{}-1-2",
-				encode_uri(filter_tag),
-				FILTER_STATUS[filter_status_index as usize],
-				sort_by,
-				page,
-				filter_content_rating
-			)
-			.as_str(),
-		);
+
+		return url;
 	}
+
+	let filter_tag = match filter_tag_vec.is_empty() {
+		true => "0".to_string(),
+		false => filter_tag_vec.join("+"),
+	};
+	// 1-{}-{}-{}-{}-{}-{type}-{viewing_permission}
+	// type=[1: Manga, 2: Novel]
+	// Login cookie is required to view manga for VIP members
+	// viewing_permission=[0: General, 1: VIP, 2: All]
+	url.push_str(
+		format!(
+			"cate/tp/1-{}-{}-{}-{}-{}-1-2",
+			encode_uri(filter_tag),
+			FILTER_STATUS[filter_status_index as usize],
+			sort_by,
+			page,
+			filter_content_rating
+		)
+		.as_str(),
+	);
+
 	url
 }
 
@@ -140,10 +142,9 @@ pub fn get_manga_list(json: ValueRef) -> Result<MangaPageResult> {
 			1 => MangaStatus::Completed,
 			_ => MangaStatus::Unknown,
 		};
-		let nsfw = if categories.contains(&"清水".to_string()) {
-			MangaContentRating::Safe
-		} else {
-			MangaContentRating::Nsfw
+		let nsfw = match categories.contains(&"清水".to_string()) {
+			true => MangaContentRating::Safe,
+			false => MangaContentRating::Nsfw,
 		};
 
 		manga.push(Manga {
@@ -182,13 +183,11 @@ pub fn get_manga_details(html: Node, id: String) -> Result<Manga> {
 		.html()
 		.read()
 		.replace("<br> ", "\n")
-		.replace("<br>", "\n");
-	if description.contains("</") {
-		description = description
-			.substring_before_last("</")
-			.expect("description")
-			.trim()
-			.to_string();
+		.replace("<br>", "\n")
+		.trim()
+		.to_string();
+	if let Some(description_with_closing_tag) = description.substring_before_last("</") {
+		description = description_with_closing_tag.trim().to_string();
 	}
 
 	let url = format!("{}{}index/id/{}", BASE_URL, HTML_URL, id);
@@ -286,35 +285,41 @@ pub fn parse_deep_link(url: String) -> Result<DeepLink> {
 	}
 
 	if url.contains("/index/") {
-		let id = url.substring_after_last("/").expect("manga id").to_string();
+		if let Some(manga_id) = url.substring_after_last("/") {
+			let manga = Some(crate::get_manga_details(manga_id.to_string())?);
+			return Ok(DeepLink {
+				manga,
+				chapter: None,
+			});
+		}
 
-		return Ok(DeepLink {
-			manga: Some(crate::get_manga_details(id)?),
-			chapter: None,
-		});
+		return Ok(DeepLink::default());
 	}
 
 	if url.contains("/capter/") {
-		let html = request_get(url.clone()).html()?;
-		let manga_id = html
+		let chapter_id = match url.substring_after_last("/") {
+			Some(id) => id.to_string(),
+			None => return Ok(DeepLink::default()),
+		};
+		let chapter = Some(Chapter {
+			id: chapter_id,
+			..Default::default()
+		});
+
+		let chapter_html = request_get(url).html()?;
+		let manga_url = chapter_html
 			.select("a.icon-only.link.back")
 			.attr("href")
-			.read()
-			.substring_after_last("/")
-			.expect("manga id")
-			.to_string();
+			.read();
+		if let Some(manga_id) = manga_url.substring_after_last("/") {
+			let manga = Some(crate::get_manga_details(manga_id.to_string())?);
 
-		let chapter_id = url
-			.substring_after_last("/")
-			.expect("chapter id")
-			.to_string();
+			return Ok(DeepLink { manga, chapter });
+		}
 
 		return Ok(DeepLink {
-			manga: Some(crate::get_manga_details(manga_id)?),
-			chapter: Some(Chapter {
-				id: chapter_id,
-				..Default::default()
-			}),
+			manga: None,
+			chapter,
 		});
 	}
 
