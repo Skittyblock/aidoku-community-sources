@@ -296,32 +296,32 @@ pub fn parse_deep_link(url: String) -> Result<DeepLink> {
 		return Ok(DeepLink::default());
 	}
 
-	if url.contains("/capter/") {
-		let chapter_id = match url.substring_after_last("/") {
-			Some(id) => id.to_string(),
-			None => return Ok(DeepLink::default()),
-		};
-		let chapter = Some(Chapter {
-			id: chapter_id,
-			..Default::default()
-		});
-
-		let chapter_html = request_get(url).html()?;
-		let manga_url = chapter_html
-			.select("a.icon-only.link.back")
-			.attr("href")
-			.read();
-		if let Some(manga_id) = manga_url.substring_after_last("/") {
-			let manga = Some(crate::get_manga_details(manga_id.to_string())?);
-
-			return Ok(DeepLink { manga, chapter });
-		}
-
-		return Ok(DeepLink {
-			manga: None,
-			chapter,
-		});
+	if !url.contains("/capter/") {
+		return Ok(DeepLink::default());
 	}
 
-	Ok(DeepLink::default())
+	let chapter_id = match url.substring_after_last("/") {
+		Some(id) => id.to_string(),
+		None => return Ok(DeepLink::default()),
+	};
+	let chapter = Some(Chapter {
+		id: chapter_id,
+		..Default::default()
+	});
+
+	let chapter_html = request_get(url).html()?;
+	let manga_url = chapter_html
+		.select("a.icon-only.link.back")
+		.attr("href")
+		.read();
+	if let Some(manga_id) = manga_url.substring_after_last("/") {
+		let manga = Some(crate::get_manga_details(manga_id.to_string())?);
+
+		return Ok(DeepLink { manga, chapter });
+	}
+
+	Ok(DeepLink {
+		manga: None,
+		chapter,
+	})
 }
