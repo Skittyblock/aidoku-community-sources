@@ -37,7 +37,7 @@ pub fn initialize() {
 pub fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	let search_url = parser::get_filter_url(&filters, parser::Sorting::default(), page)?;
 	debug!("search url: {}", search_url);
-	let request = parser::new_get_request(search_url)?;
+	let request = parser::get_html(search_url)?;
 	let mangas = parser::parse_directory(request)?;
 	let result = parser::create_manga_page_result(mangas);
 	debug!("{:?}", result);
@@ -53,7 +53,7 @@ pub fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult
 pub fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 	let sorting = parser::Sorting::from_listing(&listing);
 	let url = parser::get_filter_url(&vec![], sorting, page)?;
-	let html = parser::new_get_request(url)?;
+	let html = parser::get_html(url)?;
 	let mangas = parser::parse_directory(html)?;
 	let result = parser::create_manga_page_result(mangas);
 	debug!("{:?}", result);

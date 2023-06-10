@@ -55,7 +55,7 @@ impl Display for Sorting {
 	}
 }
 
-pub fn new_get_request(url: String) -> Result<WNode> {
+pub fn get_html(url: String) -> Result<WNode> {
 	Request::new(url, HttpMethod::Get)
 		.html()
 		.map(WNode::from_node)
