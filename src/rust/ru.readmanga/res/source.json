@@ -11,13 +11,13 @@
 	},
 	"listings": [
 		{
-			"name": "Latest"
+			"name": "Rating"
 		},
 		{
 			"name": "Popular"
 		},
 		{
-			"name": "Updated Rating"
+			"name": "Updated Recently"
 		}
 	]
 }

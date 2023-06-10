@@ -14,7 +14,7 @@ use aidoku::{
 };
 
 extern crate alloc;
-use alloc::string::ToString;
+use alloc::{string::ToString, vec};
 
 use crate::wrappers::debug;
 
@@ -35,17 +35,11 @@ pub fn initialize() {
 
 #[get_manga_list]
 pub fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
-	let search_url = parser::get_filter_url(&filters, page)?;
+	let search_url = parser::get_filter_url(&filters, parser::Sorting::default(), page)?;
 	debug!("search url: {}", search_url);
 	let request = parser::new_get_request(search_url)?;
 	let mangas = parser::parse_directory(request)?;
-
-	let has_more = !mangas.is_empty();
-	let result = MangaPageResult {
-		manga: mangas,
-		has_more,
-	};
-
+	let result = parser::create_manga_page_result(mangas);
 	debug!("{:?}", result);
 
 	let mangafox_url = parser::get_filtered_url_mangafox(filters, page);
@@ -57,6 +51,13 @@ pub fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult
 
 #[get_manga_listing]
 pub fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
+	let sorting = parser::Sorting::from_listing(&listing);
+	let url = parser::get_filter_url(&vec![], sorting, page)?;
+	let html = parser::new_get_request(url)?;
+	let mangas = parser::parse_directory(html)?;
+	let result = parser::create_manga_page_result(mangas);
+	debug!("{:?}", result);
+
 	let url_query = match listing.name.as_str() {
 		"Latest" => "latest",
 		"Updated Rating" => "rating",

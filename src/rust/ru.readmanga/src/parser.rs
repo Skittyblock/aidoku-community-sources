@@ -1,4 +1,4 @@
-use core::iter::once;
+use core::{fmt::Display, iter::once};
 
 use aidoku::{
 	error::{AidokuError, Result},
@@ -9,7 +9,7 @@ use aidoku::{
 		net::{HttpMethod, Request},
 		String, Vec,
 	},
-	Chapter, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
+	Chapter, Filter, FilterType, Listing, Manga, MangaContentRating, MangaPageResult, MangaStatus,
 	MangaViewer, Page,
 };
 
@@ -17,6 +17,7 @@ extern crate alloc;
 use alloc::{boxed::Box, string::ToString};
 
 use const_format::formatcp;
+use itertools::chain;
 
 use crate::wrappers::{debug, WNode};
 
@@ -25,10 +26,47 @@ const BASE_SEARCH_URL: &str = formatcp!("{}/{}", BASE_URL, "search/advancedResul
 
 const SEARCH_OFFSET_STEP: i32 = 50;
 
+#[derive(Debug, Default)]
+pub enum Sorting {
+	#[default]
+	Rating,
+	Popular,
+	UpdatedRecently,
+}
+
+impl Sorting {
+	pub fn from_listing(listing: &Listing) -> Self {
+		match listing.name.as_str() {
+			"Rating" => Self::Rating,
+			"Popular" => Self::Popular,
+			"Updated Recently" => Self::UpdatedRecently,
+			_ => Self::Rating,
+		}
+	}
+}
+
+impl Display for Sorting {
+	fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+		match self {
+			Sorting::Rating => write!(f, "RATING"),
+			Sorting::Popular => write!(f, "POPULARITY"),
+			Sorting::UpdatedRecently => write!(f, "DATE_UPDATE"),
+		}
+	}
+}
+
 pub fn new_get_request(url: String) -> Result<WNode> {
 	Request::new(url, HttpMethod::Get)
 		.html()
 		.map(WNode::from_node)
+}
+
+pub fn create_manga_page_result(mangas: Vec<Manga>) -> MangaPageResult {
+	let has_more = !mangas.is_empty();
+	MangaPageResult {
+		manga: mangas,
+		has_more,
+	}
 }
 
 pub fn parse_directory(html: WNode) -> Result<Vec<Manga>> {
@@ -315,7 +353,7 @@ pub fn get_page_list_mangafox(html: Node) -> Result<Vec<Page>> {
 	Ok(pages)
 }
 
-pub fn get_filter_url(filters: &Vec<Filter>, page: i32) -> Result<String> {
+pub fn get_filter_url(filters: &Vec<Filter>, sorting: Sorting, page: i32) -> Result<String> {
 	fn get_handler(operation: &'static str) -> Box<dyn Fn(AidokuError) -> AidokuError> {
 		return Box::new(move |err: AidokuError| {
 			println!("Error {:?} while {}", err.reason, operation);
@@ -338,12 +376,12 @@ pub fn get_filter_url(filters: &Vec<Filter>, page: i32) -> Result<String> {
 		.collect();
 
 	let offset = format!("offset={}", (page - 1) * SEARCH_OFFSET_STEP);
+	let sort = format!("sortType={}", sorting);
 
 	Ok(format!(
 		"{}{}",
 		BASE_SEARCH_URL,
-		once(offset)
-			.chain(filter_parts.into_iter())
+		chain!(once(offset), once(sort), filter_parts.into_iter())
 			.intersperse("&".to_string())
 			.collect::<String>()
 	))
