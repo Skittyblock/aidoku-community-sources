@@ -1,7 +1,7 @@
 use core::{fmt::Display, iter::once};
 
 use aidoku::{
-	error::{AidokuError, Result},
+	error::{AidokuError, AidokuErrorKind, NodeError, Result},
 	helpers::{substring::Substring, uri::encode_uri},
 	prelude::*,
 	std::{
@@ -195,6 +195,132 @@ pub fn parse_directory_mangafox(html: Node) -> Result<MangaPageResult> {
 	Ok(MangaPageResult {
 		manga: result,
 		has_more,
+	})
+}
+
+pub fn parse_manga(html: WNode, id: String) -> Result<Manga> {
+	let parsing_error = AidokuError {
+		reason: AidokuErrorKind::NodeError(NodeError::ParseError),
+	};
+	let main_node = html.select("div.leftContent").pop().ok_or(parsing_error)?;
+
+	let main_attributes_node = main_node
+		.select("div.flex-row")
+		.pop()
+		.ok_or(parsing_error)?;
+
+	let picture_fororama_node = main_attributes_node.select("div.picture-fotorama").pop();
+	let cover = picture_fororama_node
+		.and_then(|pfn| pfn.select("img").pop())
+		.and_then(|img_node| img_node.attr("src"))
+		.unwrap_or_default();
+
+	let names_node = main_node.select("h1.names").pop().ok_or(parsing_error)?;
+	let title = names_node
+		.select("span")
+		.into_iter()
+		.map(|name_node| name_node.text())
+		.intersperse(" | ".to_string())
+		.collect();
+
+	let main_info_node = main_attributes_node
+		.select("div.subject-meta")
+		.pop()
+		.ok_or(parsing_error)?;
+
+	let extract_info_iter = |elem_class, link_type| {
+		main_info_node
+			.select(format!("span.elem_{elem_class}"))
+			.into_iter()
+			.flat_map(move |node| {
+				node.select(format!("a.{link_type}-link"))
+					.into_iter()
+					.map(|person_node| person_node.text())
+			})
+	};
+
+	let author = chain!(
+		extract_info_iter("author", "person"),
+		extract_info_iter("screenwriter", "person")
+	)
+	.intersperse(", ".to_string())
+	.collect();
+
+	let artist = extract_info_iter("illustrator", "person")
+		.intersperse(", ".to_string())
+		.collect();
+
+	let description = main_node
+		.select("meta")
+		.into_iter()
+		.filter(|mn| {
+			if let Some(itemprop) = mn.attr("itemprop") {
+				return itemprop == "description";
+			}
+			false
+		})
+		.next()
+		.and_then(|desc_node| desc_node.attr("content"))
+		.unwrap_or_default();
+
+	let url = get_manga_url(&id);
+
+	let category_opt = extract_info_iter("category", "element").next();
+
+	let viewer = match &category_opt {
+		Some(category) => match category.to_lowercase().as_str() {
+			"oel-манга" => MangaViewer::Scroll,
+			"комикс" => MangaViewer::Ltr,
+			"манхва" => MangaViewer::Scroll,
+			"маньхуа" => MangaViewer::Scroll,
+			_ => MangaViewer::default(),
+		},
+		None => MangaViewer::default(),
+	};
+
+	let categories = chain!(
+		once(category_opt).flatten(),
+		extract_info_iter("genre", "element")
+	)
+	.collect();
+
+	let status_str_opt = main_info_node
+		.select("p")
+		.into_iter()
+		.filter(|pn| pn.attr("class").is_none())
+		.flat_map(|pn| pn.select("span"))
+		.filter(|sn| {
+			if let Some(class_attr) = sn.attr("class") {
+				return class_attr
+					.split_whitespace()
+					.any(|cl| cl.starts_with("text-"));
+			}
+			false
+		})
+		.next()
+		.map(|status_node| status_node.text());
+	let status = match status_str_opt {
+		Some(status_str) => match status_str.to_lowercase().as_str() {
+			"переведено" => MangaStatus::Completed,
+			"продолжается" => MangaStatus::Ongoing,
+			"приостановлен" => MangaStatus::Hiatus,
+			_ => MangaStatus::Unknown,
+		},
+		None => MangaStatus::Unknown,
+	};
+
+	Ok(Manga {
+		id,
+		cover,
+		title,
+		author,
+		artist,
+		description,
+		url,
+		categories,
+		status,
+		nsfw: MangaContentRating::Suggestive,
+		viewer,
 	})
 }
 

@@ -76,6 +76,11 @@ pub fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult>
 
 #[get_manga_details]
 pub fn get_manga_details(manga_id: String) -> Result<Manga> {
+	let demon_slayer_id = "klinok__rassekaiuchii_demonov__A5327".to_string();
+	let demon_slayer_html = parser::get_html(parser::get_manga_url(&demon_slayer_id))?;
+	let demon_slayer_result = parser::parse_manga(demon_slayer_html, demon_slayer_id);
+	debug!("demon_slayer: {demon_slayer_result:?}");
+
 	let url = format!("https://www.fanfox.net/manga/{}", &manga_id);
 	let html = Request::new(url.as_str(), HttpMethod::Get)
 		.html()
