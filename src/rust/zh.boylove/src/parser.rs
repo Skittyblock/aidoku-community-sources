@@ -13,10 +13,16 @@ use aidoku::{
 extern crate alloc;
 use alloc::string::ToString;
 
-pub const BASE_URL: &str = "https://boylove.cc";
-pub const API_URL: &str = "/home/api/";
-pub const HTML_URL: &str = "/home/book/";
+pub const DOMAIN: &str = "https://boylove.cc";
+
+pub const API_PATH: &str = "/home/api/";
+
+pub const HTML_PATH: &str = "/home/book/";
+pub const MANGA_PATH: &str = "index/id/";
+pub const CHAPTER_PATH: &str = "capter/id/";
+
 pub const USER_AGENT: &str = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36";
+
 const FILTER_STATUS: [u8; 3] = [2, 0, 1];
 
 pub fn get_filtered_url(filters: Vec<Filter>, page: i32) -> String {
@@ -24,7 +30,7 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32) -> String {
 
 	let mut filter_status_index = 0;
 	let mut filter_content_rating = 0;
-	let mut filter_tag_vec: Vec<String> = Vec::new();
+	let mut filter_tags_vec: Vec<String> = Vec::new();
 	let mut sort_by = 1;
 
 	let mut query = QueryParameters::new();
@@ -32,9 +38,9 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32) -> String {
 	for filter in filters {
 		match filter.kind {
 			FilterType::Title => {
-				if let Ok(value) = filter.value.as_string() {
+				if let Ok(search_str) = filter.value.as_string() {
 					is_searching = true;
-					query.push("keyword", Some(value.read().as_str()));
+					query.push("keyword", Some(search_str.read().as_str()));
 					// type=[1: Manga, 2: Novel]
 					query.push("type", Some("1"));
 					query.push("pageNo", Some(page.to_string().as_str()));
@@ -51,7 +57,8 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32) -> String {
 			FilterType::Genre => {
 				let checked = filter.value.as_int().unwrap_or(-1) == 1;
 				if checked {
-					filter_tag_vec.push(filter.name)
+					let tag = filter.name;
+					filter_tags_vec.push(tag)
 				}
 			}
 			FilterType::Sort => {
@@ -63,40 +70,39 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32) -> String {
 		}
 	}
 
-	let mut url = format!("{}{}", BASE_URL, API_URL);
+	let mut url = format!("{}{}", DOMAIN, API_PATH);
 
 	if is_searching {
-		url.push_str(format!("searchk?{}", query).as_str());
+		let searching_path = format!("searchk?{}", query);
+		url.push_str(searching_path.as_str());
 
 		return url;
 	}
 
-	let filter_tag = match filter_tag_vec.is_empty() {
+	let filter_tags = match filter_tags_vec.is_empty() {
 		true => "0".to_string(),
-		false => filter_tag_vec.join("+"),
+		false => filter_tags_vec.join("+"),
 	};
 	// 1-{}-{}-{}-{}-{}-{type}-{viewing_permission}
 	// type=[1: Manga, 2: Novel]
 	// Login cookie is required to view manga for VIP members
 	// viewing_permission=[0: General, 1: VIP, 2: All]
-	url.push_str(
-		format!(
-			"cate/tp/1-{}-{}-{}-{}-{}-1-2",
-			encode_uri(filter_tag),
-			FILTER_STATUS[filter_status_index as usize],
-			sort_by,
-			page,
-			filter_content_rating
-		)
-		.as_str(),
+	let filters_path = format!(
+		"cate/tp/1-{}-{}-{}-{}-{}-1-2",
+		encode_uri(filter_tags),
+		FILTER_STATUS[filter_status_index as usize],
+		sort_by,
+		page,
+		filter_content_rating
 	);
+	url.push_str(filters_path.as_str());
 
 	url
 }
 
 pub fn request_get(url: String) -> Request {
 	Request::get(url)
-		.header("Referer", BASE_URL)
+		.header("Referer", DOMAIN)
 		.header("User-Agent", USER_AGENT)
 }
 
@@ -107,37 +113,36 @@ pub fn get_manga_list(json: ValueRef) -> Result<MangaPageResult> {
 	let mut manga: Vec<Manga> = Vec::new();
 
 	for item in result.get("list").as_array()? {
-		let manga_item = item.as_object()?;
+		let manga_object = item.as_object()?;
 
 		// if manga_item.get("lanmu_id").as_int().unwrap_or(0) == 5 {
 		// 	continue;
 		// }
 		// There's an ad whose lanmu_id is not 5
-		let keywords = manga_item.get("keyword").as_string()?.read();
+		let keywords = manga_object.get("keyword").as_string()?.read();
 		if keywords.contains("公告") {
 			continue;
 		}
 
-		let id = manga_item.get("id").as_int()?.to_string();
-		let cover = format!(
-			"{}{}",
-			BASE_URL,
-			manga_item.get("image").as_string()?.read()
-		);
-		let title = manga_item.get("title").as_string()?.read();
-		let artist = manga_item
+		let id = manga_object.get("id").as_int()?.to_string();
+
+		let cover_path = manga_object.get("image").as_string()?.read();
+		let cover = format!("{}{}", DOMAIN, cover_path);
+
+		let title = manga_object.get("title").as_string()?.read();
+		let artist = manga_object
 			.get("auther")
 			.as_string()?
 			.read()
 			.replace('&', "、");
-		let description = manga_item.get("desc").as_string()?.read();
-		let url = format!("{}{}index/id/{}", BASE_URL, HTML_URL, id);
+		let description = manga_object.get("desc").as_string()?.read();
+		let url = format!("{}{}{}{}", DOMAIN, HTML_PATH, MANGA_PATH, id);
 		let categories: Vec<String> = keywords
 			.split(',')
 			.filter(|tag| !tag.is_empty())
 			.map(|tag| tag.to_string())
 			.collect();
-		let status = match manga_item.get("mhstatus").as_int()? {
+		let status = match manga_object.get("mhstatus").as_int()? {
 			0 => MangaStatus::Ongoing,
 			1 => MangaStatus::Completed,
 			_ => MangaStatus::Unknown,
@@ -171,12 +176,12 @@ pub fn get_manga_details(html: Node, id: String) -> Result<Manga> {
 	let cover = html.select("a.play").attr("abs:data-original").read();
 	let title = html.select("div.title > h1").text().read();
 
-	let mut artist_vec: Vec<String> = Vec::new();
+	let mut artists_vec: Vec<String> = Vec::new();
 	for item in html.select("p.data:contains(作者：) > a").array() {
 		let artist_str = item.as_node()?.text().read();
-		artist_vec.push(artist_str);
+		artists_vec.push(artist_str);
 	}
-	let artist = artist_vec.join("、");
+	let artist = artists_vec.join("、");
 
 	let mut description = html
 		.select("span.detail-text")
@@ -190,7 +195,7 @@ pub fn get_manga_details(html: Node, id: String) -> Result<Manga> {
 		description = description_with_closing_tag.trim().to_string();
 	}
 
-	let url = format!("{}{}index/id/{}", BASE_URL, HTML_URL, id);
+	let url = format!("{}{}{}{}", DOMAIN, HTML_PATH, MANGA_PATH, id);
 
 	let mut categories: Vec<String> = Vec::new();
 	let mut nsfw = MangaContentRating::Nsfw;
@@ -236,12 +241,12 @@ pub fn get_chapter_list(json: ValueRef) -> Result<Vec<Chapter>> {
 	let mut chapters: Vec<Chapter> = Vec::new();
 
 	for (index, item) in result.get("list").as_array()?.rev().enumerate() {
-		let manga_item = item.as_object()?;
+		let manga_object = item.as_object()?;
 
-		let id = manga_item.get("id").as_int()?.to_string();
-		let title = manga_item.get("title").as_string()?.read();
+		let id = manga_object.get("id").as_int()?.to_string();
+		let title = manga_object.get("title").as_string()?.read();
 		let chapter = (index + 1) as f32;
-		let url = format!("{}{}capter/id/{}", BASE_URL, HTML_URL, id);
+		let url = format!("{}{}{}{}", DOMAIN, HTML_PATH, CHAPTER_PATH, id);
 
 		chapters.insert(
 			0,
@@ -263,11 +268,13 @@ pub fn get_page_list(html: Node) -> Result<Vec<Page>> {
 	let mut pages: Vec<Page> = Vec::new();
 
 	for (index, item) in html.select("img.lazy[id]").array().enumerate() {
-		let url = format!(
-			"{}{}",
-			BASE_URL,
-			item.as_node()?.attr("data-original").read().trim()
-		);
+		let page_path = item
+			.as_node()?
+			.attr("data-original")
+			.read()
+			.trim()
+			.to_string();
+		let url = format!("{}{}", DOMAIN, page_path);
 
 		pages.push(Page {
 			index: index as i32,
@@ -284,9 +291,10 @@ pub fn parse_deep_link(url: String) -> Result<DeepLink> {
 		return Ok(DeepLink::default());
 	}
 
-	if url.contains("/index/") {
+	if url.contains(MANGA_PATH) {
 		if let Some(manga_id) = url.substring_after_last("/") {
 			let manga = Some(crate::get_manga_details(manga_id.to_string())?);
+
 			return Ok(DeepLink {
 				manga,
 				chapter: None,
@@ -296,7 +304,7 @@ pub fn parse_deep_link(url: String) -> Result<DeepLink> {
 		return Ok(DeepLink::default());
 	}
 
-	if !url.contains("/capter/") {
+	if !url.contains(CHAPTER_PATH) {
 		return Ok(DeepLink::default());
 	}
 

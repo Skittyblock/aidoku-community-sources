@@ -8,7 +8,8 @@ use aidoku::{
 
 mod parser;
 use parser::{
-	get_filtered_url, parse_deep_link, request_get, API_URL, BASE_URL, HTML_URL, USER_AGENT,
+	get_filtered_url, parse_deep_link, request_get, API_PATH, CHAPTER_PATH, DOMAIN, HTML_PATH,
+	MANGA_PATH, USER_AGENT,
 };
 
 #[get_manga_list]
@@ -21,7 +22,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 
 #[get_manga_details]
 fn get_manga_details(id: String) -> Result<Manga> {
-	let url = format!("{}{}index/id/{}", BASE_URL, HTML_URL, id);
+	let url = format!("{}{}{}{}", DOMAIN, HTML_PATH, MANGA_PATH, id);
 	let html = request_get(url).html()?;
 
 	parser::get_manga_details(html, id)
@@ -29,7 +30,7 @@ fn get_manga_details(id: String) -> Result<Manga> {
 
 #[get_chapter_list]
 fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
-	let url = format!("{}{}chapter_list/tp/{}-0-0-10", BASE_URL, API_URL, id);
+	let url = format!("{}{}chapter_list/tp/{}-0-0-10", DOMAIN, API_PATH, id);
 	let json = request_get(url).json()?;
 
 	parser::get_chapter_list(json)
@@ -37,7 +38,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 
 #[get_page_list]
 fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
-	let url = format!("{}{}capter/id/{}", BASE_URL, HTML_URL, chapter_id);
+	let url = format!("{}{}{}{}", DOMAIN, HTML_PATH, CHAPTER_PATH, chapter_id);
 	let html = request_get(url).html()?;
 
 	parser::get_page_list(html)
@@ -46,7 +47,7 @@ fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 #[modify_image_request]
 fn modify_image_request(request: Request) {
 	request
-		.header("Referer", BASE_URL)
+		.header("Referer", DOMAIN)
 		.header("User-Agent", USER_AGENT);
 }
 
