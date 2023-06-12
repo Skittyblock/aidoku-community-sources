@@ -275,7 +275,18 @@ pub fn parse_chapters(html: &WNode, manga_id: &str) -> Result<Vec<Chapter>> {
 				.strip_prefix(format!("/{manga_id}/").as_str())?
 				.to_string();
 
-			let title = link_elem.text().replace(" новое", "").trim().to_string();
+			let full_title = link_elem.text().replace(" новое", "").trim().to_string();
+			let title = {
+				let strippred_title: String = full_title
+					.chars()
+					.skip_while(|char| char.is_numeric() || char.is_whitespace() || char == &'-')
+					.collect();
+				if strippred_title.is_empty() {
+					full_title
+				} else {
+					strippred_title
+				}
+			};
 
 			let (vol_str, chap_str) = id.split_once('/')?;
 			let volume = vol_str.strip_prefix("vol")?.parse().ok()?;
