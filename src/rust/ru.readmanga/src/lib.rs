@@ -127,6 +127,10 @@ pub fn modify_image_request(request: Request) {
 
 #[handle_url]
 pub fn handle_url(url: String) -> Result<DeepLink> {
+	let demon_slayer_chap_1_2_url =
+		"https://readmanga.live/klinok__rassekaiuchii_demonov__A5327/vol1/2".to_string();
+	let result = parser::parse_incoming_url(demon_slayer_chap_1_2_url);
+
 	let parsed_manga_id = parser::parse_incoming_url_mangafox(url);
 
 	Ok(DeepLink {

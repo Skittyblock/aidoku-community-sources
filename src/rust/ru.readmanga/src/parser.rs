@@ -9,8 +9,8 @@ use aidoku::{
 		net::{HttpMethod, Request},
 		String, StringRef, Vec,
 	},
-	Chapter, Filter, FilterType, Listing, Manga, MangaContentRating, MangaPageResult, MangaStatus,
-	MangaViewer, Page,
+	Chapter, DeepLink, Filter, FilterType, Listing, Manga, MangaContentRating, MangaPageResult,
+	MangaStatus, MangaViewer, Page,
 };
 
 extern crate alloc;
@@ -19,7 +19,10 @@ use alloc::{boxed::Box, string::ToString};
 use const_format::formatcp;
 use itertools::chain;
 
-use crate::wrappers::{debug, WNode};
+use crate::{
+	get_manga_details,
+	wrappers::{debug, WNode},
+};
 
 const BASE_URL: &str = "https://readmanga.live";
 const BASE_SEARCH_URL: &str = formatcp!("{}/{}", BASE_URL, "search/advancedResults?");
@@ -756,6 +759,24 @@ pub fn get_filtered_url_mangafox(filters: Vec<Filter>, page: i32) -> String {
 		url.push_str(list_string.as_str());
 	}
 	encode_uri(url)
+}
+
+pub fn parse_incoming_url(url: String) -> Result<DeepLink> {
+	let manga_id = match url.find("://") {
+		Some(idx) => &url[idx + 3..],
+		None => &url[..],
+	}
+	.split('/')
+	.next()
+	.ok_or(AidokuError {
+		reason: AidokuErrorKind::Unimplemented,
+	})?;
+	debug!("manga_id: {manga_id}");
+
+	Ok(DeepLink {
+		manga: Some(get_manga_details(manga_id.to_string())?),
+		chapter: None,
+	})
 }
 
 pub fn parse_incoming_url_mangafox(url: String) -> String {
