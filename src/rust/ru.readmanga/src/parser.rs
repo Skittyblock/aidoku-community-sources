@@ -75,7 +75,7 @@ pub fn create_manga_page_result(mangas: Vec<Manga>) -> MangaPageResult {
 	}
 }
 
-pub fn parse_directory(html: WNode) -> Result<Vec<Manga>> {
+pub fn parse_search_results(html: WNode) -> Result<Vec<Manga>> {
 	let nodes = html.select("div.tile");
 	// debug!("{:?}", nodes);
 

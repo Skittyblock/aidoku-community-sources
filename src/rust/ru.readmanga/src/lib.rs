@@ -36,9 +36,8 @@ pub fn initialize() {
 #[get_manga_list]
 pub fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	let search_url = parser::get_filter_url(&filters, parser::Sorting::default(), page)?;
-	debug!("search url: {}", search_url);
 	let request = parser::get_html(search_url)?;
-	let mangas = parser::parse_directory(request)?;
+	let mangas = parser::parse_search_results(request)?;
 	let result = parser::create_manga_page_result(mangas);
 	debug!("get_manga_list: {result:?}");
 
@@ -50,7 +49,7 @@ pub fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult>
 	let sorting = parser::Sorting::from_listing(&listing);
 	let url = parser::get_filter_url(&vec![], sorting, page)?;
 	let html = parser::get_html(url)?;
-	let mangas = parser::parse_directory(html)?;
+	let mangas = parser::parse_search_results(html)?;
 	let result = parser::create_manga_page_result(mangas);
 	debug!("get_manga_listing: {result:?}");
 
@@ -76,8 +75,8 @@ pub fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 }
 
 #[get_page_list]
-pub fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
-	let url = parser::get_chapter_url(&_manga_id, &chapter_id);
+pub fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
+	let url = parser::get_chapter_url(&manga_id, &chapter_id);
 	let html = parser::get_html(url)?;
 	let result = parser::get_page_list(html);
 	debug!("get_page_list: {result:?}");
