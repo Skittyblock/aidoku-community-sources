@@ -32,7 +32,7 @@ impl WNode {
 		}
 	}
 
-	pub fn select<T: AsRef<str>>(&self, selector: T) -> Vec<WNode> {
+	pub fn select(&self, selector: &str) -> Vec<WNode> {
 		// we need this due to refcount error in aidoku-rs: https://github.com/Aidoku/aidoku-rs/issues/4
 		let mut res = Vec::new();
 		let html = self.to_node();
@@ -46,7 +46,7 @@ impl WNode {
 		res
 	}
 
-	pub fn attr<T: AsRef<str>>(&self, attr: T) -> Option<String> {
+	pub fn attr(&self, attr: &str) -> Option<String> {
 		let attributes_str = self
 			.repr
 			.substring_before(">")?
@@ -54,7 +54,7 @@ impl WNode {
 			.split_once(" ")?
 			.1;
 
-		let attr_idx = attributes_str.find(attr.as_ref())?;
+		let attr_idx = attributes_str.find(attr)?;
 		let val: String = attributes_str[attr_idx..]
 			.chars()
 			.skip_while(|c| c != &'=')

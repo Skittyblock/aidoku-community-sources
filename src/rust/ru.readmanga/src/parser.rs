@@ -171,10 +171,10 @@ pub fn parse_manga(html: &WNode, id: String) -> Result<Manga> {
 
 	let extract_info_iter = |elem_class, link_type| {
 		main_info_node
-			.select(format!("span.elem_{elem_class}"))
+			.select(&format!("span.elem_{elem_class}"))
 			.into_iter()
 			.flat_map(move |node| {
-				node.select(format!("a.{link_type}-link"))
+				node.select(&format!("a.{link_type}-link"))
 					.into_iter()
 					.map(|person_node| person_node.text())
 			})
