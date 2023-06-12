@@ -105,7 +105,7 @@ pub fn parse_search_results(html: &WNode) -> Result<Vec<Manga>> {
 				url,
 				categories,
 				status,
-				nsfw: MangaContentRating::Suggestive,
+				nsfw: MangaContentRating::default(),
 				viewer: MangaViewer::Rtl,
 			})
 		})
@@ -240,7 +240,7 @@ pub fn parse_manga(html: &WNode, id: String) -> Result<Manga> {
 		url,
 		categories,
 		status,
-		nsfw: MangaContentRating::Suggestive,
+		nsfw: MangaContentRating::default(),
 		viewer,
 	})
 }
