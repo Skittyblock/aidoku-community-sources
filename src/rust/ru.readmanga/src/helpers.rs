@@ -1,5 +1,5 @@
 use aidoku::{
-	error::Result,
+	error::{AidokuError, AidokuErrorKind, NodeError, Result},
 	prelude::*,
 	std::net::{HttpMethod, Request},
 	Manga, MangaPageResult,
@@ -32,4 +32,10 @@ pub fn create_manga_page_result(mangas: Vec<Manga>) -> MangaPageResult {
 pub fn get_chapter_url(manga_id: &str, chapter_id: &str) -> String {
 	// mtr is 18+ skip
 	format!("{BASE_URL}/{manga_id}/{chapter_id}?mtr=true")
+}
+
+pub fn create_parsing_error() -> AidokuError {
+	AidokuError {
+		reason: AidokuErrorKind::NodeError(NodeError::ParseError),
+	}
 }

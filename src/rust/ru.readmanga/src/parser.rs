@@ -1,7 +1,7 @@
 use core::iter::once;
 
 use aidoku::{
-	error::{AidokuError, AidokuErrorKind, NodeError, Result},
+	error::{AidokuError, AidokuErrorKind, Result},
 	helpers::{substring::Substring, uri::encode_uri},
 	prelude::*,
 	std::{String, StringRef, Vec},
@@ -114,15 +114,16 @@ pub fn parse_search_results(html: &WNode) -> Result<Vec<Manga>> {
 	Ok(mangas)
 }
 
-fn get_manga_page_main_node(html: &WNode) -> Option<WNode> {
-	html.select("div.leftContent").pop()
+fn get_manga_page_main_node(html: &WNode) -> Result<WNode> {
+	html.select("div.leftContent")
+		.pop()
+		.ok_or(helpers::create_parsing_error())
 }
 
 pub fn parse_manga(html: &WNode, id: String) -> Result<Manga> {
-	let parsing_error = AidokuError {
-		reason: AidokuErrorKind::NodeError(NodeError::ParseError),
-	};
-	let main_node = get_manga_page_main_node(&html).ok_or(parsing_error)?;
+	let parsing_error = helpers::create_parsing_error();
+
+	let main_node = get_manga_page_main_node(&html)?;
 
 	let main_attributes_node = main_node
 		.select("div.flex-row")
@@ -245,10 +246,7 @@ pub fn parse_manga(html: &WNode, id: String) -> Result<Manga> {
 }
 
 pub fn parse_chapters(html: &WNode, manga_id: &str) -> Result<Vec<Chapter>> {
-	let parsing_error = AidokuError {
-		reason: AidokuErrorKind::NodeError(NodeError::ParseError),
-	};
-	let main_node = get_manga_page_main_node(&html).ok_or(parsing_error)?;
+	let main_node = get_manga_page_main_node(&html)?;
 
 	let chapters = main_node
 		.select("div.chapters-link > table > tbody > tr:has(td > a):has(td.date:not(.text-info))")
@@ -318,9 +316,7 @@ pub fn parse_chapters(html: &WNode, manga_id: &str) -> Result<Vec<Chapter>> {
 }
 
 pub fn get_page_list(html: &WNode) -> Result<Vec<Page>> {
-	let parsing_error = AidokuError {
-		reason: AidokuErrorKind::NodeError(NodeError::ParseError),
-	};
+	let parsing_error = helpers::create_parsing_error();
 
 	let script_text = html
 		.select(r"div.reader-controller > script[type=text/javascript]")
