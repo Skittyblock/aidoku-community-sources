@@ -4,12 +4,9 @@ use aidoku::{
 	error::{AidokuError, AidokuErrorKind, NodeError, Result},
 	helpers::{substring::Substring, uri::encode_uri},
 	prelude::*,
-	std::{
-		net::{HttpMethod, Request},
-		String, StringRef, Vec,
-	},
-	Chapter, DeepLink, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
-	MangaViewer, Page,
+	std::{String, StringRef, Vec},
+	Chapter, DeepLink, Filter, FilterType, Manga, MangaContentRating, MangaStatus, MangaViewer,
+	Page,
 };
 
 extern crate alloc;
@@ -19,28 +16,10 @@ use itertools::chain;
 
 use crate::{
 	constants::{BASE_SEARCH_URL, BASE_URL, SEARCH_OFFSET_STEP},
-	get_manga_details,
+	get_manga_details, helpers,
 	sorting::Sorting,
 	wrappers::{debug, WNode},
 };
-
-pub fn get_html(url: &str) -> Result<WNode> {
-	Request::new(url, HttpMethod::Get)
-		.html()
-		.map(WNode::from_node)
-}
-
-pub fn get_manga_url(id: &str) -> String {
-	format!("{}/{}", BASE_URL, id)
-}
-
-pub fn create_manga_page_result(mangas: Vec<Manga>) -> MangaPageResult {
-	let has_more = mangas.len() == SEARCH_OFFSET_STEP as usize;
-	MangaPageResult {
-		manga: mangas,
-		has_more,
-	}
-}
 
 pub fn parse_search_results(html: &WNode) -> Result<Vec<Manga>> {
 	let nodes = html.select("div.tile");
@@ -90,7 +69,7 @@ pub fn parse_search_results(html: &WNode) -> Result<Vec<Manga>> {
 			let description = div_manga_description_node.text();
 			// debug!("description: {description}");
 
-			let url = get_manga_url(&id);
+			let url = helpers::get_manga_url(&id);
 			// debug!("url: {}", url);
 
 			let categories = div_html_popover_holder_node
@@ -204,7 +183,7 @@ pub fn parse_manga(html: &WNode, id: String) -> Result<Manga> {
 		.and_then(|desc_node| desc_node.attr("content"))
 		.unwrap_or_default();
 
-	let url = get_manga_url(&id);
+	let url = helpers::get_manga_url(&id);
 
 	let category_opt = extract_info_iter("category", "element").next();
 
@@ -265,11 +244,6 @@ pub fn parse_manga(html: &WNode, id: String) -> Result<Manga> {
 	})
 }
 
-pub fn get_chapter_url(manga_id: &str, chapter_id: &str) -> String {
-	// mtr is 18+ skip
-	format!("{BASE_URL}/{manga_id}/{chapter_id}?mtr=true")
-}
-
 pub fn parse_chapters(html: &WNode, manga_id: &str) -> Result<Vec<Chapter>> {
 	let parsing_error = AidokuError {
 		reason: AidokuErrorKind::NodeError(NodeError::ParseError),
@@ -325,7 +299,7 @@ pub fn parse_chapters(html: &WNode, manga_id: &str) -> Result<Vec<Chapter>> {
 				.unwrap_or_default()
 				.replace(" (Переводчик)", "");
 
-			let url = get_chapter_url(&manga_id, &id);
+			let url = helpers::get_chapter_url(&manga_id, &id);
 
 			Some(Chapter {
 				id,
