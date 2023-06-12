@@ -74,6 +74,10 @@ impl WNode {
 		self.to_node().text().read()
 	}
 
+	pub fn data(&self) -> String {
+		self.to_node().data().read()
+	}
+
 	fn to_node(&self) -> Node {
 		let res = Node::new(self.repr.as_bytes());
 		if res.is_err() {

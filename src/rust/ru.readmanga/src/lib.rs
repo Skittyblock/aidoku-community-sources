@@ -105,6 +105,13 @@ pub fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 
 #[get_page_list]
 pub fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
+	let demon_slayer_id = "klinok__rassekaiuchii_demonov__A5327".to_string();
+	let chap_1_2_id = "vol1/2".to_string();
+	let demon_slayer_chap_1_2_url = parser::get_chapter_url(&demon_slayer_id, &chap_1_2_id);
+	let demon_slayer_chap_1_2_html = parser::get_html(demon_slayer_chap_1_2_url)?;
+	let demon_slayer_chap_1_2_result = parser::get_page_list(demon_slayer_chap_1_2_html);
+	debug!("demon_slayer_chap_1_2: {demon_slayer_chap_1_2_result:?}");
+
 	let url = format!("https://m.fanfox.net/roll_manga/{}/1.html", chapter_id);
 	let html = Request::new(url.as_str(), HttpMethod::Get)
 		.header("Cookie", "readway=2")

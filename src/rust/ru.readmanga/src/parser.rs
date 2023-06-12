@@ -390,6 +390,11 @@ pub fn parse_manga_mangafox(obj: Node, id: String) -> Result<Manga> {
 	})
 }
 
+pub fn get_chapter_url(manga_id: &String, chapter_id: &String) -> String {
+	// mtr is 18+ skip
+	format!("{BASE_URL}/{manga_id}/{chapter_id}?mtr=true")
+}
+
 pub fn parse_chapters(html: WNode, manga_id: String) -> Result<Vec<Chapter>> {
 	let parsing_error = AidokuError {
 		reason: AidokuErrorKind::NodeError(NodeError::ParseError),
@@ -445,7 +450,7 @@ pub fn parse_chapters(html: WNode, manga_id: String) -> Result<Vec<Chapter>> {
 				.unwrap_or_default()
 				.replace(" (Переводчик)", "");
 
-			let url = format!("{BASE_URL}{chapter_rel_url}?mtr=true"); // mtr is 18+ skip
+			let url = get_chapter_url(&manga_id, &id);
 
 			Some(Chapter {
 				id,
@@ -531,6 +536,75 @@ pub fn parse_chapters_mangafox(obj: Node) -> Result<Vec<Chapter>> {
 		});
 	}
 	Ok(chapters)
+}
+
+pub fn get_page_list(html: WNode) -> Result<Vec<Page>> {
+	let parsing_error = AidokuError {
+		reason: AidokuErrorKind::NodeError(NodeError::ParseError),
+	};
+
+	let script_text = html
+		.select(r"div.reader-controller > script[type=text/javascript]")
+		.pop()
+		.map(|script_node| script_node.data())
+		.ok_or(parsing_error)?;
+
+	let chapters_list_str = script_text
+		.find("[[")
+		.zip(script_text.find("]]"))
+		.map(|(start, end)| &script_text[start..end + 2])
+		.ok_or(parsing_error)?;
+	debug!("chapters_list_str: {chapters_list_str:?}");
+
+	let urls: Vec<_> = chapters_list_str
+		.match_indices("['")
+		// extracting parts from ['https://t1.rmr.rocks/', '', "auto/68/88/46/0098.png_res.jpg", 959, 1400] into tuples
+		.zip(chapters_list_str.match_indices("\","))
+		.filter_map(|((l, _), (r, _))| {
+			use itertools::Itertools;
+			chapters_list_str[l + 1..r + 1]
+				.replace('\'', "")
+				.replace('"', "")
+				.split(',')
+				.map(ToString::to_string)
+				.collect_tuple()
+		})
+		// composing URL
+		.map(|(part0, part1, part2)| {
+			if part1.is_empty() && part2.starts_with("/static/") {
+				format!("{BASE_URL}{part2}")
+			} else if part1.starts_with("/manga/") {
+				format!("{part0}{part2}")
+			} else {
+				format!("{part0}{part1}{part2}")
+			}
+		})
+		// fixing URL
+		.map(|url| {
+			if !url.contains("://") {
+				format!("https:{url}")
+			} else {
+				url
+			}
+		})
+		.filter_map(|url| {
+			if url.contains("one-way.work") {
+				url.substring_before("?").map(ToString::to_string)
+			} else {
+				Some(url)
+			}
+		})
+		.collect();
+
+	Ok(urls
+		.into_iter()
+		.enumerate()
+		.map(|(idx, url)| Page {
+			index: idx as i32,
+			url,
+			..Default::default()
+		})
+		.collect())
 }
 
 pub fn get_page_list_mangafox(html: Node) -> Result<Vec<Page>> {
