@@ -24,14 +24,14 @@ use crate::{
 	wrappers::{debug, WNode},
 };
 
-pub fn get_html(url: String) -> Result<WNode> {
+pub fn get_html(url: &str) -> Result<WNode> {
 	Request::new(url, HttpMethod::Get)
 		.html()
 		.map(WNode::from_node)
 }
 
-pub fn get_manga_url<T: AsRef<str>>(id: &T) -> String {
-	format!("{}/{}", BASE_URL, id.as_ref())
+pub fn get_manga_url(id: &str) -> String {
+	format!("{}/{}", BASE_URL, id)
 }
 
 pub fn create_manga_page_result(mangas: Vec<Manga>) -> MangaPageResult {
@@ -42,7 +42,7 @@ pub fn create_manga_page_result(mangas: Vec<Manga>) -> MangaPageResult {
 	}
 }
 
-pub fn parse_search_results(html: WNode) -> Result<Vec<Manga>> {
+pub fn parse_search_results(html: &WNode) -> Result<Vec<Manga>> {
 	let nodes = html.select("div.tile");
 	// debug!("{:?}", nodes);
 
@@ -139,7 +139,7 @@ fn get_manga_page_main_node(html: &WNode) -> Option<WNode> {
 	html.select("div.leftContent").pop()
 }
 
-pub fn parse_manga(html: WNode, id: String) -> Result<Manga> {
+pub fn parse_manga(html: &WNode, id: String) -> Result<Manga> {
 	let parsing_error = AidokuError {
 		reason: AidokuErrorKind::NodeError(NodeError::ParseError),
 	};
@@ -265,12 +265,12 @@ pub fn parse_manga(html: WNode, id: String) -> Result<Manga> {
 	})
 }
 
-pub fn get_chapter_url(manga_id: &String, chapter_id: &String) -> String {
+pub fn get_chapter_url(manga_id: &str, chapter_id: &str) -> String {
 	// mtr is 18+ skip
 	format!("{BASE_URL}/{manga_id}/{chapter_id}?mtr=true")
 }
 
-pub fn parse_chapters(html: WNode, manga_id: String) -> Result<Vec<Chapter>> {
+pub fn parse_chapters(html: &WNode, manga_id: &str) -> Result<Vec<Chapter>> {
 	let parsing_error = AidokuError {
 		reason: AidokuErrorKind::NodeError(NodeError::ParseError),
 	};
@@ -343,7 +343,7 @@ pub fn parse_chapters(html: WNode, manga_id: String) -> Result<Vec<Chapter>> {
 	Ok(chapters)
 }
 
-pub fn get_page_list(html: WNode) -> Result<Vec<Page>> {
+pub fn get_page_list(html: &WNode) -> Result<Vec<Page>> {
 	let parsing_error = AidokuError {
 		reason: AidokuErrorKind::NodeError(NodeError::ParseError),
 	};
@@ -412,7 +412,7 @@ pub fn get_page_list(html: WNode) -> Result<Vec<Page>> {
 		.collect())
 }
 
-pub fn get_filter_url(filters: &Vec<Filter>, sorting: Sorting, page: i32) -> Result<String> {
+pub fn get_filter_url(filters: &Vec<Filter>, sorting: &Sorting, page: i32) -> Result<String> {
 	fn get_handler(operation: &'static str) -> Box<dyn Fn(AidokuError) -> AidokuError> {
 		return Box::new(move |err: AidokuError| {
 			println!("Error {:?} while {}", err.reason, operation);
@@ -446,7 +446,7 @@ pub fn get_filter_url(filters: &Vec<Filter>, sorting: Sorting, page: i32) -> Res
 	))
 }
 
-pub fn parse_incoming_url(url: String) -> Result<DeepLink> {
+pub fn parse_incoming_url(url: &str) -> Result<DeepLink> {
 	let manga_id = match url.find("://") {
 		Some(idx) => &url[idx + 3..],
 		None => &url[..],
