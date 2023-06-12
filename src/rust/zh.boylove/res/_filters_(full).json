@@ -905,7 +905,7 @@
 		"canAscend": false,
 		"options": [
 			"人氣",
-			"最新"
+			"最新更新"
 		],
 		"default": {
 			"index": 1,
