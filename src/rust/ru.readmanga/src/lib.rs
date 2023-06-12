@@ -2,6 +2,7 @@
 #![feature(pattern)]
 #![feature(iter_intersperse)]
 
+mod constants;
 mod parser;
 mod wrappers;
 

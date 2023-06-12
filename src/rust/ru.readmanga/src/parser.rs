@@ -15,18 +15,13 @@ use aidoku::{
 extern crate alloc;
 use alloc::{boxed::Box, string::ToString};
 
-use const_format::formatcp;
 use itertools::chain;
 
 use crate::{
+	constants::{BASE_SEARCH_URL, BASE_URL, SEARCH_OFFSET_STEP},
 	get_manga_details,
 	wrappers::{debug, WNode},
 };
-
-const BASE_URL: &str = "https://readmanga.live";
-const BASE_SEARCH_URL: &str = formatcp!("{}/{}", BASE_URL, "search/advancedResults?");
-
-const SEARCH_OFFSET_STEP: i32 = 50;
 
 #[derive(Debug, Default)]
 pub enum Sorting {
