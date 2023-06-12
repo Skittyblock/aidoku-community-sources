@@ -60,8 +60,8 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32) -> String {
 			}
 
 			FilterType::Genre => {
-				let checked = filter.value.as_int().unwrap_or(-1) == 1;
-				if !checked {
+				let is_not_checked = filter.value.as_int().unwrap_or(-1) != 1;
+				if is_not_checked {
 					continue;
 				}
 
