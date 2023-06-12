@@ -26,26 +26,30 @@ pub const USER_AGENT: &str = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Ap
 const FILTER_STATUS: [u8; 3] = [2, 0, 1];
 
 pub fn get_filtered_url(filters: Vec<Filter>, page: i32) -> String {
-	let mut is_searching = false;
+	let mut url = format!("{}{}", DOMAIN, API_PATH);
 
 	let mut filter_status_index = 0;
 	let mut filter_content_rating = 0;
 	let mut filter_tags_vec: Vec<String> = Vec::new();
 	let mut sort_by = 1;
 
-	let mut query = QueryParameters::new();
-
 	for filter in filters {
 		match filter.kind {
 			FilterType::Title => {
-				if let Ok(search_str) = filter.value.as_string() {
-					is_searching = true;
-					query.push("keyword", Some(search_str.read().as_str()));
-					// type=[1: Manga, 2: Novel]
-					query.push("type", Some("1"));
-					query.push("pageNo", Some(page.to_string().as_str()));
-				}
+				let Ok(search_str) = filter.value.as_string() else { continue; };
+
+				let mut query = QueryParameters::new();
+				query.push("keyword", Some(search_str.read().as_str()));
+				// type=[1: Manga, 2: Novel]
+				query.push("type", Some("1"));
+				query.push("pageNo", Some(page.to_string().as_str()));
+
+				let searching_path = format!("searchk?{}", query);
+				url.push_str(searching_path.as_str());
+
+				return url;
 			}
+
 			FilterType::Select => {
 				let index = filter.value.as_int().unwrap_or(0) as u8;
 				match filter.name.as_str() {
@@ -54,29 +58,24 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32) -> String {
 					_ => continue,
 				}
 			}
+
 			FilterType::Genre => {
 				let checked = filter.value.as_int().unwrap_or(-1) == 1;
-				if checked {
-					let tag = filter.name;
-					filter_tags_vec.push(tag)
+				if !checked {
+					continue;
 				}
+
+				let tag = filter.name;
+				filter_tags_vec.push(tag);
 			}
+
 			FilterType::Sort => {
-				if let Ok(value) = filter.value.as_object() {
-					sort_by = value.get("index").as_int().unwrap_or(1) as u8;
-				}
+				let Ok(value) = filter.value.as_object() else { continue; };
+				sort_by = value.get("index").as_int().unwrap_or(1) as u8;
 			}
+
 			_ => continue,
 		}
-	}
-
-	let mut url = format!("{}{}", DOMAIN, API_PATH);
-
-	if is_searching {
-		let searching_path = format!("searchk?{}", query);
-		url.push_str(searching_path.as_str());
-
-		return url;
 	}
 
 	let filter_tags = match filter_tags_vec.is_empty() {
@@ -130,23 +129,29 @@ pub fn get_manga_list(json: ValueRef) -> Result<MangaPageResult> {
 		let cover = format!("{}{}", DOMAIN, cover_path);
 
 		let title = manga_object.get("title").as_string()?.read();
+
 		let artist = manga_object
 			.get("auther")
 			.as_string()?
 			.read()
 			.replace('&', "、");
+
 		let description = manga_object.get("desc").as_string()?.read();
+
 		let url = format!("{}{}{}{}", DOMAIN, HTML_PATH, MANGA_PATH, id);
+
 		let categories: Vec<String> = keywords
 			.split(',')
 			.filter(|tag| !tag.is_empty())
 			.map(|tag| tag.to_string())
 			.collect();
+
 		let status = match manga_object.get("mhstatus").as_int()? {
 			0 => MangaStatus::Ongoing,
 			1 => MangaStatus::Completed,
 			_ => MangaStatus::Unknown,
 		};
+
 		let nsfw = match categories.contains(&"清水".to_string()) {
 			true => MangaContentRating::Safe,
 			false => MangaContentRating::Nsfw,
@@ -174,6 +179,7 @@ pub fn get_manga_list(json: ValueRef) -> Result<MangaPageResult> {
 
 pub fn get_manga_details(html: Node, id: String) -> Result<Manga> {
 	let cover = html.select("a.play").attr("abs:data-original").read();
+
 	let title = html.select("div.title > h1").text().read();
 
 	let mut artists_vec: Vec<String> = Vec::new();
@@ -244,8 +250,11 @@ pub fn get_chapter_list(json: ValueRef) -> Result<Vec<Chapter>> {
 		let manga_object = item.as_object()?;
 
 		let id = manga_object.get("id").as_int()?.to_string();
+
 		let title = manga_object.get("title").as_string()?.read();
+
 		let chapter = (index + 1) as f32;
+
 		let url = format!("{}{}{}{}", DOMAIN, HTML_PATH, CHAPTER_PATH, id);
 
 		chapters.insert(
@@ -292,28 +301,26 @@ pub fn parse_deep_link(url: String) -> Result<DeepLink> {
 	}
 
 	if url.contains(MANGA_PATH) {
-		if let Some(manga_id) = url.substring_after_last("/") {
-			let manga = Some(crate::get_manga_details(manga_id.to_string())?);
+		let Some(manga_id) = url.substring_after_last("/") else {
+			return Ok(DeepLink::default());
+		};
+		let manga = Some(crate::get_manga_details(manga_id.to_string())?);
 
-			return Ok(DeepLink {
-				manga,
-				chapter: None,
-			});
-		}
-
-		return Ok(DeepLink::default());
+		return Ok(DeepLink {
+			manga,
+			chapter: None,
+		});
 	}
 
 	if !url.contains(CHAPTER_PATH) {
 		return Ok(DeepLink::default());
 	}
 
-	let chapter_id = match url.substring_after_last("/") {
-		Some(id) => id.to_string(),
-		None => return Ok(DeepLink::default()),
+	let Some(chapter_id) = url.substring_after_last("/") else {
+		return Ok(DeepLink::default());
 	};
 	let chapter = Some(Chapter {
-		id: chapter_id,
+		id: chapter_id.to_string(),
 		..Default::default()
 	});
 
@@ -322,14 +329,10 @@ pub fn parse_deep_link(url: String) -> Result<DeepLink> {
 		.select("a.icon-only.link.back")
 		.attr("href")
 		.read();
-	if let Some(manga_id) = manga_url.substring_after_last("/") {
-		let manga = Some(crate::get_manga_details(manga_id.to_string())?);
+	let Some(manga_id) = manga_url.substring_after_last("/") else {
+		return Ok(DeepLink { manga: None, chapter });
+	};
+	let manga = Some(crate::get_manga_details(manga_id.to_string())?);
 
-		return Ok(DeepLink { manga, chapter });
-	}
-
-	Ok(DeepLink {
-		manga: None,
-		chapter,
-	})
+	Ok(DeepLink { manga, chapter })
 }
