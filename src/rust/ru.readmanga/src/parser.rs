@@ -7,7 +7,7 @@ use aidoku::{
 	std::{
 		html::Node,
 		net::{HttpMethod, Request},
-		String, Vec,
+		String, StringRef, Vec,
 	},
 	Chapter, Filter, FilterType, Listing, Manga, MangaContentRating, MangaPageResult, MangaStatus,
 	MangaViewer, Page,
@@ -198,11 +198,15 @@ pub fn parse_directory_mangafox(html: Node) -> Result<MangaPageResult> {
 	})
 }
 
+fn get_manga_page_main_node(html: &WNode) -> Option<WNode> {
+	html.select("div.leftContent").pop()
+}
+
 pub fn parse_manga(html: WNode, id: String) -> Result<Manga> {
 	let parsing_error = AidokuError {
 		reason: AidokuErrorKind::NodeError(NodeError::ParseError),
 	};
-	let main_node = html.select("div.leftContent").pop().ok_or(parsing_error)?;
+	let main_node = get_manga_page_main_node(&html).ok_or(parsing_error)?;
 
 	let main_attributes_node = main_node
 		.select("div.flex-row")
@@ -384,6 +388,79 @@ pub fn parse_manga_mangafox(obj: Node, id: String) -> Result<Manga> {
 		viewer,
 		..Default::default()
 	})
+}
+
+pub fn parse_chapters(html: WNode, manga_id: String) -> Result<Vec<Chapter>> {
+	let parsing_error = AidokuError {
+		reason: AidokuErrorKind::NodeError(NodeError::ParseError),
+	};
+	let main_node = get_manga_page_main_node(&html).ok_or(parsing_error)?;
+
+	let chapters = main_node
+		.select("div.chapters-link > table > tbody > tr:has(td > a):has(td.date:not(.text-info))")
+		.into_iter()
+		.filter_map(|chapter_elem| {
+			// debug!("chapter_elem: {chapter_elem:?}");
+			let link_elem = chapter_elem.select("a.chapter-link").pop()?;
+
+			// this: `chapter_elem.select("td.d-none")` doesn't work here, I don't know why
+			let date_elems: Vec<_> = {
+				let chapter_repr = chapter_elem.to_str();
+
+				chapter_repr
+					.match_indices("<td")
+					.zip(chapter_repr.match_indices("</td>"))
+					.map(|((start, _), (end, td_end))| {
+						chapter_repr[start..end + td_end.len()].to_string()
+					})
+					.filter_map(|td_repr| WNode::new(td_repr).attr("data-date-raw"))
+					.collect()
+			};
+
+			let chapter_rel_url = link_elem.attr("href")?;
+
+			let id = chapter_rel_url
+				.strip_prefix(format!("/{manga_id}/").as_str())?
+				.to_string();
+
+			let title = link_elem.text().replace(" новое", "").trim().to_string();
+
+			let (vol_str, chap_str) = id.split_once('/')?;
+			let volume = vol_str.strip_prefix("vol")?.parse().ok()?;
+			let chapter = chap_str.parse().ok()?;
+
+			let date_updated = {
+				match date_elems.first() {
+					Some(date_updated_str) => StringRef::from(&date_updated_str).as_date(
+						"yyyy-MM-dd HH:mm:ss.SSS",
+						None,
+						None,
+					),
+					None => 0f64,
+				}
+			};
+
+			let scanlator = link_elem
+				.attr("title")
+				.unwrap_or_default()
+				.replace(" (Переводчик)", "");
+
+			let url = format!("{BASE_URL}{chapter_rel_url}?mtr=true"); // mtr is 18+ skip
+
+			Some(Chapter {
+				id,
+				title,
+				volume,
+				chapter,
+				date_updated,
+				scanlator,
+				url,
+				lang: "ru".to_string(),
+			})
+		})
+		.collect();
+
+	Ok(chapters)
 }
 
 pub fn parse_chapters_mangafox(obj: Node) -> Result<Vec<Chapter>> {

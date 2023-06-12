@@ -81,4 +81,8 @@ impl WNode {
 		}
 		res.unwrap()
 	}
+
+	pub fn to_str(&self) -> &str {
+		&self.repr
+	}
 }
