@@ -8,13 +8,13 @@ mod wrappers;
 use aidoku::{
 	error::Result,
 	prelude::*,
-	std::net::{HttpMethod, Request},
+	std::net::Request,
 	std::{String, Vec},
 	Chapter, DeepLink, Filter, Listing, Manga, MangaPageResult, Page,
 };
 
 extern crate alloc;
-use alloc::{string::ToString, vec};
+use alloc::vec;
 
 use crate::wrappers::debug;
 
@@ -40,13 +40,9 @@ pub fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult
 	let request = parser::get_html(search_url)?;
 	let mangas = parser::parse_directory(request)?;
 	let result = parser::create_manga_page_result(mangas);
-	// debug!("{:?}", result);
+	debug!("get_manga_list: {result:?}");
 
-	let mangafox_url = parser::get_filtered_url_mangafox(filters, page);
-	let mangafox_html = Request::new(mangafox_url.as_str(), HttpMethod::Get)
-		.html()
-		.expect("");
-	parser::parse_directory_mangafox(mangafox_html)
+	Ok(result)
 }
 
 #[get_manga_listing]
@@ -56,85 +52,46 @@ pub fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult>
 	let html = parser::get_html(url)?;
 	let mangas = parser::parse_directory(html)?;
 	let result = parser::create_manga_page_result(mangas);
-	// debug!("{:?}", result);
+	debug!("get_manga_listing: {result:?}");
 
-	let url_query = match listing.name.as_str() {
-		"Latest" => "latest",
-		"Updated Rating" => "rating",
-		_ => "",
-	};
-	let url = format!(
-		"https://fanfox.net/directory/updated/{}.html?{}",
-		page.to_string(),
-		url_query
-	);
-	let html = Request::new(url.as_str(), HttpMethod::Get)
-		.html()
-		.expect("");
-	parser::parse_directory_mangafox(html)
+	Ok(result)
 }
 
 #[get_manga_details]
 pub fn get_manga_details(manga_id: String) -> Result<Manga> {
-	let demon_slayer_id = "klinok__rassekaiuchii_demonov__A5327".to_string();
-	let demon_slayer_html = parser::get_html(parser::get_manga_url(&demon_slayer_id))?;
-	let demon_slayer_result = parser::parse_manga(demon_slayer_html, demon_slayer_id);
-	debug!("demon_slayer: {demon_slayer_result:?}");
+	let html = parser::get_html(parser::get_manga_url(&manga_id))?;
+	let result = parser::parse_manga(html, manga_id);
+	debug!("get_manga_details: {result:?}");
 
-	let url = format!("https://www.fanfox.net/manga/{}", &manga_id);
-	let html = Request::new(url.as_str(), HttpMethod::Get)
-		.html()
-		.expect("");
-	parser::parse_manga_mangafox(html, manga_id)
+	result
 }
 
 #[get_chapter_list]
 pub fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
-	let demon_slayer_id = "klinok__rassekaiuchii_demonov__A5327".to_string();
-	let demon_slayer_html = parser::get_html(parser::get_manga_url(&demon_slayer_id))?;
-	let demon_slayer_result = parser::parse_chapters(demon_slayer_html, demon_slayer_id);
-	debug!("demon_slayer: {demon_slayer_result:?}");
+	let html = parser::get_html(parser::get_manga_url(&manga_id))?;
+	let result = parser::parse_chapters(html, manga_id);
+	debug!("get_chapter_list: {result:?}");
 
-	let url = format!("https://www.fanfox.net/manga/{}", &manga_id);
-	let html = Request::new(url.as_str(), HttpMethod::Get)
-		.header("Cookie", "isAdult=1")
-		.html()
-		.expect("");
-	parser::parse_chapters_mangafox(html)
+	result
 }
 
 #[get_page_list]
 pub fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
-	let demon_slayer_id = "klinok__rassekaiuchii_demonov__A5327".to_string();
-	let chap_1_2_id = "vol1/2".to_string();
-	let demon_slayer_chap_1_2_url = parser::get_chapter_url(&demon_slayer_id, &chap_1_2_id);
-	let demon_slayer_chap_1_2_html = parser::get_html(demon_slayer_chap_1_2_url)?;
-	let demon_slayer_chap_1_2_result = parser::get_page_list(demon_slayer_chap_1_2_html);
-	debug!("demon_slayer_chap_1_2: {demon_slayer_chap_1_2_result:?}");
+	let url = parser::get_chapter_url(&_manga_id, &chapter_id);
+	let html = parser::get_html(url)?;
+	let result = parser::get_page_list(html);
+	debug!("get_page_list: {result:?}");
 
-	let url = format!("https://m.fanfox.net/roll_manga/{}/1.html", chapter_id);
-	let html = Request::new(url.as_str(), HttpMethod::Get)
-		.header("Cookie", "readway=2")
-		.html()
-		.expect("");
-	parser::get_page_list_mangafox(html)
+	result
 }
 
 #[modify_image_request]
-pub fn modify_image_request(request: Request) {
-	request.header("Referer", "https://m.fanfox.net/");
-}
+pub fn modify_image_request(_: Request) {}
 
 #[handle_url]
 pub fn handle_url(url: String) -> Result<DeepLink> {
-	let demon_slayer_chap_1_2_url =
-		"https://readmanga.live/klinok__rassekaiuchii_demonov__A5327/vol1/2".to_string();
-	let result = parser::parse_incoming_url(demon_slayer_chap_1_2_url);
+	let result = parser::parse_incoming_url(url);
+	debug!("handle_url: {result:?}");
 
-	let parsed_manga_id = parser::parse_incoming_url_mangafox(url);
-
-	Ok(DeepLink {
-		manga: Some(get_manga_details(parsed_manga_id)?),
-		chapter: None,
-	})
+	result
 }
