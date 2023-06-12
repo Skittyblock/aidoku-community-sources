@@ -21,4 +21,3 @@ const_format = "0.2.31"
 itertools = { version = "0.10.5", default-features = false, features = [
     "use_alloc",
 ] }
-unpacker = { git = "https://github.com/beerpiss/unpacker.rs.git" }
