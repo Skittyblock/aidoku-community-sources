@@ -1,4 +1,4 @@
-use core::{fmt::Display, iter::once};
+use core::iter::once;
 
 use aidoku::{
 	error::{AidokuError, AidokuErrorKind, NodeError, Result},
@@ -8,8 +8,8 @@ use aidoku::{
 		net::{HttpMethod, Request},
 		String, StringRef, Vec,
 	},
-	Chapter, DeepLink, Filter, FilterType, Listing, Manga, MangaContentRating, MangaPageResult,
-	MangaStatus, MangaViewer, Page,
+	Chapter, DeepLink, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
+	MangaViewer, Page,
 };
 
 extern crate alloc;
@@ -20,37 +20,9 @@ use itertools::chain;
 use crate::{
 	constants::{BASE_SEARCH_URL, BASE_URL, SEARCH_OFFSET_STEP},
 	get_manga_details,
+	sorting::Sorting,
 	wrappers::{debug, WNode},
 };
-
-#[derive(Debug, Default)]
-pub enum Sorting {
-	#[default]
-	Rating,
-	Popular,
-	UpdatedRecently,
-}
-
-impl Sorting {
-	pub fn from_listing(listing: &Listing) -> Self {
-		match listing.name.as_str() {
-			"Rating" => Self::Rating,
-			"Popular" => Self::Popular,
-			"Updated Recently" => Self::UpdatedRecently,
-			_ => Self::Rating,
-		}
-	}
-}
-
-impl Display for Sorting {
-	fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-		match self {
-			Sorting::Rating => write!(f, "RATING"),
-			Sorting::Popular => write!(f, "POPULARITY"),
-			Sorting::UpdatedRecently => write!(f, "DATE_UPDATE"),
-		}
-	}
-}
 
 pub fn get_html(url: String) -> Result<WNode> {
 	Request::new(url, HttpMethod::Get)

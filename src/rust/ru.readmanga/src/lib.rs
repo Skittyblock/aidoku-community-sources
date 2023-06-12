@@ -4,6 +4,7 @@
 
 mod constants;
 mod parser;
+mod sorting;
 mod wrappers;
 
 use aidoku::{
@@ -17,7 +18,7 @@ use aidoku::{
 extern crate alloc;
 use alloc::vec;
 
-use crate::wrappers::debug;
+use crate::{sorting::Sorting, wrappers::debug};
 
 #[initialize]
 pub fn initialize() {
@@ -36,7 +37,7 @@ pub fn initialize() {
 
 #[get_manga_list]
 pub fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
-	let search_url = parser::get_filter_url(&filters, parser::Sorting::default(), page)?;
+	let search_url = parser::get_filter_url(&filters, Sorting::default(), page)?;
 	let request = parser::get_html(search_url)?;
 	let mangas = parser::parse_search_results(request)?;
 	let result = parser::create_manga_page_result(mangas);
@@ -47,7 +48,7 @@ pub fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult
 
 #[get_manga_listing]
 pub fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
-	let sorting = parser::Sorting::from_listing(&listing);
+	let sorting = Sorting::from_listing(&listing);
 	let url = parser::get_filter_url(&vec![], sorting, page)?;
 	let html = parser::get_html(url)?;
 	let mangas = parser::parse_search_results(html)?;
