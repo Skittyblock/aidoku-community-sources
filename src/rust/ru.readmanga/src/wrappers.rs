@@ -54,7 +54,7 @@ impl WNode {
 			.split_once(" ")?
 			.1;
 
-		let attr_idx = attributes_str.find(attr.as_ref()).unwrap();
+		let attr_idx = attributes_str.find(attr.as_ref())?;
 		let val: String = attributes_str[attr_idx..]
 			.chars()
 			.skip_while(|c| c != &'=')
