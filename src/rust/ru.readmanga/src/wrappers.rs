@@ -51,7 +51,7 @@ impl WNode {
 			.repr
 			.substring_before(">")?
 			.substring_after("<")?
-			.split_once(" ")?
+			.split_once(' ')?
 			.1;
 
 		let attr_idx = attributes_str.find(attr)?;

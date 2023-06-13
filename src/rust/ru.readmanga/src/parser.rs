@@ -123,7 +123,7 @@ fn get_manga_page_main_node(html: &WNode) -> Result<WNode> {
 pub fn parse_manga(html: &WNode, id: String) -> Result<Manga> {
 	let parsing_error = helpers::create_parsing_error();
 
-	let main_node = get_manga_page_main_node(&html)?;
+	let main_node = get_manga_page_main_node(html)?;
 
 	let main_attributes_node = main_node
 		.select("div.flex-row")
@@ -174,13 +174,12 @@ pub fn parse_manga(html: &WNode, id: String) -> Result<Manga> {
 	let description = main_node
 		.select("meta")
 		.into_iter()
-		.filter(|mn| {
+		.find(|mn| {
 			if let Some(itemprop) = mn.attr("itemprop") {
 				return itemprop == "description";
 			}
 			false
 		})
-		.next()
 		.and_then(|desc_node| desc_node.attr("content"))
 		.unwrap_or_default();
 
@@ -210,7 +209,7 @@ pub fn parse_manga(html: &WNode, id: String) -> Result<Manga> {
 		.into_iter()
 		.filter(|pn| pn.attr("class").is_none())
 		.flat_map(|pn| pn.select("span"))
-		.filter(|sn| {
+		.find(|sn| {
 			if let Some(class_attr) = sn.attr("class") {
 				return class_attr
 					.split_whitespace()
@@ -218,7 +217,6 @@ pub fn parse_manga(html: &WNode, id: String) -> Result<Manga> {
 			}
 			false
 		})
-		.next()
 		.map(|status_node| status_node.text());
 	let status = match status_str_opt {
 		Some(status_str) => match status_str.to_lowercase().as_str() {
@@ -246,7 +244,7 @@ pub fn parse_manga(html: &WNode, id: String) -> Result<Manga> {
 }
 
 pub fn parse_chapters(html: &WNode, manga_id: &str) -> Result<Vec<Chapter>> {
-	let main_node = get_manga_page_main_node(&html)?;
+	let main_node = get_manga_page_main_node(html)?;
 
 	let chapters = main_node
 		.select("div.chapters-link > table > tbody > tr:has(td > a):has(td.date:not(.text-info))")
@@ -308,7 +306,7 @@ pub fn parse_chapters(html: &WNode, manga_id: &str) -> Result<Vec<Chapter>> {
 				.unwrap_or_default()
 				.replace(" (Переводчик)", "");
 
-			let url = helpers::get_chapter_url(&manga_id, &id);
+			let url = helpers::get_chapter_url(manga_id, &id);
 
 			Some(Chapter {
 				id,
@@ -349,8 +347,7 @@ pub fn get_page_list(html: &WNode) -> Result<Vec<Page>> {
 		.filter_map(|((l, _), (r, _))| {
 			use itertools::Itertools;
 			chapters_list_str[l + 1..r + 1]
-				.replace('\'', "")
-				.replace('"', "")
+				.replace(['\'', '"'], "")
 				.split(',')
 				.map(ToString::to_string)
 				.collect_tuple()
@@ -393,12 +390,12 @@ pub fn get_page_list(html: &WNode) -> Result<Vec<Page>> {
 		.collect())
 }
 
-pub fn get_filter_url(filters: &Vec<Filter>, sorting: &Sorting, page: i32) -> Result<String> {
+pub fn get_filter_url(filters: &[Filter], sorting: &Sorting, page: i32) -> Result<String> {
 	fn get_handler(operation: &'static str) -> Box<dyn Fn(AidokuError) -> AidokuError> {
-		return Box::new(move |err: AidokuError| {
+		Box::new(move |err: AidokuError| {
 			println!("Error {:?} while {}", err.reason, operation);
 			err
-		});
+		})
 	}
 
 	let filter_parts: Vec<_> = filters
@@ -430,7 +427,7 @@ pub fn get_filter_url(filters: &Vec<Filter>, sorting: &Sorting, page: i32) -> Re
 pub fn parse_incoming_url(url: &str) -> Result<DeepLink> {
 	let manga_id = match url.find("://") {
 		Some(idx) => &url[idx + 3..],
-		None => &url[..],
+		None => url,
 	}
 	.split('/')
 	.next()

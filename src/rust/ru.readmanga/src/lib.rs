@@ -17,7 +17,6 @@ use aidoku::{
 };
 
 extern crate alloc;
-use alloc::vec;
 
 use crate::{sorting::Sorting, wrappers::debug};
 
@@ -50,7 +49,7 @@ pub fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult
 #[get_manga_listing]
 pub fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 	let sorting = Sorting::from_listing(&listing);
-	let url = parser::get_filter_url(&vec![], &sorting, page)?;
+	let url = parser::get_filter_url(&[], &sorting, page)?;
 	let html = helpers::get_html(&url)?;
 	let mangas = parser::parse_search_results(&html)?;
 	let result = helpers::create_manga_page_result(mangas);
