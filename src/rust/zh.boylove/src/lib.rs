@@ -34,7 +34,6 @@ fn get(url: String) -> Request {
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	let manga_list_url = get_filtered_url(filters, page)?;
 	let manga_list_json = get(manga_list_url).json()?;
-
 	let manga_list_object = manga_list_json.as_object()?;
 	let result = manga_list_object.get("result").as_object()?;
 
@@ -109,7 +108,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 fn get_filtered_url(filters: Vec<Filter>, page: i32) -> Result<String> {
 	const FILTER_STATUS: [u8; 3] = [2, 0, 1];
 
-	let mut filtered_url = format!("{}{}", DOMAIN, API_PATH);
+	let mut url = format!("{}{}", DOMAIN, API_PATH);
 
 	let mut filter_status_index = 0;
 	let mut filter_content_rating = 0;
@@ -128,9 +127,9 @@ fn get_filtered_url(filters: Vec<Filter>, page: i32) -> Result<String> {
 				query.push("pageNo", Some(page.to_string().as_str()));
 
 				let searching_path = format!("searchk?{}", query);
-				filtered_url.push_str(searching_path.as_str());
+				url.push_str(searching_path.as_str());
 
-				return Ok(filtered_url);
+				return Ok(url);
 			}
 
 			FilterType::Select => {
@@ -177,15 +176,16 @@ fn get_filtered_url(filters: Vec<Filter>, page: i32) -> Result<String> {
 		page,
 		filter_content_rating
 	);
-	filtered_url.push_str(filters_path.as_str());
+	url.push_str(filters_path.as_str());
 
-	Ok(filtered_url)
+	Ok(url)
 }
 
 #[get_manga_details]
 fn get_manga_details(id: String) -> Result<Manga> {
-	let manga_url = format!("{}{}{}{}", DOMAIN, HTML_PATH, MANGA_PATH, id);
-	let manga_html = get(manga_url).html()?;
+	let url = format!("{}{}{}{}", DOMAIN, HTML_PATH, MANGA_PATH, id);
+
+	let manga_html = get(url.clone()).html()?;
 
 	let cover = manga_html.select("a.play").attr("abs:data-original").read();
 
@@ -193,8 +193,8 @@ fn get_manga_details(id: String) -> Result<Manga> {
 
 	let mut artists_vec: Vec<String> = Vec::new();
 	for value in manga_html.select("p.data:contains(作者：) > a").array() {
-		let name = value.as_node()?.text().read();
-		artists_vec.push(name);
+		let artist_str = value.as_node()?.text().read();
+		artists_vec.push(artist_str);
 	}
 	let artist = artists_vec.join("、");
 
@@ -209,8 +209,6 @@ fn get_manga_details(id: String) -> Result<Manga> {
 	if let Some(description_with_closing_tag) = description.substring_before_last("</") {
 		description = description_with_closing_tag.trim().to_string();
 	}
-
-	let url = format!("{}{}{}{}", DOMAIN, HTML_PATH, MANGA_PATH, id);
 
 	let mut categories: Vec<String> = Vec::new();
 	let mut nsfw = MangaContentRating::Nsfw;
@@ -253,7 +251,6 @@ fn get_manga_details(id: String) -> Result<Manga> {
 fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 	let chapter_list_url = format!("{}{}chapter_list/tp/{}-0-0-10", DOMAIN, API_PATH, id);
 	let chapter_list_json = get(chapter_list_url).json()?;
-
 	let chapter_list_object = chapter_list_json.as_object()?;
 	let result = chapter_list_object.get("result").as_object()?;
 
