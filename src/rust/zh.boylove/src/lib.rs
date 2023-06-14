@@ -329,7 +329,7 @@ fn handle_url(url: String) -> Result<DeepLink> {
 		let Some(manga_id) = url.substring_after_last("/") else {
 			return Ok(DeepLink::default());
 		};
-		let manga = Some(crate::get_manga_details(manga_id.to_string())?);
+		let manga = Some(get_manga_details(manga_id.to_string())?);
 
 		return Ok(DeepLink {
 			manga,
@@ -357,7 +357,7 @@ fn handle_url(url: String) -> Result<DeepLink> {
 	let Some(manga_id) = manga_url.substring_after_last("/") else {
 		return Ok(DeepLink { manga: None, chapter });
 	};
-	let manga = Some(crate::get_manga_details(manga_id.to_string())?);
+	let manga = Some(get_manga_details(manga_id.to_string())?);
 
 	Ok(DeepLink { manga, chapter })
 }
