@@ -200,6 +200,8 @@ fn get_manga_details(id: String) -> Result<Manga> {
 
 	let mut description =
 		unescape_html_entities(manga_html.select("span.detail-text").html().read())
+			.replace('\n', "")
+			.replace(" <br> ", "\n")
 			.replace("<br> ", "\n")
 			.replace("<br>", "\n")
 			.trim()
