@@ -6,7 +6,7 @@ use aidoku::{
 		uri::{encode_uri, QueryParameters},
 	},
 	prelude::*,
-	std::{net::Request, String, Vec},
+	std::{html::unescape_html_entities, net::Request, String, Vec},
 	Chapter, DeepLink, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
 	Page,
 };
@@ -198,14 +198,12 @@ fn get_manga_details(id: String) -> Result<Manga> {
 	}
 	let artist = artists_vec.join("、");
 
-	let mut description = manga_html
-		.select("span.detail-text")
-		.html()
-		.read()
-		.replace("<br> ", "\n")
-		.replace("<br>", "\n")
-		.trim()
-		.to_string();
+	let mut description =
+		unescape_html_entities(manga_html.select("span.detail-text").html().read())
+			.replace("<br> ", "\n")
+			.replace("<br>", "\n")
+			.trim()
+			.to_string();
 	if let Some(description_with_closing_tag) = description.substring_before_last("</") {
 		description = description_with_closing_tag.trim().to_string();
 	}
