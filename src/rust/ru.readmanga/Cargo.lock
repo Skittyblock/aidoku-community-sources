@@ -112,7 +112,7 @@ dependencies = [
 
 [[package]]
 name = "readmanga"
-version = "1.0.2"
+version = "1.0.3"
 dependencies = [
  "aidoku",
  "const_format",

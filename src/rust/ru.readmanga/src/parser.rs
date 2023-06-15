@@ -234,7 +234,9 @@ pub fn parse_chapters(html: &WNode, manga_id: &str) -> Result<Vec<Chapter>> {
 	let main_node = get_manga_page_main_node(html)?;
 
 	let chapters = main_node
-		.select("div.chapters-link > table > tbody > tr:has(td > a):has(td.date:not(.text-info))")
+		.select(
+			"div[class~=chapters] > table > tbody > tr:has(td > a):has(td.date:not(.text-info))",
+		)
 		.into_iter()
 		.filter_map(|chapter_elem| {
 			let link_elem = chapter_elem.select("a.chapter-link").pop()?;
