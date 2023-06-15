@@ -18,36 +18,28 @@ use crate::{
 	constants::{BASE_SEARCH_URL, BASE_URL, SEARCH_OFFSET_STEP},
 	get_manga_details, helpers,
 	sorting::Sorting,
-	wrappers::{debug, WNode},
+	wrappers::WNode,
 };
 
 pub fn parse_search_results(html: &WNode) -> Result<Vec<Manga>> {
 	let nodes = html.select("div.tile");
-	// debug!("{:?}", nodes);
 
 	let mangas: Vec<_> = nodes
 		.into_iter()
 		.filter_map(|node| {
 			let div_img_node = node.select("div.img").pop()?;
-			// debug!("div_img_node: {div_img_node:?}");
 
 			let id = {
 				let a_non_hover_node = div_img_node.select("a.non-hover").pop()?;
-				// debug!("a_non_hover_node: {a_non_hover_node:?}");
 				a_non_hover_node
 					.attr("href")?
 					.trim_start_matches('/')
 					.to_string()
 			};
-			// debug!("id: {id}");
 
 			let img_node = div_img_node.select("img").pop()?;
-			// debug!("img_node: {img_node:?}");
 			let cover = img_node.attr("original")?;
-			// debug!("cover: {cover}");
-
 			let title = img_node.attr("title")?;
-			// debug!("title: {title}");
 
 			let div_desc_node = node.select("div.desc").pop()?;
 
@@ -58,7 +50,6 @@ pub fn parse_search_results(html: &WNode) -> Result<Vec<Manga>> {
 				.map(WNode::text)
 				.intersperse(", ".to_string())
 				.collect();
-			// debug!("author: {author}");
 
 			let div_html_popover_holder_node =
 				div_desc_node.select("div.html-popover-holder").pop()?;
@@ -67,17 +58,14 @@ pub fn parse_search_results(html: &WNode) -> Result<Vec<Manga>> {
 				.select("div.manga-description")
 				.pop()?;
 			let description = div_manga_description_node.text();
-			// debug!("description: {description}");
 
 			let url = helpers::get_manga_url(&id);
-			// debug!("url: {}", url);
 
 			let categories = div_html_popover_holder_node
 				.select("span.badge-light")
 				.iter()
 				.map(WNode::text)
 				.collect();
-			// debug!("categories: {categories:?}");
 
 			// TODO: implement more correct status parsing
 			let status = {
@@ -93,7 +81,6 @@ pub fn parse_search_results(html: &WNode) -> Result<Vec<Manga>> {
 					MangaStatus::Unknown
 				}
 			};
-			// debug!("status: {status:?}");
 
 			Some(Manga {
 				id,
@@ -250,7 +237,6 @@ pub fn parse_chapters(html: &WNode, manga_id: &str) -> Result<Vec<Chapter>> {
 		.select("div.chapters-link > table > tbody > tr:has(td > a):has(td.date:not(.text-info))")
 		.into_iter()
 		.filter_map(|chapter_elem| {
-			// debug!("chapter_elem: {chapter_elem:?}");
 			let link_elem = chapter_elem.select("a.chapter-link").pop()?;
 
 			// this: `chapter_elem.select("td.d-none")` doesn't work here, I don't know why
@@ -338,7 +324,6 @@ pub fn get_page_list(html: &WNode) -> Result<Vec<Page>> {
 		.zip(script_text.find("]]"))
 		.map(|(start, end)| &script_text[start..end + 2])
 		.ok_or(parsing_error)?;
-	debug!("chapters_list_str: {chapters_list_str:?}");
 
 	let urls: Vec<_> = chapters_list_str
 		.match_indices("['")
@@ -434,7 +419,6 @@ pub fn parse_incoming_url(url: &str) -> Result<DeepLink> {
 	.ok_or(AidokuError {
 		reason: AidokuErrorKind::Unimplemented,
 	})?;
-	debug!("manga_id: {manga_id}");
 
 	Ok(DeepLink {
 		manga: Some(get_manga_details(manga_id.to_string())?),
