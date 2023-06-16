@@ -77,7 +77,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	Ok(MangaPageResult { manga, has_more })
 }
 
-pub fn get_filtered_url(filters: Vec<Filter>, page: i32) -> Result<String> {
+fn get_filtered_url(filters: Vec<Filter>, page: i32) -> Result<String> {
 	const SORT_BY: [&str; 4] = [
 		"sort_by_relevancy_desc",
 		"sort_by_date_desc",
