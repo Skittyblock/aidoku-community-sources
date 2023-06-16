@@ -3,12 +3,12 @@
 		"id": "zh.boylove",
 		"lang": "zh",
 		"name": "香香腐宅（無VIP）",
-		"version": 1,
-		"url": "https://boylove.cc/",
+		"version": 2,
+		"url": "https://boylove.cc",
 		"urls": [
-			"https://boylove.cc/",
-			"https://boylove.mobi/",
-			"https://boylove3.cc/"
+			"https://boylove.cc",
+			"https://boylove.mobi",
+			"https://boylove3.cc"
 		],
 		"nsfw": 2
 	}
