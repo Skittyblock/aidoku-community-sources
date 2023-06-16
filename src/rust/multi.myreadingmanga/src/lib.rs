@@ -1,7 +1,10 @@
 #![no_std]
 use aidoku::{
 	error::Result,
-	helpers::{substring::Substring, uri::QueryParameters},
+	helpers::{
+		substring::Substring,
+		uri::{encode_uri, QueryParameters},
+	},
 	prelude::*,
 	std::{net::Request, String, Vec},
 	Chapter, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus, Page,
@@ -46,7 +49,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 
 		let id = url.replace(DOMAIN, "").replace('/', "");
 
-		let cover = manga_node.select("img").attr("src").read();
+		let cover = encode_uri(manga_node.select("img").attr("src").read());
 
 		let artist = match title.substring_before(']') {
 			Some(artists_str) => artists_str.replace('[', ""),
