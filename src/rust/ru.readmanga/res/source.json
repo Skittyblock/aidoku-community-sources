@@ -4,9 +4,7 @@
 		"lang": "ru",
 		"name": "ReadManga",
 		"version": 1,
-		"urls": [
-			"https://readmanga.live/"
-		],
+		"url": "https://readmanga.live",
 		"nsfw": 1
 	},
 	"listings": [
