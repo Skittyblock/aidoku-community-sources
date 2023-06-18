@@ -200,10 +200,10 @@ fn get_manga_details(id: String) -> Result<Manga> {
 
 	let mut description =
 		unescape_html_entities(manga_html.select("span.detail-text").html().read())
-			.replace('\n', "")
-			.replace(" <br> ", "\n")
-			.replace("<br> ", "\n")
-			.replace("<br>", "\n")
+			.split("<br>")
+			.map(|line| line.trim())
+			.collect::<Vec<&str>>()
+			.join("\n")
 			.trim()
 			.to_string();
 	if let Some(description_with_closing_tag) = description.substring_before_last("</") {
