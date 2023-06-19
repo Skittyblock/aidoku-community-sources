@@ -32,7 +32,7 @@ pub fn parse_manga_list(base_url: String, page: i32) -> Result<MangaPageResult> 
 			.expect("Reaperscans: Failed to parse a manga node. Title could not be displayed");
 		let id = get_manga_id(manga_node.select("a").attr("href").read());
 		let cover = manga_node.select("img").attr("src").read();
-		let title = String::from(manga_node.select("a.text-sm").text().read().trim());
+		let title = String::from(manga_node.select("a:not(:has(img))").text().read().trim());
 		let url = manga_node.select("a").attr("href").read();
 
 		mangas.push(Manga {
@@ -109,7 +109,7 @@ pub fn parse_manga_listing(
 	let mut mangas: Vec<Manga> = Vec::new();
 
 	for manga in html
-		.select("main div[wire:id] div.grid > div.relative")
+		.select("main div[wire:id] > div > div:not(:has(nav)) > div")
 		.array()
 	{
 		let manga_node = manga
@@ -117,7 +117,7 @@ pub fn parse_manga_listing(
 			.expect("Reaperscans: Failed to parse a manga node. Title could not be displayed");
 		let id = get_manga_id(manga_node.select("a").attr("href").read());
 		let cover = manga_node.select("img").attr("src").read();
-		let title = String::from(manga_node.select("p.text-sm a").text().read().trim());
+		let title = String::from(manga_node.select("p > a").text().read().trim());
 		let url = manga_node.select("a").attr("href").read();
 
 		mangas.push(Manga {
@@ -147,25 +147,27 @@ pub fn parse_manga_details(base_url: String, manga_id: String) -> Result<Manga> 
 		.html()
 		.expect("Reaperscans: Failed to access the comic page. Try accessing the website on a browser and check your internet connection");
 
-	let cover = html
-		.select("main div.grid div.container img")
-		.attr("src")
-		.read();
+	let main_div = html.select("main > div:not(:has(script))");
+
+	let cover = main_div.select("div[tabindex] img[alt]").attr("src").read();
+
 	let title = String::from(
-		html.select("main div.grid div.container h1")
+		main_div
+			.select("div[tabindex] div:not(:has(dl)) h1")
 			.text()
 			.read()
 			.trim(),
 	);
-	let description = text_with_newlines(html.select("main div.grid section div > div.p-4 > p"));
+
+	let description = text_with_newlines(main_div.select("section div[tabindex] > div > p"));
 
 	let mut status = MangaStatus::Unknown;
 	let mut age_rating = String::new();
 	let mut nsfw = MangaContentRating::Safe;
 	let mut language = String::new();
 
-	for node in html
-		.select("main div.grid section div > div.p-4 > div > dl > div")
+	for node in main_div
+		.select("section div[tabindex] > div dl > div")
 		.array()
 	{
 		let info = node
@@ -275,10 +277,7 @@ pub fn parse_chapter_list_helper(html: Node, chapters: &mut Vec<Chapter>) {
 		let mut title = String::new();
 		let chapter_number;
 
-		let parsed_title = chapter_node
-			.select("div.min-w-0 div.text-sm p.font-medium")
-			.text()
-			.read();
+		let parsed_title = chapter_node.select("div div p[class]").text().read();
 
 		// Only some titles have a chapter titles if they do
 		// they are in the format of "Chapter 1 - Chapter Title" else
@@ -310,12 +309,7 @@ pub fn parse_chapter_list_helper(html: Node, chapters: &mut Vec<Chapter>) {
 		let chapter_id = get_chapter_id(chapter_node.select("a").attr("href").read());
 		let chapter_url = chapter_node.select("a").attr("href").read();
 
-		let date_updated = get_date(
-			chapter_node
-				.select("div.min-w-0 div.text-xs p")
-				.text()
-				.read(),
-		);
+		let date_updated = get_date(chapter_node.select("div div p:not([class])").text().read());
 
 		chapters.push(Chapter {
 			id: chapter_id,
@@ -346,10 +340,7 @@ pub fn parse_page_list(
 	let mut indices: Vec<i32> = Vec::new();
 
 	// Select all images that are not children of a noscript tag.
-	for page in html
-		.select("main div img.max-w-full:not(noscript *)")
-		.array()
-	{
+	for page in html.select("main div p > img:not(noscript *)").array() {
 		let page_node = page
 			.as_node()
 			.expect("Reaperscans: Failed to parse a chapter node. The chapter pages request was unsuccessful");

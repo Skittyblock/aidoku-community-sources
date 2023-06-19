@@ -13,9 +13,7 @@ pub fn create_search_request_object(
 	base_url: String,
 	search_query: String,
 ) -> Result<Node, AidokuError> {
-	let html = Request::new(base_url, HttpMethod::Get)
-		.html()
-		.expect("Failed to get html");
+	let html = Request::new(base_url, HttpMethod::Get).html()?;
 	let csrf_elem = html.select("meta[name=csrf-token]");
 	let csrf = csrf_elem.attr("content").read();
 
