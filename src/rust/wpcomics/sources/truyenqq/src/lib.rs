@@ -10,7 +10,7 @@ use wpcomics_template::{helper::urlencode, template::WPComicsSource};
 
 fn get_instance() -> WPComicsSource {
 	WPComicsSource {
-		base_url: String::from("https://truyenqqq.vn/"),
+		base_url: String::from("https://truyenqqq.vn"),
 		viewer: MangaViewer::Rtl,
 		listing_mapping: |listing| {
 			String::from(match listing.as_str() {
