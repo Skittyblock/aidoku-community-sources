@@ -1,0 +1,21 @@
+{
+	"info": {
+		"id": "ru.readmanga",
+		"lang": "ru",
+		"name": "ReadManga",
+		"version": 1,
+		"url": "https://readmanga.live",
+		"nsfw": 1
+	},
+	"listings": [
+		{
+			"name": "Rating"
+		},
+		{
+			"name": "Popular"
+		},
+		{
+			"name": "Updated Recently"
+		}
+	]
+}
