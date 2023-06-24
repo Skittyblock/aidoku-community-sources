@@ -2,6 +2,8 @@
 
 mod helper;
 
+extern crate alloc;
+
 use aidoku::{
 	error::Result,
 	prelude::*,
@@ -10,22 +12,21 @@ use aidoku::{
 	Chapter, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
 	MangaViewer, Page,
 };
+use helper::USER_AGENT;
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	let mut manga_arr: Vec<Manga> = Vec::new();
 	let mut total: i32 = 1;
 
-	let mut query: String = String::new();
+	let mut query: Option<String> = None;
 	let mut sort: String = String::new();
 	let tag_list = helper::tag_list();
 	let mut tags: Vec<String> = Vec::new();
 
 	for filter in filters {
 		match filter.kind {
-			FilterType::Title => {
-				query = helper::urlencode(filter.value.as_string()?.read());
-			}
+			FilterType::Title => query = Some(helper::urlencode(filter.value.as_string()?.read())),
 			FilterType::Select => {
 				if filter.name.as_str() == "Tags" {
 					let index = filter.value.as_int()? as usize;
@@ -55,7 +56,9 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 
 	let url = helper::build_search_url(query, tags.clone(), sort, page);
 
-	let html = Request::new(url.as_str(), HttpMethod::Get).html()?;
+	let html = Request::new(url.as_str(), HttpMethod::Get)
+		.header("User-Agent", USER_AGENT)
+		.html()?;
 
 	for result in html.select(".lc_galleries .thumb").array() {
 		let res_node = result.as_node().expect("Failed to get node");
@@ -70,14 +73,10 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 			id: id_str,
 			cover,
 			title,
-			author: String::new(),
-			artist: String::new(),
-			description: String::new(),
-			url: String::new(),
-			categories: Vec::new(),
 			status: MangaStatus::Completed,
 			nsfw: MangaContentRating::Nsfw,
 			viewer: MangaViewer::Rtl,
+			..Default::default()
 		})
 	}
 
@@ -88,10 +87,33 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 			continue;
 		}
 		let href_parts = href.split('/').collect::<Vec<&str>>();
+
 		// get second last part in href
+		let last_str = String::from(href_parts[href_parts.len() - 1]);
+
+		if last_str.starts_with("?q=") {
+			if !last_str.contains("&page=") {
+				continue;
+			}
+			let last_str_parts = last_str.split('&').collect::<Vec<&str>>();
+
+			let page_str = String::from(last_str_parts[1]);
+
+			let page_str_parts = page_str.split('=').collect::<Vec<&str>>();
+			let page_num_str = String::from(page_str_parts[1]);
+			let page_num = helper::numbers_only_from_string(page_num_str);
+
+			if page_num > total {
+				total = page_num;
+			}
+
+			continue;
+		}
+
 		let num_str = String::from(href_parts[href_parts.len() - 2]);
 
 		let num = helper::numbers_only_from_string(num_str);
+
 		if num > total {
 			total = num;
 		}
@@ -106,7 +128,9 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 #[get_manga_details]
 fn get_manga_details(id: String) -> Result<Manga> {
 	let url = format!("https://hentaifox.com/gallery/{}", id);
-	let html = Request::new(url.as_str(), HttpMethod::Get).html()?;
+	let html = Request::new(url.as_str(), HttpMethod::Get)
+		.header("User-Agent", USER_AGENT)
+		.html()?;
 
 	let cover = html
 		.select(".gallery_top .gallery_left img")
@@ -168,7 +192,9 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 #[get_page_list]
 fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 	let url = format!("https://hentaifox.com/gallery/{chapter_id}");
-	let html = Request::new(url.as_str(), HttpMethod::Get).html()?;
+	let html = Request::new(url.as_str(), HttpMethod::Get)
+		.header("User-Agent", USER_AGENT)
+		.html()?;
 
 	let g_id = html.select("#load_id").attr("value").read();
 	let img_dir = html.select("#load_dir").attr("value").read();
