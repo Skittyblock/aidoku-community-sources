@@ -1,11 +1,11 @@
 {
 	"info": {
-		"id": "ru.readmanga",
+		"id": "ru.mangaonelove",
 		"lang": "ru",
-		"name": "ReadManga",
+		"name": "MangaOneLove",
 		"version": 1,
-		"url": "https://readmanga.live",
-		"nsfw": 1
+		"url": "https://mangaonelove.site",
+		"nsfw": 2
 	},
 	"listings": [
 		{
