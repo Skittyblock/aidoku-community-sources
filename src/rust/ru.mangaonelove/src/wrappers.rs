@@ -1,9 +1,17 @@
-use aidoku::{helpers::substring::Substring, prelude::*, std::html::Node};
+use aidoku::{
+	error::{AidokuError, AidokuErrorKind, NodeError, Result},
+	helpers::substring::Substring,
+	prelude::*,
+	std::{
+		html::Node,
+		net::{HttpMethod, Request},
+	},
+};
 use alloc::{string::String, vec::Vec};
 
 macro_rules! debug {
 	($($arg:tt)*) => {{
-		println!("ru.readmanga:: {}:{}: {}", file!(), line!(), format!($($arg)*))
+		println!("ru.mangaonelove:: {}:{}: {}", file!(), line!(), format!($($arg)*))
 	}};
 }
 pub(crate) use debug;
@@ -13,7 +21,17 @@ pub struct WNode {
 	repr: String,
 }
 
+pub fn get_html(url: &str) -> Result<WNode> {
+	Request::new(url, HttpMethod::Get)
+		.html()
+		.map(WNode::from_node)
+}
+
 impl WNode {
+	pub const PARSING_ERROR: AidokuError = AidokuError {
+		reason: AidokuErrorKind::NodeError(NodeError::ParseError),
+	};
+
 	pub fn new(repr: String) -> Self {
 		WNode { repr }
 	}
@@ -44,6 +62,10 @@ impl WNode {
 			res.push(WNode::from_node(node_res.unwrap()));
 		}
 		res
+	}
+
+	pub fn select_one(&self, selector: &str) -> Option<Self> {
+		self.select(selector).into_iter().next()
 	}
 
 	pub fn attr(&self, attr: &str) -> Option<String> {

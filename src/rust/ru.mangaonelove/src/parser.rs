@@ -5,81 +5,116 @@ use aidoku::{
 	helpers::{substring::Substring, uri::encode_uri},
 	prelude::*,
 	std::{String, StringRef, Vec},
-	Chapter, DeepLink, Filter, FilterType, Manga, MangaContentRating, MangaStatus, MangaViewer,
-	Page,
+	Chapter, DeepLink, Filter, FilterType, Listing, Manga, MangaContentRating, MangaStatus,
+	MangaViewer, Page,
 };
 
 extern crate alloc;
-use alloc::{boxed::Box, string::ToString};
+use alloc::string::ToString;
 
 use itertools::chain;
 
 use crate::{
-	constants::{BASE_SEARCH_URL, BASE_URL, SEARCH_OFFSET_STEP},
-	get_manga_details, helpers,
-	sorting::Sorting,
+	constants::{BASE_URL, BASE_URL_READMANGA, PAGE_DIR},
+	get_manga_details,
+	helpers::{self, get_manga_id},
 	wrappers::WNode,
 };
 
-pub fn parse_search_results(html: &WNode) -> Result<Vec<Manga>> {
-	let nodes = html.select("div.tile");
+pub fn parse_lising(html: &WNode, listing: Listing) -> Result<Vec<Manga>> {
+	let sidebar_class = match listing.name.as_str() {
+		"Популярное" => "c-top-sidebar",
+		"Новое" => "c-top-second-sidebar",
+		_ => return Err(WNode::PARSING_ERROR),
+	};
 
-	let mangas: Vec<_> = nodes
-		.into_iter()
-		.filter_map(|node| {
-			let div_img_node = node.select("div.img").pop()?;
+	let sidebar_node = html
+		.select_one(&format!("div.c-sidebar.{sidebar_class}"))
+		.ok_or(WNode::PARSING_ERROR)?;
 
-			let id = {
-				let a_non_hover_node = div_img_node.select("a.non-hover").pop()?;
-				a_non_hover_node
-					.attr("href")?
-					.trim_start_matches('/')
-					.to_string()
+	let mangas = sidebar_node
+		.select("div.slider__item")
+		.iter()
+		.filter_map(|manga_node| {
+			let thumb_node = manga_node.select_one("div.slider__thumb_item")?;
+			let desc_node = manga_node.select_one("div.slider__content_item")?;
+
+			let thumb_link_node = thumb_node.select_one("a")?;
+			let url = thumb_link_node.attr("href")?;
+			let id = get_manga_id(&url)?;
+
+			let cover = thumb_link_node.select_one("img")?.attr("src")?;
+
+			let title = desc_node.select_one("div.post-title")?.text();
+
+			let nsfw = match thumb_node.select_one("span") {
+				Some(span_node) => {
+					if span_node.text().contains("18+") {
+						MangaContentRating::Nsfw
+					} else {
+						MangaContentRating::Suggestive
+					}
+				}
+				None => MangaContentRating::Safe,
 			};
 
-			let img_node = div_img_node.select("img").pop()?;
-			let cover = img_node.attr("original")?;
-			let title = img_node.attr("title")?;
+			Some(Manga {
+				id,
+				cover,
+				title,
+				url,
+				nsfw,
+				..Default::default()
+			})
+		})
+		.collect();
 
-			let div_desc_node = node.select("div.desc").pop()?;
+	Ok(mangas)
+}
 
-			let div_tile_info_node = div_desc_node.select("div.tile-info").pop()?;
-			let a_person_link_nodes = div_tile_info_node.select("a.person-link");
-			let author = a_person_link_nodes
+pub fn parse_search_results(html: &WNode) -> Result<Vec<Manga>> {
+	let list_node = html
+		.select_one("div.c-page-content div.main-col-inner div.tab-content-wrap div.c-tabs-item")
+		.ok_or(WNode::PARSING_ERROR)?;
+
+	let mangas = list_node
+		.select("div.row.c-tabs-item__content")
+		.into_iter()
+		.filter_map(|manga_node| {
+			let thumb_node = manga_node.select_one("div.tab-thumb")?;
+			let summary_node = manga_node.select_one("div.tab-summary")?;
+
+			let title_node = summary_node.select_one("div.post-title a")?;
+			let content_node = summary_node.select_one("div.post-content")?;
+
+			let extract_from_content = |class_name| {
+				content_node
+					.select_one(&format!("div.{class_name}"))?
+					.select_one("div.summary-content")
+					.map(|n| n.text())
+			};
+
+			let url = title_node.attr("href")?;
+			let id = get_manga_id(&url)?;
+			let cover = thumb_node.select_one("img")?.attr("src")?;
+			let title = title_node.text();
+			let author = extract_from_content("mg_author").unwrap_or_default();
+			let artist = extract_from_content("mg_artists").unwrap_or_default();
+			let categories: Vec<String> = content_node
+				.select("div.mg_genres a")
 				.iter()
 				.map(WNode::text)
-				.intersperse(", ".to_string())
 				.collect();
-
-			let div_html_popover_holder_node =
-				div_desc_node.select("div.html-popover-holder").pop()?;
-
-			let div_manga_description_node = div_html_popover_holder_node
-				.select("div.manga-description")
-				.pop()?;
-			let description = div_manga_description_node.text();
-
-			let url = helpers::get_manga_url(&id);
-
-			let categories = div_html_popover_holder_node
-				.select("span.badge-light")
-				.iter()
-				.map(WNode::text)
-				.collect();
-
-			// TODO: implement more correct status parsing
-			let status = {
-				if let [span_node] = &node.select("span.mangaTranslationCompleted")[..] {
-					if span_node.text() == "переведено" {
-						MangaStatus::Completed
-					} else {
-						MangaStatus::Unknown
-					}
-				} else if let [_] = &div_img_node.select("div.manga-updated")[..] {
-					MangaStatus::Ongoing
-				} else {
-					MangaStatus::Unknown
-				}
+			let status = match extract_from_content("mg_status")?.trim() {
+				"Онгоинг" => MangaStatus::Ongoing,
+				"Завершен" => MangaStatus::Completed,
+				"Брошено" => MangaStatus::Cancelled,
+				"Заморожен" => MangaStatus::Hiatus,
+				_ => MangaStatus::Unknown,
+			};
+			let nsfw = match categories.iter().find(|c| c.contains("18+")) {
+				Some(_) => MangaContentRating::Nsfw,
+				None => MangaContentRating::Suggestive,
 			};
 
 			Some(Manga {
@@ -87,13 +122,12 @@ pub fn parse_search_results(html: &WNode) -> Result<Vec<Manga>> {
 				cover,
 				title,
 				author,
-				artist: "".to_string(),
-				description,
+				artist,
 				url,
 				categories,
 				status,
-				nsfw: MangaContentRating::default(),
-				viewer: MangaViewer::Rtl,
+				nsfw,
+				..Default::default()
 			})
 		})
 		.collect();
@@ -104,18 +138,16 @@ pub fn parse_search_results(html: &WNode) -> Result<Vec<Manga>> {
 fn get_manga_page_main_node(html: &WNode) -> Result<WNode> {
 	html.select("div.leftContent")
 		.pop()
-		.ok_or(helpers::create_parsing_error())
+		.ok_or(WNode::PARSING_ERROR)
 }
 
 pub fn parse_manga(html: &WNode, id: String) -> Result<Manga> {
-	let parsing_error = helpers::create_parsing_error();
-
 	let main_node = get_manga_page_main_node(html)?;
 
 	let main_attributes_node = main_node
 		.select("div.flex-row")
 		.pop()
-		.ok_or(parsing_error)?;
+		.ok_or(WNode::PARSING_ERROR)?;
 
 	let picture_fororama_node = main_attributes_node.select("div.picture-fotorama").pop();
 	let cover = picture_fororama_node
@@ -123,7 +155,10 @@ pub fn parse_manga(html: &WNode, id: String) -> Result<Manga> {
 		.and_then(|img_node| img_node.attr("src"))
 		.unwrap_or_default();
 
-	let names_node = main_node.select("h1.names").pop().ok_or(parsing_error)?;
+	let names_node = main_node
+		.select("h1.names")
+		.pop()
+		.ok_or(WNode::PARSING_ERROR)?;
 	let title = names_node
 		.select("span")
 		.into_iter()
@@ -134,7 +169,7 @@ pub fn parse_manga(html: &WNode, id: String) -> Result<Manga> {
 	let main_info_node = main_attributes_node
 		.select("div.subject-meta")
 		.pop()
-		.ok_or(parsing_error)?;
+		.ok_or(WNode::PARSING_ERROR)?;
 
 	let extract_info_iter = |elem_class, link_type| {
 		main_info_node
@@ -170,7 +205,7 @@ pub fn parse_manga(html: &WNode, id: String) -> Result<Manga> {
 		.and_then(|desc_node| desc_node.attr("content"))
 		.unwrap_or_default();
 
-	let url = helpers::get_manga_url(&id);
+	let url = helpers::get_manga_url_readmanga(&id);
 
 	let category_opt = extract_info_iter("category", "element").next();
 
@@ -230,7 +265,7 @@ pub fn parse_manga(html: &WNode, id: String) -> Result<Manga> {
 	})
 }
 
-pub fn parse_chapters(html: &WNode, manga_id: &str) -> Result<Vec<Chapter>> {
+pub fn parse_chapters_readmanga(html: &WNode, manga_id: &str) -> Result<Vec<Chapter>> {
 	let main_node = get_manga_page_main_node(html)?;
 
 	let chapters = main_node
@@ -294,7 +329,7 @@ pub fn parse_chapters(html: &WNode, manga_id: &str) -> Result<Vec<Chapter>> {
 				.unwrap_or_default()
 				.replace(" (Переводчик)", "");
 
-			let url = helpers::get_chapter_url(manga_id, &id);
+			let url = helpers::get_chapter_url_readmanga(manga_id, &id);
 
 			Some(Chapter {
 				id,
@@ -312,20 +347,18 @@ pub fn parse_chapters(html: &WNode, manga_id: &str) -> Result<Vec<Chapter>> {
 	Ok(chapters)
 }
 
-pub fn get_page_list(html: &WNode) -> Result<Vec<Page>> {
-	let parsing_error = helpers::create_parsing_error();
-
+pub fn get_page_list_readmanga(html: &WNode) -> Result<Vec<Page>> {
 	let script_text = html
 		.select(r"div.reader-controller > script[type=text/javascript]")
 		.pop()
 		.map(|script_node| script_node.data())
-		.ok_or(parsing_error)?;
+		.ok_or(WNode::PARSING_ERROR)?;
 
 	let chapters_list_str = script_text
 		.find("[[")
 		.zip(script_text.find("]]"))
 		.map(|(start, end)| &script_text[start..end + 2])
-		.ok_or(parsing_error)?;
+		.ok_or(WNode::PARSING_ERROR)?;
 
 	let urls: Vec<_> = chapters_list_str
 		.match_indices("['")
@@ -342,7 +375,7 @@ pub fn get_page_list(html: &WNode) -> Result<Vec<Page>> {
 		// composing URL
 		.map(|(part0, part1, part2)| {
 			if part1.is_empty() && part2.starts_with("/static/") {
-				format!("{BASE_URL}{part2}")
+				format!("{BASE_URL_READMANGA}{part2}")
 			} else if part1.starts_with("/manga/") {
 				format!("{part0}{part2}")
 			} else {
@@ -377,41 +410,32 @@ pub fn get_page_list(html: &WNode) -> Result<Vec<Page>> {
 		.collect())
 }
 
-pub fn get_filter_url(filters: &[Filter], sorting: &Sorting, page: i32) -> Result<String> {
-	fn get_handler(operation: &'static str) -> Box<dyn Fn(AidokuError) -> AidokuError> {
-		Box::new(move |err: AidokuError| {
-			println!("Error {:?} while {}", err.reason, operation);
-			err
-		})
-	}
+pub fn get_filter_url(filters: &[Filter], page: i32) -> Result<String> {
+	const QUERY_PART: &str = "&s=";
 
-	let filter_parts: Vec<_> = filters
+	let filter_addition: String = filters
 		.iter()
 		.filter_map(|filter| match filter.kind {
-			FilterType::Title => filter
-				.value
-				.clone()
-				.as_string()
-				.map_err(get_handler("casting to string"))
-				.ok()
-				.map(|title| format!("q={}", encode_uri(title.read()))),
+			FilterType::Title => {
+				let value = filter.value.clone().as_string().ok()?.read();
+				Some(format!("{QUERY_PART}{}", encode_uri(value)))
+			}
 			_ => None,
 		})
 		.collect();
 
-	let offset = format!("offset={}", (page - 1) * SEARCH_OFFSET_STEP);
-	let sort = format!("sortType={}", sorting);
+	let filter_addition = match filter_addition.find(QUERY_PART) {
+		Some(_) => filter_addition,
+		None => filter_addition + QUERY_PART,
+	};
 
 	Ok(format!(
-		"{}{}",
-		BASE_SEARCH_URL,
-		chain!(once(offset), once(sort), filter_parts.into_iter())
-			.intersperse("&".to_string())
-			.collect::<String>()
+		"{BASE_URL}/{PAGE_DIR}/{page}/?post_type=wp-manga&m_orderby=trending{}",
+		filter_addition
 	))
 }
 
-pub fn parse_incoming_url(url: &str) -> Result<DeepLink> {
+pub fn parse_incoming_url_readmanga(url: &str) -> Result<DeepLink> {
 	let manga_id = match url.find("://") {
 		Some(idx) => &url[idx + 3..],
 		None => url,

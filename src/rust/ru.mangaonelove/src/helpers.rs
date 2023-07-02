@@ -1,41 +1,34 @@
-use aidoku::{
-	error::{AidokuError, AidokuErrorKind, NodeError, Result},
-	prelude::*,
-	std::net::{HttpMethod, Request},
-	Manga, MangaPageResult,
-};
-use alloc::{string::String, vec::Vec};
-
-use crate::{
-	constants::{BASE_URL, SEARCH_OFFSET_STEP},
-	wrappers::WNode,
+use aidoku::{helpers::substring::Substring, prelude::*, Manga, MangaPageResult};
+use alloc::{
+	string::{String, ToString},
+	vec::Vec,
 };
 
-pub fn get_html(url: &str) -> Result<WNode> {
-	Request::new(url, HttpMethod::Get)
-		.html()
-		.map(WNode::from_node)
-}
+use crate::constants::{BASE_URL, BASE_URL_READMANGA, MANGA_DIR, SEARCH_OFFSET_STEP};
 
 pub fn get_manga_url(id: &str) -> String {
-	format!("{}/{}", BASE_URL, id)
+	format!("{BASE_URL}/{MANGA_DIR}/{id}")
 }
 
-pub fn create_manga_page_result(mangas: Vec<Manga>) -> MangaPageResult {
-	let has_more = mangas.len() == SEARCH_OFFSET_STEP as usize;
+pub fn get_manga_id(url: &str) -> Option<String> {
+	url.trim_end_matches('/')
+		.substring_after_last('/')
+		.map(|s| s.to_string())
+}
+
+pub fn get_manga_url_readmanga(id: &str) -> String {
+	format!("{}/{}", BASE_URL_READMANGA, id)
+}
+
+pub fn create_manga_page_result(mangas: Vec<Manga>, has_more: Option<bool>) -> MangaPageResult {
+	let has_more = has_more.unwrap_or(mangas.len() == SEARCH_OFFSET_STEP as usize);
 	MangaPageResult {
 		manga: mangas,
 		has_more,
 	}
 }
 
-pub fn get_chapter_url(manga_id: &str, chapter_id: &str) -> String {
+pub fn get_chapter_url_readmanga(manga_id: &str, chapter_id: &str) -> String {
 	// mtr is 18+ skip
-	format!("{BASE_URL}/{manga_id}/{chapter_id}?mtr=true")
-}
-
-pub fn create_parsing_error() -> AidokuError {
-	AidokuError {
-		reason: AidokuErrorKind::NodeError(NodeError::ParseError),
-	}
+	format!("{BASE_URL_READMANGA}/{manga_id}/{chapter_id}?mtr=true")
 }
