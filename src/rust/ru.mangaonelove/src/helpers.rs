@@ -4,10 +4,10 @@ use alloc::{
 	vec::Vec,
 };
 
-use crate::constants::{BASE_URL, BASE_URL_READMANGA, MANGA_DIR, SEARCH_OFFSET_STEP};
+use crate::constants::{BASE_URL_READMANGA, MANGA_BASE_URL, SEARCH_OFFSET_STEP};
 
 pub fn get_manga_url(id: &str) -> String {
-	format!("{BASE_URL}/{MANGA_DIR}/{id}")
+	format!("{MANGA_BASE_URL}/{id}")
 }
 
 pub fn get_manga_id(url: &str) -> Option<String> {

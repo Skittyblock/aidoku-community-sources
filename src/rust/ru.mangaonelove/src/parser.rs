@@ -9,8 +9,6 @@ use aidoku::{
 extern crate alloc;
 use alloc::string::ToString;
 
-use itertools::chain;
-
 use crate::{
 	constants::{BASE_URL, BASE_URL_READMANGA, PAGE_DIR},
 	get_manga_details,
