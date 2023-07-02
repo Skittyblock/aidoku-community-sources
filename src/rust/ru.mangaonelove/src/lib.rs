@@ -14,6 +14,7 @@ use aidoku::{
 	Chapter, DeepLink, Filter, Listing, Manga, MangaPageResult, Page,
 };
 use constants::BASE_URL;
+use wrappers::WNode;
 
 extern crate alloc;
 
@@ -34,9 +35,9 @@ pub fn get_manga_listing(listing: Listing, _page: i32) -> Result<MangaPageResult
 
 #[get_manga_details]
 pub fn get_manga_details(manga_id: String) -> Result<Manga> {
-	let url = helpers::get_manga_url_readmanga(&manga_id);
+	let url = helpers::get_manga_url(&manga_id);
 	let html = wrappers::get_html(&url)?;
-	parser::parse_manga(&html, manga_id)
+	parser::parse_manga(&html, manga_id).ok_or(WNode::PARSING_ERROR)
 }
 
 #[get_chapter_list]

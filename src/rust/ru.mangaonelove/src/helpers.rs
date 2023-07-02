@@ -1,4 +1,4 @@
-use aidoku::{helpers::substring::Substring, prelude::*, Manga, MangaPageResult};
+use aidoku::{helpers::substring::Substring, prelude::*, Manga, MangaPageResult, MangaStatus};
 use alloc::{
 	string::{String, ToString},
 	vec::Vec,
@@ -31,4 +31,14 @@ pub fn create_manga_page_result(mangas: Vec<Manga>, has_more: Option<bool>) -> M
 pub fn get_chapter_url_readmanga(manga_id: &str, chapter_id: &str) -> String {
 	// mtr is 18+ skip
 	format!("{BASE_URL_READMANGA}/{manga_id}/{chapter_id}?mtr=true")
+}
+
+pub fn parse_status(status_str: &str) -> MangaStatus {
+	match status_str.trim() {
+		"Онгоинг" => MangaStatus::Ongoing,
+		"Завершен" => MangaStatus::Completed,
+		"Брошено" => MangaStatus::Cancelled,
+		"Заморожен" => MangaStatus::Hiatus,
+		_ => MangaStatus::Unknown,
+	}
 }

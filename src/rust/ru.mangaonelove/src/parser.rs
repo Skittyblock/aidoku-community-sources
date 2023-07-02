@@ -1,12 +1,9 @@
-use core::iter::once;
-
 use aidoku::{
 	error::{AidokuError, AidokuErrorKind, Result},
 	helpers::{substring::Substring, uri::encode_uri},
 	prelude::*,
 	std::{String, StringRef, Vec},
-	Chapter, DeepLink, Filter, FilterType, Listing, Manga, MangaContentRating, MangaStatus,
-	MangaViewer, Page,
+	Chapter, DeepLink, Filter, FilterType, Listing, Manga, MangaContentRating, MangaViewer, Page,
 };
 
 extern crate alloc;
@@ -105,13 +102,7 @@ pub fn parse_search_results(html: &WNode) -> Result<Vec<Manga>> {
 				.iter()
 				.map(WNode::text)
 				.collect();
-			let status = match extract_from_content("mg_status")?.trim() {
-				"Онгоинг" => MangaStatus::Ongoing,
-				"Завершен" => MangaStatus::Completed,
-				"Брошено" => MangaStatus::Cancelled,
-				"Заморожен" => MangaStatus::Hiatus,
-				_ => MangaStatus::Unknown,
-			};
+			let status = helpers::parse_status(&extract_from_content("mg_status")?);
 			let nsfw = match categories.iter().find(|c| c.contains("18+")) {
 				Some(_) => MangaContentRating::Nsfw,
 				None => MangaContentRating::Suggestive,
@@ -135,122 +126,73 @@ pub fn parse_search_results(html: &WNode) -> Result<Vec<Manga>> {
 	Ok(mangas)
 }
 
-fn get_manga_page_main_node(html: &WNode) -> Result<WNode> {
-	html.select("div.leftContent")
-		.pop()
-		.ok_or(WNode::PARSING_ERROR)
-}
+pub fn parse_manga(html: &WNode, id: String) -> Option<Manga> {
+	let main_node = html.select_one("div.profile-manga > div.container > div.row")?;
+	let description_node = html.select_one("div.c-page-content div.description-summary")?;
+	let summary_node = main_node.select_one("div.tab-summary")?;
+	let summary_content_node = summary_node.select_one("div.summary_content")?;
+	let content_node = summary_content_node.select_one("div.post-content")?;
+	let status_node = summary_content_node.select_one("div.post-status")?;
 
-pub fn parse_manga(html: &WNode, id: String) -> Result<Manga> {
-	let main_node = get_manga_page_main_node(html)?;
+	let extract_optional_content = |content_type| {
+		content_node
+			.select_one(&format!("div.{content_type}-content"))
+			.map(|type_node| {
+				type_node
+					.select("a")
+					.iter()
+					.map(WNode::text)
+					.map(|s| s.trim().to_string())
+					.collect::<Vec<_>>()
+			})
+			.unwrap_or_default()
+	};
 
-	let main_attributes_node = main_node
-		.select("div.flex-row")
-		.pop()
-		.ok_or(WNode::PARSING_ERROR)?;
-
-	let picture_fororama_node = main_attributes_node.select("div.picture-fotorama").pop();
-	let cover = picture_fororama_node
-		.and_then(|pfn| pfn.select("img").pop())
-		.and_then(|img_node| img_node.attr("src"))
-		.unwrap_or_default();
-
-	let names_node = main_node
-		.select("h1.names")
-		.pop()
-		.ok_or(WNode::PARSING_ERROR)?;
-	let title = names_node
-		.select("span")
-		.into_iter()
-		.map(|name_node| name_node.text())
-		.intersperse(" | ".to_string())
-		.collect();
-
-	let main_info_node = main_attributes_node
-		.select("div.subject-meta")
-		.pop()
-		.ok_or(WNode::PARSING_ERROR)?;
-
-	let extract_info_iter = |elem_class, link_type| {
-		main_info_node
-			.select(&format!("span.elem_{elem_class}"))
+	let get_row_value_by_name = |parent_node: &WNode, row_name| {
+		parent_node
+			.select("div.post-content_item")
 			.into_iter()
-			.flat_map(move |node| {
-				node.select(&format!("a.{link_type}-link"))
-					.into_iter()
-					.map(|person_node| person_node.text())
+			.find(|n| match n.select_one("div.summary-heading") {
+				Some(heading) => heading.text().trim() == row_name,
+				None => false,
+			})
+			.and_then(|n| {
+				Some(
+					n.select_one("div.summary-content")?
+						.text()
+						.trim()
+						.to_string(),
+				)
 			})
 	};
 
-	let author = chain!(
-		extract_info_iter("author", "person"),
-		extract_info_iter("screenwriter", "person")
-	)
-	.intersperse(", ".to_string())
-	.collect();
+	let cover = summary_node
+		.select_one("div.summary_image img")?
+		.attr("src")?;
+	let url = helpers::get_manga_url(&id);
+	let title = main_node.select_one("div.post-title > h1")?.text();
+	let author = extract_optional_content("authors").join(", ");
+	let artist = extract_optional_content("artist").join(", ");
 
-	let artist = extract_info_iter("illustrator", "person")
-		.intersperse(", ".to_string())
-		.collect();
-
-	let description = main_node
-		.select("meta")
-		.into_iter()
-		.find(|mn| {
-			if let Some(itemprop) = mn.attr("itemprop") {
-				return itemprop == "description";
-			}
-			false
-		})
-		.and_then(|desc_node| desc_node.attr("content"))
+	let categories = extract_optional_content("genres");
+	let nsfw = if categories.iter().any(|c| c.contains("18+")) {
+		MangaContentRating::Nsfw
+	} else {
+		MangaContentRating::Suggestive
+	};
+	let status = get_row_value_by_name(&status_node, "Статус")
+		.map(|status_str| helpers::parse_status(&status_str))
 		.unwrap_or_default();
-
-	let url = helpers::get_manga_url_readmanga(&id);
-
-	let category_opt = extract_info_iter("category", "element").next();
-
-	let viewer = match &category_opt {
-		Some(category) => match category.to_lowercase().as_str() {
-			"oel-манга" => MangaViewer::Scroll,
-			"комикс" => MangaViewer::Ltr,
-			"манхва" => MangaViewer::Scroll,
-			"маньхуа" => MangaViewer::Scroll,
+	let viewer = get_row_value_by_name(&content_node, "Тип")
+		.map(|manga_type| match manga_type.as_str() {
+			"Манхва" => MangaViewer::Scroll,
+			"Маньхуа" => MangaViewer::Scroll,
 			_ => MangaViewer::default(),
-		},
-		None => MangaViewer::default(),
-	};
-
-	let categories = chain!(
-		once(category_opt).flatten(),
-		extract_info_iter("genre", "element")
-	)
-	.collect();
-
-	let status_str_opt = main_info_node
-		.select("p")
-		.into_iter()
-		.filter(|pn| pn.attr("class").is_none())
-		.flat_map(|pn| pn.select("span"))
-		.find(|sn| {
-			if let Some(class_attr) = sn.attr("class") {
-				return class_attr
-					.split_whitespace()
-					.any(|cl| cl.starts_with("text-"));
-			}
-			false
 		})
-		.map(|status_node| status_node.text());
-	let status = match status_str_opt {
-		Some(status_str) => match status_str.to_lowercase().as_str() {
-			"переведено" => MangaStatus::Completed,
-			"продолжается" => MangaStatus::Ongoing,
-			"приостановлен" => MangaStatus::Hiatus,
-			_ => MangaStatus::Unknown,
-		},
-		None => MangaStatus::Unknown,
-	};
+		.unwrap_or_default();
+	let description = description_node.text();
 
-	Ok(Manga {
+	Some(Manga {
 		id,
 		cover,
 		title,
@@ -260,13 +202,19 @@ pub fn parse_manga(html: &WNode, id: String) -> Result<Manga> {
 		url,
 		categories,
 		status,
-		nsfw: MangaContentRating::default(),
+		nsfw,
 		viewer,
 	})
 }
 
+fn get_manga_page_main_node_readmanga(html: &WNode) -> Result<WNode> {
+	html.select("div.leftContent")
+		.pop()
+		.ok_or(WNode::PARSING_ERROR)
+}
+
 pub fn parse_chapters_readmanga(html: &WNode, manga_id: &str) -> Result<Vec<Chapter>> {
-	let main_node = get_manga_page_main_node(html)?;
+	let main_node = get_manga_page_main_node_readmanga(html)?;
 
 	let chapters = main_node
 		.select(
