@@ -381,13 +381,13 @@ pub fn get_filter_url(filters: &[Filter], page: i32) -> Result<String> {
 	))
 }
 
-pub fn parse_incoming_url_readmanga(url: &str) -> Result<DeepLink> {
+pub fn parse_incoming_url(url: &str) -> Result<DeepLink> {
 	let manga_id = match url.find("://") {
 		Some(idx) => &url[idx + 3..],
 		None => url,
 	}
 	.split('/')
-	.next()
+	.nth(2)
 	.ok_or(AidokuError {
 		reason: AidokuErrorKind::Unimplemented,
 	})?;

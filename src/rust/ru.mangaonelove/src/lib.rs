@@ -56,5 +56,5 @@ pub fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> 
 
 #[handle_url]
 pub fn handle_url(url: String) -> Result<DeepLink> {
-	parser::parse_incoming_url_readmanga(&url)
+	parser::parse_incoming_url(&url)
 }
