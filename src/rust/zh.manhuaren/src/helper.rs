@@ -76,10 +76,7 @@ pub fn generate_get_query(args: &mut Vec<(String, String)>) -> String {
 
 pub fn request<T: AsRef<str>>(url: T, method: HttpMethod) -> Result<String> {
 	Request::new(url, method)
-		.header(
-			"X-Yq-Yqci",
-			"{\"av\":\"\",\"cl\":\"\",\"cy\":\"\",\"di\":\"0\",\"le\":\"zh\",\"os\":0,\"pt\":\"\"}",
-		)
+		.header("User-Agent", "okhttp/3.11.0")
 		.string()
 }
 

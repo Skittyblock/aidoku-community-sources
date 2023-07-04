@@ -24,12 +24,7 @@ const API_URL: &str = "http://mangaapi.manhuaren.com";
 
 #[modify_image_request]
 fn modify_image_request(request: Request) {
-	request
-		.header(
-			"X-Yq-Yqci",
-			"{\"av\":\"\",\"cl\":\"\",\"cy\":\"\",\"di\":\"0\",\"le\":\"zh\",\"os\":0,\"pt\":\"\"}",
-		)
-		.header("User-Agent", "okhttp/3.11.0");
+	request.header("User-Agent", "okhttp/3.11.0");
 }
 
 #[get_manga_list]
