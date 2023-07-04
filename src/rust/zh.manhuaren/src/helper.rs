@@ -53,6 +53,8 @@ pub fn generate_gsn_hash(args: &mut Vec<(String, String)>) -> String {
 
 pub fn generate_get_query(args: &mut Vec<(String, String)>) -> String {
 	args.push((String::from("gak"), String::from("android_manhuaren2")));
+	args.push((String::from("gft"), String::from("json")));
+	args.push((String::from("gui"), String::from("1")));
 
 	let gsn = generate_gsn_hash(args);
 
@@ -74,7 +76,10 @@ pub fn generate_get_query(args: &mut Vec<(String, String)>) -> String {
 
 pub fn request<T: AsRef<str>>(url: T, method: HttpMethod) -> Result<String> {
 	Request::new(url, method)
-		.header("X-Yq-Yqci", "{\"le\": \"zh\"}")
+		.header(
+			"X-Yq-Yqci",
+			"{\"av\":\"\",\"cl\":\"\",\"cy\":\"\",\"di\":\"0\",\"le\":\"zh\",\"os\":0,\"pt\":\"\"}",
+		)
 		.string()
 }
 

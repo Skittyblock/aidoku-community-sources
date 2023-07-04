@@ -25,10 +25,11 @@ const API_URL: &str = "http://mangaapi.manhuaren.com";
 #[modify_image_request]
 fn modify_image_request(request: Request) {
 	request
-		.header("X-Yq-Yqci", "{\"le\": \"zh\"}")
-		.header("User-Agent", "okhttp/3.11.0")
-		.header("Referer", "http://www.dm5.com/dm5api/")
-		.header("clubReferer", "http://mangaapi.manhuaren.com/");
+		.header(
+			"X-Yq-Yqci",
+			"{\"av\":\"\",\"cl\":\"\",\"cy\":\"\",\"di\":\"0\",\"le\":\"zh\",\"os\":0,\"pt\":\"\"}",
+		)
+		.header("User-Agent", "okhttp/3.11.0");
 }
 
 #[get_manga_list]
