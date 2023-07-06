@@ -2,7 +2,7 @@ use aidoku::{
 	error::{AidokuError, AidokuErrorKind, Result},
 	helpers::{substring::Substring, uri::encode_uri},
 	prelude::*,
-	std::{String, StringRef, Vec},
+	std::{current_date, String, StringRef, Vec},
 	Chapter, DeepLink, Filter, FilterType, Listing, Manga, MangaContentRating, MangaViewer, Page,
 };
 
@@ -12,8 +12,8 @@ use alloc::string::ToString;
 use crate::{
 	constants::{BASE_URL, BASE_URL_READMANGA, PAGE_DIR},
 	get_manga_details,
-	helpers::{self, get_manga_id},
-	wrappers::WNode,
+	helpers::{get_manga_id, get_manga_url, parse_status},
+	wrappers::{post, WNode},
 };
 
 pub fn parse_lising(html: &WNode, listing: Listing) -> Result<Vec<Manga>> {
@@ -100,7 +100,7 @@ pub fn parse_search_results(html: &WNode) -> Result<Vec<Manga>> {
 				.iter()
 				.map(WNode::text)
 				.collect();
-			let status = helpers::parse_status(&extract_from_content("mg_status")?);
+			let status = parse_status(&extract_from_content("mg_status")?);
 			let nsfw = match categories.iter().find(|c| c.contains("18+")) {
 				Some(_) => MangaContentRating::Nsfw,
 				None => MangaContentRating::Suggestive,
@@ -167,7 +167,7 @@ pub fn parse_manga(html: &WNode, id: String) -> Option<Manga> {
 	let cover = summary_node
 		.select_one("div.summary_image img")?
 		.attr("src")?;
-	let url = helpers::get_manga_url(&id);
+	let url = get_manga_url(&id);
 	let title = main_node.select_one("div.post-title > h1")?.text();
 	let author = extract_optional_content("authors").join(", ");
 	let artist = extract_optional_content("artist").join(", ");
@@ -179,7 +179,7 @@ pub fn parse_manga(html: &WNode, id: String) -> Option<Manga> {
 		MangaContentRating::Suggestive
 	};
 	let status = get_row_value_by_name(&status_node, "Статус")
-		.map(|status_str| helpers::parse_status(&status_str))
+		.map(|status_str| parse_status(&status_str))
 		.unwrap_or_default();
 	let viewer = get_row_value_by_name(&content_node, "Тип")
 		.map(|manga_type| match manga_type.as_str() {
@@ -205,92 +205,121 @@ pub fn parse_manga(html: &WNode, id: String) -> Option<Manga> {
 	})
 }
 
-fn get_manga_page_main_node_readmanga(html: &WNode) -> Result<WNode> {
-	html.select("div.leftContent")
-		.pop()
-		.ok_or(WNode::PARSING_ERROR)
-}
+pub fn parse_chapters(html: &WNode, manga_id: &str) -> Option<Vec<Chapter>> {
+	let manga_chapters_holder_node =
+		html.select_one("div.c-page-content div#manga-chapters-holder")?;
 
-pub fn parse_chapters_readmanga(html: &WNode, manga_id: &str) -> Result<Vec<Chapter>> {
-	let main_node = get_manga_page_main_node_readmanga(html)?;
+	let data_id = manga_chapters_holder_node.attr("data-id")?;
 
-	let chapters = main_node
-		.select(
-			"div[class~=chapters] > table > tbody > tr:has(td > a):has(td.date:not(.text-info))",
-		)
+	let real_manga_chapters_holder_node = post(
+		&format!("{BASE_URL}/wp-admin/admin-ajax.php"),
+		&format!("action=manga_get_chapters&manga={data_id}"),
+		&[
+			("X-Requested-With", "XMLHttpRequest"),
+			("Referer", &format!("{}", get_manga_url(manga_id))),
+		],
+	)
+	.ok()?;
+
+	let chapter_nodes = real_manga_chapters_holder_node.select("ul > li.wp-manga-chapter");
+
+	let abs = |l, r| {
+		if l > r {
+			l - r
+		} else {
+			r - l
+		}
+	};
+
+	let chapters = chapter_nodes
 		.into_iter()
-		.filter_map(|chapter_elem| {
-			let link_elem = chapter_elem.select("a.chapter-link").pop()?;
-
-			// this: `chapter_elem.select("td.d-none")` doesn't work here, I don't know why
-			let date_elems: Vec<_> = {
-				let chapter_repr = chapter_elem.to_str();
-
-				chapter_repr
-					.match_indices("<td")
-					.zip(chapter_repr.match_indices("</td>"))
-					.map(|((start, _), (end, td_end))| {
-						chapter_repr[start..end + td_end.len()].to_string()
-					})
-					.filter_map(|td_repr| WNode::new(td_repr).attr("data-date-raw"))
-					.collect()
-			};
-
-			let chapter_rel_url = link_elem.attr("href")?;
-
-			let id = chapter_rel_url
-				.strip_prefix(format!("/{manga_id}/").as_str())?
+		.enumerate()
+		.filter_map(|(idx, chapter_node)| {
+			let url_node = chapter_node.select_one("a")?;
+			let url = url_node.attr("href")?;
+			let id = url
+				.substring_after(&format!("{}/", get_manga_url(manga_id)))?
+				.trim_end_matches('/')
 				.to_string();
+			let title = url_node.text();
 
-			let full_title = link_elem.text().replace(" новое", "").trim().to_string();
-			let title = {
-				let strippred_title: String = full_title
-					.chars()
-					.skip_while(|char| char.is_numeric() || char.is_whitespace() || char == &'-')
+			let chapter = {
+				let approx_chapter = (idx + 1) as f32;
+				let mut possible_chapters: Vec<_> = title
+					.split_whitespace()
+					.filter_map(|word| word.parse::<f32>().ok())
 					.collect();
-				if strippred_title.is_empty() {
-					full_title
-				} else {
-					strippred_title
+				match possible_chapters[..] {
+					[] => approx_chapter,
+					[chap] => chap,
+					_ => {
+						possible_chapters.sort_by(|&l, &r| {
+							abs(l, approx_chapter)
+								.partial_cmp(&abs(r, approx_chapter))
+								.unwrap()
+						});
+						possible_chapters.first().cloned().unwrap_or(approx_chapter)
+					}
 				}
 			};
 
-			let (vol_str, chap_str) = id.split_once('/')?;
-			let volume = vol_str.strip_prefix("vol")?.parse().ok()?;
-			let chapter = chap_str.parse().ok()?;
+			let extract_multiplier = |metric_str: &&str| {
+				if metric_str.starts_with("сек") {
+					Some(1)
+				} else if metric_str.starts_with("мин") {
+					Some(60)
+				} else if metric_str.starts_with("час") {
+					Some(60 * 60)
+				} else if metric_str.starts_with("дн") {
+					Some(24 * 60 * 60)
+				} else {
+					None
+				}
+			};
 
 			let date_updated = {
-				match date_elems.first() {
-					Some(date_updated_str) => StringRef::from(&date_updated_str).as_date(
-						"yyyy-MM-dd HH:mm:ss.SSS",
-						None,
-						None,
-					),
-					None => 0f64,
-				}
+				let release_date_node = chapter_node.select_one("span.chapter-release-date")?;
+				let normal_release_date = release_date_node.select_one("i").map(|i_node| {
+					StringRef::from(&i_node.text()).as_date("dd-MM-yyyy", None, None)
+				});
+
+				let ago_extractor = || {
+					release_date_node
+						.select_one("a")
+						.and_then(|a| a.attr("title"))
+						.and_then(|updated_text| {
+							if !updated_text.ends_with("ago") {
+								return None;
+							}
+							let spl: Vec<_> = updated_text.split_whitespace().collect();
+							let count = spl
+								.first()
+								.and_then(|count_str| count_str.parse::<f64>().ok())?;
+
+							let metric_mult = spl.get(1).and_then(extract_multiplier)?;
+
+							Some(current_date() - count * (metric_mult as f64))
+						})
+						.unwrap_or(0f64)
+				};
+
+				normal_release_date.unwrap_or_else(ago_extractor)
 			};
-
-			let scanlator = link_elem
-				.attr("title")
-				.unwrap_or_default()
-				.replace(" (Переводчик)", "");
-
-			let url = helpers::get_chapter_url_readmanga(manga_id, &id);
 
 			Some(Chapter {
 				id,
 				title,
-				volume,
+				volume: 1f32, // TODO: implement proper parsing
 				chapter,
 				date_updated,
-				scanlator,
 				url,
 				lang: "ru".to_string(),
+				..Default::default()
 			})
 		})
 		.collect();
 
-	Ok(chapters)
+	Some(chapters)
 }
 
 pub fn get_page_list_readmanga(html: &WNode) -> Result<Vec<Page>> {

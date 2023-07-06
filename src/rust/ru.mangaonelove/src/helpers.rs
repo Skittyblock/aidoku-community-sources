@@ -16,10 +16,6 @@ pub fn get_manga_id(url: &str) -> Option<String> {
 		.map(|s| s.to_string())
 }
 
-pub fn get_manga_url_readmanga(id: &str) -> String {
-	format!("{}/{}", BASE_URL_READMANGA, id)
-}
-
 pub fn create_manga_page_result(mangas: Vec<Manga>, has_more: Option<bool>) -> MangaPageResult {
 	let has_more = has_more.unwrap_or(mangas.len() == SEARCH_OFFSET_STEP as usize);
 	MangaPageResult {
