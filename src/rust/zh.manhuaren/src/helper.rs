@@ -10,6 +10,8 @@ use aidoku::{
 };
 use md5::{Digest, Md5};
 
+use crate::{USER_AGENT, X_YQ_YQCI};
+
 const HEX_CHARS: [char; 16] = [
 	'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f',
 ];
@@ -76,7 +78,8 @@ pub fn generate_get_query(args: &mut Vec<(String, String)>) -> String {
 
 pub fn request<T: AsRef<str>>(url: T, method: HttpMethod) -> Result<String> {
 	Request::new(url, method)
-		.header("User-Agent", "okhttp/3.11.0")
+		.header("X-Yq-Yqci", X_YQ_YQCI)
+		.header("User-Agent", USER_AGENT)
 		.string()
 }
 

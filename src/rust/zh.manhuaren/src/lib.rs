@@ -22,9 +22,14 @@ const FILTER_SORT: [i32; 3] = [0, 1, 2];
 
 const API_URL: &str = "http://mangaapi.manhuaren.com";
 
+const X_YQ_YQCI: &str = r#"{ "av": "5.1.7", "cy": "TW", "lut": "1688669750819", "nettype": 1, "os": 2, "di": "", "fcl": "appstore", "fult": "1688669750819", "cl": "appstore", "token": "", "ciso": "tw", "fut": "1688669750818", "le": "en-GB", "ps": "0", "ov": "16.5.1", "at": 2, "rn": "750x1334", "ln": "", "pt": "com.ilike2.manhuaren", "dm": "iPhone12,8" }"#;
+const USER_AGENT: &str = "manhuaren_speed/5.1.7 (iPhone; iOS 16.5.1; Scale/2.00)";
+
 #[modify_image_request]
 fn modify_image_request(request: Request) {
-	request.header("User-Agent", "okhttp/3.11.0");
+	request
+		.header("X-Yq-Yqci", X_YQ_YQCI)
+		.header("User-Agent", USER_AGENT);
 }
 
 #[get_manga_list]
