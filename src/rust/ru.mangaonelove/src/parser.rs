@@ -1,9 +1,8 @@
 use aidoku::{
-	error::{AidokuError, AidokuErrorKind, Result},
 	helpers::{substring::Substring, uri::encode_uri},
 	prelude::*,
 	std::{current_date, String, StringRef, Vec},
-	Chapter, DeepLink, Filter, FilterType, Listing, Manga, MangaContentRating, MangaViewer, Page,
+	Chapter, Filter, FilterType, Listing, Manga, MangaContentRating, MangaViewer, Page,
 };
 
 extern crate alloc;
@@ -11,21 +10,18 @@ use alloc::string::ToString;
 
 use crate::{
 	constants::{BASE_URL, PAGE_DIR},
-	get_manga_details,
 	helpers::{get_manga_id, get_manga_url, parse_status},
 	wrappers::{post, WNode},
 };
 
-pub fn parse_lising(html: &WNode, listing: Listing) -> Result<Vec<Manga>> {
+pub fn parse_lising(html: &WNode, listing: Listing) -> Option<Vec<Manga>> {
 	let sidebar_class = match listing.name.as_str() {
 		"Популярное" => "c-top-sidebar",
 		"Новое" => "c-top-second-sidebar",
-		_ => return Err(WNode::PARSING_ERROR),
+		_ => return None,
 	};
 
-	let sidebar_node = html
-		.select_one(&format!("div.c-sidebar.{sidebar_class}"))
-		.ok_or(WNode::PARSING_ERROR)?;
+	let sidebar_node = html.select_one(&format!("div.c-sidebar.{sidebar_class}"))?;
 
 	let mangas = sidebar_node
 		.select("div.slider__item")
@@ -64,13 +60,12 @@ pub fn parse_lising(html: &WNode, listing: Listing) -> Result<Vec<Manga>> {
 		})
 		.collect();
 
-	Ok(mangas)
+	Some(mangas)
 }
 
-pub fn parse_search_results(html: &WNode) -> Result<Vec<Manga>> {
+pub fn parse_search_results(html: &WNode) -> Option<Vec<Manga>> {
 	let list_node = html
-		.select_one("div.c-page-content div.main-col-inner div.tab-content-wrap div.c-tabs-item")
-		.ok_or(WNode::PARSING_ERROR)?;
+		.select_one("div.c-page-content div.main-col-inner div.tab-content-wrap div.c-tabs-item")?;
 
 	let mangas = list_node
 		.select("div.row.c-tabs-item__content")
@@ -121,7 +116,7 @@ pub fn parse_search_results(html: &WNode) -> Result<Vec<Manga>> {
 		})
 		.collect();
 
-	Ok(mangas)
+	Some(mangas)
 }
 
 pub fn parse_manga(html: &WNode, id: String) -> Option<Manga> {
@@ -343,7 +338,7 @@ pub fn get_page_list(html: &WNode) -> Option<Vec<Page>> {
 	)
 }
 
-pub fn get_filter_url(filters: &[Filter], page: i32) -> Result<String> {
+pub fn get_filter_url(filters: &[Filter], page: i32) -> Option<String> {
 	const QUERY_PART: &str = "&s=";
 
 	let filter_addition: String = filters
@@ -362,25 +357,8 @@ pub fn get_filter_url(filters: &[Filter], page: i32) -> Result<String> {
 		None => filter_addition + QUERY_PART,
 	};
 
-	Ok(format!(
+	Some(format!(
 		"{BASE_URL}/{PAGE_DIR}/{page}/?post_type=wp-manga&m_orderby=trending{}",
 		filter_addition
 	))
-}
-
-pub fn parse_incoming_url(url: &str) -> Result<DeepLink> {
-	let manga_id = match url.find("://") {
-		Some(idx) => &url[idx + 3..],
-		None => url,
-	}
-	.split('/')
-	.nth(2)
-	.ok_or(AidokuError {
-		reason: AidokuErrorKind::Unimplemented,
-	})?;
-
-	Ok(DeepLink {
-		manga: Some(get_manga_details(manga_id.to_string())?),
-		chapter: None,
-	})
 }
