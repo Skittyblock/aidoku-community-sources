@@ -1,19 +1,29 @@
-use aidoku::{helpers::substring::Substring, prelude::*, Manga, MangaPageResult, MangaStatus};
+use aidoku::{prelude::*, Manga, MangaPageResult, MangaStatus};
 use alloc::{
 	string::{String, ToString},
 	vec::Vec,
 };
 
-use crate::constants::{MANGA_BASE_URL, SEARCH_OFFSET_STEP};
+use crate::constants::{MANGA_BASE_URL, MANGA_DIR, SEARCH_OFFSET_STEP, SITE};
 
 pub fn get_manga_url(id: &str) -> String {
 	format!("{MANGA_BASE_URL}/{id}")
 }
 
 pub fn get_manga_id(url: &str) -> Option<String> {
-	url.trim_end_matches('/')
-		.substring_after_last('/')
-		.map(|s| s.to_string())
+	let split: Vec<_> = match url.find("://") {
+		Some(idx) => &url[idx + 3..],
+		None => url,
+	}
+	.split('/')
+	.collect();
+
+	if split.len() < 3 || split[0] != SITE || split[1] != MANGA_DIR {
+		return None;
+	}
+
+	let manga_id = split[2];
+	Some(manga_id.to_string())
 }
 
 pub fn create_manga_page_result(mangas: Vec<Manga>, has_more: Option<bool>) -> MangaPageResult {
