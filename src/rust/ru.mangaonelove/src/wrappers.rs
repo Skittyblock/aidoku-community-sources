@@ -1,5 +1,5 @@
 use aidoku::{
-	error::{AidokuError, AidokuErrorKind, NodeError, Result},
+	error::Result,
 	helpers::substring::Substring,
 	prelude::*,
 	std::{
@@ -43,20 +43,14 @@ pub fn get_html(url: &str) -> Result<WNode> {
 }
 
 impl WNode {
-	pub const PARSING_ERROR: AidokuError = AidokuError {
-		reason: AidokuErrorKind::NodeError(NodeError::ParseError),
-	};
-
 	pub fn _new(repr: String) -> Self {
 		WNode { repr }
 	}
 
 	pub fn from_node(node: Node) -> Self {
 		let repr = node.outer_html().read();
-		// debug!("repr: \"{}\"", repr);
 		if repr.starts_with("<html>") {
 			let lines: Vec<_> = repr.lines().collect();
-			// debug!("lines: {:?}", lines);
 			WNode {
 				repr: lines[3..lines.len() - 2].join("\n"),
 			}
