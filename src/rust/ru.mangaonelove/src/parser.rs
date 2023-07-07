@@ -10,7 +10,7 @@ extern crate alloc;
 use alloc::string::ToString;
 
 use crate::{
-	constants::{BASE_URL, BASE_URL_READMANGA, PAGE_DIR},
+	constants::{BASE_URL, PAGE_DIR},
 	get_manga_details,
 	helpers::{get_manga_id, get_manga_url, parse_status},
 	wrappers::{post, WNode},
@@ -322,67 +322,25 @@ pub fn parse_chapters(html: &WNode, manga_id: &str) -> Option<Vec<Chapter>> {
 	Some(chapters)
 }
 
-pub fn get_page_list_readmanga(html: &WNode) -> Result<Vec<Page>> {
-	let script_text = html
-		.select(r"div.reader-controller > script[type=text/javascript]")
-		.pop()
-		.map(|script_node| script_node.data())
-		.ok_or(WNode::PARSING_ERROR)?;
-
-	let chapters_list_str = script_text
-		.find("[[")
-		.zip(script_text.find("]]"))
-		.map(|(start, end)| &script_text[start..end + 2])
-		.ok_or(WNode::PARSING_ERROR)?;
-
-	let urls: Vec<_> = chapters_list_str
-		.match_indices("['")
-		// extracting parts from ['https://t1.rmr.rocks/', '', "auto/68/88/46/0098.png_res.jpg", 959, 1400] into tuples
-		.zip(chapters_list_str.match_indices("\","))
-		.filter_map(|((l, _), (r, _))| {
-			use itertools::Itertools;
-			chapters_list_str[l + 1..r + 1]
-				.replace(['\'', '"'], "")
-				.split(',')
-				.map(ToString::to_string)
-				.collect_tuple()
-		})
-		// composing URL
-		.map(|(part0, part1, part2)| {
-			if part1.is_empty() && part2.starts_with("/static/") {
-				format!("{BASE_URL_READMANGA}{part2}")
-			} else if part1.starts_with("/manga/") {
-				format!("{part0}{part2}")
-			} else {
-				format!("{part0}{part1}{part2}")
-			}
-		})
-		// fixing URL
-		.map(|url| {
-			if !url.contains("://") {
-				format!("https:{url}")
-			} else {
-				url
-			}
-		})
-		.filter_map(|url| {
-			if url.contains("one-way.work") {
-				url.substring_before("?").map(ToString::to_string)
-			} else {
-				Some(url)
-			}
-		})
+pub fn get_page_list(html: &WNode) -> Option<Vec<Page>> {
+	let reader_content_node = html.select_one("div.read-container > div.reading-content")?;
+	let page_nodes = reader_content_node.select("div.page-break > img");
+	let urls: Vec<_> = page_nodes
+		.into_iter()
+		.filter_map(|img_node| img_node.attr("src"))
+		.map(|url| url.trim().to_string())
 		.collect();
 
-	Ok(urls
-		.into_iter()
-		.enumerate()
-		.map(|(idx, url)| Page {
-			index: idx as i32,
-			url,
-			..Default::default()
-		})
-		.collect())
+	Some(
+		urls.into_iter()
+			.enumerate()
+			.map(|(idx, url)| Page {
+				index: idx as i32,
+				url,
+				..Default::default()
+			})
+			.collect(),
+	)
 }
 
 pub fn get_filter_url(filters: &[Filter], page: i32) -> Result<String> {

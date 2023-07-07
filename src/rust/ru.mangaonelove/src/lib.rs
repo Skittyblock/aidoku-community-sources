@@ -49,9 +49,9 @@ pub fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 
 #[get_page_list]
 pub fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
-	let url = helpers::get_chapter_url_readmanga(&manga_id, &chapter_id);
+	let url = helpers::get_chapter_url(&manga_id, &chapter_id);
 	let html = wrappers::get_html(&url)?;
-	parser::get_page_list_readmanga(&html)
+	parser::get_page_list(&html).ok_or(WNode::PARSING_ERROR)
 }
 
 #[handle_url]
