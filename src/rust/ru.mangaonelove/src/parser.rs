@@ -301,10 +301,10 @@ pub fn parse_chapters(html: &WNode, manga_id: &str) -> Option<Vec<Chapter>> {
 				normal_release_date.unwrap_or_else(ago_extractor)
 			};
 
+			// TODO: implement proper volume parsing
 			Some(Chapter {
 				id,
 				title,
-				volume: 1f32, // TODO: implement proper parsing
 				chapter,
 				date_updated,
 				url,
