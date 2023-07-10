@@ -108,7 +108,7 @@ pub fn parse_chapter_list(manga_id: String, res: ObjectRef) -> Result<Vec<Chapte
 
 pub fn parse_page_list(res: ObjectRef) -> Result<Vec<Page>> {
 	let data = res.get("data").as_object()?;
-	let images = data.get("images").as_array()?;
+	let images = data.get("pages").as_array()?;
 	let mut pages = Vec::new();
 	let image_quality = get_image_quality()?;
 

@@ -1,4 +1,8 @@
-use aidoku::{prelude::*, std::String, std::Vec};
+use aidoku::{helpers::uri::QueryParameters, prelude::*, std::String, std::Vec};
+use alloc::string::ToString;
+
+pub const USER_AGENT: &str = "Mozilla/5.0 (iPhone; CPU iPhone OS 16_1_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1";
+pub const BASE_URL: &str = "https://hentaifox.com";
 
 pub fn urlencode(string: String) -> String {
 	let mut result: Vec<u8> = Vec::with_capacity(string.len() * 3);
@@ -80,19 +84,22 @@ pub fn get_tag_slug(path: String) -> String {
 }
 
 pub fn build_search_url(
-	query: String,
+	term: Option<String>,
 	mut tags: Vec<String>,
 	sort_type: String,
 	page: i32,
 ) -> String {
-	let base_url = String::from("https://hentaifox.com");
-	let mut path = String::new();
-	if !query.is_empty() {
-		path = format!("/search?q={}&page={}", urlencode(query), page);
+	if term.is_some() {
+		let mut query = QueryParameters::new();
+		query.set("q", Some(term.unwrap_or_default().as_str()));
+		query.set("page", Some(page.to_string().as_str()));
 		if sort_type == "popular" {
-			path.push_str("&sort=popular");
+			query.set("sort", Some("popular"));
 		}
+
+		format!("{BASE_URL}/search?{query}")
 	} else {
+		let mut path = String::new();
 		if !tags.is_empty() && tags[0] == "none" {
 			tags.remove(0);
 		}
@@ -115,11 +122,8 @@ pub fn build_search_url(
 				}
 			}
 		}
+		format!("{BASE_URL}{path}")
 	}
-
-	let url = format!("{}{}", base_url, path);
-
-	url
 }
 
 pub fn only_chars_from_string(str: String) -> String {

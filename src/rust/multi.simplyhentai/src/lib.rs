@@ -100,7 +100,7 @@ fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 
 #[get_page_list]
 fn get_page_list(manga_id: String, _chapter_id: String) -> Result<Vec<Page>> {
-	let manga_url = format!("{API_BASE_URL}/manga/{manga_id}");
+	let manga_url = format!("{API_BASE_URL}/manga/{manga_id}/pages");
 	let data = Request::new(manga_url, HttpMethod::Get)
 		.header("User-Agent", USER_AGENT)
 		.json()?;
