@@ -1,26 +1,56 @@
 use aidoku::{
 	prelude::format,
-	std::current_date,
-	std::Vec,
 	std::{
+		current_date,
+		defaults::defaults_get,
 		html::Node,
 		net::{HttpMethod, Request},
-		String,
+		String, Vec,
 	},
 	MangaStatus,
 };
-pub fn extract_f32_from_string(chapter_title: String, name : String) -> f32 {
-	if is_string_numeric(chapter_title.clone()) {
+
+pub fn get_lang_code() -> Option<String> {
+	if let Ok(languages_val) = defaults_get("languages") {
+		if let Ok(languages) = languages_val.as_array() {
+			if let Ok(language) = languages.get(0).as_string() {
+				return Some(language.read());
+			}
+		}
+	}
+	None
+}
+
+pub fn get_manga_id(url: &str) -> String {
+	url.split('/')
+		.nth_back(0)
+		.unwrap_or_default()
+		.replace(".html", "")
+}
+
+pub fn extract_f32_from_string(chapter_title: &str, name: &str) -> f32 {
+	if is_string_numeric(String::from(chapter_title)) {
 		chapter_title.parse::<f32>().unwrap_or(0.0)
-	} else if chapter_title.contains("vol") || chapter_title.contains("Том") || chapter_title.contains("Vol") {
-        let title = chapter_title.to_lowercase();
-		let text: String = if title.contains("vol") {
+	} else if chapter_title.contains("vol")
+		|| chapter_title.contains("Том")
+		|| chapter_title.contains("Vol")
+	{
+		let title = chapter_title.to_lowercase();
+		let text: String = if title.contains("volumen") {
+			title
+				.replace(&title[..title.find("volumen").unwrap() + 8], "")
+				.replace("ch.", "")
+		} else if title.contains("vol") {
 			title
 				.replace(&title[..title.find("vol.").unwrap() + 7], "")
 				.replace("ch.", "")
 		} else {
-			chapter_title.replace(&chapter_title[..chapter_title.find("Том").unwrap_or(0) + 8], "")
+			title.replace(
+				&chapter_title[..chapter_title.find("Том").unwrap_or(0) + 8],
+				"",
+			)
 		};
+
 		text.chars()
 			.filter(|a| (*a >= '0' && *a <= '9') || *a == ' ' || *a == '.')
 			.collect::<String>()
@@ -31,10 +61,11 @@ pub fn extract_f32_from_string(chapter_title: String, name : String) -> f32 {
 			.find(|a| *a > 0.0)
 			.unwrap_or(0.0)
 	} else {
-		chapter_title.to_ascii_lowercase()
-            .replace(&name.to_ascii_lowercase(),"")
+		chapter_title
+			.to_ascii_lowercase()
+			.replace(&name.to_ascii_lowercase(), "")
 			.replace("ch.", "")
-            .replace("Ch.","")
+			.replace("Ch.", "")
 			.split('-')
 			.last()
 			.unwrap()
@@ -71,6 +102,7 @@ pub fn status_from_string(status: String) -> MangaStatus {
 		_ => MangaStatus::Unknown,
 	};
 }
+
 fn is_string_numeric(str: String) -> bool {
 	for c in str.chars() {
 		if !c.is_numeric() {
@@ -78,11 +110,6 @@ fn is_string_numeric(str: String) -> bool {
 		}
 	}
 	true
-}
-
-pub fn get_chapter_number(id: String) -> f32 {
-	let values: Vec<&str> = id.split(' ').collect();
-	values[values.len() - 1].parse::<f32>().unwrap()
 }
 
 pub fn get_date(node: Node, date_format: &str, locale: &str) -> f64 {
@@ -112,18 +139,20 @@ pub fn get_date(node: Node, date_format: &str, locale: &str) -> f64 {
 	}
 }
 
-pub fn get_chapter_pages(base_url: String, id: String) -> Vec<String> {
+pub fn get_chapter_pages(base_url: &str, id: &str) -> Vec<String> {
 	let mut pages: Vec<String> = Vec::new();
-	let html = Request::new(&id, HttpMethod::Get).html();
-	for page in html.select("select#page").first().select("option").array() {
-		let page_node = page.as_node();
-		pages.push(format!("{}{}", base_url, page_node.attr("value").read()));
+	if let Ok(html) = Request::new(id, HttpMethod::Get).html() {
+		for page in html.select("select#page").first().select("option").array() {
+			if let Ok(page_node) = page.as_node() {
+				pages.push(format!("{}{}", base_url, page_node.attr("value").read()));
+			}
+		}
 	}
 	pages
 }
 
 pub fn get_search_url(
-	base_url: String,
+	base_url: &str,
 	query: String,
 	included_tags: Vec<String>,
 	excluded_tags: Vec<String>,
@@ -171,16 +200,4 @@ pub fn get_search_url(
 	url.push_str(&format!("&page={}", &page));
 	url.push_str("&type=high");
 	url
-}
-
-pub fn stupidencode(string: String) -> String {
-	let mut result = String::new();
-	for c in string.chars() {
-		if c.is_alphanumeric() {
-			result.push(c);
-		} else if c == ' ' {
-			result.push('_');
-		}
-	}
-	result
 }
