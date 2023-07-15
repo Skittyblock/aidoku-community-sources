@@ -1,6 +1,6 @@
 #![no_std]
 use aidoku::{
-  error::Result, prelude::*, std::net::Request, std::String, std::Vec,
+  	error::Result, prelude::*, std::String, std::Vec,
 	Chapter, DeepLink, Filter, Listing, Manga, MangaPageResult, Page,
 };
 
