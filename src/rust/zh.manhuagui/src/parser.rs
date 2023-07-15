@@ -64,6 +64,7 @@ const FILTER_AUDIENCE: [&str; 6] = [
 	"all", "shaonv", "shaonian", "qingnian", "ertong", "tongyong",
 ];
 const FILTER_PROGRESS: [&str; 3] = ["all", "lianzai", "wanjie"];
+const SORT: [&str; 4] = ["index", "update", "view", "rate"];
 
 pub fn parse_home_page(html: Node) -> Result<MangaPageResult> {
 	let mut mangas: Vec<Manga> = Vec::new();
@@ -305,6 +306,7 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32, url: &mut String) {
 	let mut genre: &str = "all";
 	let mut audience: &str = "all";
 	let mut progress: &str = "all";
+	let mut sort_by = SORT[0];
 
 	for filter in filters {
 		match filter.kind {
@@ -324,6 +326,13 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32, url: &mut String) {
 					"进度" => progress = FILTER_PROGRESS[index],
 					_ => continue,
 				};
+			}
+			FilterType::Sort => {
+				let Ok(obj) = filter.value.as_object() else {
+					continue;
+				};
+				let index = obj.get("index").as_int().unwrap_or(0) as usize;
+				sort_by = SORT[index];
 			}
 			_ => continue,
 		}
@@ -349,7 +358,7 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32, url: &mut String) {
 			filter_str = format!("/{}", filter_str)
 		}
 
-		let page_str = format!("/index_p{}.html", page.to_string());
+		let page_str = format!("/{}_p{}.html", sort_by, page.to_string());
 
 		url.push_str(filter_str.as_str());
 		url.push_str(page_str.as_str())
