@@ -16,7 +16,7 @@ if [ "$1" != "-a" ] && [ "$1" != "" ]; then
 else
     # compile all sources
     cargo +nightly build --release
-    
+
     for dir in sources/*/
     do
         dir=${dir%*/}
@@ -30,6 +30,6 @@ else
         zip -r $dir.aix Payload >> /dev/null
         mv $dir.aix ../../../$dir.aix
         rm -rf Payload
-        cd ../../../   
+        cd ../../../
     done
 fi
