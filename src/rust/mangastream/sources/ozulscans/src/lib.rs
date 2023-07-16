@@ -10,8 +10,10 @@ fn get_instance() -> MangaStreamSource {
 	MangaStreamSource {
 		base_url: String::from("https://ozulscans.com"),
 		chapter_date_format: "MMMM d, yyyy",
-		alt_pages: true,
+		manga_details_author: ".imptdt:contains(المؤلف) i",
 		locale: "ar_EH",
+		last_page_text: "التالي",
+		alt_pages: true,
 		..Default::default()
 	}
 }
