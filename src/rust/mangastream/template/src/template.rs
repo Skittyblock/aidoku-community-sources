@@ -380,8 +380,8 @@ impl MangaStreamSource {
 			.html()?;
 		if self.alt_pages {
 			let raw_text = html.select("script").html().read();
-			let trimmed_json = &raw_text[raw_text.find(r#":[{"s"#).unwrap_or(0) + 2
-				..raw_text.rfind("}],").unwrap_or(0) + 1];
+			let trimmed_json = &raw_text
+				[raw_text.find(r#":[{"s"#).unwrap_or(0) + 2..raw_text.find("}],").unwrap_or(0) + 1];
 			let trimmed_text = if trimmed_json.contains("Default 2") {
 				&trimmed_json[..trimmed_json.rfind(r#",{"s"#).unwrap_or(0)]
 			} else {
