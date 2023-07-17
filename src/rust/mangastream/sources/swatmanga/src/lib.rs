@@ -6,19 +6,17 @@ use aidoku::{
 };
 
 use mangastream_template::template::MangaStreamSource;
-mod helper;
 
 fn get_instance() -> MangaStreamSource {
 	MangaStreamSource {
 		has_random_chapter_prefix: true,
 		listing: ["الرائج", "آخر", "جَديد"],
-		base_url: String::from("https://swatmanga.net"),
+		base_url: String::from("https://swatop.club"),
 		manga_details_title: ".infox h1",
-		manga_details_author: "td:contains(Autor)+td",
-		manga_details_description: ".desc",
+		manga_details_author: "span:contains(المؤلف)",
 		manga_details_categories: ".spe a",
-		manga_details_cover: ".ime img",
-		manga_details_type: ".spe b:contains(النوع)+a",
+		manga_details_cover: ".ime noscript img",
+		manga_details_type: "span:contains(النوع) a",
 		last_page_text: "التالي",
 		chapter_selector: ".bxcl ul li",
 		chapter_title: "span.lchx",
@@ -40,7 +38,7 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 
 #[get_manga_details]
 fn get_manga_details(id: String) -> Result<Manga> {
-	helper::parse_manga_details(&get_instance(), id)
+	get_instance().parse_manga_details(id)
 }
 
 #[get_chapter_list]
