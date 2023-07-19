@@ -380,14 +380,24 @@ impl MangaStreamSource {
 			.html()?;
 		if self.alt_pages {
 			let raw_text = html.select("script").html().read();
-			let trimmed_json = &raw_text
-				[raw_text.find(r#":[{"s"#).unwrap_or(0) + 2..raw_text.find("}],").unwrap_or(0) + 1];
-			let trimmed_text = if trimmed_json.contains("Default 2") {
-				&trimmed_json[..trimmed_json.rfind(r#",{"s"#).unwrap_or(0)]
-			} else {
+
+			let trimmed_json = {
+				let mut trimmed_json = &raw_text[raw_text.find(r#":[{"s"#).unwrap_or(0) + 2
+					..raw_text.rfind("}],").unwrap_or(0) + 1];
+
+				if trimmed_json.contains("Default 2") {
+					trimmed_json = &trimmed_json[..trimmed_json.rfind(r#",{"s"#).unwrap_or(0)];
+				}
+
+				// if "post_id" is present, we've gone too far
+				if trimmed_json.contains("post_id") {
+					trimmed_json = &trimmed_json[..trimmed_json.find("}],").unwrap_or(0) + 1];
+				}
+
 				trimmed_json
 			};
-			let json = parse(trimmed_text.as_bytes())?.as_object()?;
+
+			let json = parse(trimmed_json.as_bytes())?.as_object()?;
 			let images = json.get("images").as_array()?;
 			for (index, page) in images.enumerate() {
 				let page_url = urlencode(page.as_string()?.read());
