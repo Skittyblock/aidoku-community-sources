@@ -42,6 +42,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "anigliscans"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "mangastream_template",
+]
+
+[[package]]
 name = "aresmanga"
 version = "0.1.0"
 dependencies = [
