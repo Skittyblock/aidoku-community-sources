@@ -347,6 +347,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "walpurgiscan"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "mangastream_template",
+]
+
+[[package]]
 name = "westmanga"
 version = "0.1.0"
 dependencies = [
