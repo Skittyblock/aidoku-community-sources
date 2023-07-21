@@ -9,146 +9,117 @@
 			{
 				"type": "genre",
 				"name": "Action",
-				"id": "-3",
-				"canExclude": true
+				"id": "Action"
 			},
 			{
 				"type": "genre",
 				"name": "Adventure",
-				"id": "22",
-				"canExclude": true
+				"id": "Adventure"
 			},
 			{
 				"type": "genre",
 				"name": "Comedy",
-				"id": "25",
-				"canExclude": true
+				"id": "Comedy"
 			},
 			{
 				"type": "genre",
 				"name": "Drama",
-				"id": "4",
-				"canExclude": true
+				"id": "Drama"
 			},
 			{
 				"type": "genre",
 				"name": "Fantasy",
-				"id": "5",
-				"canExclude": true
+				"id": "Fantasy"
 			},
 			{
 				"type": "genre",
 				"name": "Gender Bender",
-				"id": "39",
-				"canExclude": true
+				"id": "Gender%20Bender"
 			},
 			{
 				"type": "genre",
 				"name": "Harem",
-				"id": "35",
-				"canExclude": true
+				"id": "Harem"
 			},
 			{
 				"type": "genre",
 				"name": "Historical",
-				"id": "6",
-				"canExclude": true
+				"id": "Historical"
 			},
 			{
 				"type": "genre",
 				"name": "Horror",
-				"id": "60",
-				"canExclude": true
+				"id": "Horror"
 			},
 			{
 				"type": "genre",
 				"name": "Josei",
-				"id": "30",
-				"canExclude": true
+				"id": "Josei"
 			},
 			{
 				"type": "genre",
 				"name": "Martial Arts",
-				"id": "7",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Mecha",
-				"id": "66",
-				"canExclude": true
+				"id": "Martial%20Arts"
 			},
 			{
 				"type": "genre",
 				"name": "Mystery",
-				"id": "31",
-				"canExclude": true
+				"id": "Mystery"
 			},
 			{
 				"type": "genre",
 				"name": "Psychological",
-				"id": "40",
-				"canExclude": true
+				"id": "Psychological"
 			},
 			{
 				"type": "genre",
 				"name": "Romance",
-				"id": "37",
-				"canExclude": true
+				"id": "Romance"
 			},
 			{
 				"type": "genre",
 				"name": "School Life",
-				"id": "26",
-				"canExclude": true
+				"id": "School%20Life"
 			},
 			{
 				"type": "genre",
 				"name": "Sci-fi",
-				"id": "67",
-				"canExclude": true
+				"id": "Sci-fi"
 			},
 			{
 				"type": "genre",
 				"name": "Seinen",
-				"id": "41",
-				"canExclude": true
+				"id": "Seinen"
 			},
 			{
 				"type": "genre",
 				"name": "Shoujo",
-				"id": "46",
-				"canExclude": true
+				"id": "Shoujo"
 			},
 			{
 				"type": "genre",
 				"name": "Shounen",
-				"id": "8",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Shounen Ai",
-				"id": "58",
-				"canExclude": true
+				"id": "Shounen"
 			},
 			{
 				"type": "genre",
 				"name": "Slice of Life",
-				"id": "27",
-				"canExclude": true
+				"id": "Slice%20of%20Life"
+			},
+			{
+				"type": "genre",
+				"name": "Sports",
+				"id": "Sports"
 			},
 			{
 				"type": "genre",
 				"name": "Supernatural",
-				"id": "61",
-				"canExclude": true
+				"id": "Supernatural"
 			},
 			{
 				"type": "genre",
 				"name": "Tragedy",
-				"id": "44",
-				"canExclude": true
+				"id": "Tragedy"
 			}
 		]
 	},
