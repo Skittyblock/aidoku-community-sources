@@ -3,6 +3,14 @@
 version = 3
 
 [[package]]
+name = " manhwafreakmanga"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "mangastream_template",
+]
+
+[[package]]
 name = "acescans"
 version = "0.1.0"
 dependencies = [
