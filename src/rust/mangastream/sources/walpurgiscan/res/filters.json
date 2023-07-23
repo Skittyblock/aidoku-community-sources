@@ -8,118 +8,103 @@
 		"filters": [
 			{
 				"type": "genre",
-				"name": "Action",
-				"id": "Action"
+				"name": "Avventura",
+				"id": "avventura"
 			},
 			{
 				"type": "genre",
-				"name": "Adventure",
-				"id": "Adventure"
+				"name": "Azione",
+				"id": "azione"
 			},
 			{
 				"type": "genre",
-				"name": "Comedy",
-				"id": "Comedy"
+				"name": "Commedia",
+				"id": "commedia"
 			},
 			{
 				"type": "genre",
 				"name": "Drama",
-				"id": "Drama"
+				"id": "drama"
 			},
 			{
 				"type": "genre",
 				"name": "Fantasy",
-				"id": "Fantasy"
+				"id": "fantasy"
 			},
 			{
 				"type": "genre",
-				"name": "Gender Bender",
-				"id": "Gender%20Bender"
-			},
-			{
-				"type": "genre",
-				"name": "Harem",
-				"id": "Harem"
+				"name": "Gioco",
+				"id": "gioco"
 			},
 			{
 				"type": "genre",
 				"name": "Historical",
-				"id": "Historical"
+				"id": "historical"
 			},
 			{
 				"type": "genre",
-				"name": "Horror",
-				"id": "Horror"
+				"name": "Manhwa",
+				"id": "manhwa"
 			},
 			{
 				"type": "genre",
-				"name": "Josei",
-				"id": "Josei"
-			},
-			{
-				"type": "genre",
-				"name": "Martial Arts",
-				"id": "Martial%20Arts"
-			},
-			{
-				"type": "genre",
-				"name": "Mystery",
-				"id": "Mystery"
+				"name": "Martial Art",
+				"id": "martial-art"
 			},
 			{
 				"type": "genre",
 				"name": "Psychological",
-				"id": "Psychological"
+				"id": "psychological"
 			},
 			{
 				"type": "genre",
 				"name": "Romance",
-				"id": "Romance"
+				"id": "romance"
 			},
 			{
 				"type": "genre",
 				"name": "School Life",
-				"id": "School%20Life"
+				"id": "school-life"
 			},
 			{
 				"type": "genre",
-				"name": "Sci-fi",
-				"id": "Sci-fi"
+				"name": "Sci-Fi",
+				"id": "sci-fi"
 			},
 			{
 				"type": "genre",
 				"name": "Seinen",
-				"id": "Seinen"
+				"id": "seinen"
+			},
+			{
+				"type": "genre",
+				"name": "Shotacon",
+				"id": "shotacon"
 			},
 			{
 				"type": "genre",
 				"name": "Shoujo",
-				"id": "Shoujo"
+				"id": "shoujo"
 			},
 			{
 				"type": "genre",
 				"name": "Shounen",
-				"id": "Shounen"
+				"id": "shounen"
 			},
 			{
 				"type": "genre",
-				"name": "Slice of Life",
-				"id": "Slice%20of%20Life"
+				"name": "Soprannaturale",
+				"id": "soprannaturale"
 			},
 			{
 				"type": "genre",
-				"name": "Sports",
-				"id": "Sports"
+				"name": "Superhero",
+				"id": "superhero"
 			},
 			{
 				"type": "genre",
 				"name": "Supernatural",
-				"id": "Supernatural"
-			},
-			{
-				"type": "genre",
-				"name": "Tragedy",
-				"id": "Tragedy"
+				"id": "supernatural"
 			}
 		]
 	},
@@ -127,17 +112,17 @@
 		"type": "select",
 		"name": "Status",
 		"options": [
-			"All",
-			"Ongoing",
-			"Completed",
-			"Hiatus"
+			"Tutto",
+			"In Corso",
+			"Completata",
+			"Pausa/Drop"
 		]
 	},
 	{
 		"type": "select",
 		"name": "Type",
 		"options": [
-			"All",
+			"Tutto",
 			"Manga",
 			"Manhwa",
 			"Manhua",

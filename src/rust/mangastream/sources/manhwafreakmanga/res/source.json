@@ -1,10 +1,10 @@
 {
 	"info": {
-		"id": "en.manhwafreak",
+		"id": "en.manhwafreakmanga",
 		"lang": "en",
-		"name": "Manhwa Freak",
-		"version": 3,
-		"url": "https://manhwafreak.com"
+		"name": "Manhwa Freak Manga",
+		"version": 1,
+		"url": "https://manhwa-freak.com"
 	},
 	"listings": [
 		{

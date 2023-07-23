@@ -9,117 +9,92 @@
 			{
 				"type": "genre",
 				"name": "Action",
-				"id": "Action"
+				"id": "action"
 			},
 			{
 				"type": "genre",
 				"name": "Adventure",
-				"id": "Adventure"
+				"id": "adventure"
 			},
 			{
 				"type": "genre",
 				"name": "Comedy",
-				"id": "Comedy"
+				"id": "comedy"
 			},
 			{
 				"type": "genre",
 				"name": "Drama",
-				"id": "Drama"
+				"id": "drama"
 			},
 			{
 				"type": "genre",
 				"name": "Fantasy",
-				"id": "Fantasy"
-			},
-			{
-				"type": "genre",
-				"name": "Gender Bender",
-				"id": "Gender%20Bender"
-			},
-			{
-				"type": "genre",
-				"name": "Harem",
-				"id": "Harem"
+				"id": "fantasy"
 			},
 			{
 				"type": "genre",
 				"name": "Historical",
-				"id": "Historical"
+				"id": "historical"
 			},
 			{
 				"type": "genre",
 				"name": "Horror",
-				"id": "Horror"
+				"id": "horror"
 			},
 			{
 				"type": "genre",
 				"name": "Josei",
-				"id": "Josei"
+				"id": "josei"
 			},
 			{
 				"type": "genre",
 				"name": "Martial Arts",
-				"id": "Martial%20Arts"
+				"id": "martial-arts"
+			},
+			{
+				"type": "genre",
+				"name": "Mature",
+				"id": "mature"
 			},
 			{
 				"type": "genre",
 				"name": "Mystery",
-				"id": "Mystery"
+				"id": "mystery"
 			},
 			{
 				"type": "genre",
 				"name": "Psychological",
-				"id": "Psychological"
+				"id": "psychological"
 			},
 			{
 				"type": "genre",
 				"name": "Romance",
-				"id": "Romance"
+				"id": "romance"
 			},
 			{
 				"type": "genre",
 				"name": "School Life",
-				"id": "School%20Life"
+				"id": "school-life"
 			},
 			{
 				"type": "genre",
 				"name": "Sci-fi",
-				"id": "Sci-fi"
+				"id": "sci-fi"
 			},
 			{
 				"type": "genre",
 				"name": "Seinen",
-				"id": "Seinen"
-			},
-			{
-				"type": "genre",
-				"name": "Shoujo",
-				"id": "Shoujo"
+				"id": "seinen"
 			},
 			{
 				"type": "genre",
 				"name": "Shounen",
-				"id": "Shounen"
-			},
-			{
-				"type": "genre",
-				"name": "Slice of Life",
-				"id": "Slice%20of%20Life"
-			},
-			{
-				"type": "genre",
-				"name": "Sports",
-				"id": "Sports"
+				"id": "shounen"
 			},
 			{
 				"type": "genre",
 				"name": "Supernatural",
-				"id": "Supernatural"
-			},
-			{
-				"type": "genre",
-				"name": "Tragedy",
-				"id": "Tragedy"
+				"id": "supernatural"
 			}
 		]
 	},
