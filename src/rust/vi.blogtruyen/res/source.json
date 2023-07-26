@@ -3,11 +3,11 @@
 		"id": "vi.blogtruyen",
 		"lang": "vi",
 		"name": "BlogTruyen",
-		"version": 1,
-		"url": "https://blogtruyen.vn",
+		"version": 2,
+		"url": "https://blogtruyenmoi.com",
 		"urls": [
-			"https://blogtruyen.vn",
-			"https://m.blogtruyen.vn"
+			"https://blogtruyenmoi.com",
+			"https://m.blogtruyenmoi.com"
 		],
 		"nsfw": 1
 	}

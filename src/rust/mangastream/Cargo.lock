@@ -3,6 +3,14 @@
 version = 3
 
 [[package]]
+name = " manhwafreakmanga"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "mangastream_template",
+]
+
+[[package]]
 name = "acescans"
 version = "0.1.0"
 dependencies = [
@@ -39,6 +47,14 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn",
+]
+
+[[package]]
+name = "anigliscans"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "mangastream_template",
 ]
 
 [[package]]
@@ -84,6 +100,14 @@ dependencies = [
 
 [[package]]
 name = "flamescans"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "mangastream_template",
+]
+
+[[package]]
+name = "freakscans"
 version = "0.1.0"
 dependencies = [
  "aidoku",
@@ -340,6 +364,14 @@ checksum = "22049a19f4a68748a168c0fc439f9516686aa045927ff767eca0a85101fb6e73"
 
 [[package]]
 name = "voidscans"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "mangastream_template",
+]
+
+[[package]]
+name = "walpurgiscan"
 version = "0.1.0"
 dependencies = [
  "aidoku",

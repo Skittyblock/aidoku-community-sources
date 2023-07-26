@@ -18,7 +18,7 @@ use aidoku::{
 
 static mut CACHED_MANGA_ID: Option<String> = None;
 static mut CACHED_MANGA: Option<Vec<u8>> = None;
-static BASE_URL: &str = "https://blogtruyen.vn";
+static BASE_URL: &str = "https://blogtruyenmoi.com";
 
 fn cache_manga_page(id: &str) {
 	if unsafe { CACHED_MANGA_ID.is_some() } && unsafe { CACHED_MANGA_ID.clone().unwrap() } == id {
@@ -344,10 +344,10 @@ fn modify_image_request(request: Request) {
 
 #[handle_url]
 fn handle_url(url: String) -> Result<DeepLink> {
-	// https://blogtruyen.vn/19588/uchi-no-hentai-maid-ni-osowareteru
-	// 'https:', '', 'blogtruyen.vn', '19588', 'uchi-no-hentai-maid-ni-osowareteru'
-	// https://blogtruyen.vn/c694877/shounen-no-abyss-chap-93-ket-thuc
-	// 'https:', '', 'blogtruyen.vn', 'c694877', 'shounen-no-abyss-chap-93-ket-thuc'
+	// https://blogtruyenmoi.com/19588/uchi-no-hentai-maid-ni-osowareteru
+	// 'https:', '', 'blogtruyenmoi.com', '19588', 'uchi-no-hentai-maid-ni-osowareteru'
+	// https://blogtruyenmoi.com/c694877/shounen-no-abyss-chap-93-ket-thuc
+	// 'https:', '', 'blogtruyenmoi.com', 'c694877', 'shounen-no-abyss-chap-93-ket-thuc'
 	let split = url.split('/').collect::<Vec<&str>>();
 	let id = format!("/{}", &split[3..].join("/"));
 	if split[3].contains('c') {

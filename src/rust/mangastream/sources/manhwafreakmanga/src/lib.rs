@@ -8,18 +8,7 @@ use mangastream_template::template::MangaStreamSource;
 
 fn get_instance() -> MangaStreamSource {
 	MangaStreamSource {
-		base_url: String::from("https://manhwafreak.com"),
-		manga_selector: ".listupd .lastest-serie",
-		manga_details_title: ".wrapper .series h1.title",
-		manga_details_artist: ".wrapper .series #info div:contains(Artist) > p+p",
-		manga_details_author: ".wrapper .series #info div:contains(Author) > p+p",
-		manga_details_status: ".wrapper .series #info div:contains(Status) > p+p",
-		manga_details_description: ".wrapper .series #summary",
-		manga_details_categories: ".wrapper .series #info div:contains(Genre) > p+p",
-		manga_details_type: ".wrapper .series #info div:contains(Type) > p+p",
-		chapter_selector: ".chapter-li > a",
-		chapter_title: ".chapter-info > p:first-child",
-		chapter_date: ".chapter-info > p:nth-child(2)",
+		base_url: String::from("https://manhwa-freak.com"),
 		alt_pages: true,
 		..Default::default()
 	}
@@ -56,6 +45,6 @@ fn modify_image_request(request: Request) {
 }
 
 #[handle_url]
-pub fn handle_url(url: String) -> Result<DeepLink> {
+fn handle_url(url: String) -> Result<DeepLink> {
 	get_instance().handle_url(url)
 }
