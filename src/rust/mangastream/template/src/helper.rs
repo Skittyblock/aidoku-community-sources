@@ -37,16 +37,22 @@ pub fn manga_status(
 	status_options: [&'static str; 5],
 	status_options_2: [&'static str; 5],
 ) -> MangaStatus {
-	if status.contains(status_options[0]) || status.contains(status_options_2[0]) {
+	if (!status_options[0].is_empty() && status.contains(status_options[0]))
+		|| (!status_options_2[0].is_empty() && status.contains(status_options_2[0]))
+	{
 		MangaStatus::Ongoing
-	} else if status.contains(status_options[1]) || status.contains(status_options_2[1]) {
+	} else if (!status_options[1].is_empty() && status.contains(status_options[1]))
+		|| (!status_options_2[1].is_empty() && status.contains(status_options_2[1]))
+	{
 		MangaStatus::Completed
-	} else if status.contains(status_options[2]) || status.contains(status_options_2[2]) {
+	} else if (!status_options[2].is_empty() && status.contains(status_options[2]))
+		|| (!status_options_2[2].is_empty() && status.contains(status_options_2[2]))
+	{
 		MangaStatus::Hiatus
-	} else if status.contains(status_options[3])
-		|| status.contains(status_options[4])
-		|| status.contains(status_options_2[3])
-		|| status.contains(status_options_2[4])
+	} else if (!status_options[3].is_empty() && status.contains(status_options[3]))
+		|| (!status_options[4].is_empty() && status.contains(status_options[4]))
+		|| (!status_options_2[3].is_empty() && status.contains(status_options_2[3]))
+		|| (!status_options_2[4].is_empty() && status.contains(status_options_2[4]))
 	{
 		MangaStatus::Cancelled
 	} else {

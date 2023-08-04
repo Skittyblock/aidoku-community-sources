@@ -4,8 +4,8 @@ use aidoku::{
 	std::json::parse,
 	std::net::{HttpMethod, Request},
 	std::{String, Vec},
-	Chapter, DeepLink, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
-	MangaViewer, Page,
+	Chapter, DeepLink, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaViewer,
+	Page,
 };
 
 use crate::helper::*;
@@ -77,7 +77,7 @@ impl Default for MangaStreamSource {
 			manga_title_trim: ["light novel".into()].to_vec(),
 			last_page_text: "Next",
 			last_page_text_2: "NNNN",
-			status_options: [ "Ongoing", "Completed", "Hiatus", "Cancelled", "Dropped" ],
+			status_options: ["Ongoing", "Completed", "Hiatus", "Cancelled", "Dropped"],
 			status_options_2: ["","","","",""],
 
 			manga_details_categories: "span.mgen a",
@@ -213,14 +213,8 @@ impl MangaStreamSource {
 				id,
 				cover,
 				title,
-				author: String::new(),
-				artist: String::new(),
-				description: String::new(),
 				url,
-				categories: Vec::new(),
-				status: MangaStatus::Unknown,
-				nsfw: MangaContentRating::Safe,
-				viewer: MangaViewer::Rtl,
+				..Default::default()
 			});
 		}
 		let last_page_string = if !html.select(self.next_page).text().read().is_empty() {
@@ -352,12 +346,11 @@ impl MangaStreamSource {
 			chapters.push(Chapter {
 				id: chapter_id,
 				title,
-				volume: -1.0,
 				chapter: chapter_number,
 				date_updated,
-				scanlator: String::new(),
 				url: chapter_url,
 				lang: String::from(self.language),
+				..Default::default()
 			});
 		}
 		Ok(chapters)
@@ -404,8 +397,7 @@ impl MangaStreamSource {
 				pages.push(Page {
 					index: index as i32,
 					url: page_url,
-					base64: String::new(),
-					text: String::new(),
+					..Default::default()
 				});
 			}
 			Ok(pages)
@@ -413,11 +405,7 @@ impl MangaStreamSource {
 			for (at, page) in html.select(self.page_selector).array().enumerate() {
 				let page_node = page.as_node().expect("Failed to get page as node");
 				let page_url = if self.protocol {
-					format!(
-						"{}{}",
-						"https:",
-						urlencode(page_node.attr(self.page_url).read())
-					)
+					format!("https:{}", urlencode(page_node.attr(self.page_url).read()))
 				} else {
 					urlencode(page_node.attr(self.page_url).read())
 				};
@@ -428,8 +416,7 @@ impl MangaStreamSource {
 				pages.push(Page {
 					index: at as i32,
 					url: page_url,
-					base64: String::new(),
-					text: String::new(),
+					..Default::default()
 				});
 			}
 			Ok(pages)
