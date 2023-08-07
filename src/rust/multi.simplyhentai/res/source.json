@@ -1,0 +1,58 @@
+{
+	"info": {
+		"id": "multi.simplyhentai",
+		"lang": "multi",
+		"name": "Simply Hentai",
+		"version": 2,
+		"url": "https://simply-hentai.com/",
+		"nsfw": 2
+	},
+	"languageSelectType": "single",
+	"languages": [
+		{
+			"code": "en",
+			"default": true
+		},
+		{
+			"code": "ja"
+		},
+		{
+			"code": "fr"
+		},
+		{
+			"code": "de"
+		},
+		{
+			"code": "it"
+		},
+		{
+			"code": "ru"
+		},
+		{
+			"code": "es"
+		},
+		{
+			"code": "ko"
+		},
+		{
+			"code": "pl"
+		},
+		{
+			"code": "zh"
+		}
+	],
+	"listings": [
+		{
+			"name": "Latest"
+		},
+		{
+			"name": "Popular"
+		},
+		{
+			"name": "Top Rated"
+		},
+		{
+			"name": "Most Viewed"
+		}
+	]
+}

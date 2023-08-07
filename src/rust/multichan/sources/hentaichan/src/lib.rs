@@ -33,7 +33,7 @@ fn get_manga_details(id: String) -> Result<Manga> {
 #[get_chapter_list]
 fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 	cache_manga_page(format!("{}{id}", INSTANCE.base_url).as_str());
-	let html = Node::new(unsafe { &CACHED_MANGA.clone().unwrap() });
+	let html = Node::new(unsafe { &CACHED_MANGA.clone().unwrap() })?;
 	let date_updated = html
 		.select("div.row4_right:contains(загружено) b")
 		.text()
@@ -53,8 +53,8 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 }
 
 #[get_page_list]
-fn get_page_list(id: String) -> Result<Vec<Page>> {
-	INSTANCE.get_page_list(id)
+fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
+	INSTANCE.get_page_list(chapter_id)
 }
 
 #[modify_image_request]

@@ -2,9 +2,9 @@ use alloc::string::ToString;
 
 use aidoku::{
 	error::Result,
+	helpers::{cfemail::decode_cfemail, node::NodeHelpers},
 	prelude::format,
 	std::{html::Node, String, Vec},
-	helpers::{cfemail::decode_cfemail, node::NodeHelpers},
 	Chapter, Manga, MangaContentRating, MangaPageResult, MangaStatus, MangaViewer, Page,
 };
 

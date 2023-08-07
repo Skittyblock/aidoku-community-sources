@@ -9,8 +9,10 @@ use mangastream_template::template::MangaStreamSource;
 fn get_instance() -> MangaStreamSource {
 	MangaStreamSource {
 		listing: ["الرائج", "آخر", "جَديد"],
-		base_url: String::from("https://aresmanga.com"),
+		base_url: String::from("https://aresmanga.net"),
 		last_page_text: "التالي",
+		traverse_pathname: "series",
+		manga_details_author: ".imptdt:contains(المؤلف) i",
 		chapter_date_format: "MMMM d, yyyy",
 		locale: "ar_EH",
 		alt_pages: true,
@@ -39,7 +41,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 }
 
 #[get_page_list]
-fn get_page_list(id: String) -> Result<Vec<Page>> {
+fn get_page_list(_manga_id: String, id: String) -> Result<Vec<Page>> {
 	get_instance().parse_page_list(id)
 }
 

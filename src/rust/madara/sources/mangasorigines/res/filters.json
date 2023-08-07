@@ -1,0 +1,296 @@
+[
+	{
+		"type": "title"
+	},
+	{
+		"type": "group",
+		"name": "Status",
+		"filters": [
+			{
+				"type": "check",
+				"name": "En cours"
+			},
+			{
+				"type": "check",
+				"name": "En pause"
+			},
+			{
+				"type": "check",
+				"name": "Annulé"
+			},
+			{
+				"type": "check",
+				"name": "Terminé"
+			}
+		]
+	},
+	{
+		"type": "select",
+		"name": "Genre Condition",
+		"options": [
+			"OU (ayant l'un des genres sélectionnés)",
+			"ET (ayant tous les genres sélectionnés)"
+		]
+	},
+	{
+		"type": "group",
+		"name": "Genres",
+		"filters": [
+			{
+				"type": "genre",
+				"name": "Action",
+				"id": "action"
+			},
+			{
+				"type": "genre",
+				"name": "Amitié",
+				"id": "amitie"
+			},
+			{
+				"type": "genre",
+				"name": "Amour",
+				"id": "amour"
+			},
+			{
+				"type": "genre",
+				"name": "Art Martial",
+				"id": "art-martial"
+			},
+			{
+				"type": "genre",
+				"name": "Aventure",
+				"id": "aventure"
+			},
+			{
+				"type": "genre",
+				"name": "Box",
+				"id": "box"
+			},
+			{
+				"type": "genre",
+				"name": "Boxe",
+				"id": "boxe"
+			},
+			{
+				"type": "genre",
+				"name": "Combat",
+				"id": "combat"
+			},
+			{
+				"type": "genre",
+				"name": "Comédie",
+				"id": "comedie"
+			},
+			{
+				"type": "genre",
+				"name": "Drame",
+				"id": "drame"
+			},
+			{
+				"type": "genre",
+				"name": "Ecchi",
+				"id": "ecchi"
+			},
+			{
+				"type": "genre",
+				"name": "Fantaisie",
+				"id": "fantaisie"
+			},
+			{
+				"type": "genre",
+				"name": "Fantastique",
+				"id": "fantastique"
+			},
+			{
+				"type": "genre",
+				"name": "Gender Bender",
+				"id": "gender-bender"
+			},
+			{
+				"type": "genre",
+				"name": "Gore",
+				"id": "gore"
+			},
+			{
+				"type": "genre",
+				"name": "Guerre",
+				"id": "guerre"
+			},
+			{
+				"type": "genre",
+				"name": "Harem",
+				"id": "harem"
+			},
+			{
+				"type": "genre",
+				"name": "Historique",
+				"id": "historique"
+			},
+			{
+				"type": "genre",
+				"name": "Horreur",
+				"id": "horreur"
+			},
+			{
+				"type": "genre",
+				"name": "Isekai",
+				"id": "isekai"
+			},
+			{
+				"type": "genre",
+				"name": "Jeux vidéo",
+				"id": "jeux-video"
+			},
+			{
+				"type": "genre",
+				"name": "Josei",
+				"id": "josei"
+			},
+			{
+				"type": "genre",
+				"name": "Manga",
+				"id": "manga"
+			},
+			{
+				"type": "genre",
+				"name": "Manhua",
+				"id": "manhua"
+			},
+			{
+				"type": "genre",
+				"name": "Manhwa",
+				"id": "manhwa"
+			},
+			{
+				"type": "genre",
+				"name": "Médical",
+				"id": "medical"
+			},
+			{
+				"type": "genre",
+				"name": "Meurtre",
+				"id": "meurtre"
+			},
+			{
+				"type": "genre",
+				"name": "Mystère",
+				"id": "mystere"
+			},
+			{
+				"type": "genre",
+				"name": "Novel",
+				"id": "novel"
+			},
+			{
+				"type": "genre",
+				"name": "Origines Trad",
+				"id": "origines-trad"
+			},
+			{
+				"type": "genre",
+				"name": "Parodie",
+				"id": "parodie"
+			},
+			{
+				"type": "genre",
+				"name": "Policier",
+				"id": "policier"
+			},
+			{
+				"type": "genre",
+				"name": "Psychologique",
+				"id": "psychologique"
+			},
+			{
+				"type": "genre",
+				"name": "Psycopathe",
+				"id": "psycopathe"
+			},
+			{
+				"type": "genre",
+				"name": "Réincarnation",
+				"id": "reincarnation"
+			},
+			{
+				"type": "genre",
+				"name": "Returner",
+				"id": "returner"
+			},
+			{
+				"type": "genre",
+				"name": "Romance",
+				"id": "romance"
+			},
+			{
+				"type": "genre",
+				"name": "Science-fiction",
+				"id": "science-fiction"
+			},
+			{
+				"type": "genre",
+				"name": "Seinen",
+				"id": "seinen"
+			},
+			{
+				"type": "genre",
+				"name": "Shôjo",
+				"id": "shojo"
+			},
+			{
+				"type": "genre",
+				"name": "Shônen",
+				"id": "shonen"
+			},
+			{
+				"type": "genre",
+				"name": "Shônen Ai",
+				"id": "shonen-ai"
+			},
+			{
+				"type": "genre",
+				"name": "Sports",
+				"id": "sports"
+			},
+			{
+				"type": "genre",
+				"name": "Stream",
+				"id": "stream"
+			},
+			{
+				"type": "genre",
+				"name": "Surnaturel",
+				"id": "surnaturel"
+			},
+			{
+				"type": "genre",
+				"name": "Tranches de vie",
+				"id": "tranches-de-vie"
+			},
+			{
+				"type": "genre",
+				"name": "Vie scolaire",
+				"id": "vie-scolaire"
+			},
+			{
+				"type": "genre",
+				"name": "Webcomic",
+				"id": "webcomic"
+			},
+			{
+				"type": "genre",
+				"name": "Webnovel",
+				"id": "webnovel"
+			},
+			{
+				"type": "genre",
+				"name": "Webtoon",
+				"id": "webtoon"
+			},
+			{
+				"type": "genre",
+				"name": "Yaoi",
+				"id": "yaoi"
+			}
+		]
+	}
+]

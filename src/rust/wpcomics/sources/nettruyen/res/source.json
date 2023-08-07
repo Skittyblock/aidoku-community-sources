@@ -3,16 +3,16 @@
 		"id": "vi.nettruyen",
 		"lang": "vi",
 		"name": "NetTruyen",
-		"version": 5,
-		"url": "https://www.nettruyenup.com",
+		"version": 7,
+		"url": "https://www.nettruyenmax.com",
 		"nsfw": 1
 	},
 	"listings": [
-		{ 
-			"name": "Hot" 
+		{
+			"name": "Hot"
 		},
 		{
-			"name": "Truyện con gái" 
+			"name": "Truyện con gái"
 		},
 		{
 			"name": "Truyện con trai"

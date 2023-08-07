@@ -1,0 +1,15 @@
+{
+	"info": {
+		"id": "en.reaperscans",
+		"lang": "en",
+		"name": "Reaper Scans",
+		"version": 6,
+		"url": "https://reaperscans.com",
+		"nsfw": 0
+	},
+	"listings": [
+		{
+			"name": "Latest"
+		}
+	]
+}

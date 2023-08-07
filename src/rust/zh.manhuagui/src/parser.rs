@@ -12,7 +12,7 @@ use aidoku::{
 	Chapter, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
 	MangaViewer, Page,
 };
-use alloc::{vec, string::ToString};
+use alloc::{string::ToString, vec};
 
 const BASE_URL: &str = "https://www.manhuagui.com";
 
@@ -64,6 +64,7 @@ const FILTER_AUDIENCE: [&str; 6] = [
 	"all", "shaonv", "shaonian", "qingnian", "ertong", "tongyong",
 ];
 const FILTER_PROGRESS: [&str; 3] = ["all", "lianzai", "wanjie"];
+const SORT: [&str; 4] = ["index", "update", "view", "rate"];
 
 pub fn parse_home_page(html: Node) -> Result<MangaPageResult> {
 	let mut mangas: Vec<Manga> = Vec::new();
@@ -162,7 +163,6 @@ pub fn parse_search_page(html: Node) -> Result<MangaPageResult> {
 		}
 	}
 
-
 	Ok(MangaPageResult {
 		manga: mangas,
 		has_more: has_next,
@@ -207,7 +207,8 @@ pub fn get_chapter_list(html: Node) -> Result<Vec<Chapter>> {
 	if hidden {
 		let compressed = html.select("#__VIEWSTATE").attr("value").read();
 		let decompressed =
-			String::from_utf16(&decompress_from_base64(compressed.as_str()).unwrap_or_default()).unwrap_or_default();
+			String::from_utf16(&decompress_from_base64(compressed.as_str()).unwrap_or_default())
+				.unwrap_or_default();
 		div = Node::new_fragment(decompressed.as_bytes()).unwrap_or(div);
 	}
 
@@ -241,8 +242,16 @@ pub fn get_chapter_list(html: Node) -> Result<Vec<Chapter>> {
 					.replace(['第', '话', '卷'], "")
 					.parse::<f32>()
 					.unwrap_or(index);
-				let ch = if title.contains('卷') { -1.0 } else { chapter_or_volume };
-				let vo = if title.contains('卷') { chapter_or_volume } else { -1.0 };
+				let ch = if title.contains('卷') {
+					-1.0
+				} else {
+					chapter_or_volume
+				};
+				let vo = if title.contains('卷') {
+					chapter_or_volume
+				} else {
+					-1.0
+				};
 
 				let chapter = Chapter {
 					id: chapter_id,
@@ -297,6 +306,7 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32, url: &mut String) {
 	let mut genre: &str = "all";
 	let mut audience: &str = "all";
 	let mut progress: &str = "all";
+	let mut sort_by = SORT[0];
 
 	for filter in filters {
 		match filter.kind {
@@ -316,6 +326,13 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32, url: &mut String) {
 					"进度" => progress = FILTER_PROGRESS[index],
 					_ => continue,
 				};
+			}
+			FilterType::Sort => {
+				let Ok(obj) = filter.value.as_object() else {
+					continue;
+				};
+				let index = obj.get("index").as_int().unwrap_or(0) as usize;
+				sort_by = SORT[index];
 			}
 			_ => continue,
 		}
@@ -341,7 +358,7 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32, url: &mut String) {
 			filter_str = format!("/{}", filter_str)
 		}
 
-		let page_str = format!("/index_p{}.html", page.to_string());
+		let page_str = format!("/{}_p{}.html", sort_by, page.to_string());
 
 		url.push_str(filter_str.as_str());
 		url.push_str(page_str.as_str())

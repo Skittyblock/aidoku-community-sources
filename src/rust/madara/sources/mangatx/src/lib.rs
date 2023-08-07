@@ -8,6 +8,7 @@ use madara_template::template;
 fn get_data() -> template::MadaraSiteData {
 	let data: template::MadaraSiteData = template::MadaraSiteData {
 		base_url: String::from("https://mangatx.com"),
+		alt_ajax: true,
 		..Default::default()
 	};
 	data
@@ -34,8 +35,8 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 }
 
 #[get_page_list]
-fn get_page_list(id: String) -> Result<Vec<Page>> {
-	template::get_page_list(id, get_data())
+fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
+	template::get_page_list(chapter_id, get_data())
 }
 
 #[handle_url]

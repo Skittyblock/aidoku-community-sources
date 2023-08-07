@@ -3,6 +3,14 @@
 version = 3
 
 [[package]]
+name = " manhwafreakmanga"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "mangastream_template",
+]
+
+[[package]]
 name = "acescans"
 version = "0.1.0"
 dependencies = [
@@ -12,33 +20,41 @@ dependencies = [
 
 [[package]]
 name = "aidoku"
-version = "0.1.2"
-source = "git+https://github.com/Aidoku/aidoku-rs/#55765f385b064521d5c2b3d79af1d0ac2bbdd3fb"
+version = "0.2.0"
+source = "git+https://github.com/Aidoku/aidoku-rs/#004bddabade7b24c58cf925b08f90dd093b00c9d"
 dependencies = [
  "aidoku_imports",
  "aidoku_macros",
  "aidoku_proc_macros",
- "wee_alloc",
+ "dlmalloc",
 ]
 
 [[package]]
 name = "aidoku_imports"
-version = "0.1.2"
-source = "git+https://github.com/Aidoku/aidoku-rs/#55765f385b064521d5c2b3d79af1d0ac2bbdd3fb"
+version = "0.2.0"
+source = "git+https://github.com/Aidoku/aidoku-rs/#004bddabade7b24c58cf925b08f90dd093b00c9d"
 
 [[package]]
 name = "aidoku_macros"
 version = "0.1.0"
-source = "git+https://github.com/Aidoku/aidoku-rs/#55765f385b064521d5c2b3d79af1d0ac2bbdd3fb"
+source = "git+https://github.com/Aidoku/aidoku-rs/#004bddabade7b24c58cf925b08f90dd093b00c9d"
 
 [[package]]
 name = "aidoku_proc_macros"
-version = "0.1.0"
-source = "git+https://github.com/Aidoku/aidoku-rs/#55765f385b064521d5c2b3d79af1d0ac2bbdd3fb"
+version = "0.2.0"
+source = "git+https://github.com/Aidoku/aidoku-rs/#004bddabade7b24c58cf925b08f90dd093b00c9d"
 dependencies = [
  "proc-macro2",
  "quote",
  "syn",
+]
+
+[[package]]
+name = "anigliscans"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "mangastream_template",
 ]
 
 [[package]]
@@ -66,12 +82,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "cfg-if"
-version = "0.1.10"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4785bdd1c96b2a846b2bd7cc02e86b6b3dbf14e7e53446c4f54c92a361040822"
-
-[[package]]
 name = "cosmicscans"
 version = "0.1.0"
 dependencies = [
@@ -80,7 +90,24 @@ dependencies = [
 ]
 
 [[package]]
+name = "dlmalloc"
+version = "0.2.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "203540e710bfadb90e5e29930baf5d10270cec1f43ab34f46f78b147b2de715a"
+dependencies = [
+ "libc",
+]
+
+[[package]]
 name = "flamescans"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "mangastream_template",
+]
+
+[[package]]
+name = "freakscans"
 version = "0.1.0"
 dependencies = [
  "aidoku",
@@ -104,6 +131,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "komikindo"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "mangastream_template",
+]
+
+[[package]]
 name = "komiktap"
 version = "0.1.0"
 dependencies = [
@@ -120,14 +155,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "kraw"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "mangastream_template",
-]
-
-[[package]]
 name = "kumascans"
 version = "0.1.0"
 dependencies = [
@@ -137,9 +164,9 @@ dependencies = [
 
 [[package]]
 name = "libc"
-version = "0.2.126"
+version = "0.2.147"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "349d5a591cd28b49e1d1037471617a32ddcda5731b99419008085f72d5a53836"
+checksum = "b4668fb0ea861c1df094127ac5f1da3409a82116a4ba74fca2e58ef927159bb3"
 
 [[package]]
 name = "luminousscans"
@@ -181,6 +208,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "mangatale"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "mangastream_template",
+]
+
+[[package]]
 name = "mangkomik"
 version = "0.1.0"
 dependencies = [
@@ -197,15 +232,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "manhwaindo"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "mangastream_template",
-]
-
-[[package]]
-name = "manhwaland"
+name = "manhwalist"
 version = "0.1.0"
 dependencies = [
  "aidoku",
@@ -229,27 +256,45 @@ dependencies = [
 ]
 
 [[package]]
-name = "memory_units"
-version = "0.4.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8452105ba047068f40ff7093dd1d9da90898e63dd61736462e9cdda6a90ad3c3"
+name = "miraiscans"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "mangastream_template",
+]
+
+[[package]]
+name = "ozulscans"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "mangastream_template",
+]
 
 [[package]]
 name = "proc-macro2"
-version = "1.0.40"
+version = "1.0.64"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dd96a1e8ed2596c337f8eae5f24924ec83f5ad5ab21ea8e455d3566c69fbcaf7"
+checksum = "78803b62cbf1f46fde80d7c0e803111524b9877184cfe7c3033659490ac7a7da"
 dependencies = [
  "unicode-ident",
 ]
 
 [[package]]
 name = "quote"
-version = "1.0.20"
+version = "1.0.29"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3bcdf212e9776fbcb2d23ab029360416bb1706b1aea2d1a5ba002727cbcab804"
+checksum = "573015e8ab27661678357f27dc26460738fd2b6c86e46f386fde94cb5d913105"
 dependencies = [
  "proc-macro2",
+]
+
+[[package]]
+name = "rawkuma"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "mangastream_template",
 ]
 
 [[package]]
@@ -262,6 +307,14 @@ dependencies = [
 
 [[package]]
 name = "realmscans"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "mangastream_template",
+]
+
+[[package]]
+name = "sekaikomik"
 version = "0.1.0"
 dependencies = [
  "aidoku",
@@ -294,9 +347,9 @@ dependencies = [
 
 [[package]]
 name = "syn"
-version = "1.0.98"
+version = "1.0.109"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c50aef8a904de4c23c788f104b7dddc7d6f79c647c7c8ce4cc8f73eb0ca773dd"
+checksum = "72b64191b275b66ffe2469e8af2c1cfe3bafa67b529ead792a6d0160888b4237"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -305,9 +358,9 @@ dependencies = [
 
 [[package]]
 name = "unicode-ident"
-version = "1.0.1"
+version = "1.0.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5bd2fe26506023ed7b5e1e315add59d6f584c621d037f9368fea9cfb988f368c"
+checksum = "22049a19f4a68748a168c0fc439f9516686aa045927ff767eca0a85101fb6e73"
 
 [[package]]
 name = "voidscans"
@@ -318,15 +371,11 @@ dependencies = [
 ]
 
 [[package]]
-name = "wee_alloc"
-version = "0.4.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dbb3b5a6b2bb17cb6ad44a2e68a43e8d2722c997da10e928665c72ec6c0a0b8e"
+name = "walpurgiscan"
+version = "0.1.0"
 dependencies = [
- "cfg-if",
- "libc",
- "memory_units",
- "winapi",
+ "aidoku",
+ "mangastream_template",
 ]
 
 [[package]]
@@ -336,25 +385,3 @@ dependencies = [
  "aidoku",
  "mangastream_template",
 ]
-
-[[package]]
-name = "winapi"
-version = "0.3.9"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5c839a674fcd7a98952e593242ea400abe93992746761e38641405d28b00f419"
-dependencies = [
- "winapi-i686-pc-windows-gnu",
- "winapi-x86_64-pc-windows-gnu",
-]
-
-[[package]]
-name = "winapi-i686-pc-windows-gnu"
-version = "0.4.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ac3b87c63620426dd9b991e5ce0329eff545bccbbb34f3be09ff6fb6ab51b7b6"
-
-[[package]]
-name = "winapi-x86_64-pc-windows-gnu"
-version = "0.4.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "712e227841d057c1ee1cd2fb22fa7e5a5461ae8e48fa2ca79ec42cfc1931183f"

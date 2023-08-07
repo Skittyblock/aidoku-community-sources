@@ -1,7 +1,11 @@
 use aidoku::{
-	error::Result, std::json::parse, std::net::HttpMethod, std::net::Request, std::String,
-	std::Vec, Chapter, DeepLink, Filter, FilterType, Manga, MangaContentRating, MangaPageResult,
-	MangaStatus, MangaViewer, Page,
+	error::Result,
+	prelude::format,
+	std::json::parse,
+	std::net::{HttpMethod, Request},
+	std::{String, Vec},
+	Chapter, DeepLink, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaViewer,
+	Page,
 };
 
 use crate::helper::*;
@@ -9,6 +13,7 @@ use crate::helper::*;
 pub struct MangaStreamSource {
 	pub has_permanent_manga_url: bool,
 	pub has_permanent_chapter_url: bool,
+	pub has_random_chapter_prefix: bool,
 	pub is_nsfw: bool,
 	pub tagid_mapping: fn(String) -> String,
 	pub listing: [&'static str; 3],
@@ -51,12 +56,15 @@ pub struct MangaStreamSource {
 	pub alt_pages: bool,
 	pub page_selector: &'static str,
 	pub page_url: &'static str,
+	pub protocol: bool,
 }
 impl Default for MangaStreamSource {
 	fn default() -> Self {
 		MangaStreamSource {
 			has_permanent_manga_url: false,
 			has_permanent_chapter_url: false,
+			// this is for urls like https://mangashit.cum/RANDOM_INT_PREFIX/chapter-1
+			has_random_chapter_prefix: false,
 			is_nsfw: false,
 			tagid_mapping: |str| str,
 			listing: ["Latest", "Popular", "New"],
@@ -69,7 +77,7 @@ impl Default for MangaStreamSource {
 			manga_title_trim: ["light novel".into()].to_vec(),
 			last_page_text: "Next",
 			last_page_text_2: "NNNN",
-			status_options: [ "Ongoing", "Completed", "Hiatus", "Cancelled", "Dropped" ],
+			status_options: ["Ongoing", "Completed", "Hiatus", "Cancelled", "Dropped"],
 			status_options_2: ["","","","",""],
 
 			manga_details_categories: "span.mgen a",
@@ -79,7 +87,7 @@ impl Default for MangaStreamSource {
 			manga_details_cover_src: "src",
 			manga_details_author: "span:contains(Author:), span:contains(Pengarang:), .fmed b:contains(Author)+span, .imptdt:contains(Author) i, .fmed b:contains(Yazar)+span, .fmed b:contains(Autheur)+span",
 			manga_details_artist: "#last_episode small",
-			manga_details_description: ".entry-content p",
+			manga_details_description: "div.desc p, div.entry-content p, div[itemprop=description]:not(:has(p))",
 			manga_details_status: ".imptdt:contains(Status), .imptdt:contains(Durum), .imptdt:contains(Statut) i",
 			manga_details_type: ".imptdt a",
 			manga_details_type_options: "Manga",
@@ -98,7 +106,8 @@ impl Default for MangaStreamSource {
 
 			alt_pages: false,
 			page_selector: "#readerarea img",
-			page_url: "src"
+			page_url: "src",
+			protocol: false
 		}
 	}
 }
@@ -116,7 +125,10 @@ impl MangaStreamSource {
 		for filter in filters {
 			match filter.kind {
 				FilterType::Title => {
-					title = filter.value.as_string()?.read();
+					let input = filter.value.as_string()?.read();
+					// replace characters that mess up search with spaces
+					// without using spaces search will possibly not find accurate matches
+					title = input.replace(['’', '‘', '“', '”', '–'], " ");
 				}
 				FilterType::Genre => match filter.value.as_int().unwrap_or(-1) {
 					0 => match !self.language_2.is_empty() {
@@ -172,9 +184,9 @@ impl MangaStreamSource {
 			base_url
 		};
 		let mut mangas: Vec<Manga> = Vec::new();
-		let html = Request::new(&url, HttpMethod::Get).html();
+		let html = Request::new(&url, HttpMethod::Get).html()?;
 		for manga in html.select(self.manga_selector).array() {
-			let manga_node = manga.as_node();
+			let manga_node = manga.as_node().expect("Failed to get manga as node");
 			let title = manga_node.select(self.manga_title).attr("title").read();
 			if self
 				.manga_title_trim
@@ -183,7 +195,8 @@ impl MangaStreamSource {
 			{
 				continue;
 			}
-			let id = {
+
+			let url = {
 				let original_url = manga_node.select("a").attr("href").read();
 
 				if self.has_permanent_manga_url {
@@ -192,19 +205,16 @@ impl MangaStreamSource {
 					original_url
 				}
 			};
+
+			let id = get_id_from_url(url.clone());
+
 			let cover = get_image_src(manga_node);
 			mangas.push(Manga {
 				id,
 				cover,
 				title,
-				author: String::new(),
-				artist: String::new(),
-				description: String::new(),
-				url: String::new(),
-				categories: Vec::new(),
-				status: MangaStatus::Unknown,
-				nsfw: MangaContentRating::Safe,
-				viewer: MangaViewer::Rtl,
+				url,
+				..Default::default()
 			});
 		}
 		let last_page_string = if !html.select(self.next_page).text().read().is_empty() {
@@ -222,7 +232,8 @@ impl MangaStreamSource {
 
 	// parse manga details page
 	pub fn parse_manga_details(&self, id: String) -> Result<Manga> {
-		let html = Request::new(id.as_str(), HttpMethod::Get).html();
+		let url = format!("{}/{}/{}", self.base_url, self.traverse_pathname, id);
+		let html = Request::new(&url, HttpMethod::Get).html()?;
 		let mut title = html.select(self.manga_details_title).text().read();
 		for i in self.manga_title_trim.iter() {
 			if title.contains(i) {
@@ -245,10 +256,10 @@ impl MangaStreamSource {
 				.trim(),
 		);
 		if author == "-" {
-			author = String::from("No Author");
+			author = String::new();
 		}
 		let artist = html.select(self.manga_details_artist).text().read();
-		let description = html.select(self.manga_details_description).text().read();
+		let description = text_with_newlines(html.select(self.manga_details_description));
 		let status = manga_status(
 			String::from(html.select(self.manga_details_status).text().read().trim()),
 			self.status_options,
@@ -261,7 +272,11 @@ impl MangaStreamSource {
 			MangaContentRating::Safe
 		};
 		for node in html.select(self.manga_details_categories).array() {
-			let category = node.as_node().text().read();
+			let category = node
+				.as_node()
+				.expect("Failed to get category as node")
+				.text()
+				.read();
 			for genre in self.nsfw_genres.iter() {
 				if *genre == category {
 					nsfw = MangaContentRating::Nsfw
@@ -276,13 +291,13 @@ impl MangaStreamSource {
 			MangaViewer::Scroll
 		};
 		Ok(Manga {
-			id: id.clone(),
+			id,
 			cover: append_protocol(cover),
 			title,
 			author,
 			artist,
 			description,
-			url: id,
+			url,
 			categories,
 			status,
 			nsfw,
@@ -292,11 +307,30 @@ impl MangaStreamSource {
 
 	// parse the chapters list present on manga details page
 	pub fn parse_chapter_list(&self, id: String) -> Result<Vec<Chapter>> {
+		let url = format!("{}/{}/{}", self.base_url, self.traverse_pathname, id);
 		let mut chapters: Vec<Chapter> = Vec::new();
-		let html = Request::new(id.as_str(), HttpMethod::Get).html();
+		let html = Request::new(&url, HttpMethod::Get).html()?;
 		for chapter in html.select(self.chapter_selector).array() {
-			let chapter_node = chapter.as_node();
-			let title = chapter_node.select(self.chapter_title).text().read();
+			let chapter_node = chapter.as_node().expect("Failed to get chapter as node");
+			let raw_title = chapter_node.select(self.chapter_title).text().read();
+			let title = {
+				// Because every mangastream source likes to be different and not have a
+				// consistent chapter naming scheme we have to do some hacky stuff to get the
+				// chapter title because we can't use regex
+
+				let mut title = raw_title.split_whitespace().collect::<Vec<&str>>();
+				if title.len() >= 2 && title[0] == "Chapter" && title[1].parse::<f64>().is_ok() {
+					title.remove(0);
+					title.remove(0);
+				}
+
+				// Remove any leading hyphens
+				if !title.is_empty() && title[0] == "-" {
+					title.remove(0);
+				}
+
+				title.join(" ")
+			};
 			let chapter_url = {
 				let original_url = chapter_node.select(self.chapter_url).attr("href").read();
 
@@ -306,18 +340,17 @@ impl MangaStreamSource {
 					original_url
 				}
 			};
-			let chapter_id = chapter_url.clone();
-			let chapter_number = get_chapter_number(title.clone());
+			let chapter_id = get_id_from_url(chapter_url.clone());
+			let chapter_number = get_chapter_number(raw_title.clone());
 			let date_updated = get_date(self, chapter_node.select(self.chapter_date).text());
 			chapters.push(Chapter {
 				id: chapter_id,
 				title,
-				volume: -1.0,
 				chapter: chapter_number,
 				date_updated,
-				scanlator: String::new(),
 				url: chapter_url,
 				lang: String::from(self.language),
+				..Default::default()
 			});
 		}
 		Ok(chapters)
@@ -325,35 +358,57 @@ impl MangaStreamSource {
 
 	//parse the maga chapter images list
 	pub fn parse_page_list(&self, id: String) -> Result<Vec<Page>> {
+		let url = {
+			let mut url = format!("{}/{}", self.base_url, id);
+
+			if self.has_random_chapter_prefix {
+				url = format!("{}/{}/{}", self.base_url, 0, id);
+			}
+
+			url
+		};
 		let mut pages: Vec<Page> = Vec::new();
-		let html = Request::new(&id, HttpMethod::Get)
+		let html = Request::new(&url, HttpMethod::Get)
 			.header("Referer", &self.base_url)
-			.html();
+			.html()?;
 		if self.alt_pages {
 			let raw_text = html.select("script").html().read();
-			let trimmed_json = &raw_text[raw_text.find(r#":[{"s"#).unwrap_or(0) + 2
-				..raw_text.rfind("}],").unwrap_or(0) + 1];
-			let trimmed_text = if trimmed_json.contains("Default 2") {
-				&trimmed_json[..trimmed_json.rfind(r#",{"s"#).unwrap_or(0)]
-			} else {
+
+			let trimmed_json = {
+				let mut trimmed_json = &raw_text[raw_text.find(r#":[{"s"#).unwrap_or(0) + 2
+					..raw_text.rfind("}],").unwrap_or(0) + 1];
+
+				if trimmed_json.contains("Default 2") {
+					trimmed_json = &trimmed_json[..trimmed_json.rfind(r#",{"s"#).unwrap_or(0)];
+				}
+
+				// if "post_id" is present, we've gone too far
+				if trimmed_json.contains("post_id") {
+					trimmed_json = &trimmed_json[..trimmed_json.find("}],").unwrap_or(0) + 1];
+				}
+
 				trimmed_json
 			};
-			let json = parse(trimmed_text.as_bytes()).as_object()?;
+
+			let json = parse(trimmed_json.as_bytes())?.as_object()?;
 			let images = json.get("images").as_array()?;
 			for (index, page) in images.enumerate() {
 				let page_url = urlencode(page.as_string()?.read());
 				pages.push(Page {
 					index: index as i32,
 					url: page_url,
-					base64: String::new(),
-					text: String::new(),
+					..Default::default()
 				});
 			}
 			Ok(pages)
 		} else {
 			for (at, page) in html.select(self.page_selector).array().enumerate() {
-				let page_node = page.as_node();
-				let page_url = urlencode(page_node.attr(self.page_url).read());
+				let page_node = page.as_node().expect("Failed to get page as node");
+				let page_url = if self.protocol {
+					format!("https:{}", urlencode(page_node.attr(self.page_url).read()))
+				} else {
+					urlencode(page_node.attr(self.page_url).read())
+				};
 				// avoid svgs
 				if page_url.starts_with("data") {
 					continue;
@@ -361,8 +416,7 @@ impl MangaStreamSource {
 				pages.push(Page {
 					index: at as i32,
 					url: page_url,
-					base64: String::new(),
-					text: String::new(),
+					..Default::default()
 				});
 			}
 			Ok(pages)
@@ -379,8 +433,9 @@ impl MangaStreamSource {
 	}
 
 	pub fn handle_url(&self, url: String) -> Result<DeepLink> {
+		let id = get_id_from_url(url);
 		Ok(DeepLink {
-			manga: Self::parse_manga_details(self, url).ok(),
+			manga: Self::parse_manga_details(self, id).ok(),
 			chapter: None,
 		})
 	}

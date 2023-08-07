@@ -13,7 +13,7 @@ use wpcomics_template::{helper::urlencode, template, template::WPComicsSource};
 
 fn get_instance() -> WPComicsSource {
 	WPComicsSource {
-		base_url: String::from("https://www.nettruyenup.com"),
+		base_url: String::from("https://www.nettruyenmax.com"),
 		next_page: "li.active + li > a[title*=\"kết quả\"]",
 		viewer: MangaViewer::Rtl,
 		listing_mapping: |listing| {
@@ -28,9 +28,13 @@ fn get_instance() -> WPComicsSource {
 		time_converter: convert_time,
 		page_url_transformer: |url| {
 			let mut server_two = String::from("https://images2-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&resize_h=0&rewriteMime=image%2F*&url=");
-			if let Ok(2) = defaults_get("serverSelection").as_int() {
-				server_two.push_str(&urlencode(url));
-				server_two
+			if let Ok(server_selection) = defaults_get("serverSelection") {
+				if let Ok(2) = server_selection.as_int() {
+					server_two.push_str(&urlencode(url));
+					server_two
+				} else {
+					url
+				}
 			} else {
 				url
 			}
@@ -134,14 +138,14 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 }
 
 #[get_page_list]
-fn get_page_list(id: String) -> Result<Vec<Page>> {
-	get_instance().get_page_list(id)
+fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
+	get_instance().get_page_list(chapter_id)
 }
 
 #[modify_image_request]
 fn modify_image_request(request: Request) {
 	template::modify_image_request(
-		String::from("https://www.nettruyenme.com"),
+		String::from("https://www.nettruyenmax.com"),
 		String::from("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.54 Safari/537.36 Edg/101.0.1210.39"),
 		request,
 	)

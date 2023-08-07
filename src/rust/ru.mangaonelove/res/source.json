@@ -1,0 +1,18 @@
+{
+	"info": {
+		"id": "ru.mangaonelove",
+		"lang": "ru",
+		"name": "MangaOneLove",
+		"version": 1,
+		"url": "https://mangaonelove.site",
+		"nsfw": 2
+	},
+	"listings": [
+		{
+			"name": "Популярное"
+		},
+		{
+			"name": "Новое"
+		}
+	]
+}

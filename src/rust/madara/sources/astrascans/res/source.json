@@ -1,0 +1,18 @@
+{
+	"info": {
+		"id": "en.astrascans",
+		"lang": "en",
+		"name": "Astra Scans",
+		"version": 1,
+		"url": "https://astrascans.com",
+		"nsfw": 0
+	},
+	"listings": [
+		{
+			"name": "Trending"
+		},
+		{
+			"name": "Popular"
+		}
+	]
+}

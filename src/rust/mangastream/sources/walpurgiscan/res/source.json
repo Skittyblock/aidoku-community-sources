@@ -1,0 +1,20 @@
+{
+	"info": {
+		"id": "it.walpurgiscan",
+		"lang": "it",
+		"name": "Walpurgis Scan",
+		"version": 1,
+		"url": "https://www.walpurgiscan.it"
+	},
+	"listings": [
+		{
+			"name": "Popolarità"
+		},
+		{
+			"name": "Ultimi"
+		},
+		{
+			"name": "Novità"
+		}
+	]
+}

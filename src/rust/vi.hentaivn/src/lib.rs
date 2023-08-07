@@ -6,9 +6,9 @@ mod search;
 
 use aidoku::{
 	error::{AidokuError, Result},
+	helpers::uri::{encode_uri, QueryParameters},
 	prelude::*,
 	std::{defaults::defaults_get, net::Request, String, Vec},
-	helpers::uri::{encode_uri, QueryParameters},
 	Chapter, DeepLink, Filter, Listing, Manga, MangaPageResult, Page,
 };
 use alloc::string::ToString;
@@ -70,7 +70,9 @@ fn get_page_list(_: String, id: String) -> Result<Vec<Page>> {
 
 	let url = encode_uri(format!("{BASE_URL}/{id}"));
 	if page_quality == "1200" {
-		let req = Request::get(url).header("Referer", BASE_URL);
+		let req = Request::get(url)
+			.header("Referer", BASE_URL)
+			.header("Cookie", "view1=1");
 		parse_page_list(req.html()?, None)
 	} else {
 		let numeric_id = id.split('-').collect::<Vec<_>>()[1];
@@ -81,9 +83,10 @@ fn get_page_list(_: String, id: String) -> Result<Vec<Page>> {
 			"600" => "2",
 			_ => "1",
 		};
-		let req = Request::post("https://hentaivn.de/ajax_load_server.php")
+		let req = Request::post(format!("{BASE_URL}/ajax_load_server.php"))
 			.header("Referer", &url)
 			.header("Content-Type", "application/x-www-form-urlencoded")
+			.header("Cookie", "view1=1")
 			.body(format!("server_id={numeric_id}&server_type={server_type}"));
 		parse_page_list(req.html()?, Some("img"))
 	}

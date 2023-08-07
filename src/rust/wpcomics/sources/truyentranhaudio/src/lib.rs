@@ -11,6 +11,7 @@ use wpcomics_template::{helper::urlencode, template::WPComicsSource};
 
 fn get_instance() -> WPComicsSource {
 	let base_url = defaults_get("sourceURL")
+		.expect("sourceURL is not set")
 		.as_string()
 		.unwrap_or_else(|_| StringRef::from(""))
 		.read();
@@ -66,6 +67,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	let mut url = format!(
 		"{}/tim-truyen?genre={}&keyword={}&page={}",
 		defaults_get("sourceURL")
+			.expect("sourceURL is not set")
 			.as_string()
 			.unwrap_or_else(|_| StringRef::from(""))
 			.read(),
@@ -95,8 +97,8 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 }
 
 #[get_page_list]
-fn get_page_list(id: String) -> Result<Vec<Page>> {
-	get_instance().get_page_list(id)
+fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
+	get_instance().get_page_list(chapter_id)
 }
 
 #[modify_image_request]

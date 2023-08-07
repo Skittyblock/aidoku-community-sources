@@ -5,11 +5,21 @@ use aidoku::{
 };
 
 fn get_md_localized_string(obj: ObjectRef) -> String {
-	let language = if let Ok(langs) = defaults_get("languages").as_array()
-		&& let Ok(lang) = langs.get(0).as_string()
-		&& defaults_get("usePreferredLanguage").as_bool().unwrap_or(false)
-	{
-		lang.read()
+	let use_preferred_lang = match defaults_get("usePreferredLanguage") {
+		Ok(value) => value.as_bool().unwrap_or(false),
+		Err(_) => false,
+	};
+	let language = if use_preferred_lang {
+		match defaults_get("languages") {
+			Ok(langs) => match langs.as_array() {
+				Ok(langs) => match langs.get(0).as_string() {
+					Ok(lang) => lang.read(),
+					Err(_) => String::from("en"),
+				},
+				Err(_) => return String::from("en"),
+			},
+			Err(_) => String::from("en"),
+		}
 	} else {
 		String::from("en")
 	};
@@ -68,26 +78,21 @@ pub fn parse_basic_manga(manga_object: ObjectRef) -> Result<Manga> {
 		cover.push_str(&id);
 		cover.push('/');
 		cover.push_str(&cover_file);
-		cover.push_str(
-			&defaults_get("coverQuality")
-				.as_string()
-				.map(|v| v.read())
-				.unwrap_or_default(),
-		);
+		if let Ok(cover_quality) = defaults_get("coverQuality") {
+			cover.push_str(
+				&cover_quality
+					.as_string()
+					.map(|v| v.read())
+					.unwrap_or_default(),
+			);
+		}
 	}
 
 	Ok(Manga {
 		id,
 		cover,
 		title,
-		author: String::new(),
-		artist: String::new(),
-		description: String::new(),
-		url: String::new(),
-		categories: Vec::new(),
-		status: MangaStatus::Unknown,
-		nsfw: MangaContentRating::Safe,
-		viewer: MangaViewer::Default,
+		..Default::default()
 	})
 }
 
@@ -128,12 +133,14 @@ pub fn parse_full_manga(manga_object: ObjectRef) -> Result<Manga> {
 	cover.push_str(&id);
 	cover.push('/');
 	cover.push_str(&cover_file);
-	cover.push_str(
-		&defaults_get("coverQuality")
-			.as_string()
-			.map(|v| v.read())
-			.unwrap_or_default(),
-	);
+	if let Ok(cover_quality) = defaults_get("coverQuality") {
+		cover.push_str(
+			&cover_quality
+				.as_string()
+				.map(|v| v.read())
+				.unwrap_or_default(),
+		);
+	}
 
 	// Description
 	let description = attributes
@@ -228,7 +235,7 @@ pub fn parse_chapter(chapter_object: ObjectRef) -> Result<Chapter> {
 
 	let date_updated = attributes
 		.get("publishAt")
-		.as_date("yyyy-MM-dd'T'HH:mm:ss+ss:ss", None, Some("UTC"))
+		.as_date("yyyy-MM-dd'T'HH:mm:ss+ss:ss", Some("en-US"), Some("UTC"))
 		.unwrap_or(-1.0);
 
 	// Fix for Skittyblock/aidoku-community-sources#25
@@ -252,27 +259,40 @@ pub fn parse_chapter(chapter_object: ObjectRef) -> Result<Chapter> {
 	let volume = attributes.get("volume").as_float().unwrap_or(-1.0) as f32;
 	let chapter = attributes.get("chapter").as_float().unwrap_or(-1.0) as f32;
 
-	// As per MangaDex upload guidelines, if the volume and chapter are both null or for serialized
-	// entries, the volume is 0 and chapter is null, it's a oneshot. They should have a title of
-	// "Oneshot" but some don't, so we'll add it if it's missing.
+	// As per MangaDex upload guidelines, if the volume and chapter are both null or
+	// for serialized entries, the volume is 0 and chapter is null, it's a oneshot.
+	// They should have a title of "Oneshot" but some don't, so we'll add it if it's
+	// missing.
 	if (volume == -1.0 || volume == 0.0) && chapter == -1.0 && title.is_empty() {
 		title = String::from("Oneshot");
 	}
 
-	let mut scanlator = String::new();
+	let mut uploader = String::new();
+	let mut group: Vec<String> = Vec::new();
 
 	if let Ok(relationships) = chapter_object.get("relationships").as_array() {
 		for relationship in relationships {
 			if let Ok(relationship_object) = relationship.as_object()
 				&& let Ok(relation_type) = relationship_object.get("type").as_string()
 				&& let Ok(attribs) = relationship_object.get("attributes").as_object()
-				&& relation_type.read() == "scanlation_group"
 			{
-				scanlator = attribs.get("name").as_string().map(|v| v.read()).unwrap_or_default();
-				break;
+				if relation_type.clone().read() == "scanlation_group" {
+					group.push(attribs.get("name").as_string().map(|v| v.read()).unwrap_or_default());
+				} else if relation_type.clone().read() == "user" {
+					uploader = attribs.get("username").as_string().map(|v| v.read()).unwrap_or_default();
+				}
 			}
 		}
 	}
+
+	// If there's no group, use the uploader as the scanlator
+	let scanlator = {
+		if group.is_empty() {
+			uploader
+		} else {
+			group.join(", ")
+		}
+	};
 
 	let mut url = String::from("https://mangadex.org/chapter/");
 	url.push_str(&id);

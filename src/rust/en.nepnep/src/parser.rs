@@ -3,33 +3,48 @@ use aidoku::{
 	std::Vec, Chapter, Manga, MangaContentRating, MangaStatus, MangaViewer,
 };
 
+use crate::model::{Directory, HotUpdate};
+
 use super::helper::{chapter_image, chapter_url_encode};
 
 extern crate alloc;
 use alloc::string::ToString;
 
-// Parse manga with title and cover
-pub fn parse_basic_manga(manga_object: ObjectRef, cover_url: String) -> Result<Manga> {
-	let id = manga_object.get("i").as_string()?.read();
-	let title = manga_object.get("s").as_string()?.read();
-	let cover = cover_url.replace("{{Result.i}}", &id);
+const COVER_SERVER: &str = "https://temp.compsci88.com/cover/{{Result.i}}.jpg";
 
-	let mut url = defaults_get("sourceURL").as_string()?.read();
+// Parse manga with title and cover
+pub fn parse_manga_listing(manga_object: &HotUpdate) -> Result<Manga> {
+	let id = &manga_object.id;
+	let title = &manga_object.title;
+	let cover = String::from(COVER_SERVER).replace("{{Result.i}}", id);
+
+	let mut url = defaults_get("sourceURL")?.as_string()?.read();
 	url.push_str("/manga/");
-	url.push_str(&id);
+	url.push_str(id);
 
 	Ok(Manga {
-		id,
+		id: id.to_string(),
+		title: title.to_string(),
 		cover,
-		title,
-		author: String::new(),
-		artist: String::new(),
-		description: String::new(),
 		url,
-		categories: Vec::new(),
-		status: MangaStatus::Unknown,
-		nsfw: MangaContentRating::Safe,
-		viewer: MangaViewer::Default,
+		..Default::default()
+	})
+}
+
+pub fn parse_basic_manga(nepnep: &Directory) -> Result<Manga> {
+	let id = &nepnep.id;
+	let title = &nepnep.title;
+	let cover = String::from(COVER_SERVER).replace("{{Result.i}}", id);
+
+	let mut url = defaults_get("sourceURL")?.as_string()?.read();
+	url.push_str("/manga/");
+	url.push_str(id);
+	Ok(Manga {
+		id: id.to_string(),
+		title: title.to_string(),
+		cover,
+		url,
+		..Default::default()
 	})
 }
 
@@ -54,7 +69,7 @@ pub fn parse_full_manga(id: String, url: String, manga_node: Node) -> Result<Man
 	manga_node
 		.select("li.list-group-item:has(span:contains(Genre)) a")
 		.array()
-		.for_each(|tag| categories.push(tag.as_node().text().read()));
+		.for_each(|tag| categories.push(tag.as_node().expect("node array").text().read()));
 
 	let status = match manga_node
 		.select(
@@ -101,13 +116,13 @@ pub fn parse_full_manga(id: String, url: String, manga_node: Node) -> Result<Man
 		cover,
 		title,
 		author,
-		artist: String::new(),
 		description,
 		url,
 		categories,
 		status,
 		nsfw,
 		viewer,
+		..Default::default()
 	})
 }
 
@@ -166,8 +181,9 @@ pub fn parse_chapter(manga_id: &str, chapter_object: ObjectRef) -> Result<Chapte
 			&& (cleaned_title[0] == "Chapter"
 				|| cleaned_title[0] == "Episode"
 				|| cleaned_title[0] == "episode."
-				|| cleaned_title[0] == "No.")
-			|| cleaned_title[0] == "#" && cleaned_title[1].parse::<f64>().is_ok()
+				|| cleaned_title[0] == "No."
+				|| cleaned_title[0] == "#")
+			&& cleaned_title[1].parse::<f64>().is_ok()
 		{
 			cleaned_title.remove(0);
 			cleaned_title.remove(0);
@@ -195,8 +211,8 @@ pub fn parse_chapter(manga_id: &str, chapter_object: ObjectRef) -> Result<Chapte
 		volume,
 		chapter,
 		date_updated,
-		scanlator: String::new(),
 		url,
 		lang: String::from("en"),
+		..Default::default()
 	})
 }

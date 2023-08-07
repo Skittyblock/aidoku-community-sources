@@ -9,6 +9,17 @@ use mangastream_template::template::MangaStreamSource;
 fn get_instance() -> MangaStreamSource {
 	MangaStreamSource {
 		base_url: String::from("https://manhwafreak.com"),
+		manga_selector: ".listupd .lastest-serie",
+		manga_details_title: ".wrapper .series h1.title",
+		manga_details_artist: ".wrapper .series #info div:contains(Artist) > p+p",
+		manga_details_author: ".wrapper .series #info div:contains(Author) > p+p",
+		manga_details_status: ".wrapper .series #info div:contains(Status) > p+p",
+		manga_details_description: ".wrapper .series #summary",
+		manga_details_categories: ".wrapper .series #info div:contains(Genre) > p+p",
+		manga_details_type: ".wrapper .series #info div:contains(Type) > p+p",
+		chapter_selector: ".chapter-li > a",
+		chapter_title: ".chapter-info > p:first-child",
+		chapter_date: ".chapter-info > p:nth-child(2)",
 		alt_pages: true,
 		..Default::default()
 	}
@@ -35,7 +46,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 }
 
 #[get_page_list]
-fn get_page_list(id: String) -> Result<Vec<Page>> {
+fn get_page_list(_manga_id: String, id: String) -> Result<Vec<Page>> {
 	get_instance().parse_page_list(id)
 }
 

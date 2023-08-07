@@ -1,0 +1,15 @@
+{
+	"info": {
+		"id": "multi.komga",
+		"lang": "multi",
+		"name": "Komga",
+		"version": 1,
+		"url": "https://komga.org",
+		"nsfw": 0
+	},
+	"listings": [
+		{ "name": "Latest" },
+		{ "name": "New" },
+		{ "name": "Updated" }
+	]
+}

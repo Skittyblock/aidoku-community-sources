@@ -1,0 +1,268 @@
+[
+	{
+		"type": "title"
+	},
+	{
+		"type": "select",
+		"name": "Language",
+		"options": [
+			"Any",
+			"Japanese",
+			"Korean",
+			"Chinese",
+			"European",
+			"American",
+			"Hongkong",
+			"Other"
+		]
+	},
+	{
+		"type": "select",
+		"name": "Rating",
+		"options": [
+			"Any",
+			"1 Stars",
+			"2 Stars",
+			"3 Stars",
+			"4 Stars",
+			"5 Stars"
+		]
+	},
+	{
+		"type": "group",
+		"name": "Genres",
+		"filters": [
+			{
+				"type": "genre",
+				"name": "Action",
+				"id": "1",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Adventure",
+				"id": "2",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Comedy",
+				"id": "3",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Drama",
+				"id": "4",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Fantasy",
+				"id": "5",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Martial Arts",
+				"id": "6",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Shounen",
+				"id": "7",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Horror",
+				"id": "8",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Supernatural",
+				"id": "9",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Harem",
+				"id": "10",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Psychological",
+				"id": "11",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Romance",
+				"id": "12",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "School Life",
+				"id": "13",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Shoujo",
+				"id": "14",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Mystery",
+				"id": "15",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Sci-fi",
+				"id": "16",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Seinen",
+				"id": "17",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Tragedy",
+				"id": "18",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Ecchi",
+				"id": "19",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Sports",
+				"id": "20",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Slice of Life",
+				"id": "21",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Mature",
+				"id": "22",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Shoujo Ai",
+				"id": "23",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Webtoons",
+				"id": "24",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Doujinshi",
+				"id": "25",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "One Shot",
+				"id": "26",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Smut",
+				"id": "27",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Yaoi",
+				"id": "28",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Josei",
+				"id": "29",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Historical",
+				"id": "30",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Shounen Ai",
+				"id": "31",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Gender Bender",
+				"id": "32",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Adult",
+				"id": "33",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Yuri",
+				"id": "34",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Mecha",
+				"id": "35",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Lolicon",
+				"id": "36",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Shotacon",
+				"id": "37",
+				"canExclude": true
+			}
+		]
+	},
+	{
+		"type": "select",
+		"name": "Completed",
+		"options": [
+			"Either",
+			"No",
+			"Yes"
+		]
+	}
+]

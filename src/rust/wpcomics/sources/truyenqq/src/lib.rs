@@ -10,7 +10,7 @@ use wpcomics_template::{helper::urlencode, template::WPComicsSource};
 
 fn get_instance() -> WPComicsSource {
 	WPComicsSource {
-		base_url: String::from("http://truyenqqpro.com"),
+		base_url: String::from("https://truyenqqq.vn"),
 		viewer: MangaViewer::Rtl,
 		listing_mapping: |listing| {
 			String::from(match listing.as_str() {
@@ -56,9 +56,13 @@ fn get_instance() -> WPComicsSource {
 
 		page_url_transformer: |url| {
 			let mut server_two = String::from("https://images2-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&resize_h=0&rewriteMime=image%2F*&url=");
-			if let Ok(2) = defaults_get("serverSelection").as_int() {
-				server_two.push_str(&urlencode(url));
-				server_two
+			if let Ok(server_selection) = defaults_get("serverSelection") {
+				if let Ok(2) = server_selection.as_int() {
+					server_two.push_str(&urlencode(url));
+					server_two
+				} else {
+					url
+				}
 			} else {
 				url
 			}
@@ -86,7 +90,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 					);
 					if !title.is_empty() {
 						return format!(
-							"http://truyenqqpro.com/tim-kiem/trang-{page}.html?q={title}"
+							"https://truyenqqq.vn/tim-kiem/trang-{page}.html?q={title}"
 						);
 					}
 				}
@@ -148,7 +152,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 			}
 		}
 		format!(
-			"http://truyenqqpro.com/tim-kiem-nang-cao.html?category={}&notcategory={}{}",
+			"https://truyenqqq.vn/tim-kiem-nang-cao.html?category={}&notcategory={}{}",
 			included_tags.join(","),
 			excluded_tags.join(","),
 			query
@@ -173,8 +177,8 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 }
 
 #[get_page_list]
-fn get_page_list(id: String) -> Result<Vec<Page>> {
-	get_instance().get_page_list(id)
+fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
+	get_instance().get_page_list(chapter_id)
 }
 
 #[modify_image_request]

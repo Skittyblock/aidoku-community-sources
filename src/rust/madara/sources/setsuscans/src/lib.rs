@@ -22,19 +22,23 @@ fn get_data() -> template::MadaraSiteData {
 // SetsuScans
 fn get_manga_id(manga_id: String, base_url: String, path: String) -> String {
 	let url = base_url + "/" + path.as_str() + "/" + manga_id.as_str();
-	let html = Request::new(url.as_str(), HttpMethod::Get).html();
-	let id_html = html.select("script#wp-manga-js-extra").attr("src").read();
-	let id_html = id_html.replace("data:text/javascript;base64,", "");
-	let decoded_html = base64::decode(id_html).expect("Failed to decode base64");
-	let decoded_html = String::from_utf8(decoded_html).expect("Failed to convert base64 to utf8");
-	let id = &decoded_html[decoded_html
-		.find("manga_id")
-		.expect("Failed to find manga_id")
-		+ 11
-		..decoded_html
-			.find("\"}")
-			.expect("Failed to find end of manga_id")];
-	String::from(id)
+	if let Ok(html) = Request::new(url.as_str(), HttpMethod::Get).html() {
+		let id_html = html.select("script#wp-manga-js-extra").attr("src").read();
+		let id_html = id_html.replace("data:text/javascript;base64,", "");
+		let decoded_html = base64::decode(id_html).expect("Failed to decode base64");
+		let decoded_html =
+			String::from_utf8(decoded_html).expect("Failed to convert base64 to utf8");
+		let id = &decoded_html[decoded_html
+			.find("manga_id")
+			.expect("Failed to find manga_id")
+			+ 11
+			..decoded_html
+				.find("\"}")
+				.expect("Failed to find end of manga_id")];
+		String::from(id)
+	} else {
+		String::new()
+	}
 }
 
 #[get_manga_list]
@@ -58,8 +62,8 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 }
 
 #[get_page_list]
-fn get_page_list(id: String) -> Result<Vec<Page>> {
-	template::get_page_list(id, get_data())
+fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
+	template::get_page_list(chapter_id, get_data())
 }
 
 #[handle_url]

@@ -10,31 +10,32 @@ use alloc::{string::ToString, vec};
 
 mod helper;
 
+const USER_AGENT: &str = "Mozilla/5.0 (iPhone; CPU iPhone OS 16_1_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.1 Mobile/15E148 Safari/604.1";
+
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	let mut query: String;
 	let mut is_sauce_code = false;
 	let mut sauce_code = String::from("0");
 
-	if let Ok(languages) = defaults_get("languages").as_array() {
+	if let Ok(languages) = defaults_get("languages")?.as_array() {
 		query = String::new();
-		let mut language_int = 0;
-		for lang in languages {
-			match lang.as_string()?.read().as_str() {
-				"en" => language_int |= 1,
-				"jp" => language_int |= 2,
-				"zh" => language_int |= 4,
-				_ => {}
-			}
-		}
-		if language_int & 1 == 0 {
-			query.push_str(" -language:english");
-		}
-		if language_int & 2 == 0 {
-			query.push_str(" -language:japanese");
-		}
-		if language_int & 4 == 0 {
-			query.push_str(" -language:chinese");
+		if languages.is_empty() {
+			query.push_str("language:english")
+		} else {
+			query.push_str(
+				&languages
+					.into_iter()
+					.filter_map(|lang| lang.as_string().ok())
+					.map(|lang| match lang.read().as_str() {
+						"en" => "language:english",
+						"ja" => "language:japanese",
+						"zh" => "language:chinese",
+						_ => "",
+					})
+					.collect::<Vec<&str>>()
+					.join(" "),
+			);
 		}
 	} else {
 		query = String::from("language:english")
@@ -86,8 +87,8 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 
 	if is_sauce_code {
 		let url = helper::get_details_url(sauce_code);
-		let request = Request::new(&url, HttpMethod::Get).header("User-Agent", "Aidoku");
-		let json = request.json().as_object()?;
+		let request = Request::new(url, HttpMethod::Get).header("User-Agent", USER_AGENT);
+		let json = request.json()?.as_object()?;
 
 		let id = helper::get_id(json.get("id"))?;
 
@@ -130,8 +131,8 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 		url.push_str("&sort=");
 		url.push_str(&helper::urlencode(sort));
 
-		let request = Request::new(&url, HttpMethod::Get).header("User-Agent", "Aidoku");
-		let json = request.json().as_object()?;
+		let request = Request::new(&url, HttpMethod::Get).header("User-Agent", USER_AGENT);
+		let json = request.json()?.as_object()?;
 
 		let data = json.get("result").as_array()?;
 
@@ -202,6 +203,7 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 		kind: FilterType::Sort,
 		name: String::from("Sort"),
 		value: selection.0,
+		object: ObjectRef::new(),
 	});
 
 	get_manga_list(filters, page)
@@ -210,8 +212,8 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 #[get_manga_details]
 fn get_manga_details(id: String) -> Result<Manga> {
 	let request = Request::new(helper::get_details_url(id).as_str(), HttpMethod::Get)
-		.header("User-Agent", "Aidoku");
-	let json = request.json().as_object()?;
+		.header("User-Agent", USER_AGENT);
+	let json = request.json()?.as_object()?;
 
 	let id = helper::get_id(json.get("id"))?;
 
@@ -266,13 +268,13 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 		helper::get_details_url(id.clone()).as_str(),
 		HttpMethod::Get,
 	)
-	.header("User-Agent", "Aidoku");
-	let json = request.json().as_object()?;
+	.header("User-Agent", USER_AGENT);
+	let json = request.json()?.as_object()?;
 
 	let mut url = String::from("https://nhentai.net/g/");
 	url.push_str(&id);
 
-	let date_updated = json.get("upload_date").as_float().unwrap_or(0.0) as f64;
+	let date_updated = json.get("upload_date").as_float().unwrap_or(0.0);
 
 	let language = &helper::get_tag_names_by_type(json.get("tags").as_array()?, "artist")?[0];
 
@@ -296,10 +298,10 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 }
 
 #[get_page_list]
-fn get_page_list(id: String) -> Result<Vec<Page>> {
+fn get_page_list(_: String, id: String) -> Result<Vec<Page>> {
 	let request = Request::new(helper::get_details_url(id).as_str(), HttpMethod::Get)
-		.header("User-Agent", "Aidoku");
-	let json = request.json().as_object()?;
+		.header("User-Agent", USER_AGENT);
+	let json = request.json()?.as_object()?;
 
 	let images = json.get("images").as_object()?;
 	let pages_arr = images.get("pages").as_array()?;

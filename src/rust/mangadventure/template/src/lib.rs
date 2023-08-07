@@ -15,7 +15,7 @@ use aidoku::{
 	MangaContentRating, MangaStatus, MangaViewer,
 };
 
-const USER_AGENT: &str = "Mozilla 5.0 (Aidoku 0.1.0; Mobile)";
+const USER_AGENT: &str = "Mozilla 5.0 (Aidoku 0.1.1; Mobile)";
 
 static NSFW_CATEGORIES: [&str; 2] = ["Hentai", "Smut"];
 
@@ -127,6 +127,8 @@ impl MangAdventure {
 					0 => params.push_encoded("status", Some("any")),
 					1 => params.push_encoded("status", Some("completed")),
 					2 => params.push_encoded("status", Some("ongoing")),
+					3 => params.push_encoded("status", Some("hiatus")),
+					4 => params.push_encoded("status", Some("canceled")),
 					_ => continue,
 				},
 				FilterType::Sort => {
@@ -190,10 +192,12 @@ impl MangAdventure {
 		let artist = get_array_as_vec!(json, artists).join(", ");
 		let categories = get_array_as_vec!(json, categories);
 		// TODO: add licensed status when supported
-		let status = if get_value!(json, completed, as_bool) {
-			MangaStatus::Completed
-		} else {
-			MangaStatus::Ongoing
+		let status = match get_value!(json, status, as_string).read().as_str() {
+			"completed" => MangaStatus::Completed,
+			"ongoing" => MangaStatus::Ongoing,
+			"hiatus" => MangaStatus::Hiatus,
+			"canceled" => MangaStatus::Cancelled,
+			_ => MangaStatus::Unknown,
 		};
 		let nsfw = if vec_intersects(&NSFW_CATEGORIES, &categories) {
 			MangaContentRating::Nsfw

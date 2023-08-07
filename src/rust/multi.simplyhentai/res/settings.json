@@ -1,0 +1,16 @@
+[
+	{
+		"type": "group",
+		"title": "Settings",
+		"items": [
+			{
+				"type": "select",
+				"key": "image_quality",
+				"title": "Image Quality",
+				"values": ["full", "small_thumb", "thumb", "giant_thumb"],
+				"titles": ["Full", "Small", "Medium", "Large"],
+				"default": "full"
+			}
+		]
+	}
+]

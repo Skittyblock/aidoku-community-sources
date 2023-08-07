@@ -1,16 +1,16 @@
 #![no_std]
 #![allow(clippy::mut_range_bound)]
+#![feature(try_blocks)]
 
 use aidoku::{
 	error::Result,
 	prelude::*,
 	std::{
-		copy,
 		defaults::defaults_get,
 		html::Node,
 		json::parse,
 		net::{HttpMethod, Request},
-		String, ValueRef, Vec,
+		String, Vec,
 	},
 	Chapter, DeepLink, Filter, FilterType, Listing, Manga, MangaPageResult, Page,
 };
@@ -18,52 +18,62 @@ use aidoku::{
 pub mod helper;
 mod parser;
 
-static mut DIRECTORY_RID: i32 = -1;
-static mut CACHED_MANGA_ID: Option<String> = None;
-static mut CACHED_MANGA: Option<String> = None;
-static mut COVER_SERVER: Option<String> = None;
+mod model;
+use model::{Nepnep, Pattern, Size, SortOptions};
 
-// Cache full manga directory
-// Done to avoid repeated requests and speed up parsing
-pub fn initialize_directory() {
-	if let Ok(url_str) = defaults_get("sourceURL").as_string() {
+pub fn init_cache(cache: &mut Nepnep) {
+	if let Ok(url_str) = defaults_get("sourceURL")
+		.expect("missing sourceURL")
+		.as_string()
+	{
 		let mut url = url_str.read();
-		url.push_str("/search/");
+		url.push_str(cache.path());
 
-		let html = Request::new(&url, HttpMethod::Get).html();
-		let node = html.select(".SearchResult > .SearchResultCover img");
-		unsafe {
-			COVER_SERVER = if node.has_attr("ng-src") {
-				Some(node.attr("ng-src").read())
-			} else {
-				Some(String::from(
-					"https://temp.compsci88.com/cover/{{Result.i}}.jpg",
-				))
-			};
-		}
+		let html = match Request::new(&url, HttpMethod::Get).html() {
+			Ok(html) => html,
+			Err(_) => return,
+		};
 
 		let result = html.outer_html().read();
-		let final_str = helper::string_between(&result, "vm.Directory = ", "];", 1);
+		let final_str = helper::string_between(&result, cache.start(), cache.end(), 1);
 
-		let mut directory_parsed = parse(final_str.as_bytes());
-		directory_parsed.1 = false;
-		unsafe {
-			DIRECTORY_RID = directory_parsed.0;
+		match cache {
+			Nepnep::Directory { items } => match serde_json::from_str(final_str.as_str()) {
+				Ok(dir) => *items = dir,
+				Err(err) => {
+					println!("Unable to serialize :{:?}", err);
+				}
+			},
+			Nepnep::HotUpdate { items } => match serde_json::from_str(final_str.as_str()) {
+				Ok(dir) => *items = dir,
+				Err(err) => {
+					println!("Unable to serialize :{:?}", err);
+				}
+			},
 		}
 	}
 }
+
+static mut CACHED_MANGA_ID: Option<String> = None;
+static mut CACHED_MANGA: Option<String> = None;
+
+static mut CACHED_DIR: Nepnep = Nepnep::Directory { items: Vec::new() };
+static mut CACHED_HOT_UPDATES: Nepnep = Nepnep::HotUpdate { items: Vec::new() };
 
 // Cache manga page html
 pub fn cache_manga_page(id: &str) {
 	if unsafe { CACHED_MANGA.is_some() } && unsafe { CACHED_MANGA_ID.clone().unwrap() } == id {
 		return;
 	}
-	if let Ok(url_str) = defaults_get("sourceURL").as_string() {
+	if let Ok(url_str) = defaults_get("sourceURL")
+		.expect("missing sourceURL")
+		.as_string()
+	{
 		let mut url = url_str.read();
 		url.push_str("/manga/");
 		url.push_str(id);
 		unsafe {
-			CACHED_MANGA = Some(Request::new(&url, HttpMethod::Get).string());
+			CACHED_MANGA = Request::new(&url, HttpMethod::Get).string().ok();
 			CACHED_MANGA_ID = Some(String::from(id));
 		};
 	}
@@ -71,13 +81,16 @@ pub fn cache_manga_page(id: &str) {
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
-	if unsafe { DIRECTORY_RID } < 0 {
-		initialize_directory();
+	if unsafe { &CACHED_DIR }.len() == 0 {
+		init_cache(unsafe { &mut CACHED_DIR })
 	}
-	let mut directory_arr = unsafe { ValueRef::new(copy(DIRECTORY_RID)) }.as_array()?;
+
+	let mut dir = match unsafe { CACHED_DIR.clone() } {
+		Nepnep::Directory { items } => items,
+		_ => panic!("Unexpected type"),
+	};
 
 	let offset = (page as usize - 1) * 20;
-	let mut manga: Vec<Manga> = Vec::with_capacity(20);
 
 	for filter in filters {
 		match filter.kind {
@@ -85,77 +98,132 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 				let title = filter.value.as_string()?.read().to_lowercase();
 
 				let mut i = 0;
-				let mut size = directory_arr.len();
+				let mut size = dir.len();
 				for _ in 0..size {
 					if i >= size || i >= offset + 20 {
 						break;
 					}
-					let manga_title = match directory_arr.get(i).as_object()?.get("s").as_string() {
-						Ok(title) => title.read().to_lowercase(),
-						Err(_) => String::new(),
-					};
-					// check title
-					if manga_title.contains(&title) {
-						i += 1;
-					} else {
-						// check alt titles
-						if let Ok(alt_titles) =
-							directory_arr.get(i).as_object()?.get("al").as_array()
-						{
-							if alt_titles.into_iter().any(|a| {
-								if let Ok(alt_title) = a.as_string() {
-									alt_title.read().to_lowercase().contains(&title)
-								} else {
-									false
-								}
-							}) {
-								i += 1;
-								continue;
-							}
+					let manga = match dir.get(i) {
+						Some(manga) => manga,
+						None => {
+							i += 1;
+							continue;
 						}
-						// no match, remove
-						directory_arr.remove(i);
-						size -= 1;
+					};
+
+					// check both series name and alt titles
+					if manga.title.to_lowercase().contains(&title)
+						|| manga
+							.alt_titles
+							.iter()
+							.any(|x| x.to_lowercase().contains(&title))
+					{
+						i += 1;
+						continue;
 					}
+					// no match, remove
+					dir.remove(i);
+					size -= 1;
 				}
 			}
 			FilterType::Sort => {
-				// TODO
+				let value = match filter.value.as_object() {
+					Ok(value) => value,
+					Err(_) => continue,
+				};
+
+				let idx = value.get("index").as_int().unwrap_or(0) as i32;
+				let opt = SortOptions::from(idx);
+
+				match opt {
+					// Site by default sorts to A-Z
+					SortOptions::AZ => continue,
+					SortOptions::ZA => dir.sort_by(|a, b| b.title.cmp(&a.title)),
+					SortOptions::RecentlyReleasedChapter => {
+						dir.sort_by(|a, b| b.last_updated.cmp(&a.last_updated))
+					}
+					SortOptions::YearReleasedNewest => dir.sort_by(|a, b| b.year.cmp(&a.year)),
+					SortOptions::YearReleasedOldest => dir.sort_by(|a, b| a.year.cmp(&b.year)),
+					SortOptions::MostPopularAllTime => dir.sort_by(|a, b| b.views.cmp(&a.views)),
+					SortOptions::MostPopularMonthly => {
+						dir.sort_by(|a, b| b.views_month.cmp(&a.views_month))
+					}
+					SortOptions::LeastPopular => dir.sort_by(|a, b| a.views.cmp(&b.views)),
+				}
 			}
 			_ => continue,
 		}
 	}
 
-	let end = if directory_arr.len() > offset + 20 {
+	let end = if dir.len() > offset + 20 {
 		offset + 20
 	} else {
-		directory_arr.len()
+		dir.len()
 	};
 
+	let mut manga: Vec<Manga> = Vec::with_capacity(20);
+
 	for i in offset..end {
-		let manga_obj = directory_arr.get(i).as_object()?;
-		manga.push(parser::parse_basic_manga(manga_obj, unsafe {
-			COVER_SERVER.clone().unwrap_or_default()
-		})?);
+		let manga_obj = dir.get(i);
+		match manga_obj {
+			Some(obj) => manga.push(parser::parse_basic_manga(obj)?),
+			None => panic!("Couldn't find index: {}", i),
+		}
 	}
 
 	Ok(MangaPageResult {
 		manga,
-		has_more: directory_arr.len() > end,
+		has_more: dir.len() > end,
 	})
 }
 
 #[get_manga_listing]
-fn get_manga_listing(_listing: Listing, _page: i32) -> Result<MangaPageResult> {
-	todo!()
+fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
+	let listing_name = listing.name.as_str();
+	match listing_name {
+		"Hot Updates" => {
+			if unsafe { &CACHED_HOT_UPDATES }.len() == 0 {
+				init_cache(unsafe { &mut CACHED_HOT_UPDATES })
+			}
+		}
+		_ => {
+			panic!("Received unexpected listing: {}", listing_name);
+		}
+	}
+
+	let dir = match unsafe { CACHED_HOT_UPDATES.clone() } {
+		Nepnep::HotUpdate { items } => items,
+		_ => panic!("Unexpected type"),
+	};
+
+	let offset = (page as usize - 1) * 20;
+
+	let end = if dir.len() > offset + 20 {
+		offset + 20
+	} else {
+		dir.len()
+	};
+
+	let mut manga: Vec<Manga> = Vec::with_capacity(20);
+	for i in offset..end {
+		let manga_obj = dir.get(i);
+		match manga_obj {
+			Some(obj) => manga.push(parser::parse_manga_listing(obj)?),
+			None => panic!("Couldn't find index: {}", i),
+		}
+	}
+	Ok(MangaPageResult {
+		manga,
+		has_more: dir.len() > end,
+	})
 }
 
 #[get_manga_details]
 fn get_manga_details(id: String) -> Result<Manga> {
 	cache_manga_page(&id);
-	let html = unsafe { Node::new(CACHED_MANGA.clone().unwrap().as_bytes()) };
+	let html = unsafe { Node::new(CACHED_MANGA.clone().unwrap().as_bytes()) }?;
 
-	let mut url = defaults_get("sourceURL").as_string()?.read();
+	let mut url = defaults_get("sourceURL")?.as_string()?.read();
 	url.push_str("/manga/");
 	url.push_str(&id);
 
@@ -172,7 +240,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 	let json_end = half_json.find("];").unwrap_or(half_json.len() - 1) + 1;
 	let json = &half_json[..json_end];
 
-	let chapter_arr = parse(json.as_bytes()).as_array()?;
+	let chapter_arr = parse(json.as_bytes())?.as_array()?;
 
 	let mut chapters: Vec<Chapter> = Vec::with_capacity(chapter_arr.len());
 
@@ -185,18 +253,18 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 }
 
 #[get_page_list]
-fn get_page_list(id: String) -> Result<Vec<Page>> {
-	let mut url = defaults_get("sourceURL").as_string()?.read();
+fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
+	let mut url = defaults_get("sourceURL")?.as_string()?.read();
 	url.push_str("/read-online/");
-	url.push_str(&id);
+	url.push_str(&chapter_id);
 
-	let result = Request::new(&url, HttpMethod::Get).string();
+	let result = Request::new(&url, HttpMethod::Get).string()?;
 
 	// create base image url
 	let base_url = helper::string_between(&result, "vm.CurPathName = \"", "\";", 0);
 	let title_uri = helper::string_between(&result, "vm.IndexName = \"", "\";", 0);
 
-	let chapter = parse(helper::string_between(&result, "vm.CurChapter = ", "};", 1).as_bytes())
+	let chapter = parse(helper::string_between(&result, "vm.CurChapter = ", "};", 1).as_bytes())?
 		.as_object()?;
 
 	let directory = match chapter.get("Directory").as_string() {
@@ -245,8 +313,7 @@ fn get_page_list(id: String) -> Result<Vec<Page>> {
 		pages.push(Page {
 			index: i as i32,
 			url: page_url,
-			base64: String::new(),
-			text: String::new(),
+			..Default::default()
 		})
 	}
 
@@ -294,13 +361,8 @@ fn handle_url(url: String) -> Result<DeepLink> {
 		let manga = get_manga_details(String::from(manga_id))?;
 		let chapter = Chapter {
 			id: String::from(id),
-			title: String::new(),
-			volume: -1.0,
-			chapter: -1.0,
-			date_updated: -1.0,
-			scanlator: String::new(),
 			url,
-			lang: String::new(),
+			..Default::default()
 		};
 
 		return Ok(DeepLink {

@@ -1,0 +1,18 @@
+{
+	"info": {
+		"id": "en.manhwatop",
+		"lang": "en",
+		"name": "MANHWATOP",
+		"version": 1,
+		"url": "https://manhwatop.com",
+		"nsfw": 1
+	},
+	"listings": [
+		{
+			"name": "Trending"
+		},
+		{
+			"name": "Popular"
+		}
+	]
+}
