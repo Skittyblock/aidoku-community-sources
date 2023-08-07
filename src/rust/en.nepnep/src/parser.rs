@@ -3,6 +3,8 @@ use aidoku::{
 	std::Vec, Chapter, Manga, MangaContentRating, MangaStatus, MangaViewer,
 };
 
+use crate::model::{Directory, HotUpdate};
+
 use super::helper::{chapter_image, chapter_url_encode};
 
 extern crate alloc;
@@ -11,38 +13,36 @@ use alloc::string::ToString;
 const COVER_SERVER: &str = "https://temp.compsci88.com/cover/{{Result.i}}.jpg";
 
 // Parse manga with title and cover
-pub fn parse_manga_listing(manga_object: ObjectRef) -> Result<Manga> {
-	let id = manga_object.get("IndexName").as_string()?.read();
-	let title = manga_object.get("SeriesName").as_string()?.read();
-	let cover = String::from(COVER_SERVER).replace("{{Result.i}}", &id);
+pub fn parse_manga_listing(manga_object: &HotUpdate) -> Result<Manga> {
+	let id = &manga_object.id;
+	let title = &manga_object.title;
+	let cover = String::from(COVER_SERVER).replace("{{Result.i}}", id);
 
 	let mut url = defaults_get("sourceURL")?.as_string()?.read();
 	url.push_str("/manga/");
-	url.push_str(&id);
+	url.push_str(id);
 
 	Ok(Manga {
-		id,
-		title,
+		id: id.to_string(),
+		title: title.to_string(),
 		cover,
 		url,
 		..Default::default()
 	})
 }
 
-// Parse manga with title and cover
-pub fn parse_basic_manga(manga_object: ObjectRef) -> Result<Manga> {
-	let id = manga_object.get("i").as_string()?.read();
-	let title = manga_object.get("s").as_string()?.read();
-	let cover = String::from(COVER_SERVER).replace("{{Result.i}}", &id);
+pub fn parse_basic_manga(nepnep: &Directory) -> Result<Manga> {
+	let id = &nepnep.id;
+	let title = &nepnep.title;
+	let cover = String::from(COVER_SERVER).replace("{{Result.i}}", id);
 
 	let mut url = defaults_get("sourceURL")?.as_string()?.read();
 	url.push_str("/manga/");
-	url.push_str(&id);
-
+	url.push_str(id);
 	Ok(Manga {
-		id,
+		id: id.to_string(),
+		title: title.to_string(),
 		cover,
-		title,
 		url,
 		..Default::default()
 	})

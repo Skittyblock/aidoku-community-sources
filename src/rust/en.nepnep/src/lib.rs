@@ -1,16 +1,16 @@
 #![no_std]
 #![allow(clippy::mut_range_bound)]
+#![feature(try_blocks)]
 
 use aidoku::{
 	error::Result,
 	prelude::*,
 	std::{
-		copy,
 		defaults::defaults_get,
 		html::Node,
 		json::parse,
 		net::{HttpMethod, Request},
-		String, ValueRef, Vec,
+		String, Vec,
 	},
 	Chapter, DeepLink, Filter, FilterType, Listing, Manga, MangaPageResult, Page,
 };
@@ -18,19 +18,16 @@ use aidoku::{
 pub mod helper;
 mod parser;
 
-static mut DIRECTORY_RID: i32 = -1;
-static mut HOT_UPDATE_RID: i32 = -1;
+mod model;
+use model::{Nepnep, Pattern, Size, SortOptions};
 
-static mut CACHED_MANGA_ID: Option<String> = None;
-static mut CACHED_MANGA: Option<String> = None;
-
-pub fn init_page(path: &str, pattern: &str, cache: &mut i32) {
+pub fn init_cache(cache: &mut Nepnep) {
 	if let Ok(url_str) = defaults_get("sourceURL")
 		.expect("missing sourceURL")
 		.as_string()
 	{
 		let mut url = url_str.read();
-		url.push_str(path);
+		url.push_str(cache.path());
 
 		let html = match Request::new(&url, HttpMethod::Get).html() {
 			Ok(html) => html,
@@ -38,22 +35,30 @@ pub fn init_page(path: &str, pattern: &str, cache: &mut i32) {
 		};
 
 		let result = html.outer_html().read();
-		let final_str = helper::string_between(&result, pattern, "];", 1);
+		let final_str = helper::string_between(&result, cache.start(), cache.end(), 1);
 
-		let mut directory_parsed = match parse(final_str.as_bytes()) {
-			Ok(parsed) => parsed,
-			Err(_) => return,
-		};
-		directory_parsed.1 = false;
-		*cache = directory_parsed.0;
+		match cache {
+			Nepnep::Directory { items } => match serde_json::from_str(final_str.as_str()) {
+				Ok(dir) => *items = dir,
+				Err(err) => {
+					println!("Unable to serialize :{:?}", err);
+				}
+			},
+			Nepnep::HotUpdate { items } => match serde_json::from_str(final_str.as_str()) {
+				Ok(dir) => *items = dir,
+				Err(err) => {
+					println!("Unable to serialize :{:?}", err);
+				}
+			},
+		}
 	}
 }
 
-// Cache full manga directory
-// Done to avoid repeated requests and speed up parsing
-pub fn initialize_directory() {
-	init_page("/search/", "vm.Directory = ", unsafe { &mut DIRECTORY_RID })
-}
+static mut CACHED_MANGA_ID: Option<String> = None;
+static mut CACHED_MANGA: Option<String> = None;
+
+static mut CACHED_DIR: Nepnep = Nepnep::Directory { items: Vec::new() };
+static mut CACHED_HOT_UPDATES: Nepnep = Nepnep::HotUpdate { items: Vec::new() };
 
 // Cache manga page html
 pub fn cache_manga_page(id: &str) {
@@ -76,13 +81,16 @@ pub fn cache_manga_page(id: &str) {
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
-	if unsafe { DIRECTORY_RID } < 0 {
-		initialize_directory();
+	if unsafe { &CACHED_DIR }.len() == 0 {
+		init_cache(unsafe { &mut CACHED_DIR })
 	}
-	let mut directory_arr = unsafe { ValueRef::new(copy(DIRECTORY_RID)) }.as_array()?;
+
+	let mut dir = match unsafe { CACHED_DIR.clone() } {
+		Nepnep::Directory { items } => items,
+		_ => panic!("Unexpected type"),
+	};
 
 	let offset = (page as usize - 1) * 20;
-	let mut manga: Vec<Manga> = Vec::with_capacity(20);
 
 	for filter in filters {
 		match filter.kind {
@@ -90,67 +98,82 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 				let title = filter.value.as_string()?.read().to_lowercase();
 
 				let mut i = 0;
-				let mut size = directory_arr.len();
+				let mut size = dir.len();
 				for _ in 0..size {
 					if i >= size || i >= offset + 20 {
 						break;
 					}
-					let manga_title = match directory_arr.get(i).as_object()?.get("s").as_string() {
-						Ok(title) => title.read().to_lowercase(),
-						Err(_) => String::new(),
-					};
-					// check title
-					if manga_title.contains(&title) {
-						i += 1;
-					} else {
-						// check alt titles
-						if let Ok(alt_titles) =
-							directory_arr.get(i).as_object()?.get("al").as_array()
-						{
-							if alt_titles.into_iter().any(|a| {
-								if let Ok(alt_title) = a.as_string() {
-									alt_title.read().to_lowercase().contains(&title)
-								} else {
-									false
-								}
-							}) {
-								i += 1;
-								continue;
-							}
+					let manga = match dir.get(i) {
+						Some(manga) => manga,
+						None => {
+							i += 1;
+							continue;
 						}
-						// no match, remove
-						directory_arr.remove(i);
-						size -= 1;
+					};
+
+					// check both series name and alt titles
+					if manga.title.to_lowercase().contains(&title)
+						|| manga
+							.alt_titles
+							.iter()
+							.any(|x| x.to_lowercase().contains(&title))
+					{
+						i += 1;
+						continue;
 					}
+					// no match, remove
+					dir.remove(i);
+					size -= 1;
 				}
 			}
 			FilterType::Sort => {
-				// TODO
+				let value = match filter.value.as_object() {
+					Ok(value) => value,
+					Err(_) => continue,
+				};
+
+				let idx = value.get("index").as_int().unwrap_or(0) as i32;
+				let opt = SortOptions::from(idx);
+
+				match opt {
+					// Site by default sorts to A-Z
+					SortOptions::AZ => continue,
+					SortOptions::ZA => dir.sort_by(|a, b| b.title.cmp(&a.title)),
+					SortOptions::RecentlyReleasedChapter => {
+						dir.sort_by(|a, b| b.last_updated.cmp(&a.last_updated))
+					}
+					SortOptions::YearReleasedNewest => dir.sort_by(|a, b| b.year.cmp(&a.year)),
+					SortOptions::YearReleasedOldest => dir.sort_by(|a, b| a.year.cmp(&b.year)),
+					SortOptions::MostPopularAllTime => dir.sort_by(|a, b| b.views.cmp(&a.views)),
+					SortOptions::MostPopularMonthly => {
+						dir.sort_by(|a, b| b.views_month.cmp(&a.views_month))
+					}
+					SortOptions::LeastPopular => dir.sort_by(|a, b| a.views.cmp(&b.views)),
+				}
 			}
 			_ => continue,
 		}
 	}
 
-	let end = if directory_arr.len() > offset + 20 {
+	let end = if dir.len() > offset + 20 {
 		offset + 20
 	} else {
-		directory_arr.len()
+		dir.len()
 	};
 
+	let mut manga: Vec<Manga> = Vec::with_capacity(20);
+
 	for i in offset..end {
-		let manga_obj = directory_arr.get(i).as_object()?;
-		manga.push(parser::parse_basic_manga(manga_obj)?);
+		let manga_obj = dir.get(i);
+		match manga_obj {
+			Some(obj) => manga.push(parser::parse_basic_manga(obj)?),
+			None => panic!("Couldn't find index: {}", i),
+		}
 	}
 
 	Ok(MangaPageResult {
 		manga,
-		has_more: directory_arr.len() > end,
-	})
-}
-
-pub fn initialize_hot_update() {
-	init_page("/hot.php", "vm.HotUpdateJSON = ", unsafe {
-		&mut HOT_UPDATE_RID
+		has_more: dir.len() > end,
 	})
 }
 
@@ -159,31 +182,39 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 	let listing_name = listing.name.as_str();
 	match listing_name {
 		"Hot Updates" => {
-			if unsafe { HOT_UPDATE_RID } < 0 {
-				initialize_hot_update()
+			if unsafe { &CACHED_HOT_UPDATES }.len() == 0 {
+				init_cache(unsafe { &mut CACHED_HOT_UPDATES })
 			}
 		}
 		_ => {
 			panic!("Received unexpected listing: {}", listing_name);
 		}
 	}
-	let directory_arr = unsafe { ValueRef::new(copy(HOT_UPDATE_RID)) }.as_array()?;
+
+	let dir = match unsafe { CACHED_HOT_UPDATES.clone() } {
+		Nepnep::HotUpdate { items } => items,
+		_ => panic!("Unexpected type"),
+	};
 
 	let offset = (page as usize - 1) * 20;
-	let mut manga: Vec<Manga> = Vec::with_capacity(20);
 
-	let end = if directory_arr.len() > offset + 20 {
+	let end = if dir.len() > offset + 20 {
 		offset + 20
 	} else {
-		directory_arr.len()
+		dir.len()
 	};
+
+	let mut manga: Vec<Manga> = Vec::with_capacity(20);
 	for i in offset..end {
-		let manga_obj = directory_arr.get(i).as_object()?;
-		manga.push(parser::parse_manga_listing(manga_obj)?);
+		let manga_obj = dir.get(i);
+		match manga_obj {
+			Some(obj) => manga.push(parser::parse_manga_listing(obj)?),
+			None => panic!("Couldn't find index: {}", i),
+		}
 	}
 	Ok(MangaPageResult {
 		manga,
-		has_more: directory_arr.len() > end,
+		has_more: dir.len() > end,
 	})
 }
 
