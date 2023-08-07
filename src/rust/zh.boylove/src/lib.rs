@@ -3,7 +3,7 @@ use aidoku::{
 	error::Result,
 	helpers::{substring::Substring, uri::encode_uri_component},
 	prelude::*,
-	std::{html::unescape_html_entities, net::Request, String, Vec},
+	std::{defaults::defaults_get, html::unescape_html_entities, net::Request, String, Vec},
 	Chapter, DeepLink, Filter,
 	FilterType::{Genre, Select, Sort, Title},
 	Manga, MangaContentRating, MangaPageResult,
@@ -96,6 +96,11 @@ const FILTER_CONTENT_RATING: [u8; 3] = [0, 1, 2];
 
 /// 排序依據：\[最新更新, 人氣\]
 const SORT: [u8; 2] = [1, 0];
+
+#[initialize]
+fn initialize() {
+	switch_chinese_char_set();
+}
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
@@ -205,8 +210,8 @@ fn get_manga_details(manga_id: String) -> Result<Manga> {
 		.collect::<Vec<String>>();
 
 	let status = match manga_html.select("p.data").first().text().read().as_str() {
-		"连载中" => Ongoing,
-		"完结" => Completed,
+		"连载中" | "連載中" => Ongoing,
+		"完结" | "完結" => Completed,
 		_ => Unknown,
 	};
 
@@ -334,6 +339,23 @@ fn handle_url(url: String) -> Result<DeepLink> {
 	let manga = Some(get_manga_details(manga_id.to_string())?);
 
 	Ok(DeepLink { manga, chapter })
+}
+
+#[handle_notification]
+fn handle_notification(notification: String) {
+	if notification.as_str() == "switchChineseCharSet" {
+		switch_chinese_char_set();
+	}
+}
+
+fn switch_chinese_char_set() {
+	let is_tc = defaults_get("isTC").map_or(true, |value| value.as_bool().unwrap_or(true));
+	let converting_url = format!(
+		"{}/home/user/to{}.html",
+		DOMAIN,
+		if is_tc { "T" } else { "S" }
+	);
+	request_get(&converting_url).send();
 }
 
 fn get_filtered_url(filters: Vec<Filter>, page: i32) -> Result<String> {
