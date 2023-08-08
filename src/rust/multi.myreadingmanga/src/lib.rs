@@ -1,10 +1,7 @@
 #![no_std]
 use aidoku::{
 	error::Result,
-	helpers::{
-		substring::Substring,
-		uri::{encode_uri, QueryParameters},
-	},
+	helpers::{substring::Substring, uri::QueryParameters},
 	prelude::*,
 	std::{net::Request, String, Vec},
 	Chapter, Filter,
@@ -84,7 +81,11 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 
 		let manga_id = manga_url.replace(DOMAIN, "").replace('/', "");
 
-		let cover_url = encode_uri(manga_node.select("img").attr("src").read());
+		let cover_url = manga_node
+			.select("img")
+			.attr("src")
+			.read()
+			.percent_encode(false);
 
 		let artists_str = get_artists(&manga_title);
 
@@ -275,8 +276,8 @@ fn get_filtered_url(filters: Vec<Filter>, page: i32) -> Result<String> {
 			}
 
 			Title => {
-				let search_str = filter.value.as_string()?.read();
-				query.push("wpsolr_q", Some(&search_str));
+				let encoded_search_str = filter.value.as_string()?.read().percent_encode(true);
+				query.push_encoded("wpsolr_q", Some(&encoded_search_str));
 
 				query.push_encoded("wpsolr_sort", Some(SORT[0]));
 
@@ -292,9 +293,9 @@ fn get_filtered_url(filters: Vec<Filter>, page: i32) -> Result<String> {
 		.iter()
 		.enumerate()
 		.for_each(|(filter_index, (filter_type, filter_value))| {
-			query.push(
-				format!("wpsolr_fq[{}]", filter_index),
-				Some(format!("{}:{}", filter_type, filter_value)),
+			query.push_encoded(
+				format!("wpsolr_fq[{}]", filter_index).percent_encode(true),
+				Some(format!("{}:{}", filter_type, filter_value).percent_encode(true)),
 			)
 		});
 
@@ -324,6 +325,19 @@ impl core::fmt::Display for Url<'_> {
 				write!(f, "{}{}/", Url::Manga(manga_id), chapter_id)
 			}
 		}
+	}
+}
+
+trait UrlString {
+	/// ' should be percent-encoded
+	fn percent_encode(self, is_component: bool) -> String;
+}
+
+impl UrlString for String {
+	fn percent_encode(self, is_component: bool) -> String {
+		let char_set = "-_.!~*()".to_string() + if is_component { "" } else { ";,/?:@&=+$#" };
+
+		aidoku::helpers::uri::internal_encode_uri(self, char_set)
 	}
 }
 
