@@ -1,0 +1,14 @@
+[
+    {
+        "type": "group",
+        "items": [
+            {
+                "type": "switch",
+                "key": "isTC",
+                "title": "切換為 简体/繁體",
+                "notification": "switchChineseCharSet",
+                "default": true
+            }
+        ]
+    }
+]

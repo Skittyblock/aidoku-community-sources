@@ -66,7 +66,7 @@
 			},
 			{
 				"type": "genre",
-				"name": "傲嬌受"
+				"name": "同人"
 			},
 			{
 				"type": "genre",
@@ -74,29 +74,24 @@
 			},
 			{
 				"type": "genre",
-				"name": "同人"
-			},
-			{
-				"type": "genre",
-				"name": "青梅竹馬"
+				"name": "傲嬌受"
 			},
 			{
 				"type": "genre",
 				"name": "淫蕩受"
+			},
+			{
+				"type": "genre",
+				"name": "青梅竹馬"
 			}
 		]
 	},
 	{
 		"type": "sort",
 		"name": "排序依據",
-		"canAscend": false,
 		"options": [
-			"人氣",
-			"最新更新"
-		],
-		"default": {
-			"index": 1,
-			"ascending": false
-		}
+			"最新更新",
+			"人氣"
+		]
 	}
 ]
