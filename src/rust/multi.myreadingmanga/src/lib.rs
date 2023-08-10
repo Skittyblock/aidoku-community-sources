@@ -136,7 +136,8 @@ fn get_manga_details(manga_id: String) -> Result<Manga> {
 		.to_string();
 
 	let mut categories = Vec::<String>::new();
-	let mut status_vec: Vec<String> = Vec::new();
+	let (mut is_completed, mut is_cancelled, mut is_hiatus, mut is_ongoing) =
+		(false, false, false, false);
 	let span_nodes = manga_html.select("footer.entry-footer span");
 	for span_value in span_nodes.array() {
 		let span_node = span_value.as_node()?;
@@ -153,21 +154,26 @@ fn get_manga_details(manga_id: String) -> Result<Manga> {
 		for a_value in a_nodes.array() {
 			let tag = a_value.as_node()?.text().read();
 			match is_status {
-				true => status_vec.push(tag),
+				true => match tag.as_str() {
+					"Completed" => is_completed = true,
+					"Discontinued" | "Dropped" => is_cancelled = true,
+					"Hiatus" => is_hiatus = true,
+					"Ongoing" => is_ongoing = true,
+					_ => (),
+				},
+
 				false => categories.push(tag),
 			}
 		}
 	}
 
-	let status = if status_vec.contains(&"Completed".to_string()) {
+	let status = if is_completed {
 		Completed
-	} else if status_vec.contains(&"Discontinued".to_string())
-		|| status_vec.contains(&"Dropped".to_string())
-	{
+	} else if is_cancelled {
 		Cancelled
-	} else if status_vec.contains(&"Hiatus".to_string()) {
+	} else if is_hiatus {
 		Hiatus
-	} else if status_vec.contains(&"Ongoing".to_string()) {
+	} else if is_ongoing {
 		Ongoing
 	} else {
 		Unknown
