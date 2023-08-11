@@ -1,20 +1,18 @@
 #![no_std]
+extern crate alloc;
+
 use aidoku::{
 	error::Result,
-	helpers::{substring::Substring, uri::QueryParameters},
+	helpers::{
+		substring::Substring,
+		uri::{internal_encode_uri, QueryParameters},
+	},
 	prelude::*,
-	std::{net::Request, String, Vec},
-	Chapter, Filter,
-	FilterType::{Check, Sort, Title},
-	Manga,
-	MangaContentRating::Nsfw,
-	MangaPageResult,
-	MangaStatus::*,
-	Page,
+	std::{net::Request, String, ValueRef, Vec},
+	Chapter, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus, Page,
 };
-
-extern crate alloc;
 use alloc::string::ToString;
+use core::fmt::Display;
 
 enum Url<'a> {
 	/// https://myreadingmanga.info/search/?wpsolr_page={}&wpsolr_q={}&wpsolr_sort={}&wpsolr_fq\[{index}\]={filter_id}:{filter_name}
@@ -50,6 +48,7 @@ const DOMAIN: &str = "https://myreadingmanga.info";
 /// Safari on iOS 16.4
 const USER_AGENT: &str = "Mozilla/5.0 (iPhone; CPU iPhone OS 16_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.4 Mobile/15E148 Safari/604.1";
 
+/// Sort by: \[More relevant, Newest, Oldest, Random\]
 const SORT: [&str; 4] = [
 	"sort_by_relevancy_desc",
 	"sort_by_date_desc",
@@ -99,7 +98,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 			artist: artists_str,
 			description,
 			url: manga_url,
-			nsfw: Nsfw,
+			nsfw: MangaContentRating::Nsfw,
 			..Default::default()
 		});
 	}
@@ -153,30 +152,30 @@ fn get_manga_details(manga_id: String) -> Result<Manga> {
 		let a_nodes = span_node.select("a");
 		for a_value in a_nodes.array() {
 			let tag = a_value.as_node()?.text().read();
-			match is_status {
-				true => match tag.as_str() {
+			if is_status {
+				match tag.as_str() {
 					"Completed" => is_completed = true,
 					"Discontinued" | "Dropped" => is_cancelled = true,
 					"Hiatus" => is_hiatus = true,
 					"Ongoing" => is_ongoing = true,
 					_ => (),
-				},
-
-				false => categories.push(tag),
+				}
+			} else {
+				categories.push(tag);
 			}
 		}
 	}
 
 	let status = if is_completed {
-		Completed
+		MangaStatus::Completed
 	} else if is_cancelled {
-		Cancelled
+		MangaStatus::Cancelled
 	} else if is_hiatus {
-		Hiatus
+		MangaStatus::Hiatus
 	} else if is_ongoing {
-		Ongoing
+		MangaStatus::Ongoing
 	} else {
-		Unknown
+		MangaStatus::Unknown
 	};
 
 	Ok(Manga {
@@ -188,7 +187,7 @@ fn get_manga_details(manga_id: String) -> Result<Manga> {
 		url: manga_url,
 		categories,
 		status,
-		nsfw: Nsfw,
+		nsfw: MangaContentRating::Nsfw,
 		..Default::default()
 	})
 }
@@ -266,7 +265,7 @@ fn get_filtered_url(filters: Vec<Filter>, page: i32) -> Result<String> {
 
 	for filter in filters {
 		match filter.kind {
-			Check => {
+			FilterType::Check => {
 				let is_not_checked = filter.value.as_int().unwrap_or(-1) != 1;
 				if is_not_checked {
 					continue;
@@ -276,12 +275,12 @@ fn get_filtered_url(filters: Vec<Filter>, page: i32) -> Result<String> {
 				filters_vec.push((filter_type, filter.name));
 			}
 
-			Sort => {
+			FilterType::Sort => {
 				let obj = filter.value.as_object()?;
 				sort_by_index = obj.get("index").as_int().unwrap_or(1) as u8;
 			}
 
-			Title => {
+			FilterType::Title => {
 				let encoded_search_str = filter.value.as_string()?.read().percent_encode(true);
 				query.push_encoded("wpsolr_q", Some(&encoded_search_str));
 
@@ -302,7 +301,7 @@ fn get_filtered_url(filters: Vec<Filter>, page: i32) -> Result<String> {
 			query.push_encoded(
 				format!("wpsolr_fq[{}]", filter_index).percent_encode(true),
 				Some(format!("{}:{}", filter_type, filter_value).percent_encode(true)),
-			)
+			);
 		});
 
 	Ok(Url::Search(query).to_string())
@@ -317,10 +316,11 @@ fn request_get(url: &str) -> Request {
 fn get_artists(title: &str) -> String {
 	title
 		.substring_before(']')
-		.map_or(String::new(), |value| value.replace('[', ""))
+		.map(|value| value.replace('[', ""))
+		.unwrap_or_default()
 }
 
-impl core::fmt::Display for Url<'_> {
+impl Display for Url<'_> {
 	fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
 		match self {
 			Url::Search(query) => write!(f, "{}/search/?{}", DOMAIN, query),
@@ -343,7 +343,7 @@ impl UrlString for String {
 	fn percent_encode(self, is_component: bool) -> String {
 		let char_set = "-_.!~*()".to_string() + if is_component { "" } else { ";,/?:@&=+$#" };
 
-		aidoku::helpers::uri::internal_encode_uri(self, char_set)
+		internal_encode_uri(self, char_set)
 	}
 }
 
@@ -352,8 +352,8 @@ trait Parser {
 	fn get_is_ok_text(self) -> Option<String>;
 }
 
-impl Parser for aidoku::std::ValueRef {
+impl Parser for ValueRef {
 	fn get_is_ok_text(self) -> Option<String> {
-		self.as_node().map_or(None, |node| Some(node.text().read()))
+		self.as_node().ok().map(|node| node.text().read())
 	}
 }
