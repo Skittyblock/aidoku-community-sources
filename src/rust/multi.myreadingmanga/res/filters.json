@@ -5,7 +5,6 @@
 	{
 		"type": "sort",
 		"name": "Sort by",
-		"canAscend": false,
 		"options": [
 			"More relevant",
 			"Newest",
@@ -13,8 +12,7 @@
 			"Random"
 		],
 		"default": {
-			"index": 1,
-			"ascending": false
+			"index": 1
 		}
 	},
 	{
@@ -281,17 +279,17 @@
 			},
 			{
 				"type": "check",
-				"name": "Hetalia: Axis Powers dj",
-				"id": "categories"
-			},
-			{
-				"type": "check",
 				"name": "Jujutsu Kaisen dj",
 				"id": "categories"
 			},
 			{
 				"type": "check",
 				"name": "Naruto dj",
+				"id": "categories"
+			},
+			{
+				"type": "check",
+				"name": "Gintama dj",
 				"id": "categories"
 			}
 		]
@@ -519,12 +517,12 @@
 			},
 			{
 				"type": "check",
-				"name": "Rotti Totti",
+				"name": "Good Girls Scan BL",
 				"id": "group_str"
 			},
 			{
 				"type": "check",
-				"name": "Good Girls Scan BL",
+				"name": "Rotti Totti",
 				"id": "group_str"
 			},
 			{
@@ -534,7 +532,7 @@
 			},
 			{
 				"type": "check",
-				"name": "cseg64 | Cesegura",
+				"name": "Nonsense Group HQ",
 				"id": "group_str"
 			}
 		]
