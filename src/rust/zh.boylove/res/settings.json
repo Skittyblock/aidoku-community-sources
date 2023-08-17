@@ -1,6 +1,7 @@
 [
     {
         "type": "group",
+        "title": "變更語系",
         "items": [
             {
                 "type": "switch",
