@@ -1,101 +1,21 @@
 #![no_std]
+extern crate alloc;
+mod url;
+
 use aidoku::{
 	error::Result,
-	helpers::{substring::Substring, uri::encode_uri_component},
+	helpers::substring::Substring,
 	prelude::*,
-	std::{defaults::defaults_get, html::unescape_html_entities, net::Request, String, Vec},
-	Chapter, DeepLink, Filter,
-	FilterType::{Genre, Select, Sort, Title},
-	Manga, MangaContentRating, MangaPageResult,
-	MangaStatus::{Completed, Ongoing, Unknown},
-	Page,
-};
-
-extern crate alloc;
-use alloc::string::ToString;
-
-enum Url<'a> {
-	/// https://boylove.cc{path}
-	Abs(&'a str),
-
-	/// https://boylove.cc/home/api/searchk?keyword={}&type={}&pageNo={}
-	///
-	/// ---
-	///
-	/// `keyword` ➡️ Should be percent-encoded
-	///
-	/// `type`:
-	///
-	/// - **`1`: 漫畫** ➡️ Always
-	/// - `2`: 小說
-	///
-	/// `pageNo`: Start from `1`
-	Search(&'a str, i32),
-
-	/// https://boylove.cc/home/api/cate/tp/1-{tags}-{status}-{sort_by}-{page}-{content_rating}-{content_type}-{viewing_permission}
-	///
-	/// ---
-	///
-	/// `content_type`:
-	///
-	/// - **`1`: 漫畫** ➡️ Always
-	/// - `2`: 小說
-	///
-	/// `viewing_permission`:
-	///
-	/// - `2`: 全部
-	/// - **`0`: 一般** ➡️ Always
-	/// - ~~`1`: VIP~~ ➡️ Login cookie is required to view manga for VIP members
-	Filters {
-		/// - `0`: 全部
-		/// - `A+B+…+Z` ➡️ Should be percent-encoded
-		tags: &'a str,
-
-		/// - `2`: 全部
-		/// - `0`: 連載中
-		/// - `1`: 已完結
-		status: u8,
-
-		/// - `0`: 人氣 ➡️ ❗️**Not sure**❗️
-		/// - `1`: 最新更新
-		sort_by: u8,
-
-		/// Start from `1`
-		page: i32,
-
-		/// - `0`: 全部
-		/// - `1`: 清水
-		/// - `2`: 有肉
-		content_rating: u8,
-		// //
-		// // viewing_permission: u8,
+	std::{
+		defaults::defaults_get, html::unescape_html_entities, net::Request, String, ValueRef, Vec,
 	},
-
-	/// https://boylove.cc/home/api/chapter_list/tp/{manga_id}-0-0-10
-	ChapterList(&'a str),
-
-	/// https://boylove.cc/home/book/index/id/{manga_id}
-	Manga(&'a str),
-
-	/// https://boylove.cc/home/book/capter/id/{chapter_id}
-	Chapter(&'a str),
-}
-
-const DOMAIN: &str = "https://boylove.cc";
-const MANGA_PATH: &str = "index/id/";
-const CHAPTER_PATH: &str = "capter/id/";
+	Chapter, DeepLink, Filter, Manga, MangaContentRating, MangaPageResult, MangaStatus, Page,
+};
+use alloc::string::ToString;
+use url::{Url, CHAPTER_PATH, DOMAIN, MANGA_PATH};
 
 /// Chrome 114 on macOS
 const USER_AGENT: &str = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36";
-
-/// 連載狀態：\[全部, 連載中, 已完結\]
-const FILTER_STATUS: [u8; 3] = [2, 0, 1];
-
-/// 內容分級：\[全部, 清水, 有肉\]
-const FILTER_CONTENT_RATING: [u8; 3] = [0, 1, 2];
-
-/// 排序依據：\[最新更新, 人氣\]
-const SORT: [u8; 2] = [1, 0];
 
 #[initialize]
 fn initialize() {
@@ -104,7 +24,7 @@ fn initialize() {
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
-	let manga_list_url = get_filtered_url(filters, page)?;
+	let manga_list_url = Url::from(filters, page)?.to_string();
 	let manga_list_json = request_get(&manga_list_url).json()?;
 	let manga_list_obj = manga_list_json.as_object()?;
 	let result = manga_list_obj.get("result").as_object()?;
@@ -125,7 +45,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 		let manga_id = manga_obj.get("id").as_int()?.to_string();
 
 		let cover_path = manga_obj.get("image").as_string()?.read();
-		let cover_url = Url::Abs(&cover_path).to_string();
+		let cover_url = Url::Abs(cover_path).to_string();
 
 		let manga_title = manga_obj.get("title").as_string()?.read();
 
@@ -146,9 +66,9 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 			.collect::<Vec<String>>();
 
 		let status = match manga_obj.get("mhstatus").as_int()? {
-			0 => Ongoing,
-			1 => Completed,
-			_ => Unknown,
+			0 => MangaStatus::Ongoing,
+			1 => MangaStatus::Completed,
+			_ => MangaStatus::Unknown,
 		};
 
 		let content_rating = get_content_rating(&categories);
@@ -210,9 +130,9 @@ fn get_manga_details(manga_id: String) -> Result<Manga> {
 		.collect::<Vec<String>>();
 
 	let status = match manga_html.select("p.data").first().text().read().as_str() {
-		"连载中" | "連載中" => Ongoing,
-		"完结" | "完結" => Completed,
-		_ => Unknown,
+		"连载中" | "連載中" => MangaStatus::Ongoing,
+		"完结" | "完結" => MangaStatus::Completed,
+		_ => MangaStatus::Unknown,
 	};
 
 	let content_rating = get_content_rating(&categories);
@@ -234,7 +154,7 @@ fn get_manga_details(manga_id: String) -> Result<Manga> {
 
 #[get_chapter_list]
 fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
-	let chapter_list_url = Url::ChapterList(&manga_id).to_string();
+	let chapter_list_url = Url::ChapterList(manga_id).to_string();
 	let chapter_list_json = request_get(&chapter_list_url).json()?;
 	let chapter_list_obj = chapter_list_json.as_object()?;
 	let result = chapter_list_obj.get("result").as_object()?;
@@ -280,7 +200,7 @@ fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 			.read()
 			.trim()
 			.to_string();
-		let page_url = Url::Abs(&page_path).to_string();
+		let page_url = Url::Abs(page_path).to_string();
 
 		pages.push(Page {
 			index: page_index as i32,
@@ -358,66 +278,6 @@ fn switch_chinese_char_set() {
 	request_get(&converting_url).send();
 }
 
-fn get_filtered_url(filters: Vec<Filter>, page: i32) -> Result<String> {
-	let mut filter_status = FILTER_STATUS[0];
-	let mut filter_content_rating = FILTER_CONTENT_RATING[0];
-	let mut filter_tags_vec = Vec::<String>::new();
-	let mut sort_by = SORT[0];
-
-	for filter in filters {
-		match filter.kind {
-			Select => {
-				let index = filter.value.as_int().unwrap_or(0) as usize;
-				match filter.name.as_str() {
-					"連載狀態" => filter_status = FILTER_STATUS[index],
-					"內容分級" => filter_content_rating = FILTER_CONTENT_RATING[index],
-					_ => continue,
-				}
-			}
-
-			Sort => {
-				let obj = filter.value.as_object()?;
-				let index = obj.get("index").as_int().unwrap_or(0) as usize;
-				sort_by = SORT[index];
-			}
-
-			Title => {
-				let encoded_search_str = encode_uri_component(filter.value.as_string()?.read());
-
-				return Ok(Url::Search(&encoded_search_str, page).to_string());
-			}
-
-			Genre => {
-				let is_not_checked = filter.value.as_int().unwrap_or(-1) != 1;
-				if is_not_checked {
-					continue;
-				}
-
-				let encoded_tag = encode_uri_component(filter.name);
-				filter_tags_vec.push(encoded_tag);
-			}
-
-			_ => continue,
-		}
-	}
-
-	let filter_tags_str = match filter_tags_vec.is_empty() {
-		// ? 全部
-		true => "0".to_string(),
-
-		false => filter_tags_vec.join("+"),
-	};
-
-	Ok(Url::Filters {
-		tags: &filter_tags_str,
-		status: filter_status,
-		sort_by,
-		page,
-		content_rating: filter_content_rating,
-	}
-	.to_string())
-}
-
 /// Start a new GET request with the given URL with headers `Referer` and
 /// `User-Agent` set.
 fn request_get(url: &str) -> Request {
@@ -435,49 +295,12 @@ fn get_content_rating(categories: &[String]) -> MangaContentRating {
 	MangaContentRating::Nsfw
 }
 
-impl core::fmt::Display for Url<'_> {
-	fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-		let api_path = format!("{}/home/api/", DOMAIN);
-		let html_path = format!("{}/home/book/", DOMAIN);
-
-		match self {
-			Self::Abs(path) => write!(f, "{}{}", DOMAIN, path),
-
-			Self::Search(search_str, page) => write!(
-				f,
-				"{}searchk?keyword={}&type=1&pageNo={}",
-				api_path, search_str, page
-			),
-
-			Self::Filters {
-				tags,
-				status,
-				sort_by,
-				page,
-				content_rating,
-			} => write!(
-				f,
-				"{}cate/tp/1-{}-{}-{}-{}-{}-1-0",
-				api_path, tags, status, sort_by, page, content_rating,
-			),
-
-			Self::ChapterList(manga_id) => {
-				write!(f, "{}chapter_list/tp/{}-0-0-10", api_path, manga_id)
-			}
-
-			Self::Manga(manga_id) => write!(f, "{}{}{}", html_path, MANGA_PATH, manga_id),
-
-			Self::Chapter(chapter_id) => write!(f, "{}{}{}", html_path, CHAPTER_PATH, chapter_id),
-		}
-	}
-}
-
 trait Parser {
 	/// Returns [`None`], or the text of the Node (if [`Ok`]).
 	fn get_is_ok_text(self) -> Option<String>;
 }
 
-impl Parser for aidoku::std::ValueRef {
+impl Parser for ValueRef {
 	fn get_is_ok_text(self) -> Option<String> {
 		self.as_node().map_or(None, |node| Some(node.text().read()))
 	}
