@@ -12,6 +12,9 @@ pub const DOMAIN: &str = "https://boylove.cc";
 pub const MANGA_PATH: &str = "index/id/";
 pub const CHAPTER_PATH: &str = "capter/id/";
 
+/// 閱覽權限：\[全部, 一般, VIP\]
+const FILTER_VIEWING_PERMISSION: [u8; 3] = [2, 0, 1];
+
 /// 連載狀態：\[全部, 連載中, 已完結\]
 const FILTER_STATUS: [u8; 3] = [2, 0, 1];
 
@@ -23,7 +26,7 @@ const SORT: [u8; 2] = [1, 0];
 
 pub enum Url<'a> {
 	/// https://boylove.cc{path}
-	Abs(String),
+	Abs(&'a str),
 
 	/// https://boylove.cc/home/api/searchk?keyword={}&type={}&pageNo={}
 	///
@@ -47,12 +50,6 @@ pub enum Url<'a> {
 	///
 	/// - **`1`: 漫畫** ➡️ Always
 	/// - `2`: 小說
-	///
-	/// `viewing_permission`:
-	///
-	/// - `2`: 全部
-	/// - **`0`: 一般** ➡️ Always
-	/// - ~~`1`: VIP~~ ➡️ Login cookie is required to view manga for VIP members
 	Filters {
 		/// - `0`: 全部
 		/// - `A+B+…+Z` ➡️ Should be percent-encoded
@@ -74,8 +71,11 @@ pub enum Url<'a> {
 		/// - `1`: 清水
 		/// - `2`: 有肉
 		content_rating: u8,
-		// //
-		// // viewing_permission: u8,
+
+		/// - `2`: 全部
+		/// - `0`: 一般
+		/// - `1`: VIP
+		viewing_permission: u8,
 	},
 
 	/// https://boylove.cc/home/api/chapter_list/tp/{manga_id}-0-0-10
@@ -90,6 +90,7 @@ pub enum Url<'a> {
 
 impl<'a> Url<'a> {
 	pub fn from(filters: Vec<Filter>, page: i32) -> Result<Self> {
+		let mut filter_viewing_permission = FILTER_VIEWING_PERMISSION[0];
 		let mut filter_status = FILTER_STATUS[0];
 		let mut filter_content_rating = FILTER_CONTENT_RATING[0];
 		let mut filter_tags_vec = Vec::<String>::new();
@@ -100,6 +101,9 @@ impl<'a> Url<'a> {
 				FilterType::Select => {
 					let index = filter.value.as_int().unwrap_or(0) as usize;
 					match filter.name.as_str() {
+						"閱覽權限" => {
+							filter_viewing_permission = FILTER_VIEWING_PERMISSION[index];
+						}
 						"連載狀態" => filter_status = FILTER_STATUS[index],
 						"內容分級" => filter_content_rating = FILTER_CONTENT_RATING[index],
 						_ => continue,
@@ -145,6 +149,7 @@ impl<'a> Url<'a> {
 			sort_by,
 			page,
 			content_rating: filter_content_rating,
+			viewing_permission: filter_viewing_permission,
 		})
 	}
 }
@@ -169,10 +174,11 @@ impl<'a> Display for Url<'a> {
 				sort_by,
 				page,
 				content_rating,
+				viewing_permission,
 			} => write!(
 				f,
-				"{}cate/tp/1-{}-{}-{}-{}-{}-1-0",
-				api_path, tags, status, sort_by, page, content_rating,
+				"{}cate/tp/1-{}-{}-{}-{}-{}-1-{}",
+				api_path, tags, status, sort_by, page, content_rating, viewing_permission
 			),
 
 			Self::ChapterList(manga_id) => {

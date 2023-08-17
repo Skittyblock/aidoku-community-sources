@@ -12,6 +12,7 @@ use aidoku::{
 	Chapter, DeepLink, Filter, Manga, MangaContentRating, MangaPageResult, MangaStatus, Page,
 };
 use alloc::string::ToString;
+use base64::{engine::general_purpose, Engine};
 use url::{Url, CHAPTER_PATH, DOMAIN, MANGA_PATH};
 
 /// Chrome 114 on macOS
@@ -45,7 +46,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 		let manga_id = manga_obj.get("id").as_int()?.to_string();
 
 		let cover_path = manga_obj.get("image").as_string()?.read();
-		let cover_url = Url::Abs(cover_path).to_string();
+		let cover_url = Url::Abs(&cover_path).to_string();
 
 		let manga_title = manga_obj.get("title").as_string()?.read();
 
@@ -200,7 +201,7 @@ fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 			.read()
 			.trim()
 			.to_string();
-		let page_url = Url::Abs(page_path).to_string();
+		let page_url = Url::Abs(&page_path).to_string();
 
 		pages.push(Page {
 			index: page_index as i32,
@@ -263,8 +264,10 @@ fn handle_url(url: String) -> Result<DeepLink> {
 
 #[handle_notification]
 fn handle_notification(notification: String) {
-	if notification.as_str() == "switchChineseCharSet" {
-		switch_chinese_char_set();
+	match notification.as_str() {
+		"switchChineseCharSet" => switch_chinese_char_set(),
+		"signIn" => sign_in().unwrap_or_default(),
+		_ => (),
 	}
 }
 
@@ -293,6 +296,40 @@ fn get_content_rating(categories: &[String]) -> MangaContentRating {
 		return MangaContentRating::Safe;
 	}
 	MangaContentRating::Nsfw
+}
+
+fn sign_in() -> Result<()> {
+	let captcha = defaults_get("captcha")?.as_string()?.read();
+
+	if captcha.is_empty() {
+		let sign_in_page_url = Url::Abs("/home/auth/login/type/login.html").to_string();
+		let sign_in_page = request_get(&sign_in_page_url).html()?;
+
+		let captcha_img_url = sign_in_page.select("img#verifyImg").attr("abs:src").read();
+		let captcha_img = request_get(&captcha_img_url).data();
+		let base64_img = general_purpose::STANDARD_NO_PAD.encode(captcha_img);
+
+		return Ok(println!("{}", base64_img));
+	}
+
+	let sign_in_url = Url::Abs("/home/auth/login.html").to_string();
+
+	let username = defaults_get("username")?.as_string()?.read();
+	let password = defaults_get("password")?.as_string()?.read();
+	let sign_in_data = format!(
+		"username={}&password={}&vfycode={}&type=login",
+		username, password, captcha
+	);
+
+	let response_json = Request::post(sign_in_url)
+		.header("Referer", DOMAIN)
+		.header("User-Agent", USER_AGENT)
+		.body(sign_in_data)
+		.json()?;
+	let reponse_obj = response_json.as_object()?;
+	let info = reponse_obj.get("info").as_string()?;
+
+	Ok(println!("{}", info))
 }
 
 trait Parser {

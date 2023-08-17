@@ -10,5 +10,40 @@
                 "default": true
             }
         ]
+    },
+    {
+        "type": "group",
+        "title": "用戶登入",
+        "items": [
+            {
+                "type": "text",
+                "key": "username",
+                "placeholder": "用戶名",
+                "autocapitalizationType": 0,
+                "autocorrectionType": 1,
+                "spellCheckingType": 1,
+                "keyboardType": 1
+            },
+            {
+                "type": "text",
+                "key": "password",
+                "placeholder": "密碼",
+                "autocapitalizationType": 0,
+                "autocorrectionType": 1,
+                "spellCheckingType": 1
+            },
+            {
+                "type": "text",
+                "key": "captcha",
+                "placeholder": "驗證碼",
+                "keyboardType": 4
+            },
+            {
+                "type": "button",
+                "title": "登入",
+                "action": "signIn",
+                "destructive": true
+            }
+        ]
     }
 ]

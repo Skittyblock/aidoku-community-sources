@@ -4,6 +4,15 @@
 	},
 	{
 		"type": "select",
+		"name": "閱覽權限",
+		"options": [
+			"全部",
+			"一般",
+			"VIP"
+		]
+	},
+	{
+		"type": "select",
 		"name": "連載狀態",
 		"options": [
 			"全部",
