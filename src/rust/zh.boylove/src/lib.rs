@@ -7,7 +7,10 @@ use aidoku::{
 	helpers::substring::Substring,
 	prelude::*,
 	std::{
-		defaults::defaults_get, html::unescape_html_entities, net::Request, String, ValueRef, Vec,
+		defaults::defaults_get,
+		html::unescape_html_entities,
+		net::{HttpMethod, Request},
+		String, ValueRef, Vec,
 	},
 	Chapter, DeepLink, Filter, Manga, MangaContentRating, MangaPageResult, MangaStatus, Page,
 };
@@ -25,8 +28,12 @@ fn initialize() {
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
-	let manga_list_url = Url::from(filters, page)?.to_string();
-	let manga_list_json = request_get(&manga_list_url).json()?;
+	if page == 1 {
+		check_in();
+	}
+
+	let manga_list_url = Url::from(filters, page)?;
+	let manga_list_json = request(&manga_list_url, HttpMethod::Get).json()?;
 	let manga_list_obj = manga_list_json.as_object()?;
 	let result = manga_list_obj.get("result").as_object()?;
 
@@ -46,7 +53,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 		let manga_id = manga_obj.get("id").as_int()?.to_string();
 
 		let cover_path = manga_obj.get("image").as_string()?.read();
-		let cover_url = Url::Abs(&cover_path).to_string();
+		let cover_url = Url::Abs(cover_path).to_string();
 
 		let manga_title = manga_obj.get("title").as_string()?.read();
 
@@ -96,9 +103,9 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 
 #[get_manga_details]
 fn get_manga_details(manga_id: String) -> Result<Manga> {
-	let manga_url = Url::Manga(&manga_id).to_string();
+	let manga_url = Url::Manga(&manga_id);
 
-	let manga_html = request_get(&manga_url).html()?;
+	let manga_html = request(&manga_url, HttpMethod::Get).html()?;
 
 	let cover_url = manga_html.select("a.play").attr("abs:data-original").read();
 
@@ -139,13 +146,13 @@ fn get_manga_details(manga_id: String) -> Result<Manga> {
 	let content_rating = get_content_rating(&categories);
 
 	Ok(Manga {
-		id: manga_id,
+		id: manga_id.clone(),
 		cover: cover_url,
 		title: manga_title,
 		author: artists_str.clone(),
 		artist: artists_str,
 		description,
-		url: manga_url,
+		url: manga_url.to_string(),
 		categories,
 		status,
 		nsfw: content_rating,
@@ -155,8 +162,7 @@ fn get_manga_details(manga_id: String) -> Result<Manga> {
 
 #[get_chapter_list]
 fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
-	let chapter_list_url = Url::ChapterList(manga_id).to_string();
-	let chapter_list_json = request_get(&chapter_list_url).json()?;
+	let chapter_list_json = request(&Url::ChapterList(manga_id), HttpMethod::Get).json()?;
 	let chapter_list_obj = chapter_list_json.as_object()?;
 	let result = chapter_list_obj.get("result").as_object()?;
 
@@ -189,8 +195,7 @@ fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 
 #[get_page_list]
 fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
-	let chapter_url = Url::Chapter(&chapter_id).to_string();
-	let chapter_html = request_get(&chapter_url).html()?;
+	let chapter_html = request(&Url::Chapter(&chapter_id), HttpMethod::Get).html()?;
 
 	let mut pages = Vec::<Page>::new();
 	let page_nodes = chapter_html.select("img.lazy[id]");
@@ -201,7 +206,7 @@ fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 			.read()
 			.trim()
 			.to_string();
-		let page_url = Url::Abs(&page_path).to_string();
+		let page_url = Url::Abs(page_path).to_string();
 
 		pages.push(Page {
 			index: page_index as i32,
@@ -246,7 +251,7 @@ fn handle_url(url: String) -> Result<DeepLink> {
 		..Default::default()
 	});
 
-	let chapter_html = request_get(&url).html()?;
+	let chapter_html = request(&Url::Chapter(chapter_id), HttpMethod::Get).html()?;
 	let manga_url = chapter_html
 		.select("a.icon-only.link.back")
 		.attr("href")
@@ -272,19 +277,16 @@ fn handle_notification(notification: String) {
 }
 
 fn switch_chinese_char_set() {
-	let is_tc = defaults_get("isTC").map_or(true, |value| value.as_bool().unwrap_or(true));
-	let converting_url = format!(
-		"{}/home/user/to{}.html",
-		DOMAIN,
-		if is_tc { "T" } else { "S" }
-	);
-	request_get(&converting_url).send();
+	let is_tc = defaults_get("isTC")
+		.and_then(|value| value.as_bool())
+		.unwrap_or(true);
+	request(&Url::CharSet(is_tc), HttpMethod::Get).send();
 }
 
 /// Start a new GET request with the given URL with headers `Referer` and
 /// `User-Agent` set.
-fn request_get(url: &str) -> Request {
-	Request::get(url)
+fn request(url: &Url, method: HttpMethod) -> Request {
+	Request::new(url.to_string(), method)
 		.header("Referer", DOMAIN)
 		.header("User-Agent", USER_AGENT)
 }
@@ -301,18 +303,16 @@ fn get_content_rating(categories: &[String]) -> MangaContentRating {
 fn sign_in() -> Result<()> {
 	let captcha = defaults_get("captcha")?.as_string()?.read();
 
-	if captcha.is_empty() {
-		let sign_in_page_url = Url::Abs("/home/auth/login/type/login.html").to_string();
-		let sign_in_page = request_get(&sign_in_page_url).html()?;
+	let is_wrong_captcha_format = captcha.parse::<u16>().is_err() || captcha.chars().count() != 4;
+	if is_wrong_captcha_format {
+		let sign_in_page = request(&Url::SignInPage, HttpMethod::Get).html()?;
 
-		let captcha_img_url = sign_in_page.select("img#verifyImg").attr("abs:src").read();
-		let captcha_img = request_get(&captcha_img_url).data();
+		let captcha_img_path = sign_in_page.select("img#verifyImg").attr("src").read();
+		let captcha_img = request(&Url::Abs(captcha_img_path), HttpMethod::Get).data();
 		let base64_img = general_purpose::STANDARD_NO_PAD.encode(captcha_img);
 
 		return Ok(println!("{}", base64_img));
 	}
-
-	let sign_in_url = Url::Abs("/home/auth/login.html").to_string();
 
 	let username = defaults_get("username")?.as_string()?.read();
 	let password = defaults_get("password")?.as_string()?.read();
@@ -321,15 +321,28 @@ fn sign_in() -> Result<()> {
 		username, password, captcha
 	);
 
-	let response_json = Request::post(sign_in_url)
-		.header("Referer", DOMAIN)
-		.header("User-Agent", USER_AGENT)
+	let response_json = request(&Url::SignIn, HttpMethod::Post)
 		.body(sign_in_data)
 		.json()?;
 	let reponse_obj = response_json.as_object()?;
 	let info = reponse_obj.get("info").as_string()?;
 
 	Ok(println!("{}", info))
+}
+
+fn check_in() {
+	let not_auto_check_in = !defaults_get("autoCheckIn")
+		.and_then(|value| value.as_bool())
+		.unwrap_or(false);
+	if not_auto_check_in {
+		return;
+	}
+
+	let check_in_data = "auto=false&td=&type=1";
+
+	request(&Url::CheckIn, HttpMethod::Post)
+		.body(check_in_data)
+		.send();
 }
 
 trait Parser {

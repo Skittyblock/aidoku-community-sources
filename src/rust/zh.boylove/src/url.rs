@@ -25,8 +25,16 @@ const FILTER_CONTENT_RATING: [u8; 3] = [0, 1, 2];
 const SORT: [u8; 2] = [1, 0];
 
 pub enum Url<'a> {
+	/// https://boylove.cc/home/user/to{}.html
+	///
+	/// ---
+	///
+	/// - `T`：繁體中文 ➡️ true
+	/// - `S`：簡體中文 ➡️ false
+	CharSet(bool),
+
 	/// https://boylove.cc{path}
-	Abs(&'a str),
+	Abs(String),
 
 	/// https://boylove.cc/home/api/searchk?keyword={}&type={}&pageNo={}
 	///
@@ -86,6 +94,15 @@ pub enum Url<'a> {
 
 	/// https://boylove.cc/home/book/capter/id/{chapter_id}
 	Chapter(&'a str),
+
+	/// https://boylove.cc/home/auth/login/type/login.html
+	SignInPage,
+
+	/// https://boylove.cc/home/auth/login.html
+	SignIn,
+
+	/// https://boylove.cc/home/api/signup.html
+	CheckIn,
 }
 
 impl<'a> Url<'a> {
@@ -158,8 +175,15 @@ impl<'a> Display for Url<'a> {
 	fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
 		let api_path = format!("{}/home/api/", DOMAIN);
 		let html_path = format!("{}/home/book/", DOMAIN);
+		let auth_path = format!("{}/home/auth/", DOMAIN);
 
 		match self {
+			Self::CharSet(is_tc) => write!(
+				f,
+				"{}/home/user/to{}.html",
+				DOMAIN,
+				if *is_tc { "T" } else { "S" }
+			),
 			Self::Abs(path) => write!(f, "{}{}", DOMAIN, path),
 
 			Self::Search(search_str, page) => write!(
@@ -188,6 +212,12 @@ impl<'a> Display for Url<'a> {
 			Self::Manga(manga_id) => write!(f, "{}{}{}", html_path, MANGA_PATH, manga_id),
 
 			Self::Chapter(chapter_id) => write!(f, "{}{}{}", html_path, CHAPTER_PATH, chapter_id),
+
+			Self::SignInPage => write!(f, "{}login/type/login.html", auth_path),
+
+			Self::SignIn => write!(f, "{}login.html", auth_path),
+
+			Self::CheckIn => write!(f, "{}signup.html", api_path),
 		}
 	}
 }
