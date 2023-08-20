@@ -2,36 +2,50 @@ use aidoku::{
 	error::Result,
 	helpers::uri::encode_uri_component,
 	prelude::format,
-	std::{String, Vec},
+	std::{
+		net::{HttpMethod, Request},
+		String, Vec,
+	},
 	Filter, FilterType,
 };
 use alloc::string::ToString;
 use core::fmt::Display;
 
-pub const DOMAIN: &str = "https://boylove.cc";
-pub const MANGA_PATH: &str = "index/id/";
-pub const CHAPTER_PATH: &str = "capter/id/";
+#[derive(Clone, Copy)]
+enum ViewingPermission {
+	All = 2,
+	Basic = 0,
+	Vip = 1,
+}
 
-/// 閱覽權限：\[全部, 一般, VIP\]
-const FILTER_VIEWING_PERMISSION: [u8; 3] = [2, 0, 1];
+#[derive(Clone, Copy)]
+enum Status {
+	All = 2,
+	Ongoing = 0,
+	Completed = 1,
+}
 
-/// 連載狀態：\[全部, 連載中, 已完結\]
-const FILTER_STATUS: [u8; 3] = [2, 0, 1];
+#[derive(Clone, Copy)]
+enum ContentRating {
+	All = 0,
+	Safe = 1,
+	Nsfw = 2,
+}
 
-/// 內容分級：\[全部, 清水, 有肉\]
-const FILTER_CONTENT_RATING: [u8; 3] = [0, 1, 2];
-
-/// 排序依據：\[最新更新, 人氣\]
-const SORT: [u8; 2] = [1, 0];
+#[derive(Clone, Copy)]
+enum Sort {
+	Latest = 1,
+	Popular = 0,
+}
 
 pub enum Url<'a> {
 	/// https://boylove.cc/home/user/to{}.html
 	///
 	/// ---
 	///
-	/// - `T`：繁體中文 ➡️ true
-	/// - `S`：簡體中文 ➡️ false
-	CharSet(bool),
+	/// - `T`：繁體中文
+	/// - `S`：簡體中文
+	CharSet(&'a str),
 
 	/// https://boylove.cc{path}
 	Abs(String),
@@ -105,13 +119,30 @@ pub enum Url<'a> {
 	CheckIn,
 }
 
+pub const DOMAIN: &str = "https://boylove.cc";
+pub const MANGA_PATH: &str = "index/id/";
+pub const CHAPTER_PATH: &str = "capter/id/";
+
+/// Chrome 114 on macOS
+pub const USER_AGENT: &str = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36";
+
+const FILTER_VIEWING_PERMISSION: [ViewingPermission; 3] = [
+	ViewingPermission::All,
+	ViewingPermission::Basic,
+	ViewingPermission::Vip,
+];
+const FILTER_STATUS: [Status; 3] = [Status::All, Status::Ongoing, Status::Completed];
+const FILTER_CONTENT_RATING: [ContentRating; 3] =
+	[ContentRating::All, ContentRating::Safe, ContentRating::Nsfw];
+const SORT: [Sort; 2] = [Sort::Latest, Sort::Popular];
+
 impl<'a> Url<'a> {
 	pub fn from(filters: Vec<Filter>, page: i32) -> Result<Self> {
-		let mut filter_viewing_permission = FILTER_VIEWING_PERMISSION[0];
-		let mut filter_status = FILTER_STATUS[0];
-		let mut filter_content_rating = FILTER_CONTENT_RATING[0];
+		let mut filter_viewing_permission = ViewingPermission::All;
+		let mut filter_status = Status::All;
+		let mut filter_content_rating = ContentRating::All;
 		let mut filter_tags_vec = Vec::<String>::new();
-		let mut sort_by = SORT[0];
+		let mut sort_by = Sort::Latest;
 
 		for filter in filters {
 			match filter.kind {
@@ -162,12 +193,20 @@ impl<'a> Url<'a> {
 
 		Ok(Url::Filters {
 			tags: filter_tags_str,
-			status: filter_status,
-			sort_by,
+			status: filter_status as u8,
+			sort_by: sort_by as u8,
 			page,
-			content_rating: filter_content_rating,
-			viewing_permission: filter_viewing_permission,
+			content_rating: filter_content_rating as u8,
+			viewing_permission: filter_viewing_permission as u8,
 		})
+	}
+
+	/// Start a new request with the given URL with headers `Referer` and
+	/// `User-Agent` set.
+	pub fn request(self, method: HttpMethod) -> Request {
+		Request::new(self.to_string(), method)
+			.header("Referer", DOMAIN)
+			.header("User-Agent", USER_AGENT)
 	}
 }
 
@@ -178,12 +217,8 @@ impl<'a> Display for Url<'a> {
 		let auth_path = format!("{}/home/auth/", DOMAIN);
 
 		match self {
-			Self::CharSet(is_tc) => write!(
-				f,
-				"{}/home/user/to{}.html",
-				DOMAIN,
-				if *is_tc { "T" } else { "S" }
-			),
+			Self::CharSet(char_set) => write!(f, "{}/home/user/to{}.html", DOMAIN, char_set),
+
 			Self::Abs(path) => write!(f, "{}{}", DOMAIN, path),
 
 			Self::Search(search_str, page) => write!(
