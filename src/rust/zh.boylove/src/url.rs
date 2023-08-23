@@ -39,12 +39,14 @@ enum Sort {
 }
 
 pub enum Url<'a> {
-	/// https://boylove.cc/home/user/to{}.html
+	/// https://boylove.cc/home/user/to{char_set}.html
 	///
 	/// ---
 	///
-	/// - `T`：繁體中文
-	/// - `S`：簡體中文
+	/// `char_set`:
+	///
+	/// - `T`: 繁體中文
+	/// - `S`: 簡體中文
 	CharSet(&'a str),
 
 	/// https://boylove.cc{path}
@@ -54,7 +56,7 @@ pub enum Url<'a> {
 	///
 	/// ---
 	///
-	/// `keyword` ➡️ Should be percent-encoded
+	/// `keyword`: `search_str` ➡️ Should be percent-encoded
 	///
 	/// `type`:
 	///
