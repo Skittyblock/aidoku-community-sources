@@ -8,6 +8,7 @@ use mangastream_template::template::MangaStreamSource;
 
 fn get_instance() -> MangaStreamSource {
 	MangaStreamSource {
+		use_postids: true,
 		base_url: String::from("https://luminousscans.com"),
 		traverse_pathname: "series",
 		alt_pages: true,
