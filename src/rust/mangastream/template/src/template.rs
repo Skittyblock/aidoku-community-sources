@@ -1,5 +1,5 @@
 use aidoku::{
-	error::Result,
+	error::{AidokuError, AidokuErrorKind, Result},
 	prelude::format,
 	std::json::parse,
 	std::net::{HttpMethod, Request},
@@ -206,8 +206,11 @@ impl MangaStreamSource {
 
 			if self.use_postids {
 				let original_url = manga_node.select("a").attr("href").read();
-				id =
-					get_postid_from_manga_url(original_url, &self.base_url, self.traverse_pathname);
+				id = get_postid_from_manga_url(
+					original_url,
+					&self.base_url,
+					self.traverse_pathname,
+				)?;
 				url = format!("{}/{}/?p={}", self.base_url, self.traverse_pathname, id);
 			} else {
 				url = {
@@ -248,12 +251,10 @@ impl MangaStreamSource {
 
 	// parse manga details page
 	pub fn parse_manga_details(&self, id: String) -> Result<Manga> {
-		let url = {
-			if self.use_postids {
-				format!("{}/{}/?p={}", self.base_url, self.traverse_pathname, id)
-			} else {
-				format!("{}/{}/{}", self.base_url, self.traverse_pathname, id)
-			}
+		let url = if self.use_postids {
+			format!("{}/{}/?p={}", self.base_url, self.traverse_pathname, id)
+		} else {
+			format!("{}/{}/{}", self.base_url, self.traverse_pathname, id)
 		};
 		let html = Request::new(&url, HttpMethod::Get).html()?;
 		let mut title = html.select(self.manga_details_title).text().read();
@@ -330,12 +331,10 @@ impl MangaStreamSource {
 
 	// parse the chapters list present on manga details page
 	pub fn parse_chapter_list(&self, id: String) -> Result<Vec<Chapter>> {
-		let chapter_url_to_postid_mapping = {
-			if self.use_postids {
-				generate_chapter_url_to_postid_mapping(id.clone(), &self.base_url)
-			} else {
-				Default::default()
-			}
+		let chapter_url_to_postid_mapping = if self.use_postids {
+			generate_chapter_url_to_postid_mapping(id.clone(), &self.base_url)?
+		} else {
+			Default::default()
 		};
 
 		let url = {
@@ -375,12 +374,13 @@ impl MangaStreamSource {
 
 			if self.use_postids {
 				let original_url = chapter_node.select(self.chapter_url).attr("href").read();
+				let id = chapter_url_to_postid_mapping
+					.get(&original_url)
+					.ok_or(AidokuError {
+						reason: AidokuErrorKind::Unimplemented, // no better error type available
+					})?;
 
-				chapter_id = String::from(
-					chapter_url_to_postid_mapping
-						.get(&original_url)
-						.expect("Failed to get chapter id from url mapping"),
-				);
+				chapter_id = String::from(id);
 				chapter_url = format!("{}/?p={}", self.base_url, chapter_id);
 			} else {
 				chapter_url = {
@@ -414,18 +414,12 @@ impl MangaStreamSource {
 
 	//parse the manga chapter images list
 	pub fn parse_page_list(&self, id: String) -> Result<Vec<Page>> {
-		let url = {
-			if self.use_postids {
-				format!("{}/?p={}", self.base_url, id)
-			} else {
-				let mut url = format!("{}/{}", self.base_url, id);
-
-				if self.has_random_chapter_prefix {
-					url = format!("{}/{}/{}", self.base_url, 0, id);
-				}
-
-				url
-			}
+		let url = if self.use_postids {
+			format!("{}/?p={}", self.base_url, id)
+		} else if self.has_random_chapter_prefix {
+			format!("{}/{}/{}", self.base_url, 0, id)
+		} else {
+			format!("{}/{}", self.base_url, id)
 		};
 
 		let mut pages: Vec<Page> = Vec::new();

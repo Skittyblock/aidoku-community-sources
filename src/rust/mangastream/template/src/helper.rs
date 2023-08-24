@@ -1,4 +1,5 @@
 use aidoku::{
+	error::{AidokuError, AidokuErrorKind, Result},
 	helpers::substring::Substring,
 	prelude::format,
 	std::{current_date, html::Node},
@@ -386,26 +387,26 @@ static mut CACHED_MAPPING_AT: f64 = 0.0;
 // browsing (*cough* paperback *cough*)
 //
 /// Generate a hashmap of manga url to postid mappings
-fn generate_manga_url_to_postid_mapping(url: &str, pathname: &str) -> HashMap<String, String> {
+fn generate_manga_url_to_postid_mapping(
+	url: &str,
+	pathname: &str,
+) -> Result<HashMap<String, String>> {
 	unsafe {
 		// if the mapping was generated less than 10 minutes ago, use the cached mapping
 		if current_date() - CACHED_MAPPING_AT < 600.0 {
 			if let Some(mapping) = &CACHED_MANGA_URL_TO_POSTID_MAPPING {
-				return mapping.clone();
+				return Ok(mapping.clone());
 			}
 		}
 	}
 
 	let all_manga_listing_url = format!("{}/{}/list-mode", url, pathname);
 
-	let html = Request::get(all_manga_listing_url)
-		.html()
-		.expect("Failed to get html");
-
+	let html = Request::get(all_manga_listing_url).html()?;
 	let mut mapping = HashMap::new();
 
 	for node in html.select(".soralist .series").array() {
-		let manga = node.as_node().expect("Failed to get node");
+		let manga = node.as_node()?;
 
 		let url = manga.attr("href").read();
 		let post_id = manga.attr("rel").read();
@@ -418,18 +419,17 @@ fn generate_manga_url_to_postid_mapping(url: &str, pathname: &str) -> HashMap<St
 		CACHED_MAPPING_AT = current_date();
 	}
 
-	mapping
+	Ok(mapping)
 }
 
 /// Search the `MANGA_URL_TO_POSTID_MAPPING` for the postid from a manga url
-pub fn get_postid_from_manga_url(url: String, base_url: &str, pathname: &str) -> String {
-	let manga_url_to_postid_mapping = generate_manga_url_to_postid_mapping(base_url, pathname);
+pub fn get_postid_from_manga_url(url: String, base_url: &str, pathname: &str) -> Result<String> {
+	let manga_url_to_postid_mapping = generate_manga_url_to_postid_mapping(base_url, pathname)?;
+	let id = manga_url_to_postid_mapping.get(&url).ok_or(AidokuError {
+		reason: AidokuErrorKind::Unimplemented, // no better error type available
+	})?;
 
-	String::from(
-		manga_url_to_postid_mapping
-			.get(&url)
-			.expect("Failed to get post id from url"),
-	)
+	Ok(String::from(id))
 }
 
 // This requests the chapters via the admin ajax endpoint using post ids and
@@ -439,7 +439,7 @@ pub fn get_postid_from_manga_url(url: String, base_url: &str, pathname: &str) ->
 pub fn generate_chapter_url_to_postid_mapping(
 	post_id: String,
 	base_url: &str,
-) -> HashMap<String, String> {
+) -> Result<HashMap<String, String>> {
 	let ajax_url = format!("{}/wp-admin/admin-ajax.php", base_url);
 
 	let start = current_date();
@@ -448,8 +448,7 @@ pub fn generate_chapter_url_to_postid_mapping(
 	let html = Request::post(ajax_url)
 		.body(body.as_bytes())
 		.header("Referer", base_url)
-		.html()
-		.expect("Failed to get html");
+		.html()?;
 
 	// Janky retry logic to bypass rate limiting
 	// Retry after 10 seconds if we get rate limited. 10 seconds is the shortest
@@ -465,7 +464,7 @@ pub fn generate_chapter_url_to_postid_mapping(
 	let mut mapping = HashMap::new();
 
 	for node in html.select("option").array() {
-		let chapter = node.as_node().expect("Failed to get node");
+		let chapter = node.as_node()?;
 
 		let url = chapter.attr("value").read();
 		let post_id = chapter.attr("data-id").read();
@@ -473,5 +472,5 @@ pub fn generate_chapter_url_to_postid_mapping(
 		mapping.insert(url, post_id);
 	}
 
-	mapping
+	Ok(mapping)
 }
