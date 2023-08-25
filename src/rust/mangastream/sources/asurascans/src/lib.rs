@@ -9,6 +9,7 @@ pub mod helper;
 use helper::{get_base_url, get_tag_id};
 fn get_instance() -> MangaStreamSource {
 	MangaStreamSource {
+		use_postids: true,
 		tagid_mapping: get_tag_id,
 		base_url: get_base_url(),
 		alt_pages: true,
