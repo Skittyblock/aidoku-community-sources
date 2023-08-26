@@ -340,7 +340,8 @@ impl MangaStreamSource {
 		};
 
 		let url = {
-			if self.use_chapter_postids {
+			// yes this should be `use_manga_postids` and not `use_chapter_postids`
+			if self.use_manga_postids {
 				format!("{}/{}/?p={}", self.base_url, self.traverse_pathname, id)
 			} else {
 				format!("{}/{}/{}", self.base_url, self.traverse_pathname, id)
@@ -416,7 +417,7 @@ impl MangaStreamSource {
 
 	//parse the manga chapter images list
 	pub fn parse_page_list(&self, id: String) -> Result<Vec<Page>> {
-		let url = if self.use_manga_postids {
+		let url = if self.use_chapter_postids {
 			format!("{}/?p={}", self.base_url, id)
 		} else if self.has_random_chapter_prefix {
 			format!("{}/{}/{}", self.base_url, 0, id)
