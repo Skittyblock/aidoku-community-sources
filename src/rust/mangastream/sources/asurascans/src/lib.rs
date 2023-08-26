@@ -9,7 +9,10 @@ pub mod helper;
 use helper::{get_base_url, get_tag_id};
 fn get_instance() -> MangaStreamSource {
 	MangaStreamSource {
-		use_postids: true,
+		use_manga_postids: true,
+		// asura has a 10 sec rate limit per request on their api endpoint
+		// making it extremely slow to use postids for chapters
+		use_chapter_postids: false,
 		tagid_mapping: get_tag_id,
 		base_url: get_base_url(),
 		alt_pages: true,
