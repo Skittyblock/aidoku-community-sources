@@ -14,7 +14,8 @@ pub struct MangaStreamSource {
 	/// Use static post ids instead of dynamic ids parsed from urls \
 	/// Cannot be used together with `has_permanent_manga_url` or
 	/// `has_permanent_chapter_url`
-	pub use_postids: bool,
+	pub use_manga_postids: bool,
+	pub use_chapter_postids: bool,
 	pub has_permanent_manga_url: bool,
 	pub has_permanent_chapter_url: bool,
 	pub has_random_chapter_prefix: bool,
@@ -65,7 +66,8 @@ pub struct MangaStreamSource {
 impl Default for MangaStreamSource {
 	fn default() -> Self {
 		MangaStreamSource {
-			use_postids: false,
+			use_manga_postids: false,
+			use_chapter_postids: false,
 			has_permanent_manga_url: false,
 			has_permanent_chapter_url: false,
 			// this is for urls like https://mangashit.cum/RANDOM_INT_PREFIX/chapter-1
@@ -204,7 +206,7 @@ impl MangaStreamSource {
 			let url: String;
 			let id: String;
 
-			if self.use_postids {
+			if self.use_manga_postids {
 				let original_url = manga_node.select("a").attr("href").read();
 				id = get_postid_from_manga_url(
 					original_url,
@@ -251,7 +253,7 @@ impl MangaStreamSource {
 
 	// parse manga details page
 	pub fn parse_manga_details(&self, id: String) -> Result<Manga> {
-		let url = if self.use_postids {
+		let url = if self.use_manga_postids {
 			format!("{}/{}/?p={}", self.base_url, self.traverse_pathname, id)
 		} else {
 			format!("{}/{}/{}", self.base_url, self.traverse_pathname, id)
@@ -331,14 +333,14 @@ impl MangaStreamSource {
 
 	// parse the chapters list present on manga details page
 	pub fn parse_chapter_list(&self, id: String) -> Result<Vec<Chapter>> {
-		let chapter_url_to_postid_mapping = if self.use_postids {
+		let chapter_url_to_postid_mapping = if self.use_chapter_postids {
 			generate_chapter_url_to_postid_mapping(id.clone(), &self.base_url)?
 		} else {
 			Default::default()
 		};
 
 		let url = {
-			if self.use_postids {
+			if self.use_chapter_postids {
 				format!("{}/{}/?p={}", self.base_url, self.traverse_pathname, id)
 			} else {
 				format!("{}/{}/{}", self.base_url, self.traverse_pathname, id)
@@ -372,7 +374,7 @@ impl MangaStreamSource {
 			let chapter_url: String;
 			let chapter_id: String;
 
-			if self.use_postids {
+			if self.use_chapter_postids {
 				let original_url = chapter_node.select(self.chapter_url).attr("href").read();
 				let id = chapter_url_to_postid_mapping
 					.get(&original_url)
@@ -414,7 +416,7 @@ impl MangaStreamSource {
 
 	//parse the manga chapter images list
 	pub fn parse_page_list(&self, id: String) -> Result<Vec<Page>> {
-		let url = if self.use_postids {
+		let url = if self.use_manga_postids {
 			format!("{}/?p={}", self.base_url, id)
 		} else if self.has_random_chapter_prefix {
 			format!("{}/{}/{}", self.base_url, 0, id)
