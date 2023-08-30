@@ -1,7 +1,7 @@
 use crate::url::Url;
 use aidoku::{
 	error::Result,
-	std::{html::Node, json, ValueRef, Vec},
+	std::{html::Node, json, ArrayRef, ValueRef, Vec},
 	Manga, MangaPageResult, MangaStatus,
 };
 use alloc::string::ToString;
@@ -12,7 +12,6 @@ pub trait MangaListResponse {
 
 impl MangaListResponse for Node {
 	fn get_page_result(self) -> Result<MangaPageResult> {
-		let mut manga = Vec::<Manga>::new();
 		let manga_list_str = self
 			.select("div.exemptComic-box")
 			.attr("list")
@@ -28,8 +27,37 @@ impl MangaListResponse for Node {
 			})
 			.collect::<Vec<_>>()
 			.join("\"");
-		let manga_arr = json::parse(manga_list_str)?.as_array()?;
-		for manga_value in manga_arr {
+		let manga = json::parse(manga_list_str)?.as_array()?.get_manga_list()?;
+
+		let has_more = !self.select("li.page-all-item").last().has_class("active");
+
+		Ok(MangaPageResult { manga, has_more })
+	}
+}
+
+impl MangaListResponse for ValueRef {
+	fn get_page_result(self) -> Result<MangaPageResult> {
+		let results_obj = self.as_object()?.get("results").as_object()?;
+
+		let manga = results_obj.get("list").as_array()?.get_manga_list()?;
+
+		let total = results_obj.get("total").as_int()?;
+		let limit = results_obj.get("limit").as_int()?;
+		let offset = results_obj.get("offset").as_int()?;
+		let has_more = (offset + limit) < total;
+
+		Ok(MangaPageResult { manga, has_more })
+	}
+}
+
+trait MangaArr {
+	fn get_manga_list(self) -> Result<Vec<Manga>>;
+}
+
+impl MangaArr for ArrayRef {
+	fn get_manga_list(self) -> Result<Vec<Manga>> {
+		let mut manga = Vec::<Manga>::new();
+		for manga_value in self {
 			let manga_obj = manga_value.as_object()?;
 
 			let manga_id = manga_obj.get("path_word").as_string()?.read();
@@ -72,14 +100,6 @@ impl MangaListResponse for Node {
 			});
 		}
 
-		let has_more = !self.select("li.page-all-item").last().has_class("active");
-
-		Ok(MangaPageResult { manga, has_more })
-	}
-}
-
-impl MangaListResponse for ValueRef {
-	fn get_page_result(self) -> Result<MangaPageResult> {
-		todo!()
+		Ok(manga)
 	}
 }
