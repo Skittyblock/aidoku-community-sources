@@ -10,4 +10,3 @@ crate-type = ["cdylib"]
 [dependencies]
 aidoku = { git = "https://github.com/Aidoku/aidoku-rs/" }
 madara_template = { path = "../../template" }
-base64 = { version = "0.13.1", default-features = false, features = ["alloc"] }
