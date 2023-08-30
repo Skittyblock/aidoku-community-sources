@@ -1,14 +1,18 @@
 #![no_std]
+mod url;
+
 use aidoku::{
 	error::Result,
 	prelude::*,
-	std::{String, Vec, net::Request},
-	helpers,
-	Chapter, Filter, Listing, Manga, MangaPageResult, Page, DeepLink
+	std::{net::Request, String, Vec},
+	Chapter, DeepLink, Filter, Listing, Manga, MangaPageResult, Page,
 };
+use url::Url;
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
+	let manga_list_url = Url::from((filters, page));
+
 	todo!()
 }
 
@@ -28,7 +32,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 }
 
 #[get_page_list]
-fn get_page_list(id: String) -> Result<Vec<Page>> {
+fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 	todo!()
 }
 
