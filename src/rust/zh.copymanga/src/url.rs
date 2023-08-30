@@ -109,6 +109,34 @@ pub enum Url {
 	///
 	/// Manga per response
 	Filters(QueryParameters),
+
+	/// https://copymanga.site/api/kb/web/searchs/comics?offset={}&platform={}&limit={}&q={}&q_type={}
+	///
+	/// ---
+	///
+	/// ## `offset`
+	///
+	/// `({page} - 1) * {limit}`
+	///
+	/// ## `platform`
+	///
+	/// `2`
+	///
+	/// ## `limit`
+	///
+	/// Manga per response
+	///
+	/// ## `q`
+	///
+	/// `search_str` ➡️ Should be percent-encoded
+	///
+	/// ## `q_type`
+	///
+	/// - ``: 全部
+	/// - `name`: 名稱
+	/// - `author`: 作者
+	/// - `local`: 漢化組
+	Search(QueryParameters),
 }
 
 /// # 狀態
@@ -238,6 +266,7 @@ impl Display for Url {
 	fn fmt(&self, f: &mut Formatter<'_>) -> core::fmt::Result {
 		match self {
 			Self::Filters(query) => write!(f, "{}/comics?{}", DOMAIN, query),
+			Self::Search(query) => write!(f, "{}/api/kb/web/searchs/comics?{}", DOMAIN, query),
 		}
 	}
 }
@@ -248,6 +277,12 @@ impl From<(Vec<Filter>, i32)> for Url {
 		let mut region = Region::All;
 		let mut status = Status::All;
 		let mut sort_by = Sort::DateUpdated(false);
+
+		let mut query = QueryParameters::new();
+
+		let offset = (page - 1) * LIMIT;
+		query.push_encoded("offset", Some(offset.to_string().as_str()));
+		query.push_encoded("limit", Some(LIMIT.to_string().as_str()));
 
 		for filter in filters {
 			match filter.kind {
@@ -277,19 +312,27 @@ impl From<(Vec<Filter>, i32)> for Url {
 					};
 				}
 
+				FilterType::Title => {
+					let Ok(search_str_ref) = filter.value.as_string() else {
+						continue;
+					};
+					let search_str = search_str_ref.read();
+
+					query.push_encoded("platform", Some(2.to_string().as_str()));
+					query.push("q", Some(&search_str));
+					query.push_encoded("q_type", None);
+
+					return Url::Search(query);
+				}
+
 				_ => continue,
 			}
 		}
 
-		let offset = (page - 1) * LIMIT;
-
-		let mut query = QueryParameters::new();
 		query.push_encoded("theme", Some(GENRES[genre_index as usize]));
 		query.push_encoded("status", Some(status.to_string().as_str()));
 		query.push_encoded("region", Some(region.to_string().as_str()));
 		query.push_encoded("ordering", Some(sort_by.to_string().as_str()));
-		query.push_encoded("offset", Some(offset.to_string().as_str()));
-		query.push_encoded("limit", Some(LIMIT.to_string().as_str()));
 
 		Url::Filters(query)
 	}
