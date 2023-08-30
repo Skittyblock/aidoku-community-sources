@@ -1,10 +1,8 @@
-extern crate alloc;
-
 use aidoku::{helpers::uri::QueryParameters, std::Vec, Filter, FilterType};
 use alloc::string::ToString;
 use core::fmt::{Display, Formatter};
 
-pub enum Url {
+pub enum Url<'a> {
 	/// https://copymanga.site/comics?theme={}&status={}&region={}&ordering={}&offset={}&limit={}
 	///
 	/// ---
@@ -137,6 +135,9 @@ pub enum Url {
 	/// - `author`: 作者
 	/// - `local`: 漢化組
 	Search(QueryParameters),
+
+	/// https://copymanga.site/comic/{manga_id}
+	Manga(&'a str),
 }
 
 /// # 狀態
@@ -262,16 +263,17 @@ const REGIONS: [Region; 4] = [Region::All, Region::Japan, Region::Korea, Region:
 /// The number of manga that a single response contains.
 const LIMIT: i32 = 20;
 
-impl Display for Url {
+impl<'a> Display for Url<'a> {
 	fn fmt(&self, f: &mut Formatter<'_>) -> core::fmt::Result {
 		match self {
 			Self::Filters(query) => write!(f, "{}/comics?{}", DOMAIN, query),
 			Self::Search(query) => write!(f, "{}/api/kb/web/searchs/comics?{}", DOMAIN, query),
+			Self::Manga(manga_id) => write!(f, "{}/comic/{}", DOMAIN, manga_id),
 		}
 	}
 }
 
-impl From<(Vec<Filter>, i32)> for Url {
+impl<'a> From<(Vec<Filter>, i32)> for Url<'a> {
 	fn from((filters, page): (Vec<Filter>, i32)) -> Self {
 		let mut genre_index = 0;
 		let mut region = Region::All;

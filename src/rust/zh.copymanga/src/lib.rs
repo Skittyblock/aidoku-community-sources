@@ -1,4 +1,6 @@
 #![no_std]
+extern crate alloc;
+mod parser;
 mod url;
 
 use aidoku::{
@@ -7,13 +9,22 @@ use aidoku::{
 	std::{net::Request, String, Vec},
 	Chapter, DeepLink, Filter, Listing, Manga, MangaPageResult, Page,
 };
+use alloc::string::ToString;
+use parser::MangaListResponse;
 use url::Url;
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	let manga_list_url = Url::from((filters, page));
+	let manga_list_request = Request::get(manga_list_url.to_string());
 
-	todo!()
+	if let Url::Filters { .. } = manga_list_url {
+		let filters_page = manga_list_request.html()?;
+		return filters_page.get_page_result();
+	}
+
+	let search_json = manga_list_request.json()?;
+	search_json.get_page_result()
 }
 
 #[get_manga_listing]
