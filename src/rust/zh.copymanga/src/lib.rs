@@ -7,10 +7,10 @@ use aidoku::{
 	error::Result,
 	prelude::*,
 	std::{net::Request, String, Vec},
-	Chapter, DeepLink, Filter, Listing, Manga, MangaPageResult, Page,
+	Chapter, DeepLink, Filter, Listing, Manga, MangaPageResult, MangaStatus, Page,
 };
 use alloc::string::ToString;
-use parser::MangaListResponse;
+use parser::{MangaListResponse, NodeArrValue};
 use url::Url;
 
 #[get_manga_list]
@@ -33,8 +33,57 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 }
 
 #[get_manga_details]
-fn get_manga_details(id: String) -> Result<Manga> {
-	todo!()
+fn get_manga_details(manga_id: String) -> Result<Manga> {
+	let manga_page = Request::get(Url::Manga(&manga_id).to_string()).html()?;
+
+	let cover = manga_page
+		.select("img.lazyload")
+		.attr("data-src")
+		.read()
+		.replace(".328x422.jpg", "");
+
+	let title = manga_page.select("h6").text().read();
+
+	let artist = manga_page
+		.select("span.comicParticulars-right-txt > a")
+		.array()
+		.filter_map(NodeArrValue::ok_text)
+		.collect::<Vec<_>>()
+		.join("、");
+
+	let description = manga_page.select("p.intro").text().read();
+
+	let manga_url = Url::Manga(&manga_id).to_string();
+
+	let categories = manga_page
+		.select("span.comicParticulars-left-theme-all.comicParticulars-tag > a")
+		.array()
+		.filter_map(NodeArrValue::ok_text)
+		.map(|str| str[1..].to_string())
+		.collect::<Vec<_>>();
+
+	let status_str = manga_page
+		.select("li:contains(狀態：) > span.comicParticulars-right-txt")
+		.text()
+		.read();
+	let status = match status_str.as_str() {
+		"連載中" => MangaStatus::Ongoing,
+		"已完結" | "短篇" => MangaStatus::Completed,
+		_ => MangaStatus::Unknown,
+	};
+
+	Ok(Manga {
+		id: manga_id,
+		cover,
+		title,
+		author: artist.clone(),
+		artist,
+		description,
+		url: manga_url,
+		categories,
+		status,
+		..Default::default()
+	})
 }
 
 #[get_chapter_list]

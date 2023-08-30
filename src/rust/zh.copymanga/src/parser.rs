@@ -1,7 +1,7 @@
 use crate::url::Url;
 use aidoku::{
 	error::Result,
-	std::{html::Node, json, ArrayRef, ValueRef, Vec},
+	std::{html::Node, json, ArrayRef, String, ValueRef, Vec},
 	Manga, MangaPageResult, MangaStatus,
 };
 use alloc::string::ToString;
@@ -101,5 +101,15 @@ impl MangaArr for ArrayRef {
 		}
 
 		Ok(manga)
+	}
+}
+
+pub trait NodeArrValue {
+	fn ok_text(self) -> Option<String>;
+}
+
+impl NodeArrValue for ValueRef {
+	fn ok_text(self) -> Option<String> {
+		self.as_node().map(|node| node.text().read()).ok()
 	}
 }
