@@ -140,7 +140,27 @@ fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 
 #[get_page_list]
 fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
-	todo!()
+	let mut pages = Vec::<Page>::new();
+
+	let decrypted_contentkey = Request::get(Url::Chapter(&manga_id, &chapter_id).to_string())
+		.html()?
+		.select("div.imageData")
+		.attr("contentkey")
+		.read()
+		.decrypt();
+	let page_arr = json::parse(decrypted_contentkey)?.as_array()?;
+
+	for (index, page_value) in page_arr.enumerate() {
+		let page_url = page_value.as_object()?.get("url").as_string()?.read();
+
+		pages.push(Page {
+			index: index as i32,
+			url: page_url,
+			..Default::default()
+		})
+	}
+
+	Ok(pages)
 }
 
 #[modify_image_request]
