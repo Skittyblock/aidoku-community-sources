@@ -194,6 +194,8 @@ enum Sort {
 }
 
 const DOMAIN: &str = "https://copymanga.site";
+pub const MANGA_PATH: &str = "/comic/";
+pub const CHAPTER_PATH: &str = "/chapter/";
 
 const GENRES: [&str; 61] = [
 	"",
@@ -274,13 +276,15 @@ impl<'a> Display for Url<'a> {
 		match self {
 			Self::Filters(query) => write!(f, "{}/comics?{}", DOMAIN, query),
 			Self::Search(query) => write!(f, "{}/api/kb/web/searchs/comics?{}", DOMAIN, query),
-			Self::Manga(manga_id) => write!(f, "{}/comic/{}", DOMAIN, manga_id),
+			Self::Manga(manga_id) => write!(f, "{}{}{}", DOMAIN, MANGA_PATH, manga_id),
 			Self::ChapterList(manga_id) => {
 				write!(f, "{}/comicdetail/{}/chapters", DOMAIN, manga_id)
 			}
-			Self::Chapter(manga_id, chapter_id) => {
-				write!(f, "{}/comic/{}/chapter/{}", DOMAIN, manga_id, chapter_id)
-			}
+			Self::Chapter(manga_id, chapter_id) => write!(
+				f,
+				"{}{}{}{}{}",
+				DOMAIN, MANGA_PATH, manga_id, CHAPTER_PATH, chapter_id
+			),
 		}
 	}
 }

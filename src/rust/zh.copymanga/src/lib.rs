@@ -6,6 +6,7 @@ mod url;
 
 use aidoku::{
 	error::Result,
+	helpers::substring::Substring,
 	prelude::*,
 	std::{json, net::Request, String, Vec},
 	Chapter, DeepLink, Filter, Listing, Manga, MangaPageResult, MangaStatus, Page,
@@ -13,7 +14,7 @@ use aidoku::{
 use alloc::string::ToString;
 use decryptor::EncryptedString;
 use parser::{MangaListResponse, NodeArrValue, UuidString};
-use url::Url;
+use url::{Url, CHAPTER_PATH, MANGA_PATH};
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
@@ -170,5 +171,35 @@ fn modify_image_request(request: Request) {
 
 #[handle_url]
 fn handle_url(url: String) -> Result<DeepLink> {
-	todo!()
+	let Some(path) = url.substring_after(MANGA_PATH) else {
+		return Ok(DeepLink::default());
+	};
+
+	let Some(chapter_id) = path.substring_after(CHAPTER_PATH) else {
+		let manga = get_manga_details(path.to_string())?;
+
+		return Ok(DeepLink {
+			manga: Some(manga),
+			chapter: None,
+		});
+	};
+
+	let chapter = Chapter {
+		id: chapter_id.to_string(),
+		..Default::default()
+	};
+
+	let Some(manga_id) = path.substring_before(CHAPTER_PATH) else {
+		return Ok(DeepLink {
+			manga: None,
+			chapter: Some(chapter),
+		});
+	};
+
+	let manga = get_manga_details(manga_id.to_string())?;
+
+	Ok(DeepLink {
+		manga: Some(manga),
+		chapter: Some(chapter),
+	})
 }
