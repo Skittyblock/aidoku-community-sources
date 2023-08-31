@@ -1,7 +1,7 @@
 use crate::url::Url;
 use aidoku::{
 	error::Result,
-	std::{html::Node, json, ArrayRef, String, ValueRef, Vec},
+	std::{html::Node, json, ArrayRef, ObjectRef, String, ValueRef, Vec},
 	Manga, MangaPageResult, MangaStatus,
 };
 use alloc::string::ToString;
@@ -14,10 +14,8 @@ pub trait MangaListResponse {
 
 impl MangaListResponse for Node {
 	fn get_page_result(self) -> Result<MangaPageResult> {
-		let manga_list_str = self
-			.select("div.exemptComic-box")
-			.attr("list")
-			.read()
+		let manga = self
+			.get_attr("div.exemptComic-box", "list")
 			.split('"')
 			.enumerate()
 			.map(|(index, str)| {
@@ -28,8 +26,10 @@ impl MangaListResponse for Node {
 				}
 			})
 			.collect::<Vec<_>>()
-			.join("\"");
-		let manga = json::parse(manga_list_str)?.as_array()?.get_manga_list()?;
+			.join("\"")
+			.json()?
+			.as_array()?
+			.get_manga_list()?;
 
 		let has_more = !self.select("li.page-all-item").last().has_class("active");
 
@@ -62,15 +62,13 @@ impl MangaArr for ArrayRef {
 		for manga_value in self {
 			let manga_obj = manga_value.as_object()?;
 
-			let manga_id = manga_obj.get("path_word").as_string()?.read();
+			let manga_id = manga_obj.get_as_string("path_word")?;
 
 			let cover = manga_obj
-				.get("cover")
-				.as_string()?
-				.read()
+				.get_as_string("cover")?
 				.replace(".328x422.jpg", "");
 
-			let title = manga_obj.get("name").as_string()?.read();
+			let title = manga_obj.get_as_string("name")?;
 
 			let artist = manga_obj
 				.get("author")
@@ -106,6 +104,21 @@ impl MangaArr for ArrayRef {
 	}
 }
 
+pub trait Element {
+	fn get_attr(&self, selector: &str, attr: &str) -> String;
+	fn get_text(&self, selector: &str) -> String;
+}
+
+impl Element for Node {
+	fn get_attr(&self, selector: &str, attr: &str) -> String {
+		self.select(selector).attr(attr).read()
+	}
+
+	fn get_text(&self, selector: &str) -> String {
+		self.select(selector).text().read()
+	}
+}
+
 pub trait NodeArrValue {
 	fn ok_text(self) -> Option<String>;
 }
@@ -113,6 +126,26 @@ pub trait NodeArrValue {
 impl NodeArrValue for ValueRef {
 	fn ok_text(self) -> Option<String> {
 		self.as_node().map(|node| node.text().read()).ok()
+	}
+}
+
+pub trait JsonString {
+	fn json(self) -> Result<ValueRef>;
+}
+
+impl JsonString for String {
+	fn json(self) -> Result<ValueRef> {
+		json::parse(self)
+	}
+}
+
+pub trait JsonObj {
+	fn get_as_string(&self, key: &str) -> Result<String>;
+}
+
+impl JsonObj for ObjectRef {
+	fn get_as_string(&self, key: &str) -> Result<String> {
+		Ok(self.get(key).as_string()?.read())
 	}
 }
 

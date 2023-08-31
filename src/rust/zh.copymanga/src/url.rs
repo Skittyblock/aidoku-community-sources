@@ -1,6 +1,11 @@
-use aidoku::{helpers::uri::QueryParameters, std::Vec, Filter, FilterType};
+use aidoku::{
+	error::Result,
+	helpers::uri::QueryParameters,
+	std::{html::Node, net::Request, ValueRef, Vec},
+	Filter, FilterType,
+};
 use alloc::string::ToString;
-use core::fmt::{Display, Formatter};
+use core::fmt::Display;
 
 pub enum Url<'a> {
 	/// https://copymanga.site/comics?theme={}&status={}&region={}&ordering={}&offset={}&limit={}
@@ -271,8 +276,18 @@ const REGIONS: [Region; 4] = [Region::All, Region::Japan, Region::Korea, Region:
 /// The number of manga that a single response contains.
 const LIMIT: i32 = 20;
 
+impl<'a> Url<'a> {
+	pub fn get_html(self) -> Result<Node> {
+		Request::get(self.to_string()).html()
+	}
+
+	pub fn get_json(self) -> Result<ValueRef> {
+		Request::get(self.to_string()).json()
+	}
+}
+
 impl<'a> Display for Url<'a> {
-	fn fmt(&self, f: &mut Formatter<'_>) -> core::fmt::Result {
+	fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
 		match self {
 			Self::Filters(query) => write!(f, "{}/comics?{}", DOMAIN, query),
 			Self::Search(query) => write!(f, "{}/api/kb/web/searchs/comics?{}", DOMAIN, query),
@@ -316,10 +331,12 @@ impl<'a> From<(Vec<Filter>, i32)> for Url<'a> {
 
 				FilterType::Sort => {
 					let obj_result = filter.value.as_object();
+
 					let index = obj_result
 						.clone()
 						.and_then(|obj| obj.get("index").as_int())
 						.unwrap_or(0);
+
 					let is_asc = obj_result
 						.and_then(|obj| obj.get("ascending").as_bool())
 						.unwrap_or(false);
@@ -360,7 +377,7 @@ impl<'a> From<(Vec<Filter>, i32)> for Url<'a> {
 macro_rules! impl_display {
 	($filter: ident) => {
 		impl Display for $filter {
-			fn fmt(&self, f: &mut Formatter<'_>) -> core::fmt::Result {
+			fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
 				match self {
 					Self::All => write!(f, ""),
 					_ => write!(f, "{}", *self as u8),
@@ -373,7 +390,7 @@ impl_display!(Status);
 impl_display!(Region);
 
 impl Display for Sort {
-	fn fmt(&self, f: &mut Formatter<'_>) -> core::fmt::Result {
+	fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
 		match self {
 			Self::DateUpdated(is_asc) => {
 				write!(f, "{}datetime_updated", if *is_asc { "" } else { "-" })
