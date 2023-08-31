@@ -9,7 +9,7 @@ use aidoku::{
 	helpers::substring::Substring,
 	prelude::*,
 	std::{json, net::Request, String, Vec},
-	Chapter, DeepLink, Filter, Listing, Manga, MangaPageResult, MangaStatus, Page,
+	Chapter, DeepLink, Filter, Manga, MangaPageResult, MangaStatus, Page,
 };
 use alloc::string::ToString;
 use decryptor::EncryptedString;
@@ -28,11 +28,6 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 
 	let search_json = manga_list_request.json()?;
 	search_json.get_page_result()
-}
-
-#[get_manga_listing]
-fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
-	todo!()
 }
 
 #[get_manga_details]
@@ -162,11 +157,6 @@ fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 	}
 
 	Ok(pages)
-}
-
-#[modify_image_request]
-fn modify_image_request(request: Request) {
-	todo!()
 }
 
 #[handle_url]
