@@ -138,6 +138,12 @@ pub enum Url<'a> {
 
 	/// https://copymanga.site/comic/{manga_id}
 	Manga(&'a str),
+
+	/// https://copymanga.site/comicdetail/{manga_id}/chapters
+	ChapterList(&'a str),
+
+	/// https://copymanga.site/comic/{manga_id}/chapter/{chapter_id}
+	Chapter(&'a str, &'a str),
 }
 
 /// # 狀態
@@ -269,6 +275,12 @@ impl<'a> Display for Url<'a> {
 			Self::Filters(query) => write!(f, "{}/comics?{}", DOMAIN, query),
 			Self::Search(query) => write!(f, "{}/api/kb/web/searchs/comics?{}", DOMAIN, query),
 			Self::Manga(manga_id) => write!(f, "{}/comic/{}", DOMAIN, manga_id),
+			Self::ChapterList(manga_id) => {
+				write!(f, "{}/comicdetail/{}/chapters", DOMAIN, manga_id)
+			}
+			Self::Chapter(manga_id, chapter_id) => {
+				write!(f, "{}/comic/{}/chapter/{}", DOMAIN, manga_id, chapter_id)
+			}
 		}
 	}
 }

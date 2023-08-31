@@ -5,6 +5,8 @@ use aidoku::{
 	Manga, MangaPageResult, MangaStatus,
 };
 use alloc::string::ToString;
+use core::str::FromStr;
+use uuid::Uuid;
 
 pub trait MangaListResponse {
 	fn get_page_result(self) -> Result<MangaPageResult>;
@@ -111,5 +113,21 @@ pub trait NodeArrValue {
 impl NodeArrValue for ValueRef {
 	fn ok_text(self) -> Option<String> {
 		self.as_node().map(|node| node.text().read()).ok()
+	}
+}
+
+pub trait UuidString {
+	fn get_timestamp(&self) -> f64;
+}
+
+impl UuidString for String {
+	fn get_timestamp(&self) -> f64 {
+		let (integer_part, fractional_part) = Uuid::from_str(self)
+			.expect("Failed to parse String 'id' to UUID.")
+			.get_timestamp()
+			.expect("Failed to parse UUID to timestamp.")
+			.to_unix();
+
+		(integer_part as f64) + (fractional_part as f64 * 10e-10)
 	}
 }

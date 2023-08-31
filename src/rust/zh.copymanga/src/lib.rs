@@ -1,16 +1,18 @@
 #![no_std]
 extern crate alloc;
+mod decryptor;
 mod parser;
 mod url;
 
 use aidoku::{
 	error::Result,
 	prelude::*,
-	std::{net::Request, String, Vec},
+	std::{json, net::Request, String, Vec},
 	Chapter, DeepLink, Filter, Listing, Manga, MangaPageResult, MangaStatus, Page,
 };
 use alloc::string::ToString;
-use parser::{MangaListResponse, NodeArrValue};
+use decryptor::EncryptedString;
+use parser::{MangaListResponse, NodeArrValue, UuidString};
 use url::Url;
 
 #[get_manga_list]
@@ -87,8 +89,53 @@ fn get_manga_details(manga_id: String) -> Result<Manga> {
 }
 
 #[get_chapter_list]
-fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
-	todo!()
+fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
+	let mut chapters = Vec::<Chapter>::new();
+
+	let mut chapter_vec = Vec::<(String, String, f64)>::new();
+	let decrypted_results = Request::get(Url::ChapterList(&manga_id).to_string())
+		.json()?
+		.as_object()?
+		.get("results")
+		.as_string()?
+		.read()
+		.decrypt();
+	let groups_values = json::parse(decrypted_results)?
+		.as_object()?
+		.get("groups")
+		.as_object()?
+		.values();
+	for groups_value in groups_values {
+		let chapters_arr = groups_value.as_object()?.get("chapters").as_array()?;
+		for chapters_value in chapters_arr {
+			let chapters_obj = chapters_value.as_object()?;
+
+			let id = chapters_obj.get("id").as_string()?.read();
+			let name = chapters_obj.get("name").as_string()?.read();
+			let timestamp = id.get_timestamp();
+
+			chapter_vec.push((id, name, timestamp));
+		}
+	}
+	chapter_vec.sort_by(|a, b| a.2.total_cmp(&b.2));
+
+	for (index, (chapter_id, title, date_updated)) in chapter_vec.iter().enumerate() {
+		let chapter_num = (index + 1) as f32;
+		let chapter_url = Url::Chapter(&manga_id, chapter_id).to_string();
+
+		let chapter = Chapter {
+			id: chapter_id.clone(),
+			title: title.clone(),
+			chapter: chapter_num,
+			date_updated: *date_updated,
+			url: chapter_url,
+			lang: "zh".to_string(),
+			..Default::default()
+		};
+		chapters.insert(0, chapter);
+	}
+
+	Ok(chapters)
 }
 
 #[get_page_list]
