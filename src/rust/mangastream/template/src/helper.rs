@@ -1,12 +1,17 @@
 use aidoku::{
+	error::{AidokuError, AidokuErrorKind, Result},
+	helpers::substring::Substring,
 	prelude::format,
-	std::defaults::defaults_get,
-	std::html::Node,
+	std::{current_date, html::Node},
+	std::{defaults::defaults_get, net::Request},
 	std::{String, StringRef, Vec},
 	MangaStatus,
 };
 
 use crate::template::MangaStreamSource;
+
+extern crate hashbrown;
+use hashbrown::HashMap;
 
 // generate url for listing page
 pub fn get_listing_url(
@@ -37,16 +42,22 @@ pub fn manga_status(
 	status_options: [&'static str; 5],
 	status_options_2: [&'static str; 5],
 ) -> MangaStatus {
-	if status.contains(status_options[0]) || status.contains(status_options_2[0]) {
+	if (!status_options[0].is_empty() && status.contains(status_options[0]))
+		|| (!status_options_2[0].is_empty() && status.contains(status_options_2[0]))
+	{
 		MangaStatus::Ongoing
-	} else if status.contains(status_options[1]) || status.contains(status_options_2[1]) {
+	} else if (!status_options[1].is_empty() && status.contains(status_options[1]))
+		|| (!status_options_2[1].is_empty() && status.contains(status_options_2[1]))
+	{
 		MangaStatus::Completed
-	} else if status.contains(status_options[2]) || status.contains(status_options_2[2]) {
+	} else if (!status_options[2].is_empty() && status.contains(status_options[2]))
+		|| (!status_options_2[2].is_empty() && status.contains(status_options_2[2]))
+	{
 		MangaStatus::Hiatus
-	} else if status.contains(status_options[3])
-		|| status.contains(status_options[4])
-		|| status.contains(status_options_2[3])
-		|| status.contains(status_options_2[4])
+	} else if (!status_options[3].is_empty() && status.contains(status_options[3]))
+		|| (!status_options[4].is_empty() && status.contains(status_options[4]))
+		|| (!status_options_2[3].is_empty() && status.contains(status_options_2[3]))
+		|| (!status_options_2[4].is_empty() && status.contains(status_options_2[4]))
 	{
 		MangaStatus::Cancelled
 	} else {
@@ -333,6 +344,16 @@ pub fn get_id_from_url(url: String) -> String {
 		url.pop();
 	};
 
+	// if there is a post id in the url, return it
+	if url.contains("p=") {
+		return String::from(
+			url.substring_after("p=")
+				.expect("Failed to parse id from url")
+				.substring_before("&")
+				.expect("Failed to parse id from url"),
+		);
+	}
+
 	// this will get the last part of the url
 	// example https://flamescans.org/series/the-world-after-the-fall
 	// will return the-world-after-the-fall
@@ -352,4 +373,104 @@ pub fn get_lang_code() -> String {
 		}
 	}
 	String::new()
+}
+
+static mut CACHED_MANGA_URL_TO_POSTID_MAPPING: Option<HashMap<String, String>> = None;
+static mut CACHED_MAPPING_AT: f64 = 0.0;
+
+// This requests the "all manga" listing page in text mode and parses out
+// the postid and url for each manga, and caches it in a hashmap to prevent
+// having to request the page again.
+//
+// The all manga listing page is the only reliable way to get the postids for
+// each manga, without making a request to each and every manga page when
+// browsing (*cough* paperback *cough*)
+//
+/// Generate a hashmap of manga url to postid mappings
+fn generate_manga_url_to_postid_mapping(
+	url: &str,
+	pathname: &str,
+) -> Result<HashMap<String, String>> {
+	unsafe {
+		// if the mapping was generated less than 10 minutes ago, use the cached mapping
+		if current_date() - CACHED_MAPPING_AT < 600.0 {
+			if let Some(mapping) = &CACHED_MANGA_URL_TO_POSTID_MAPPING {
+				return Ok(mapping.clone());
+			}
+		}
+	}
+
+	let all_manga_listing_url = format!("{}/{}/list-mode", url, pathname);
+
+	let html = Request::get(all_manga_listing_url).html()?;
+	let mut mapping = HashMap::new();
+
+	for node in html.select(".soralist .series").array() {
+		let manga = node.as_node()?;
+
+		let url = manga.attr("href").read();
+		let post_id = manga.attr("rel").read();
+
+		mapping.insert(url, post_id);
+	}
+
+	unsafe {
+		CACHED_MANGA_URL_TO_POSTID_MAPPING = Some(mapping.clone());
+		CACHED_MAPPING_AT = current_date();
+	}
+
+	Ok(mapping)
+}
+
+/// Search the `MANGA_URL_TO_POSTID_MAPPING` for the postid from a manga url
+pub fn get_postid_from_manga_url(url: String, base_url: &str, pathname: &str) -> Result<String> {
+	let manga_url_to_postid_mapping = generate_manga_url_to_postid_mapping(base_url, pathname)?;
+	let id = manga_url_to_postid_mapping.get(&url).ok_or(AidokuError {
+		reason: AidokuErrorKind::Unimplemented, // no better error type available
+	})?;
+
+	Ok(String::from(id))
+}
+
+// This requests the chapters via the admin ajax endpoint using post ids and
+// parses out the postid and url for each chapter, and returns it in a hashmap
+//
+/// Generate a hashmap of chapter url to postid mappings
+pub fn generate_chapter_url_to_postid_mapping(
+	post_id: String,
+	base_url: &str,
+) -> Result<HashMap<String, String>> {
+	let ajax_url = format!("{}/wp-admin/admin-ajax.php", base_url);
+
+	let start = current_date();
+
+	let body = format!("action=get_chapters&id={}", post_id);
+	let html = Request::post(ajax_url)
+		.body(body.as_bytes())
+		.header("Referer", base_url)
+		.html()?;
+
+	// Janky retry logic to bypass rate limiting
+	// Retry after 10 seconds if we get rate limited. 10 seconds is the shortest
+	// interval that we can retry without getting rate limited again.
+	if html.select("title").text().read() == "429 Too Many Requests" {
+		loop {
+			if start + 10.0 < current_date() {
+				return generate_chapter_url_to_postid_mapping(post_id, base_url);
+			}
+		}
+	}
+
+	let mut mapping = HashMap::new();
+
+	for node in html.select("option").array() {
+		let chapter = node.as_node()?;
+
+		let url = chapter.attr("value").read();
+		let post_id = chapter.attr("data-id").read();
+
+		mapping.insert(url, post_id);
+	}
+
+	Ok(mapping)
 }

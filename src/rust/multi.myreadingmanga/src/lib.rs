@@ -1,71 +1,103 @@
 #![no_std]
+extern crate alloc;
+
 use aidoku::{
 	error::Result,
 	helpers::{
 		substring::Substring,
-		uri::{encode_uri, QueryParameters},
+		uri::{internal_encode_uri, QueryParameters},
 	},
 	prelude::*,
-	std::{net::Request, String, Vec},
+	std::{net::Request, String, ValueRef, Vec},
 	Chapter, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus, Page,
 };
-
-extern crate alloc;
 use alloc::string::ToString;
+use core::fmt::Display;
+
+enum Url<'a> {
+	/// https://myreadingmanga.info/search/?wpsolr_page={}&wpsolr_q={}&wpsolr_sort={}&wpsolr_fq\[{index}\]={filter_id}:{filter_name}
+	///
+	/// ---
+	///
+	/// `wpsolr_page`: Start from `1`
+	///
+	/// `wpsolr_q`: `search_str` ➡️ Should be percent-encoded
+	///
+	/// `wpsolr_sort`:
+	///
+	/// - `sort_by_relevancy_desc`: More relevant
+	/// - `sort_by_date_desc`: Newest
+	/// - `sort_by_date_asc`: Oldest
+	/// - `sort_by_random`: Random
+	///
+	/// `wpsolr_fq`:
+	///
+	/// - `index`: Start from `0`
+	/// - `filter_name` ➡️ Should be percent-encoded
+	Search(QueryParameters),
+
+	/// https://myreadingmanga.info/{manga_id}/
+	Manga(&'a str),
+
+	/// https://myreadingmanga.info/{manga_id}/{chapter_id}/
+	Chapter(&'a str, &'a str),
+}
 
 const DOMAIN: &str = "https://myreadingmanga.info";
+
+/// Safari on iOS 16.4
 const USER_AGENT: &str = "Mozilla/5.0 (iPhone; CPU iPhone OS 16_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.4 Mobile/15E148 Safari/604.1";
 
-fn get(url: String) -> Request {
-	Request::get(url)
-		.header("Referer", DOMAIN)
-		.header("User-Agent", USER_AGENT)
-}
+/// Sort by: \[More relevant, Newest, Oldest, Random\]
+const SORT: [&str; 4] = [
+	"sort_by_relevancy_desc",
+	"sort_by_date_desc",
+	"sort_by_date_asc",
+	"sort_by_random",
+];
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	let manga_list_url = get_filtered_url(filters, page)?;
-	let manga_list_html = get(manga_list_url).html()?;
+	let manga_list_html = request_get(&manga_list_url).html()?;
 
-	let mut manga: Vec<Manga> = Vec::new();
-
-	for value in manga_list_html
-		.select("div.results-by-facets > div")
-		.array()
-	{
-		let manga_node = value.as_node()?;
+	let mut manga = Vec::<Manga>::new();
+	let manga_nodes = manga_list_html.select("div.results-by-facets > div");
+	for manga_value in manga_nodes.array() {
+		let manga_node = manga_value.as_node()?;
 		let title_node = manga_node.select("a");
 
-		let title = title_node.text().read();
+		let manga_title = title_node.text().read();
 
-		// Skip videos
-		// There are some exceptions
-		let is_video = !title.starts_with('[');
+		// ? Skip videos
+		// ! There are some exceptions
+		let is_video = !manga_title.starts_with('[');
 		if is_video {
 			continue;
 		}
 
-		let url = title_node.attr("href").read();
+		let manga_url = title_node.attr("href").read();
 
-		let id = url.replace(DOMAIN, "").replace('/', "");
+		let manga_id = manga_url.replace(DOMAIN, "").replace('/', "");
 
-		let cover = encode_uri(manga_node.select("img").attr("src").read());
+		let cover_url = manga_node
+			.select("img")
+			.attr("src")
+			.read()
+			.percent_encode(false);
 
-		let artist = match title.substring_before(']') {
-			Some(artists_str) => artists_str.replace('[', ""),
-			None => String::new(),
-		};
+		let artists_str = get_artists(&manga_title);
 
 		let description = manga_node.select("div.p_content").text().read();
 
 		manga.push(Manga {
-			id,
-			cover,
-			title,
-			author: artist.clone(),
-			artist,
+			id: manga_id,
+			cover: cover_url,
+			title: manga_title,
+			author: artists_str.clone(),
+			artist: artists_str,
 			description,
-			url,
+			url: manga_url,
 			nsfw: MangaContentRating::Nsfw,
 			..Default::default()
 		});
@@ -77,99 +109,37 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	Ok(MangaPageResult { manga, has_more })
 }
 
-fn get_filtered_url(filters: Vec<Filter>, page: i32) -> Result<String> {
-	const SORT_BY: [&str; 4] = [
-		"sort_by_relevancy_desc",
-		"sort_by_date_desc",
-		"sort_by_date_asc",
-		"sort_by_random",
-	];
-
-	let mut url = format!("{}/search/?", DOMAIN);
-
-	let mut query = QueryParameters::new();
-	query.push("wpsolr_page", Some(page.to_string().as_str()));
-
-	let mut sort_by_index = 1;
-	let mut filters_vec: Vec<(String, String)> = Vec::new();
-
-	for filter in filters {
-		match filter.kind {
-			FilterType::Title => {
-				let search_str = filter.value.as_string()?.read();
-				query.push("wpsolr_q", Some(search_str.as_str()));
-
-				query.push("wpsolr_sort", Some(SORT_BY[0]));
-
-				url.push_str(format!("{}", query).as_str());
-				return Ok(url);
-			}
-
-			FilterType::Sort => {
-				let object = filter.value.as_object()?;
-				sort_by_index = object.get("index").as_int().unwrap_or(1) as u8;
-			}
-
-			FilterType::Check => {
-				let checked = filter.value.as_int().unwrap_or(-1) == 1;
-				if !checked {
-					continue;
-				}
-
-				let filter_type = filter.object.get("id").as_string()?.read();
-				filters_vec.push((filter_type, filter.name));
-			}
-
-			_ => continue,
-		}
-	}
-
-	query.push("wpsolr_sort", Some(SORT_BY[sort_by_index as usize]));
-	for (index, value) in filters_vec.iter().enumerate() {
-		let (filter_type, filter_value) = value;
-		query.push(
-			format!("wpsolr_fq[{}]", index),
-			Some(format!("{}:{}", filter_type, filter_value)),
-		);
-	}
-	url.push_str(format!("{}", query).as_str());
-
-	Ok(url)
-}
-
 #[get_manga_details]
-fn get_manga_details(id: String) -> Result<Manga> {
-	let url = format!("{}/{}/", DOMAIN, id);
+fn get_manga_details(manga_id: String) -> Result<Manga> {
+	let manga_url = Url::Manga(&manga_id).to_string();
 
-	let manga_html = get(url.clone()).html()?;
+	let manga_html = request_get(&manga_url).html()?;
 
-	let title = manga_html.select("h1.entry-title").text().read();
+	let manga_title = manga_html.select("h1.entry-title").text().read();
 
-	let artist = match title.substring_before("]") {
-		Some(artists_str) => artists_str.replace('[', ""),
-		None => String::new(),
-	};
+	let artists_str = get_artists(&manga_title);
 
-	let mut description_vec: Vec<String> = Vec::new();
-	for value in manga_html.select("div.entry-content > p").array() {
-		let p_text = value.as_node()?.text().read();
+	let description = manga_html
+		.select("div.entry-content > p")
+		.array()
+		.filter_map(Parser::get_is_ok_text)
+		.take_while(|p_text| {
+			!p_text
+				.replace(|char: char| !char.is_ascii_alphanumeric(), "")
+				.to_lowercase()
+				.starts_with("chapter")
+		})
+		.collect::<Vec<String>>()
+		.join("\n")
+		.trim()
+		.to_string();
 
-		let is_not_description = p_text
-			.replace(|char: char| !char.is_ascii_alphanumeric(), "")
-			.to_lowercase()
-			.starts_with("chapter");
-		if is_not_description {
-			break;
-		}
-
-		description_vec.push(p_text);
-	}
-	let description = description_vec.join("\n").trim().to_string();
-
-	let mut categories: Vec<String> = Vec::new();
-	let mut status_vec: Vec<String> = Vec::new();
-	for value in manga_html.select("footer.entry-footer span").array() {
-		let span_node = value.as_node()?;
+	let mut categories = Vec::<String>::new();
+	let (mut is_completed, mut is_cancelled, mut is_hiatus, mut is_ongoing) =
+		(false, false, false, false);
+	let span_nodes = manga_html.select("footer.entry-footer span");
+	for span_value in span_nodes.array() {
+		let span_node = span_value.as_node()?;
 		let span_text = span_node.own_text().read();
 
 		let mut is_status = false;
@@ -179,36 +149,42 @@ fn get_manga_details(id: String) -> Result<Manga> {
 			continue;
 		}
 
-		for a_value in span_node.select("a").array() {
+		let a_nodes = span_node.select("a");
+		for a_value in a_nodes.array() {
 			let tag = a_value.as_node()?.text().read();
-			match is_status {
-				true => status_vec.push(tag),
-				false => categories.push(tag),
+			if is_status {
+				match tag.as_str() {
+					"Completed" => is_completed = true,
+					"Discontinued" | "Dropped" => is_cancelled = true,
+					"Hiatus" => is_hiatus = true,
+					"Ongoing" => is_ongoing = true,
+					_ => (),
+				}
+			} else {
+				categories.push(tag);
 			}
 		}
 	}
 
-	let status = if status_vec.contains(&"Completed".to_string()) {
+	let status = if is_completed {
 		MangaStatus::Completed
-	} else if status_vec.contains(&"Discontinued".to_string())
-		|| status_vec.contains(&"Dropped".to_string())
-	{
+	} else if is_cancelled {
 		MangaStatus::Cancelled
-	} else if status_vec.contains(&"Hiatus".to_string()) {
+	} else if is_hiatus {
 		MangaStatus::Hiatus
-	} else if status_vec.contains(&"Ongoing".to_string()) {
+	} else if is_ongoing {
 		MangaStatus::Ongoing
 	} else {
 		MangaStatus::Unknown
 	};
 
 	Ok(Manga {
-		id,
-		title,
-		author: artist.clone(),
-		artist,
+		id: manga_id,
+		title: manga_title,
+		author: artists_str.clone(),
+		artist: artists_str,
 		description,
-		url,
+		url: manga_url,
 		categories,
 		status,
 		nsfw: MangaContentRating::Nsfw,
@@ -217,40 +193,37 @@ fn get_manga_details(id: String) -> Result<Manga> {
 }
 
 #[get_chapter_list]
-fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
-	let manga_url = format!("{}/{}/", DOMAIN, id);
-	let manga_html = get(manga_url.clone()).html()?;
+fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
+	let manga_url = Url::Manga(&manga_id).to_string();
+	let manga_html = request_get(&manga_url).html()?;
 
-	let mut scanlators_vec: Vec<String> = Vec::new();
-	for value in manga_html
+	let scanlators_str = manga_html
 		.select("footer.entry-footer span.entry-terms:contains(Scanlation by:) > a")
 		.array()
-	{
-		let scanlator_str = value.as_node()?.text().read();
-		scanlators_vec.push(scanlator_str);
-	}
-	let scanlator = scanlators_vec.join(", ");
+		.filter_map(Parser::get_is_ok_text)
+		.collect::<Vec<String>>()
+		.join(", ");
 
-	let mut chapters: Vec<Chapter> = Vec::new();
-
+	let mut chapters = Vec::<Chapter>::new();
 	let mut pages = manga_html.select("a.post-page-numbers").array().len();
 	if pages == 0 {
 		pages = 1;
 	}
+	for chapter_index in 1..=pages {
+		let chapter_id = chapter_index.to_string();
 
-	for index in 1..=pages {
-		let url = format!("{}{}/", manga_url, index);
+		let chapter_num = chapter_index as f32;
 
-		chapters.insert(
-			0,
-			Chapter {
-				id: index.to_string(),
-				chapter: index as f32,
-				scanlator: scanlator.clone(),
-				url,
-				..Default::default()
-			},
-		);
+		let chapter_url = Url::Chapter(&manga_id, &chapter_id).to_string();
+
+		let chapter = Chapter {
+			id: chapter_id,
+			chapter: chapter_num,
+			scanlator: scanlators_str.clone(),
+			url: chapter_url,
+			..Default::default()
+		};
+		chapters.insert(0, chapter);
 	}
 
 	Ok(chapters)
@@ -258,21 +231,17 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 
 #[get_page_list]
 fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
-	let chapter_url = format!("{}/{}/{}/", DOMAIN, manga_id, chapter_id);
-	let page_html = get(chapter_url).html()?;
+	let chapter_url = Url::Chapter(&manga_id, &chapter_id).to_string();
+	let chapter_html = request_get(&chapter_url).html()?;
 
-	let mut pages: Vec<Page> = Vec::new();
-
-	for (index, value) in page_html
-		.select("img[decoding=async][src^=https]")
-		.array()
-		.enumerate()
-	{
-		let url = value.as_node()?.attr("src").read();
+	let mut pages = Vec::<Page>::new();
+	let page_nodes = chapter_html.select("img[decoding=async][src^=https]");
+	for (page_index, page_value) in page_nodes.array().enumerate() {
+		let page_url = page_value.as_node()?.attr("src").read();
 
 		pages.push(Page {
-			index: index as i32,
-			url,
+			index: page_index as i32,
+			url: page_url,
 			..Default::default()
 		});
 	}
@@ -285,4 +254,106 @@ fn modify_image_request(request: Request) {
 	request
 		.header("Referer", DOMAIN)
 		.header("User-Agent", USER_AGENT);
+}
+
+fn get_filtered_url(filters: Vec<Filter>, page: i32) -> Result<String> {
+	let mut query = QueryParameters::new();
+	query.push_encoded("wpsolr_page", Some(page.to_string().as_str()));
+
+	let mut sort_by_index = 1;
+	let mut filters_vec = Vec::<(String, String)>::new();
+
+	for filter in filters {
+		match filter.kind {
+			FilterType::Check => {
+				let is_not_checked = filter.value.as_int().unwrap_or(-1) != 1;
+				if is_not_checked {
+					continue;
+				}
+
+				let filter_type = filter.object.get("id").as_string()?.read();
+				filters_vec.push((filter_type, filter.name));
+			}
+
+			FilterType::Sort => {
+				let obj = filter.value.as_object()?;
+				sort_by_index = obj.get("index").as_int().unwrap_or(1) as u8;
+			}
+
+			FilterType::Title => {
+				let encoded_search_str = filter.value.as_string()?.read().percent_encode(true);
+				query.push_encoded("wpsolr_q", Some(&encoded_search_str));
+
+				query.push_encoded("wpsolr_sort", Some(SORT[0]));
+
+				return Ok(Url::Search(query).to_string());
+			}
+
+			_ => continue,
+		}
+	}
+
+	query.push_encoded("wpsolr_sort", Some(SORT[sort_by_index as usize]));
+	filters_vec
+		.iter()
+		.enumerate()
+		.for_each(|(filter_index, (filter_type, filter_value))| {
+			query.push_encoded(
+				format!("wpsolr_fq[{}]", filter_index).percent_encode(true),
+				Some(format!("{}:{}", filter_type, filter_value).percent_encode(true)),
+			);
+		});
+
+	Ok(Url::Search(query).to_string())
+}
+
+fn request_get(url: &str) -> Request {
+	Request::get(url)
+		.header("Referer", DOMAIN)
+		.header("User-Agent", USER_AGENT)
+}
+
+fn get_artists(title: &str) -> String {
+	title
+		.substring_before(']')
+		.map(|value| value.replace('[', ""))
+		.unwrap_or_default()
+}
+
+impl Display for Url<'_> {
+	fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+		match self {
+			Url::Search(query) => write!(f, "{}/search/?{}", DOMAIN, query),
+
+			Url::Manga(manga_id) => write!(f, "{}/{}/", DOMAIN, manga_id),
+
+			Url::Chapter(manga_id, chapter_id) => {
+				write!(f, "{}{}/", Url::Manga(manga_id), chapter_id)
+			}
+		}
+	}
+}
+
+trait UrlString {
+	/// ' should be percent-encoded
+	fn percent_encode(self, is_component: bool) -> String;
+}
+
+impl UrlString for String {
+	fn percent_encode(self, is_component: bool) -> String {
+		let char_set = "-_.!~*()".to_string() + if is_component { "" } else { ";,/?:@&=+$#" };
+
+		internal_encode_uri(self, char_set)
+	}
+}
+
+trait Parser {
+	/// Returns [`None`], or the text of the Node (if [`Ok`]).
+	fn get_is_ok_text(self) -> Option<String>;
+}
+
+impl Parser for ValueRef {
+	fn get_is_ok_text(self) -> Option<String> {
+		self.as_node().ok().map(|node| node.text().read())
+	}
 }

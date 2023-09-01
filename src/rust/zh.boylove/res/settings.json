@@ -1,0 +1,57 @@
+[
+    {
+        "type": "group",
+        "title": "變更語系",
+        "items": [
+            {
+                "type": "switch",
+                "key": "isTC",
+                "title": "切換為 简体/繁體",
+                "notification": "switchChineseCharSet",
+                "default": true
+            }
+        ]
+    },
+    {
+        "type": "group",
+        "title": "用戶登入",
+        "footer": "驗證碼欄位非四位數字時按登入，可取得驗證碼圖片；圖片以Base64編碼，可使用捷徑或線上工具解碼。",
+        "items": [
+            {
+                "type": "text",
+                "key": "username",
+                "placeholder": "用戶名",
+                "autocapitalizationType": 0,
+                "autocorrectionType": 1,
+                "spellCheckingType": 1,
+                "keyboardType": 1
+            },
+            {
+                "type": "text",
+                "key": "password",
+                "placeholder": "密碼",
+                "autocapitalizationType": 0,
+                "autocorrectionType": 1,
+                "spellCheckingType": 1
+            },
+            {
+                "type": "text",
+                "key": "captcha",
+                "placeholder": "驗證碼",
+                "keyboardType": 4
+            },
+            {
+                "type": "button",
+                "title": "登入",
+                "action": "signIn",
+                "destructive": true
+            },
+            {
+                "type": "switch",
+                "key": "autoCheckIn",
+                "title": "自動簽到",
+                "default": false
+            }
+        ]
+    }
+]

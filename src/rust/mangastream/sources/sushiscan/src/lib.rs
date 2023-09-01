@@ -9,7 +9,12 @@ use mangastream_template::template::MangaStreamSource;
 fn get_instance() -> MangaStreamSource {
 	MangaStreamSource {
 		base_url: String::from("https://sushiscan.net"),
+		traverse_pathname: "catalogue",
 		listing: ["Dernières", "Populaire", "Nouveau"],
+		status_options: ["En Cours", "Terminé", "", "", ""],
+		manga_details_author: ".imptdt:contains(Auteur) i, .fmed b:contains(Auteur)+span",
+		language: "fr",
+		locale: "fr-FR",
 		..Default::default()
 	}
 }
@@ -36,7 +41,15 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 
 #[get_page_list]
 fn get_page_list(_manga_id: String, id: String) -> Result<Vec<Page>> {
-	get_instance().parse_page_list(id)
+	let pages = get_instance().parse_page_list(id)?;
+	// fix http -> https
+	let mut new_pages = Vec::new();
+	for page in pages {
+		let mut new_page = page;
+		new_page.url = new_page.url.replace("http://", "https://");
+		new_pages.push(new_page);
+	}
+	Ok(new_pages)
 }
 
 #[modify_image_request]
