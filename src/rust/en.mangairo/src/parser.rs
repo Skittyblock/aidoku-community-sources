@@ -1,6 +1,6 @@
 use aidoku::{
 	error::Result, prelude::*, std::html::Node, std::String, std::Vec, Chapter, Filter, FilterType,
-	Manga, MangaContentRating, MangaStatus, MangaViewer, Page,
+	Manga, /* MangaContentRating, MangaStatus, MangaViewer, */ Page,
 };
 
 pub const BASE_URL: &str = "https://w.mangairo.com";
@@ -25,15 +25,15 @@ pub fn parse_manga_list(html: Node, result: &mut Vec<Manga>) {
 	}
 }
 
-pub fn parse_manga(obj: Node, id: String) -> Result<Manga> {
+pub fn parse_manga(_html: Node, _id: String) -> Result<Manga> {
 	todo!()
 }
 
-pub fn get_chapter_list(obj: Node) -> Result<Vec<Chapter>> {
+pub fn get_chapter_list(_html: Node) -> Result<Vec<Chapter>> {
 	todo!()
 }
 
-pub fn get_page_list(obj: Node) -> Result<Vec<Page>> {
+pub fn get_page_list(_html: Node) -> Result<Vec<Page>> {
 	todo!()
 }
 
@@ -172,16 +172,16 @@ pub fn parse_incoming_url_manga_id(url: String) -> Option<String> {
 pub fn parse_incoming_url_chapter_id(url: String) -> Option<String> {
 	// https://chap.mangairo.com/story-pn279847/chapter-52
 	let parts: Vec<&str> = url.split('/').collect();
-        if parts.len() >= 4 {
-            let chapter_id = parts.get(4);
-			if chapter_id.is_none() {
-				return None;
-			}
+	if parts.len() >= 4 {
+		let chapter_id = parts.get(4);
+		if chapter_id.is_none() {
+			return None;
+		}
 
-            return Some(format!("{}", chapter_id.unwrap()));
-        } else {
-            return None;
-        }
+		return Some(format!("{}", chapter_id.unwrap()));
+	} else {
+		return None;
+	}
 }
 
 // HELPER FUNCTIONS
