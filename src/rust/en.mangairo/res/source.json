@@ -1,0 +1,16 @@
+{
+	"info": {
+		"id": "en.mangairo",
+		"lang": "en",
+		"name": "MangaIro",
+		"version": 1,
+		"url": "https://w.mangairo.com/home",
+		"nsfw": 1
+	},
+	"languages": [
+
+	],
+	"listings": [
+
+	]
+}
