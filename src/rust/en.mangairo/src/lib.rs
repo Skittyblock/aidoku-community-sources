@@ -12,6 +12,8 @@ use aidoku::{
 mod parser;
 use parser::{BASE_URL, USER_AGENT};
 
+const PAGE_SIZE: usize = 50;
+
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	let mut result: Vec<Manga> = Vec::new();
@@ -22,7 +24,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 
 	parser::parse_manga_list(html, &mut result);
 
-	if result.len() >= 50 {
+	if result.len() >= PAGE_SIZE {
 		Ok(MangaPageResult {
 			manga: result,
 			has_more: true,
@@ -57,7 +59,7 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 	let mut result: Vec<Manga> = Vec::new();
 	parser::parse_manga_list(html, &mut result);
 
-	if result.len() >= 50 {
+	if result.len() >= PAGE_SIZE {
 		Ok(MangaPageResult {
 			manga: result,
 			has_more: true,
@@ -99,7 +101,7 @@ fn handle_url(url: String) -> Result<DeepLink> {
 	if parsed_manga_id.is_none() {
 		return Err(aidoku::error::AidokuError {
 			reason: aidoku::error::AidokuErrorKind::Unimplemented,
-		})
+		});
 	}
 	Ok(DeepLink {
 		manga: Some(get_manga_details(parsed_manga_id.unwrap())?),
