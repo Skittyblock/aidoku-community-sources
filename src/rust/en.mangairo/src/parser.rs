@@ -174,10 +174,8 @@ pub fn parse_incoming_url_chapter_id(url: String) -> Option<String> {
 	let parts: Vec<&str> = url.split('/').collect();
 	if parts.len() >= 4 {
 		let chapter_id = parts.get(4);
-		if chapter_id.is_none() {
-			return None;
-		}
-
+		
+		chapter_id?;
 		return Some(format!("{}", chapter_id.unwrap()));
 	}
 
