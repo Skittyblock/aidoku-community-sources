@@ -164,10 +164,10 @@ pub fn parse_incoming_url_manga_id(url: String) -> Option<String> {
 	if parts.len() >= 3 {
 		let manga_id = parts[3];
 
-		return Some(format!("{}", manga_id));
-	} else {
-		return None;
+		Some(format!("{}", manga_id));
 	}
+
+	None
 }
 
 pub fn parse_incoming_url_chapter_id(url: String) -> Option<String> {
@@ -180,9 +180,9 @@ pub fn parse_incoming_url_chapter_id(url: String) -> Option<String> {
 		}
 
 		return Some(format!("{}", chapter_id.unwrap()));
-	} else {
-		return None;
 	}
+
+	None
 }
 
 // HELPER FUNCTIONS
