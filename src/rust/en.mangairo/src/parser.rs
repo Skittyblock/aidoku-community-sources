@@ -7,10 +7,6 @@ pub const BASE_URL: &str = "https://w.mangairo.com";
 pub const USER_AGENT: &str = "Mozilla/5.0 (Macintosh; Intel Mac OS X 13_3_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36";
 
 pub fn parse_manga_list(html: Node, result: &mut Vec<Manga>) {
-	todo!()
-}
-
-pub fn parse_search(html: Node, result: &mut Vec<Manga>) {
 	for page in html.select(".story-item").array() {
 		let obj = page.as_node().expect("node array");
 
