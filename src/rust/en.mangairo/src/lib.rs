@@ -2,7 +2,10 @@
 use aidoku::{
 	error::Result,
 	prelude::*,
-	std::{String, Vec},
+	std::{
+		net::{HttpMethod, Request},
+		String, Vec,
+	},
 	Chapter, DeepLink, Filter, Listing, Manga, MangaPageResult, Page,
 };
 

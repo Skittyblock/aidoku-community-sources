@@ -1,6 +1,6 @@
 use aidoku::{
 	error::Result, prelude::*, std::html::Node, std::String, std::Vec, Chapter, Filter, FilterType,
-	Manga, MangaContentRating, MangaStatus, MangaViewer, Page,
+	Manga, MangaContentRating, MangaStatus, MangaViewer, Page, MangaPageResult,
 };
 
 pub const BASE_URL: &str = "https://w.mangairo.com";
