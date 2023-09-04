@@ -80,7 +80,7 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32, url: &mut String) {
 		url.push_str(&i32_to_string(page));
 	} else {
 		url.push_str("/manga-list/type-");
-		match sort_filter.value.as_int().unwrap_or(0) {
+		match sort_filter.value.as_int().unwrap_or(-1) {
 			0 => url.push_str("latest"),
 			1 => url.push_str("newest"),
 			2 => url.push_str("topview"),
@@ -88,7 +88,7 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32, url: &mut String) {
 		}
 		// Genre
 		url.push_str("/ctg-");
-		match genre_filter.value.as_int().unwrap_or(0) {
+		match genre_filter.value.as_int().unwrap_or(-1) {
 			0 => url.push_str("all"), // "All",
 			1 => url.push_str("2"),   // "Action",
 			2 => url.push_str("3"),   // "Adult",
