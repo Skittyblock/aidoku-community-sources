@@ -150,10 +150,10 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32, url: &mut String) {
 }
 
 pub fn parse_incoming_url_manga_id(url: String) -> Option<String> {
-	// https://w.mangairo.com/story-pn279847
-	// https://w.mangairo.com/story-pn279847/chapter-52
+	// https://chap.mangairo.com/story-pn279847
+	// https://chap.mangairo.com/story-pn279847/chapter-52
 	let parts: Vec<&str> = url.split('/').collect();
-	if parts.len() >= 3 && parts[2] == "w.mangairo.com" {
+	if parts.len() >= 3 {
 		let manga_id = parts[3];
 
 		return Some(format!("{}", manga_id));
@@ -163,9 +163,9 @@ pub fn parse_incoming_url_manga_id(url: String) -> Option<String> {
 }
 
 pub fn parse_incoming_url_chapter_id(url: String) -> Option<String> {
-	// https://w.mangairo.com/story-pn279847/chapter-52
+	// https://chap.mangairo.com/story-pn279847/chapter-52
 	let parts: Vec<&str> = url.split('/').collect();
-        if parts.len() >= 4 && parts[2] == "w.mangairo.com" {
+        if parts.len() >= 4 {
             let chapter_id = parts.get(4);
 			if chapter_id.is_none() {
 				return None;
