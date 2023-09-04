@@ -1,6 +1,6 @@
 #![no_std]
 use aidoku::{
-	error::{AidokuError, Result},
+	error::Result,
 	prelude::*,
 	std::{
 		net::{HttpMethod, Request},
