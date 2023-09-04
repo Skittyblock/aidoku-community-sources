@@ -87,7 +87,9 @@ fn handle_url(url: String) -> Result<DeepLink> {
 	let parsed_chapter_id = parser::parse_incoming_url_chapter_id(url);
 
 	if parsed_manga_id.is_none() {
-		panic!("unhandled url");
+		return Err(aidoku::error::AidokuError {
+			reason: aidoku::error::AidokuErrorKind::Unimplemented,
+		})
 	}
 	Ok(DeepLink {
 		manga: Some(get_manga_details(parsed_manga_id.unwrap())?),
