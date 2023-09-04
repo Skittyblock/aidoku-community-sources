@@ -1,12 +1,15 @@
+extern crate regex;
+
 use aidoku::{
 	error::Result, prelude::*, std::html::Node, std::String, std::Vec, Chapter, Filter, FilterType,
 	Manga, MangaContentRating, MangaPageResult, MangaStatus, MangaViewer, Page,
 };
+use regex::Regex;
 
 pub const BASE_URL: &str = "https://w.mangairo.com";
 pub const USER_AGENT: &str = "Mozilla/5.0 (Macintosh; Intel Mac OS X 13_3_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36";
 
-pub fn parse_recents(html: Node, result: &mut Vec<Manga>) {
+pub fn parse_manga_list(html: Node, result: &mut Vec<Manga>) {
 	todo!()
 }
 
@@ -149,8 +152,31 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32, url: &mut String) {
 	}
 }
 
-pub fn parse_incoming_url(url: String) -> String {
-	todo!()
+pub fn parse_incoming_url_manga_id(url: String) -> Option<String> {
+	// https://w.mangairo.com/story-pn279847
+	// https://w.mangairo.com/story-pn279847/chapter-52
+	let manga_id_pattern = r"https?://w\.mangairo\.com/([^/]+)/?.*";
+	let regex = Regex::new(manga_id_pattern).unwrap();
+
+	if let Some(captures) = regex.captures(url.as_str()) {
+		if let Some(manga_id) = captures.get(1) {
+			return manga_id.as_str();
+		}
+	}
+	return Option::None;
+}
+
+pub fn parse_incoming_url_chapter_id(url: String) -> Option<String> {
+	// https://w.mangairo.com/story-pn279847/chapter-52
+	let manga_id_pattern = r"https?://w\.mangairo\.com/([^/]+)/([^/]+)/?.*";
+	let regex = Regex::new(manga_id_pattern).unwrap();
+
+	if let Some(captures) = regex.captures(url.as_str()) {
+		if let Some(chapter_id) = captures.get(2) {
+			return chapter_id.as_str();
+		}
+	}
+	return Option::None;
 }
 
 // HELPER FUNCTIONS

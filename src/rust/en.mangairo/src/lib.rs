@@ -1,6 +1,6 @@
 #![no_std]
 use aidoku::{
-	error::Result,
+	error::{AidokuError, Result},
 	prelude::*,
 	std::{
 		net::{HttpMethod, Request},
@@ -23,7 +23,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	if url.contains("search") {
 		parser::parse_search(html, &mut result);
 	} else {
-		parser::parse_recents(html, &mut result);
+		parser::parse_manga_list(html, &mut result);
 	}
 
 	if result.len() >= 50 {
@@ -83,10 +83,21 @@ fn modify_image_request(request: Request) {
 
 #[handle_url]
 fn handle_url(url: String) -> Result<DeepLink> {
-	let parsed_manga_id = parser::parse_incoming_url(url);
+	let parsed_manga_id = parser::parse_incoming_url_manga_id(url.clone());
+	let parsed_chapter_id = parser::parse_incoming_url_chapter_id(url);
 
+	if parsed_manga_id.is_none() {
+		panic!("unhandled url");
+	}
 	Ok(DeepLink {
-		manga: Some(get_manga_details(parsed_manga_id)?),
-		chapter: None,
+		manga: Some(get_manga_details(parsed_manga_id.unwrap())?),
+		chapter: if parsed_chapter_id.is_some() {
+			Some(Chapter {
+				id: parsed_chapter_id.unwrap(),
+				..Default::default()
+			})
+		} else {
+			None
+		},
 	})
 }
