@@ -98,12 +98,12 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32, url: &mut String) {
 		url.push_str("/ctg-");
 		match genre_filter.value.as_int().unwrap_or(-1) {
 			0 => url.push_str("all"), // "All",
-			1 => url.push_str("2"),   // "Action",
-			2 => url.push_str("3"),   // "Adult",
-			3 => url.push_str("4"),   // "Adventure",
-			4 => url.push_str("6"),   // "Comedy",
-			5 => url.push_str("7"),   // "Cooking",
-			6 => url.push_str("9"),   // "Doujinshi",
+			1 => url.push('2'),       // "Action",
+			2 => url.push('3'),       // "Adult",
+			3 => url.push('4'),       // "Adventure",
+			4 => url.push('6'),       // "Comedy",
+			5 => url.push('7'),       // "Cooking",
+			6 => url.push('9'),       // "Doujinshi",
 			7 => url.push_str("10"),  // "Drama",
 			8 => url.push_str("11"),  // "Ecchi",
 			9 => url.push_str("48"),  // "Erotica",
