@@ -53,7 +53,21 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 		}
 		_ => String::from(BASE_URL),
 	};
-	parser::parse_manga_listing(url)
+	let html = Request::new(url.as_str(), HttpMethod::Get).html()?;
+	let mut result: Vec<Manga> = Vec::new();
+	parser::parse_manga_list(html, &mut result);
+
+	if result.len() >= 50 {
+		Ok(MangaPageResult {
+			manga: result,
+			has_more: true,
+		})
+	} else {
+		Ok(MangaPageResult {
+			manga: result,
+			has_more: false,
+		})
+	}
 }
 
 #[get_chapter_list]

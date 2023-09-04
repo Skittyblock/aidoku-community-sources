@@ -33,10 +33,6 @@ pub fn get_chapter_list(obj: Node) -> Result<Vec<Chapter>> {
 	todo!()
 }
 
-pub fn parse_manga_listing(url: String) -> Result<MangaPageResult> {
-	todo!()
-}
-
 pub fn get_page_list(obj: Node) -> Result<Vec<Page>> {
 	todo!()
 }
