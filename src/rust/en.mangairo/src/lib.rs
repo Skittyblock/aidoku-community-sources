@@ -53,7 +53,7 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 		"Completed" => {
 			format!("{BASE_URL}/manga-list/type-latest/ctg-all/state-completed/page-{page}")
 		}
-		_ => String::from(BASE_URL),
+		_ => format!("{BASE_URL}/manga-list/type-latest/ctg-all/state-all/page-{page}"),
 	};
 	let html = Request::new(url.as_str(), HttpMethod::Get).html()?;
 	let mut result: Vec<Manga> = Vec::new();

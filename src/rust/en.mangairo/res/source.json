@@ -7,12 +7,19 @@
 		"url": "https://w.mangairo.com/",
 		"nsfw": 1
 	},
-	"languages": [
-
-	],
+	"languages": [],
 	"listings": [
-		{ "name": "Hot" },
-		{ "name": "Latest" },
-		{ "name": "Completed" }
+		{
+			"name": "Latest"
+		},
+		{
+			"name": "New Releases"
+		},
+		{
+			"name": "Hot"
+		},
+		{
+			"name": "Completed"
+		}
 	]
 }
