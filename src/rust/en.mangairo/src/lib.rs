@@ -105,13 +105,9 @@ fn handle_url(url: String) -> Result<DeepLink> {
 	}
 	Ok(DeepLink {
 		manga: Some(get_manga_details(parsed_manga_id.unwrap())?),
-		chapter: if let Some(chapter_id_value) = parsed_chapter_id {
-			Some(Chapter {
-				id: chapter_id_value,
-				..Default::default()
-			})
-		} else {
-			None
-		},
+		chapter: parsed_chapter_id.map(|chapter_id_value| Chapter {
+			id: chapter_id_value,
+			..Default::default()
+		}),
 	})
 }

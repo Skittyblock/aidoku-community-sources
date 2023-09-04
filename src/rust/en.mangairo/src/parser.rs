@@ -63,15 +63,15 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32, url: &mut String) {
 		.find(|&x| x.kind == FilterType::Select && x.name == "Genre")
 		.cloned();
 
-	if title_filter.is_some() {
-		if let Ok(filter_value) = title_filter.unwrap().value.as_string() {
+	if let Some(title_filter_value) = title_filter {
+		if let Ok(filter_value) = title_filter_value.value.as_string() {
 			search_string.push_str(urlencode(filter_value.read().to_lowercase()).as_str());
 			is_searching = true;
 		}
 	}
 
-	if author_filter.is_some() {
-		if let Ok(filter_value) = author_filter.unwrap().value.as_string() {
+	if let Some(author_filter_value) = author_filter {
+		if let Ok(filter_value) = author_filter_value.value.as_string() {
 			if !search_string.is_empty() {
 				search_string.push('+');
 			}
@@ -174,7 +174,7 @@ pub fn parse_incoming_url_chapter_id(url: String) -> Option<String> {
 	let parts: Vec<&str> = url.split('/').collect();
 	if parts.len() >= 4 {
 		let chapter_id = parts.get(4);
-		
+
 		chapter_id?;
 		return Some(format!("{}", chapter_id.unwrap()));
 	}
