@@ -11,7 +11,22 @@ pub fn parse_manga_list(html: Node, result: &mut Vec<Manga>) {
 }
 
 pub fn parse_search(html: Node, result: &mut Vec<Manga>) {
-	todo!()
+	for page in html.select(".story-item").array() {
+		let obj = page.as_node().expect("node array");
+
+		let id = obj.select(".story-name a").attr("href").read();
+		let title = obj.select(".story-name a ").text().read();
+		let img = obj.select(".story-list-img img").attr("src").read();
+
+		if !id.is_empty() && !title.is_empty() && !img.is_empty() {
+			result.push(Manga {
+				id,
+				cover: img,
+				title,
+				..Default::default()
+			});
+		}
+	}
 }
 
 pub fn parse_manga(obj: Node, id: String) -> Result<Manga> {
