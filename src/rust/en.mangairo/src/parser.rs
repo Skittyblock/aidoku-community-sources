@@ -42,43 +42,42 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32, url: &mut String) {
 	let mut search_string = String::new();
 	url.push_str("https://w.mangairo.com");
 
-	let title_filter: Filter = filters
+	let title_filter: Option<Filter> = filters
 		.iter()
 		.find(|&x| x.kind == FilterType::Title)
-		.unwrap()
-		.clone();
-	let author_filter: Filter = filters
+		.cloned();
+	let author_filter: Option<Filter> = filters
 		.iter()
 		.find(|&x| x.kind == FilterType::Author)
-		.unwrap()
-		.clone();
-	let status_filter: Filter = filters
+		.cloned();
+	let status_filter: Option<Filter> = filters
 		.iter()
 		.find(|&x| x.kind == FilterType::Select && x.name == "Status")
-		.unwrap()
-		.clone();
-	let sort_filter: Filter = filters
+		.cloned();
+	let sort_filter: Option<Filter> = filters
 		.iter()
 		.find(|&x| x.kind == FilterType::Select && x.name == "Sort")
-		.unwrap()
-		.clone();
-	let genre_filter: Filter = filters
+		.cloned();
+	let genre_filter: Option<Filter> = filters
 		.iter()
 		.find(|&x| x.kind == FilterType::Select && x.name == "Genre")
-		.unwrap()
-		.clone();
+		.cloned();
 
-	if let Ok(filter_value) = title_filter.value.as_string() {
-		search_string.push_str(urlencode(filter_value.read().to_lowercase()).as_str());
-		is_searching = true;
+	if title_filter.is_some() {
+		if let Ok(filter_value) = title_filter.unwrap().value.as_string() {
+			search_string.push_str(urlencode(filter_value.read().to_lowercase()).as_str());
+			is_searching = true;
+		}
 	}
 
-	if let Ok(filter_value) = author_filter.value.as_string() {
-		if !search_string.is_empty() {
-			search_string.push('+');
+	if author_filter.is_some() {
+		if let Ok(filter_value) = author_filter.unwrap().value.as_string() {
+			if !search_string.is_empty() {
+				search_string.push('+');
+			}
+			search_string.push_str(urlencode(filter_value.read().to_lowercase()).as_str());
+			is_searching = true;
 		}
-		search_string.push_str(urlencode(filter_value.read().to_lowercase()).as_str());
-		is_searching = true;
 	}
 
 	if is_searching {
@@ -88,7 +87,7 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32, url: &mut String) {
 		url.push_str(&i32_to_string(page));
 	} else {
 		url.push_str("/manga-list/type-");
-		match sort_filter.value.as_int().unwrap_or(-1) {
+		match sort_filter.unwrap().value.as_int().unwrap_or(-1) {
 			0 => url.push_str("latest"),
 			1 => url.push_str("newest"),
 			2 => url.push_str("topview"),
@@ -96,7 +95,7 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32, url: &mut String) {
 		}
 		// Genre
 		url.push_str("/ctg-");
-		match genre_filter.value.as_int().unwrap_or(-1) {
+		match genre_filter.unwrap().value.as_int().unwrap_or(-1) {
 			0 => url.push_str("all"), // "All",
 			1 => url.push('2'),       // "Action",
 			2 => url.push('3'),       // "Adult",
@@ -145,7 +144,7 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32, url: &mut String) {
 
 		// State
 		url.push_str("/state-");
-		match status_filter.value.as_int().unwrap_or(0) {
+		match status_filter.unwrap().value.as_int().unwrap_or(0) {
 			0 => url.push_str("all"),
 			1 => url.push_str("ongoing"),
 			2 => url.push_str("completed"),
