@@ -3,8 +3,13 @@ use aidoku::{
 	error::Result,
 	prelude::*,
 	std::{String, Vec},
-	Chapter, Filter, Listing, Manga, MangaPageResult, Page, DeepLink
+	Chapter, DeepLink, Filter, Listing, Manga, MangaPageResult, Page,
 };
+
+#[initialize]
+fn initialize() {
+	todo!()
+}
 
 #[get_manga_list]
 fn get_manga_list(_: Vec<Filter>, _: i32) -> Result<MangaPageResult> {
@@ -27,7 +32,7 @@ fn get_chapter_list(_: String) -> Result<Vec<Chapter>> {
 }
 
 #[get_page_list]
-fn get_page_list(_: String) -> Result<Vec<Page>> {
+fn get_page_list(_chapter_id: String, _manga_id: String) -> Result<Vec<Page>> {
 	todo!()
 }
 
