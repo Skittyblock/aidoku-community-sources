@@ -50,8 +50,8 @@ fn get_manga_details(manga_id: String) -> Result<Manga> {
 fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 	let url = match listing.name.as_str() {
 		"Latest" => format!("{BASE_URL}/manga-list/type-latest/ctg-all/state-all/page-{page}"),
+		"New Releases" => format!("{BASE_URL}/manga-list/type-newest/ctg-7/state-all/page-{page}"),
 		"Hot" => format!("{BASE_URL}/manga-list/type-topview/ctg-all/state-all/page-{page}"),
-		// TODO: Make "Completed" a filter
 		"Completed" => {
 			format!("{BASE_URL}/manga-list/type-latest/ctg-all/state-completed/page-{page}")
 		}

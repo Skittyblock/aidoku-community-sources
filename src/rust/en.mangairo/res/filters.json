@@ -6,44 +6,70 @@
 		"type": "author"
 	},
 	{
-		"type": "group",
-		"name": "A group filter",
-		"filters": [
-			{
-				"type": "check",
-				"name": "A checkbox",
-				"default": true
-			}
-		]
-	},
-	{
-		"type": "group",
-		"name": "Another group filter",
-		"filters": [
-			{
-				"type": "genre",
-				"name": "A genre",
-				"canExclude": true
-			}
+		"type": "select",
+		"name": "Sort",
+		"options": [
+			"Latest",
+			"Newest",
+			"Hot"
 		]
 	},
 	{
 		"type": "select",
-		"name": "A select filter",
+		"name": "Status",
 		"options": [
-
+			"All",
+			"Ongoing",
+			"Completed"
 		]
 	},
 	{
-		"type": "sort",
-		"name": "A sorter",
-		"canAscend": true,
+		"type": "select",
+		"name": "Genre",
 		"options": [
-
-		],
-		"default": {
-			"index": 0,
-			"ascending": false
-		}
+			"All",
+			"Action",
+			"Adult",
+			"Adventure",
+			"Comedy",
+			"Cooking",
+			"Doujinshi",
+			"Drama",
+			"Ecchi",
+			"Erotica",
+			"Fantasy",
+			"Gender bender",
+			"Harem",
+			"Historical",
+			"Horror",
+			"Isekai",
+			"Josei",
+			"Manhua",
+			"Manhwa",
+			"Martial arts",
+			"Mature",
+			"Mecha",
+			"Medical",
+			"Mystery",
+			"One shot",
+			"Pornographic",
+			"Phychological",
+			"Romance",
+			"School life",
+			"Sci fi",
+			"Seinen",
+			"Shoujo",
+			"Shoujo ai",
+			"Shounen",
+			"Shounen ai",
+			"Slice of Life",
+			"Smut",
+			"Sports",
+			"Supernatural",
+			"Tragedy",
+			"Webtoons",
+			"Yaoi",
+			"Yuri"
+		]
 	}
 ]
