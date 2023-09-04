@@ -75,7 +75,7 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32, url: &mut String) {
 
 	if let Ok(filter_value) = author_filter.value.as_string() {
 		if !search_string.is_empty() {
-			search_string.push_str("+");
+			search_string.push('+');
 		}
 		search_string.push_str(urlencode(filter_value.read().to_lowercase()).as_str());
 		is_searching = true;
