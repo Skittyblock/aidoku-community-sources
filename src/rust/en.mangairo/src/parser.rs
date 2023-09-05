@@ -63,6 +63,7 @@ pub fn parse_manga_details(html: Node, id: String) -> Result<Manga> {
 		MangaContentRating::Nsfw
 	} else if categories.contains(&String::from("Adult"))
 		|| categories.contains(&String::from("Ecchi"))
+		|| categories.contains(&String::from("Smut"))
 	{
 		MangaContentRating::Suggestive
 	} else {
