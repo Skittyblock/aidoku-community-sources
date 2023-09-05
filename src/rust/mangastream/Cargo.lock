@@ -299,14 +299,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "miraiscans"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "mangastream_template",
-]
-
-[[package]]
 name = "once_cell"
 version = "1.18.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -403,6 +395,14 @@ dependencies = [
  "proc-macro2",
  "quote",
  "unicode-ident",
+]
+
+[[package]]
+name = "tenshi"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "mangastream_template",
 ]
 
 [[package]]
