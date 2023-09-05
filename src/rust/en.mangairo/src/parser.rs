@@ -40,14 +40,42 @@ pub fn parse_manga_details(html: Node, id: String) -> Result<Manga> {
 		.read()
 		.trim()
 		.to_string();
+	let status_str = html
+		.select(".story_info_right li:nth-child(5) a")
+		.text()
+		.read()
+		.to_lowercase();
 
-	let url = format!("https://chap.mangairo.com/{}", &id);
+	let url = format!("{}", &id);
 
-	// TODO:
-	let categories: Vec<String> = Vec::new();
-	let status = MangaStatus::Ongoing;
-	let nsfw = MangaContentRating::Safe;
-	let viewer = MangaViewer::Rtl;
+	let mut categories: Vec<String> = Vec::new();
+	html.select(".story_info_right .a-h")
+		.array()
+		.for_each(|tag| categories.push(tag.as_node().expect("node array").text().read()));
+
+	let status = match status_str.as_str() {
+		"ongoing" => MangaStatus::Ongoing,
+		"completed" => MangaStatus::Completed,
+		_ => MangaStatus::Unknown,
+	};
+
+	let nsfw = if categories.contains(&String::from("Pornographic")) {
+		MangaContentRating::Nsfw
+	} else if categories.contains(&String::from("Adult"))
+		|| categories.contains(&String::from("Ecchi"))
+	{
+		MangaContentRating::Suggestive
+	} else {
+		MangaContentRating::Safe
+	};
+
+	let viewer = if categories.contains(&String::from("Manhua"))
+		|| categories.contains(&String::from("Manhwa"))
+	{
+		MangaViewer::Scroll
+	} else {
+		MangaViewer::Rtl
+	};
 
 	Ok(Manga {
 		id,
