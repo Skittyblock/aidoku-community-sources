@@ -19,9 +19,9 @@ impl EncryptedString for String {
 		let mut ciphertext =
 			hex::decode(&encrypted_data[16..]).expect("Failed to hex-decode ciphertext.");
 
-		let plaintext_vec = Aes128CbcDec::new(KEY.into(), iv.into())
+		let plaintext = Aes128CbcDec::new(KEY.into(), iv.into())
 			.decrypt_padded_mut::<Pkcs7>(&mut ciphertext)
 			.expect("Failed to decrypt chapter list");
-		String::from_utf8_lossy(plaintext_vec).into()
+		String::from_utf8_lossy(plaintext).into()
 	}
 }
