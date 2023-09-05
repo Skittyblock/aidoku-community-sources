@@ -68,7 +68,6 @@ pub fn get_chapter_list(html: Node) -> Result<Vec<Chapter>> {
 	for chapter in html.select(".chapter_list ul li a").array() {
 		let obj = chapter.as_node().expect("node array");
 		let url = obj.attr("href").read();
-		// let url = format!("https://www.mangapill.com{}", &id);
 		let id = parse_incoming_url_chapter_id(url.clone());
 
 		if let Some(id_value) = id {
@@ -88,8 +87,21 @@ pub fn get_chapter_list(html: Node) -> Result<Vec<Chapter>> {
 	Ok(chapters)
 }
 
-pub fn get_page_list(_html: Node) -> Result<Vec<Page>> {
-	todo!()
+pub fn get_page_list(html: Node) -> Result<Vec<Page>> {
+	let mut pages: Vec<Page> = Vec::new();
+
+	for (i, page) in html.select(".panel-read-story img").array().enumerate() {
+		let obj = page.as_node().expect("node array");
+		let url = obj.attr("src").read();
+		aidoku::prelude::println!("url: {}", url);
+
+		pages.push(Page {
+			index: i as i32,
+			url,
+			..Default::default()
+		});
+	}
+	Ok(pages)
 }
 
 pub fn get_filtered_url(filters: Vec<Filter>, page: i32, url: &mut String) {
@@ -214,24 +226,22 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32, url: &mut String) {
 pub fn parse_incoming_url_manga_id(url: String) -> Option<String> {
 	// https://chap.mangairo.com/story-pn279847
 	// https://chap.mangairo.com/story-pn279847/chapter-52
-	let parts: Vec<&str> = url.split('/').collect();
-	if parts.len() >= 3 {
-		let manga_id = parts[3];
-
-		Some(format!("{}", manga_id));
+	let mut parts: Vec<&str> = url.split('/').collect();
+	if parts.len() >= 4 {
+		parts.truncate(4);
 	}
 
-	None
+	Some(parts.join("/"))
 }
 
 pub fn parse_incoming_url_chapter_id(url: String) -> Option<String> {
 	// https://chap.mangairo.com/story-pn279847/chapter-52
 	let parts: Vec<&str> = url.split('/').collect();
 	if parts.len() >= 4 {
-		let chapter_id = parts.get(4);
+		let chapter_id = parts[4];
+		aidoku::prelude::println!("chapter id: {}", chapter_id);
 
-		chapter_id?;
-		return Some(format!("{}", chapter_id.unwrap()));
+		return Some(format!("{}", chapter_id));
 	}
 
 	None
