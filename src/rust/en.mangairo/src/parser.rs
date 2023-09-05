@@ -124,7 +124,6 @@ pub fn get_page_list(html: Node) -> Result<Vec<Page>> {
 	for (i, page) in html.select(".panel-read-story img").array().enumerate() {
 		let obj = page.as_node().expect("node array");
 		let url = obj.attr("src").read();
-		aidoku::prelude::println!("url: {}", url);
 
 		pages.push(Page {
 			index: i as i32,
