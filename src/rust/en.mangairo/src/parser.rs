@@ -239,8 +239,6 @@ pub fn parse_incoming_url_chapter_id(url: String) -> Option<String> {
 	let parts: Vec<&str> = url.split('/').collect();
 	if parts.len() >= 4 {
 		let chapter_id = parts[4];
-		aidoku::prelude::println!("chapter id: {}", chapter_id);
-
 		return Some(format!("{}", chapter_id));
 	}
 

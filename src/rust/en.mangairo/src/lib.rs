@@ -73,20 +73,13 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 
 #[get_chapter_list]
 fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
-	let url = format!("{}", &manga_id);
-	aidoku::prelude::println!("url: {}", url);
-	aidoku::prelude::println!("manga id: {}", manga_id);
-	let html = Request::new(url.as_str(), HttpMethod::Get).html()?;
+	let html = Request::new(manga_id, HttpMethod::Get).html()?;
 	parser::get_chapter_list(html)
 }
 
 #[get_page_list]
 fn get_page_list(manga_id: String, chapter_id: String,) -> Result<Vec<Page>> {
 	let url = format!("{}/{}", &manga_id, &chapter_id);
-
-	aidoku::prelude::println!("url: {}", url);
-	aidoku::prelude::println!("manga id: {}", manga_id);
-	aidoku::prelude::println!("chapter id: {}", chapter_id);
 	let html = Request::new(url.as_str(), HttpMethod::Get).html()?;
 	parser::get_page_list(html)
 }
