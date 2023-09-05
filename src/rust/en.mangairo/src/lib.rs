@@ -12,8 +12,6 @@ use aidoku::{
 mod parser;
 use parser::{BASE_URL, USER_AGENT};
 
-const PAGE_SIZE: usize = 50;
-
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	let mut result: Vec<Manga> = Vec::new();
@@ -22,19 +20,21 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	parser::get_filtered_url(filters, page, &mut url);
 	let html = Request::new(url.as_str(), HttpMethod::Get).html()?;
 
-	parser::parse_manga_list(html, &mut result);
+	let total_results = parser::parse_manga_list(html, &mut result);
 
-	if result.len() >= PAGE_SIZE {
-		Ok(MangaPageResult {
-			manga: result,
-			has_more: true,
-		})
-	} else {
-		Ok(MangaPageResult {
-			manga: result,
-			has_more: false,
-		})
+	if let Some(total_results_value) = total_results {
+		if total_results_value > result.len() as i32 * page {
+			return Ok(MangaPageResult {
+				manga: result,
+				has_more: true,
+			});
+		}
 	}
+
+	Ok(MangaPageResult {
+		manga: result,
+		has_more: false,
+	})
 }
 
 #[get_manga_details]
@@ -56,19 +56,21 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 	};
 	let html = Request::new(url.as_str(), HttpMethod::Get).html()?;
 	let mut result: Vec<Manga> = Vec::new();
-	parser::parse_manga_list(html, &mut result);
+	let total_results = parser::parse_manga_list(html, &mut result);
 
-	if result.len() >= PAGE_SIZE {
-		Ok(MangaPageResult {
-			manga: result,
-			has_more: true,
-		})
-	} else {
-		Ok(MangaPageResult {
-			manga: result,
-			has_more: false,
-		})
+	if let Some(total_results_value) = total_results {
+		if total_results_value > result.len() as i32 * page {
+			return Ok(MangaPageResult {
+				manga: result,
+				has_more: true,
+			});
+		}
 	}
+
+	Ok(MangaPageResult {
+		manga: result,
+		has_more: false,
+	})
 }
 
 #[get_chapter_list]
@@ -78,7 +80,7 @@ fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 }
 
 #[get_page_list]
-fn get_page_list(manga_id: String, chapter_id: String,) -> Result<Vec<Page>> {
+fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 	let url = format!("{}/{}", &manga_id, &chapter_id);
 	let html = Request::new(url.as_str(), HttpMethod::Get).html()?;
 	parser::get_page_list(html)

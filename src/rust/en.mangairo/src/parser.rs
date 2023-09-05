@@ -8,7 +8,7 @@ use alloc::string::ToString;
 pub const BASE_URL: &str = "https://w.mangairo.com";
 pub const USER_AGENT: &str = "Mozilla/5.0 (Macintosh; Intel Mac OS X 13_3_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36";
 
-pub fn parse_manga_list(html: Node, result: &mut Vec<Manga>) {
+pub fn parse_manga_list(html: Node, result: &mut Vec<Manga>) -> Option<i32> {
 	for page in html.select(".story-item").array() {
 		let obj = page.as_node().expect("node array");
 
@@ -24,6 +24,19 @@ pub fn parse_manga_list(html: Node, result: &mut Vec<Manga>) {
 				..Default::default()
 			});
 		}
+	}
+
+	// Example: 'Total: 38,202 stories'
+	let mut total_str = html.select(".quantitychapter").text().read();
+	total_str = total_str.replace("Total: ", "");
+	total_str = total_str.replace(" stories", "");
+	total_str = total_str.chars().filter(|&c| c != ',').collect();
+
+	let total_result = total_str.parse::<i32>();
+	if let Ok(total) = total_result {
+		Some(total)
+	} else {
+		None
 	}
 }
 
