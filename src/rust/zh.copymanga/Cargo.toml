@@ -18,6 +18,6 @@ lto = true
 [dependencies]
 aes = "0.8.3"
 aidoku = { git = "https://github.com/Aidoku/aidoku-rs", features = ["helpers"] }
-cbc = { version = "0.1.2", features = ["alloc"] }
+cbc = "0.1.2"
 hex = { version = "0.4.3", default-features = false, features = ["alloc"] }
 uuid = { version = "1.4.1", default-features = false }

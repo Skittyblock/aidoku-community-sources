@@ -16,12 +16,12 @@ impl EncryptedString for String {
 	fn decrypt(self) -> String {
 		let encrypted_data = self.as_bytes();
 		let iv = &encrypted_data[..16];
-		let ciphertext =
+		let mut ciphertext =
 			hex::decode(&encrypted_data[16..]).expect("Failed to hex-decode ciphertext.");
 
 		let plaintext_vec = Aes128CbcDec::new(KEY.into(), iv.into())
-			.decrypt_padded_vec_mut::<Pkcs7>(&ciphertext)
+			.decrypt_padded_mut::<Pkcs7>(&mut ciphertext)
 			.expect("Failed to decrypt chapter list");
-		String::from_utf8_lossy(&plaintext_vec).into()
+		String::from_utf8_lossy(plaintext_vec).into()
 	}
 }
