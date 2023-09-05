@@ -59,12 +59,12 @@ pub fn parse_manga_details(html: Node, id: String) -> Result<Manga> {
 		_ => MangaStatus::Unknown,
 	};
 
-	let nsfw = if categories.contains(&String::from("Pornographic")) {
-		MangaContentRating::Nsfw
-	} else if categories.contains(&String::from("Adult"))
-		|| categories.contains(&String::from("Ecchi"))
+	let nsfw = if categories.contains(&String::from("Pornographic"))
+		|| categories.contains(&String::from("Adult"))
 		|| categories.contains(&String::from("Smut"))
 	{
+		MangaContentRating::Nsfw
+	} else if categories.contains(&String::from("Ecchi")) {
 		MangaContentRating::Suggestive
 	} else {
 		MangaContentRating::Safe
@@ -72,6 +72,7 @@ pub fn parse_manga_details(html: Node, id: String) -> Result<Manga> {
 
 	let viewer = if categories.contains(&String::from("Manhua"))
 		|| categories.contains(&String::from("Manhwa"))
+		|| categories.contains(&String::from("Webtoons"))
 	{
 		MangaViewer::Scroll
 	} else {
