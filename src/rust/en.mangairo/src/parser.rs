@@ -1,6 +1,6 @@
 use aidoku::{
 	error::Result, prelude::*, std::html::Node, std::String, std::Vec, Chapter, Filter, FilterType,
-	Manga, /* MangaContentRating, MangaStatus, MangaViewer, */ Page,
+	Manga, MangaContentRating, MangaStatus, MangaViewer, Page,
 };
 
 pub const BASE_URL: &str = "https://w.mangairo.com";
@@ -25,8 +25,35 @@ pub fn parse_manga_list(html: Node, result: &mut Vec<Manga>) {
 	}
 }
 
-pub fn parse_manga(_html: Node, _id: String) -> Result<Manga> {
-	todo!()
+pub fn parse_manga_details(html: Node, id: String) -> Result<Manga> {
+	let title = html
+		.select(".breadcrumbs p span a span")
+		.last()
+		.text()
+		.read();
+	let cover = html.select(".avatar").attr("src").read();
+	let description = String::from(html.select(".story_content p").text().read().trim());
+
+	let url = format!("https://chap.mangairo.com/{}", &id);
+
+	// TODO:
+	let categories: Vec<String> = Vec::new();
+	let status = MangaStatus::Ongoing;
+	let nsfw = MangaContentRating::Safe;
+	let viewer = MangaViewer::Rtl;
+
+	Ok(Manga {
+		id,
+		cover,
+		title,
+		description,
+		url,
+		categories,
+		status,
+		nsfw,
+		viewer,
+		..Default::default()
+	})
 }
 
 pub fn get_chapter_list(_html: Node) -> Result<Vec<Chapter>> {
