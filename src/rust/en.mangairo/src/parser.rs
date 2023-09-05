@@ -63,8 +63,28 @@ pub fn parse_manga_details(html: Node, id: String) -> Result<Manga> {
 	})
 }
 
-pub fn get_chapter_list(_html: Node) -> Result<Vec<Chapter>> {
-	let chapters: Vec<Chapter> = Vec::new();
+pub fn get_chapter_list(html: Node) -> Result<Vec<Chapter>> {
+	let mut chapters: Vec<Chapter> = Vec::new();
+	for chapter in html.select(".chapter_list ul li a").array() {
+		let obj = chapter.as_node().expect("node array");
+		let url = obj.attr("href").read();
+		// let url = format!("https://www.mangapill.com{}", &id);
+		let id = parse_incoming_url_chapter_id(url.clone());
+
+		if let Some(id_value) = id {
+			let split = id_value.split('-');
+			let vec = split.collect::<Vec<&str>>();
+			let chap_num = vec[vec.len() - 1].parse().unwrap();
+
+			chapters.push(Chapter {
+				id: id_value,
+				chapter: chap_num,
+				url,
+				lang: String::from("en"),
+				..Default::default()
+			});
+		}
+	}
 	Ok(chapters)
 }
 
