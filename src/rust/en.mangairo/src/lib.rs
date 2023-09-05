@@ -39,7 +39,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 
 #[get_manga_details]
 fn get_manga_details(manga_id: String) -> Result<Manga> {
-	let url = format!("https://w.mangairo.com/{}", &manga_id);
+	let url = format!("https://chap.mangairo.com/{}", &manga_id);
 	let html = Request::new(url.as_str(), HttpMethod::Get).html()?;
 	parser::parse_manga_details(html, manga_id)
 }

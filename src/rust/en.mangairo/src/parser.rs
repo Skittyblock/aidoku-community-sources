@@ -2,6 +2,8 @@ use aidoku::{
 	error::Result, prelude::*, std::html::Node, std::String, std::Vec, Chapter, Filter, FilterType,
 	Manga, MangaContentRating, MangaStatus, MangaViewer, Page,
 };
+extern crate alloc;
+use alloc::string::ToString;
 
 pub const BASE_URL: &str = "https://w.mangairo.com";
 pub const USER_AGENT: &str = "Mozilla/5.0 (Macintosh; Intel Mac OS X 13_3_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36";
@@ -32,7 +34,12 @@ pub fn parse_manga_details(html: Node, id: String) -> Result<Manga> {
 		.text()
 		.read();
 	let cover = html.select(".avatar").attr("src").read();
-	let description = String::from(html.select(".story_content p").text().read().trim());
+	let description = html
+		.select("div#story_discription p")
+		.text()
+		.read()
+		.trim()
+		.to_string();
 
 	let url = format!("https://chap.mangairo.com/{}", &id);
 
@@ -57,7 +64,8 @@ pub fn parse_manga_details(html: Node, id: String) -> Result<Manga> {
 }
 
 pub fn get_chapter_list(_html: Node) -> Result<Vec<Chapter>> {
-	todo!()
+	let chapters: Vec<Chapter> = Vec::new();
+	Ok(chapters)
 }
 
 pub fn get_page_list(_html: Node) -> Result<Vec<Page>> {
