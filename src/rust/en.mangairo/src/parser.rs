@@ -313,20 +313,53 @@ pub fn i32_to_string(mut integer: i32) -> String {
 }
 
 pub fn urlencode(string: String) -> String {
-	let mut result: Vec<u8> = Vec::with_capacity(string.len() * 3);
-	let hex = "0123456789abcdef".as_bytes();
-	let bytes = string.as_bytes();
+	let mut str = string.to_lowercase();
 
-	for byte in bytes {
-		let curr = *byte;
-		if curr.is_ascii_lowercase() || curr.is_ascii_uppercase() || curr.is_ascii_digit() {
-			result.push(curr);
+	let match_a = [
+		'à', 'á', 'ạ', 'ả', 'ã', 'â', 'ầ', 'ấ', 'ậ', 'ẩ', 'ẫ', 'ă', 'ằ', 'ắ', 'ặ', 'ẳ', 'ẵ',
+	];
+	let match_e = ['è', 'é', 'ẹ', 'ẻ', 'ẽ', 'ê', 'ề', 'ế', 'ệ', 'ể', 'ễ'];
+	let match_i = ['ì', 'í', 'ị', 'ỉ', 'ĩ'];
+	let match_o = [
+		'ò', 'ó', 'ọ', 'ỏ', 'õ', 'ô', 'ồ', 'ố', 'ộ', 'ổ', 'ỗ', 'ơ', 'ờ', 'ớ', 'ợ', 'ở', 'ỡ',
+	];
+	let match_u = ['ù', 'ú', 'ụ', 'ủ', 'ũ', 'ư', 'ừ', 'ứ', 'ự', 'ử', 'ữ'];
+	let match_y = ['ỳ', 'ý', 'ỵ', 'ỷ', 'ỹ'];
+	let match_d = "đ";
+	let match_symbols = [
+		'!', '@', '%', '^', '*', '(', ')', '+', '=', '<', '>', '?', '/', ',', '.', ':', ';', '\'',
+		' ', '"', '&', '#', '[', ']', '~', '-', '$', '|', '_',
+	];
+
+	str = str.replace(&match_a, "a");
+	str = str.replace(&match_e, "e");
+	str = str.replace(&match_i, "i");
+	str = str.replace(&match_o, "o");
+	str = str.replace(&match_u, "u");
+	str = str.replace(&match_y, "y");
+	str = str.replace(match_d, "d");
+	str = str.replace(&match_symbols, "_");
+	str = replace_consecutive_underscores(str);
+	str = str.trim_matches('_').to_string();
+
+	str
+}
+
+fn replace_consecutive_underscores(input: String) -> String {
+	let mut result = String::new();
+	let mut consecutive_underscore = false;
+
+	for c in input.chars() {
+		if c == '_' {
+			if !consecutive_underscore {
+				result.push(c);
+				consecutive_underscore = true;
+			}
 		} else {
-			result.push(b'%');
-			result.push(hex[curr as usize >> 4]);
-			result.push(hex[curr as usize & 15]);
+			result.push(c);
+			consecutive_underscore = false;
 		}
 	}
 
-	String::from_utf8(result).unwrap_or_default()
+	result
 }
