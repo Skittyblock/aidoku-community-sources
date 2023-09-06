@@ -406,6 +406,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "tenshi"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "mangastream_template",
+]
+
+[[package]]
 name = "unicode-ident"
 version = "1.0.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"

@@ -10,6 +10,7 @@ fn get_instance() -> MangaStreamSource {
 	MangaStreamSource {
 		base_url: String::from("https://rawkuma.com"),
 		protocol: true,
+		alt_pages: true,
 		..Default::default()
 	}
 }
