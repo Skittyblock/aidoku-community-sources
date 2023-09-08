@@ -18,12 +18,12 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	let url = parser::get_filtered_url(filters, page);
 	let html = Request::new(url.as_str(), HttpMethod::Get).html()?;
 
-	let (result, total_results) = parser::parse_manga_list(html);
+	let (manga, total_results) = parser::parse_manga_list(html);
 
-	let has_more = total_results.map_or(false, |value| value > result.len() as i32 * page);
+	let has_more = total_results.map_or(false, |value| value > manga.len() as i32 * page);
 	Ok(MangaPageResult {
-		manga: result,
-		has_more: has_more,
+		manga,
+		has_more,
 	})
 }
 
@@ -44,12 +44,12 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 		_ => format!("{BASE_URL}/manga-list/type-latest/ctg-all/state-all/page-{page}"),
 	};
 	let html = Request::new(url.as_str(), HttpMethod::Get).html()?;
-	let (result, total_results) = parser::parse_manga_list(html);
+	let (manga, total_results) = parser::parse_manga_list(html);
 
-	let has_more = total_results.map_or(false, |value| value > result.len() as i32 * page);
+	let has_more = total_results.map_or(false, |value| value > manga.len() as i32 * page);
 	Ok(MangaPageResult {
-		manga: result,
-		has_more: has_more,
+		manga,
+		has_more,
 	})
 }
 
