@@ -21,18 +21,10 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 
 	let total_results = parser::parse_manga_list(html, &mut result);
 
-	if let Some(total_results_value) = total_results {
-		if total_results_value > result.len() as i32 * page {
-			return Ok(MangaPageResult {
-				manga: result,
-				has_more: true,
-			});
-		}
-	}
-
+	let has_more = total_results.map_or(false, |value| value > result.len() as i32 * page);
 	Ok(MangaPageResult {
 		manga: result,
-		has_more: false,
+		has_more: has_more,
 	})
 }
 
@@ -56,18 +48,10 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 	let mut result: Vec<Manga> = Vec::new();
 	let total_results = parser::parse_manga_list(html, &mut result);
 
-	if let Some(total_results_value) = total_results {
-		if total_results_value > result.len() as i32 * page {
-			return Ok(MangaPageResult {
-				manga: result,
-				has_more: true,
-			});
-		}
-	}
-
+	let has_more = total_results.map_or(false, |value| value > result.len() as i32 * page);
 	Ok(MangaPageResult {
 		manga: result,
-		has_more: false,
+		has_more: has_more,
 	})
 }
 
