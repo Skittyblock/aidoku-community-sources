@@ -16,8 +16,7 @@ use parser::{BASE_URL, USER_AGENT};
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	let mut result: Vec<Manga> = Vec::new();
 
-	let mut url = String::new();
-	parser::get_filtered_url(filters, page, &mut url);
+	let url = parser::get_filtered_url(filters, page);
 	let html = Request::new(url.as_str(), HttpMethod::Get).html()?;
 
 	let total_results = parser::parse_manga_list(html, &mut result);

@@ -158,7 +158,8 @@ pub fn get_page_list(html: Node) -> Result<Vec<Page>> {
 	Ok(pages)
 }
 
-pub fn get_filtered_url(filters: Vec<Filter>, page: i32, url: &mut String) {
+pub fn get_filtered_url(filters: Vec<Filter>, page: i32) -> String {
+	let mut url = String::new();
 	let mut is_searching = false;
 	let mut search_string = String::new();
 	url.push_str(BASE_URL);
@@ -275,6 +276,8 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32, url: &mut String) {
 		url.push_str("/page-");
 		url.push_str(&page.to_string());
 	}
+	
+	url
 }
 
 pub fn parse_incoming_url_manga_id(url: String) -> Option<String> {
