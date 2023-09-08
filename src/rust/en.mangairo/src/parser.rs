@@ -1,7 +1,7 @@
 use aidoku::{
-	error::Result, prelude::*, std::html::Node, std::String, std::Vec, Chapter, Filter, FilterType,
-	Manga, MangaContentRating, MangaStatus, MangaViewer, Page,
-	helpers::uri::QueryParameters,
+	error::Result, helpers::uri::QueryParameters, prelude::*, std::html::Node, std::String,
+	std::Vec, Chapter, Filter, FilterType, Manga, MangaContentRating, MangaStatus, MangaViewer,
+	Page,
 };
 extern crate alloc;
 use alloc::string::ToString;
@@ -34,7 +34,9 @@ pub fn parse_manga_list(html: Node, page: i32) -> (Vec<Manga>, bool) {
 	total_str = total_str.replace(" stories", "");
 	total_str = total_str.chars().filter(|&c| c != ',').collect();
 
-	let has_more = total_str.parse::<i32>().map_or(false, |value| value > result.len() as i32 * page);
+	let has_more = total_str
+		.parse::<i32>()
+		.map_or(false, |value| value > result.len() as i32 * page);
 	(result, has_more)
 }
 
@@ -158,125 +160,120 @@ pub fn get_page_list(html: Node) -> Result<Vec<Page>> {
 
 pub fn get_filtered_url(filters: Vec<Filter>, page: i32) -> String {
 	let mut is_searching = false;
-	let mut search_string = String::new();
 
-	let title_filter: Option<Filter> = filters
-		.iter()
-		.find(|&x| x.kind == FilterType::Title)
-		.cloned();
-	let author_filter: Option<Filter> = filters
-		.iter()
-		.find(|&x| x.kind == FilterType::Author)
-		.cloned();
-	let status_filter: Option<Filter> = filters
-		.iter()
-		.find(|&x| x.kind == FilterType::Select && x.name == "Status")
-		.cloned();
-	let sort_filter: Option<Filter> = filters
-		.iter()
-		.find(|&x| x.kind == FilterType::Select && x.name == "Sort")
-		.cloned();
-	let genre_filter: Option<Filter> = filters
-		.iter()
-		.find(|&x| x.kind == FilterType::Select && x.name == "Genre")
-		.cloned();
-
-	if let Some(title_filter_value) = title_filter {
-		if let Ok(filter_value) = title_filter_value.value.as_string() {
-			search_string.push_str(urlencode(filter_value.read().to_lowercase()).as_str());
-			is_searching = true;
-		}
-	}
-
-	if let Some(author_filter_value) = author_filter {
-		if let Ok(filter_value) = author_filter_value.value.as_string() {
-			if !search_string.is_empty() {
-				search_string.push('_');
+	let mut title_filter = String::new();
+	let mut author_filter = String::new();
+	let mut sort_filter = -1;
+	let mut genre_filter = -1;
+	let mut status_filter = -1;
+	for filter in filters {
+		match filter.kind {
+			FilterType::Title => {
+				if let Ok(filter) = filter.value.as_string() {
+					title_filter = urlencode(filter.read().to_lowercase());
+					is_searching = true;
+				}
 			}
-			search_string.push_str(urlencode(filter_value.read().to_lowercase()).as_str());
-			is_searching = true;
+			FilterType::Author => {
+				if let Ok(filter) = filter.value.as_string() {
+					author_filter = urlencode(filter.read().to_lowercase());
+					is_searching = true;
+				}
+			}
+			FilterType::Select => {
+				if filter.name.as_str() == "Sort" {
+					sort_filter = filter.value.as_int().unwrap_or(-1);
+				}
+				if filter.name.as_str() == "Genre" {
+					genre_filter = filter.value.as_int().unwrap_or(-1)
+				}
+				if filter.name.as_str() == "Status" {
+					status_filter = filter.value.as_int().unwrap_or(-1)
+				}
+			}
+			_ => continue,
 		}
 	}
 
-	let mut url = String::new();
-	url.push_str(BASE_URL);
+	let mut search_string = String::new();
+	search_string.push_str(&title_filter);
+	if !search_string.is_empty() && !author_filter.is_empty() {
+		search_string.push('_');
+	}
+	search_string.push_str(&author_filter);
+
 	if is_searching {
-		url.push_str("/list/search/");
-		url.push_str(&search_string);
 		let mut query = QueryParameters::new();
 		query.set("page", Some(page.to_string().as_str()));
-		url.push_str(&format!("?{query}"));
-	} else {
-		url.push_str("/manga-list/type-");
-		match sort_filter.unwrap().value.as_int().unwrap_or(-1) {
-			0 => url.push_str("latest"),
-			1 => url.push_str("newest"),
-			2 => url.push_str("topview"),
-			_ => url.push_str("latest"),
-		}
-		// Genre
-		url.push_str("/ctg-");
-		match genre_filter.unwrap().value.as_int().unwrap_or(-1) {
-			0 => url.push_str("all"), // "All",
-			1 => url.push('2'),       // "Action",
-			2 => url.push('3'),       // "Adult",
-			3 => url.push('4'),       // "Adventure",
-			4 => url.push('6'),       // "Comedy",
-			5 => url.push('7'),       // "Cooking",
-			6 => url.push('9'),       // "Doujinshi",
-			7 => url.push_str("10"),  // "Drama",
-			8 => url.push_str("11"),  // "Ecchi",
-			9 => url.push_str("48"),  // "Erotica",
-			10 => url.push_str("12"), // "Fantasy",
-			11 => url.push_str("13"), // "Gender bender",
-			12 => url.push_str("14"), // "Harem",
-			13 => url.push_str("15"), // "Historical",
-			14 => url.push_str("16"), // "Horror",
-			15 => url.push_str("45"), // "Isekai",
-			16 => url.push_str("17"), // "Josei",
-			17 => url.push_str("44"), // "Manhua",
-			18 => url.push_str("43"), // "Manhwa",
-			19 => url.push_str("19"), // "Martial arts",
-			20 => url.push_str("20"), // "Mature",
-			21 => url.push_str("21"), // "Mecha",
-			22 => url.push_str("22"), // "Medical",
-			23 => url.push_str("24"), // "Mystery",
-			24 => url.push_str("25"), // "One shot",
-			25 => url.push_str("47"), // "Pornographic",
-			26 => url.push_str("26"), // "Phychological",
-			27 => url.push_str("27"), // "Romance",
-			28 => url.push_str("28"), // "School life",
-			29 => url.push_str("29"), // "Sci fi",
-			30 => url.push_str("30"), // "Seinen",
-			31 => url.push_str("31"), // "Shoujo",
-			32 => url.push_str("32"), // "Shoujo ai",
-			33 => url.push_str("33"), // "Shounen",
-			34 => url.push_str("34"), // "Shounen ai",
-			35 => url.push_str("35"), // "Slice of Life",
-			36 => url.push_str("36"), // "Smut",
-			37 => url.push_str("37"), // "Sports",
-			38 => url.push_str("38"), // "Supernatural",
-			39 => url.push_str("39"), // "Tragedy",
-			40 => url.push_str("40"), // "Webtoons",
-			41 => url.push_str("41"), // "Yaoi",
-			42 => url.push_str("42"), // "Yuri"
-			_ => url.push_str("all"),
-		}
 
-		// State
-		url.push_str("/state-");
-		match status_filter.unwrap().value.as_int().unwrap_or(0) {
-			0 => url.push_str("all"),
-			1 => url.push_str("ongoing"),
-			2 => url.push_str("completed"),
-			_ => url.push_str("all"),
-		}
-
-		url.push_str("/page-");
-		url.push_str(&page.to_string());
+		return format!("{BASE_URL}/list/search/{search_string}?{query}");
 	}
-	
-	url
+
+	let sort = match sort_filter {
+		0 => "latest",
+		1 => "newest",
+		2 => "topview",
+		_ => "latest",
+	};
+
+	// Genre
+	let ctg = match genre_filter {
+		0 => "all", // "All",
+		1 => "2",   // "Action",
+		2 => "3",   // "Adult",
+		3 => "4",   // "Adventure",
+		4 => "6",   // "Comedy",
+		5 => "7",   // "Cooking",
+		6 => "9",   // "Doujinshi",
+		7 => "10",  // "Drama",
+		8 => "11",  // "Ecchi",
+		9 => "48",  // "Erotica",
+		10 => "12", // "Fantasy",
+		11 => "13", // "Gender bender",
+		12 => "14", // "Harem",
+		13 => "15", // "Historical",
+		14 => "16", // "Horror",
+		15 => "45", // "Isekai",
+		16 => "17", // "Josei",
+		17 => "44", // "Manhua",
+		18 => "43", // "Manhwa",
+		19 => "19", // "Martial arts",
+		20 => "20", // "Mature",
+		21 => "21", // "Mecha",
+		22 => "22", // "Medical",
+		23 => "24", // "Mystery",
+		24 => "25", // "One shot",
+		25 => "47", // "Pornographic",
+		26 => "26", // "Phychological",
+		27 => "27", // "Romance",
+		28 => "28", // "School life",
+		29 => "29", // "Sci fi",
+		30 => "30", // "Seinen",
+		31 => "31", // "Shoujo",
+		32 => "32", // "Shoujo ai",
+		33 => "33", // "Shounen",
+		34 => "34", // "Shounen ai",
+		35 => "35", // "Slice of Life",
+		36 => "36", // "Smut",
+		37 => "37", // "Sports",
+		38 => "38", // "Supernatural",
+		39 => "39", // "Tragedy",
+		40 => "40", // "Webtoons",
+		41 => "41", // "Yaoi",
+		42 => "42", // "Yuri"
+		_ => "all",
+	};
+
+	// State
+	let status = match status_filter {
+		0 => "all",
+		1 => "ongoing",
+		2 => "completed",
+		_ => "all",
+	};
+
+	let page = &page.to_string();
+	format!("{BASE_URL}/manga-list/type-{sort}/ctg-{ctg}/state-{status}/page-{page}")
 }
 
 pub fn parse_incoming_url_manga_id(url: String) -> Option<String> {
