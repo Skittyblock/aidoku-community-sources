@@ -1,6 +1,7 @@
 use aidoku::{
 	error::Result, prelude::*, std::html::Node, std::String, std::Vec, Chapter, Filter, FilterType,
 	Manga, MangaContentRating, MangaStatus, MangaViewer, Page,
+	helpers::uri::QueryParameters,
 };
 extern crate alloc;
 use alloc::string::ToString;
@@ -156,10 +157,8 @@ pub fn get_page_list(html: Node) -> Result<Vec<Page>> {
 }
 
 pub fn get_filtered_url(filters: Vec<Filter>, page: i32) -> String {
-	let mut url = String::new();
 	let mut is_searching = false;
 	let mut search_string = String::new();
-	url.push_str(BASE_URL);
 
 	let title_filter: Option<Filter> = filters
 		.iter()
@@ -199,11 +198,14 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32) -> String {
 		}
 	}
 
+	let mut url = String::new();
+	url.push_str(BASE_URL);
 	if is_searching {
 		url.push_str("/list/search/");
 		url.push_str(&search_string);
-		url.push_str("?page=");
-		url.push_str(&page.to_string());
+		let mut query = QueryParameters::new();
+		query.set("page", Some(page.to_string().as_str()));
+		url.push_str(&format!("?{query}"));
 	} else {
 		url.push_str("/manga-list/type-");
 		match sort_filter.unwrap().value.as_int().unwrap_or(-1) {
