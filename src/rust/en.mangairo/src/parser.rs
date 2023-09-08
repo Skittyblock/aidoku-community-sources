@@ -320,14 +320,14 @@ pub fn urlencode(string: String) -> String {
 		' ', '"', '&', '#', '[', ']', '~', '-', '$', '|', '_',
 	];
 
-	str = str.replace(&match_a, "a");
-	str = str.replace(&match_e, "e");
-	str = str.replace(&match_i, "i");
-	str = str.replace(&match_o, "o");
-	str = str.replace(&match_u, "u");
-	str = str.replace(&match_y, "y");
+	str = str.replace(match_a, "a");
+	str = str.replace(match_e, "e");
+	str = str.replace(match_i, "i");
+	str = str.replace(match_o, "o");
+	str = str.replace(match_u, "u");
+	str = str.replace(match_y, "y");
 	str = str.replace(match_d, "d");
-	str = str.replace(&match_symbols, "_");
+	str = str.replace(match_symbols, "_");
 	str = replace_consecutive_underscores(str);
 	str = str.trim_matches('_').to_string();
 
