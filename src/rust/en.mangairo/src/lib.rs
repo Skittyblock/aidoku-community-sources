@@ -14,15 +14,11 @@ use parser::{BASE_URL, USER_AGENT};
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
-
 	let url = parser::get_filtered_url(filters, page);
 	let html = Request::new(url.as_str(), HttpMethod::Get).html()?;
 
 	let (manga, has_more) = parser::parse_manga_list(html, page);
-	Ok(MangaPageResult {
-		manga,
-		has_more,
-	})
+	Ok(MangaPageResult { manga, has_more })
 }
 
 #[get_manga_details]
@@ -44,10 +40,7 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 	let html = Request::new(url.as_str(), HttpMethod::Get).html()?;
 	let (manga, has_more) = parser::parse_manga_list(html, page);
 
-	Ok(MangaPageResult {
-		manga,
-		has_more,
-	})
+	Ok(MangaPageResult { manga, has_more })
 }
 
 #[get_chapter_list]
