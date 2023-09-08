@@ -14,12 +14,12 @@ pub fn parse_manga_list(html: Node, result: &mut Vec<Manga>) -> Option<i32> {
 
 		let id = obj.select(".story-name a").attr("href").read();
 		let title = obj.select(".story-name a ").text().read();
-		let img = obj.select(".story-list-img img").attr("src").read();
+		let cover = obj.select(".story-list-img img").attr("src").read();
 
-		if !id.is_empty() && !title.is_empty() && !img.is_empty() {
+		if !id.is_empty() && !title.is_empty() && !cover.is_empty() {
 			result.push(Manga {
 				id,
-				cover: img,
+				cover,
 				title,
 				..Default::default()
 			});
