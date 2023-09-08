@@ -14,12 +14,11 @@ use parser::{BASE_URL, USER_AGENT};
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
-	let mut result: Vec<Manga> = Vec::new();
 
 	let url = parser::get_filtered_url(filters, page);
 	let html = Request::new(url.as_str(), HttpMethod::Get).html()?;
 
-	let total_results = parser::parse_manga_list(html, &mut result);
+	let (result, total_results) = parser::parse_manga_list(html);
 
 	let has_more = total_results.map_or(false, |value| value > result.len() as i32 * page);
 	Ok(MangaPageResult {
@@ -45,8 +44,7 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 		_ => format!("{BASE_URL}/manga-list/type-latest/ctg-all/state-all/page-{page}"),
 	};
 	let html = Request::new(url.as_str(), HttpMethod::Get).html()?;
-	let mut result: Vec<Manga> = Vec::new();
-	let total_results = parser::parse_manga_list(html, &mut result);
+	let (result, total_results) = parser::parse_manga_list(html);
 
 	let has_more = total_results.map_or(false, |value| value > result.len() as i32 * page);
 	Ok(MangaPageResult {
