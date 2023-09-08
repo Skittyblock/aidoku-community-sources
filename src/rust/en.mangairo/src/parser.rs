@@ -161,7 +161,7 @@ pub fn get_page_list(html: Node) -> Result<Vec<Page>> {
 pub fn get_filtered_url(filters: Vec<Filter>, page: i32, url: &mut String) {
 	let mut is_searching = false;
 	let mut search_string = String::new();
-	url.push_str("https://w.mangairo.com");
+	url.push_str(BASE_URL);
 
 	let title_filter: Option<Filter> = filters
 		.iter()
