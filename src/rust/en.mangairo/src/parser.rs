@@ -205,7 +205,7 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32, url: &mut String) {
 		url.push_str("/list/search/");
 		url.push_str(&search_string);
 		url.push_str("?page=");
-		url.push_str(&i32_to_string(page));
+		url.push_str(&page.to_string());
 	} else {
 		url.push_str("/manga-list/type-");
 		match sort_filter.unwrap().value.as_int().unwrap_or(-1) {
@@ -273,7 +273,7 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32, url: &mut String) {
 		}
 
 		url.push_str("/page-");
-		url.push_str(&i32_to_string(page));
+		url.push_str(&page.to_string());
 	}
 }
 
@@ -300,28 +300,6 @@ pub fn parse_incoming_url_chapter_id(url: String) -> Option<String> {
 }
 
 // HELPER FUNCTIONS
-
-pub fn i32_to_string(mut integer: i32) -> String {
-	if integer == 0 {
-		return String::from("0");
-	}
-	let mut string = String::with_capacity(11);
-	let pos = if integer < 0 {
-		string.insert(0, '-');
-		1
-	} else {
-		0
-	};
-	while integer != 0 {
-		let mut digit = integer % 10;
-		if pos == 1 {
-			digit *= -1;
-		}
-		string.insert(pos, char::from_u32((digit as u32) + ('0' as u32)).unwrap());
-		integer /= 10;
-	}
-	string
-}
 
 pub fn urlencode(string: String) -> String {
 	let mut str = string.to_lowercase();
