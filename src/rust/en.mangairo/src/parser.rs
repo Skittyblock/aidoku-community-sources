@@ -135,7 +135,7 @@ pub fn get_chapter_list(html: Node) -> Result<Vec<Chapter>> {
 				id,
 				chapter,
 				url,
-				lang: String::from("en"),
+				lang,
 				..Default::default()
 			});
 		}
