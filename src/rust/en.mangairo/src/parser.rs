@@ -125,13 +125,14 @@ pub fn get_chapter_list(html: Node) -> Result<Vec<Chapter>> {
 		let url = obj.attr("href").read();
 		let id = parse_incoming_url_chapter_id(url.clone());
 
-		if let Some(id_value) = id {
-			let split = id_value.split('-');
+		if let Some(id) = id {
+			let split = id.split('-');
 			let vec = split.collect::<Vec<&str>>();
 			let chapter = vec[vec.len() - 1].parse().unwrap();
+			let lang: String = "en".to_string();
 
 			chapters.push(Chapter {
-				id: id_value,
+				id,
 				chapter,
 				url,
 				lang: String::from("en"),
