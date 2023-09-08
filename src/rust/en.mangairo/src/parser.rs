@@ -8,7 +8,7 @@ use alloc::string::ToString;
 pub const BASE_URL: &str = "https://w.mangairo.com";
 pub const USER_AGENT: &str = "Mozilla/5.0 (Macintosh; Intel Mac OS X 13_3_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36";
 
-pub fn parse_manga_list(html: Node) -> (Vec<Manga>, Option<i32>) {
+pub fn parse_manga_list(html: Node, page: i32) -> (Vec<Manga>, bool) {
 	let mut result: Vec<Manga> = Vec::new();
 	for page in html.select(".story-item").array() {
 		let obj = page.as_node().expect("node array");
@@ -33,7 +33,8 @@ pub fn parse_manga_list(html: Node) -> (Vec<Manga>, Option<i32>) {
 	total_str = total_str.replace(" stories", "");
 	total_str = total_str.chars().filter(|&c| c != ',').collect();
 
-	(result, total_str.parse::<i32>().ok())
+	let has_more = total_str.parse::<i32>().map_or(false, |value| value > result.len() as i32 * page);
+	(result, has_more)
 }
 
 pub fn parse_manga_details(html: Node, id: String) -> Result<Manga> {
