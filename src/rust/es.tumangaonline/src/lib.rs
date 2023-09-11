@@ -316,9 +316,14 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 			let chapter_num = {
 				let num_text = element.select("a.btn-collapse").text().read();
 				let half = num_text.substring_after("Capítulo ").unwrap_or(&num_text);
-				half.substring_before(":")
-					.unwrap_or(half)
-					.parse::<f32>()
+				half.chars()
+					.filter(|a| (*a >= '0' && *a <= '9') || *a == ' ' || *a == '.')
+					.collect::<String>()
+					.split(' ')
+					.collect::<Vec<&str>>()
+					.into_iter()
+					.map(|a| a.parse::<f32>().unwrap_or(0.0))
+					.find(|a| *a > 0.0)
 					.unwrap_or(0.0)
 			};
 
