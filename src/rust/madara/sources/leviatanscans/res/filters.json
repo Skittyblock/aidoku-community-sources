@@ -21,6 +21,10 @@
 			{
 				"type": "check",
 				"name": "Completed"
+			},
+			{
+				"type": "check",
+				"name": "Upcoming"
 			}
 		]
 	},
@@ -43,8 +47,18 @@
 			},
 			{
 				"type": "genre",
-				"name": "Adventure",
+				"name": "adventure",
 				"id": "adventure"
+			},
+			{
+				"type": "genre",
+				"name": "boys",
+				"id": "boys"
+			},
+			{
+				"type": "genre",
+				"name": "Chinese",
+				"id": "chinese"
 			},
 			{
 				"type": "genre",
@@ -53,8 +67,13 @@
 			},
 			{
 				"type": "genre",
-				"name": "Drama",
+				"name": "drama",
 				"id": "drama"
+			},
+			{
+				"type": "genre",
+				"name": "ecchi",
+				"id": "ecchi"
 			},
 			{
 				"type": "genre",
@@ -63,13 +82,28 @@
 			},
 			{
 				"type": "genre",
-				"name": "Harem",
-				"id": "harem"
+				"name": "fighting",
+				"id": "fighting"
+			},
+			{
+				"type": "genre",
+				"name": "fun",
+				"id": "fun"
+			},
+			{
+				"type": "genre",
+				"name": "girl",
+				"id": "girl"
 			},
 			{
 				"type": "genre",
 				"name": "Historical",
 				"id": "historical"
+			},
+			{
+				"type": "genre",
+				"name": "horrow",
+				"id": "horrow"
 			},
 			{
 				"type": "genre",
@@ -80,6 +114,11 @@
 				"type": "genre",
 				"name": "Magic",
 				"id": "magic"
+			},
+			{
+				"type": "genre",
+				"name": "manhwa",
+				"id": "manhwa"
 			},
 			{
 				"type": "genre",
@@ -103,11 +142,6 @@
 			},
 			{
 				"type": "genre",
-				"name": "Sci-fi",
-				"id": "sci-fi"
-			},
-			{
-				"type": "genre",
 				"name": "Seinen",
 				"id": "seinen"
 			},
@@ -123,23 +157,8 @@
 			},
 			{
 				"type": "genre",
-				"name": "Sports",
-				"id": "sports"
-			},
-			{
-				"type": "genre",
 				"name": "Supernatural",
 				"id": "supernatural"
-			},
-			{
-				"type": "genre",
-				"name": "Time Travel",
-				"id": "time-travel"
-			},
-			{
-				"type": "genre",
-				"name": "Urban",
-				"id": "urban"
 			},
 			{
 				"type": "genre",
@@ -150,11 +169,6 @@
 				"type": "genre",
 				"name": "Wuxia",
 				"id": "wuxia"
-			},
-			{
-				"type": "genre",
-				"name": "Zombies",
-				"id": "zombies"
 			}
 		]
 	}
