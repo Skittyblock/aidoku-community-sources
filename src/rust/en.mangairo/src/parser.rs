@@ -333,27 +333,8 @@ pub fn urlencode(string: String) -> String {
 	str = str.replace(match_y, "y");
 	str = str.replace(match_d, "d");
 	str = str.replace(match_symbols, "_");
-	str = replace_consecutive_underscores(str);
+	str = str.replace("__", "_");
 	str = str.trim_matches('_').to_string();
 
 	str
-}
-
-fn replace_consecutive_underscores(input: String) -> String {
-	let mut result = String::new();
-	let mut consecutive_underscore = false;
-
-	for c in input.chars() {
-		if c == '_' {
-			if !consecutive_underscore {
-				result.push(c);
-				consecutive_underscore = true;
-			}
-		} else {
-			result.push(c);
-			consecutive_underscore = false;
-		}
-	}
-
-	result
 }
