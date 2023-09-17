@@ -132,8 +132,7 @@ pub fn get_chapter_list(html: Node) -> Result<Vec<Chapter>> {
 		if let Some(id) = id {
 			let chapter = id
 				.rsplit_once('-')
-				.map(|v| v.1.parse::<f32>().ok())
-				.flatten()
+				.and_then(|v| v.1.parse::<f32>().ok())
 				.unwrap_or(-1.0);
 			let lang: String = "en".to_string();
 
