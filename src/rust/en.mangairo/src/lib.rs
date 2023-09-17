@@ -69,16 +69,17 @@ fn handle_url(url: String) -> Result<DeepLink> {
 	let parsed_manga_id = parser::parse_incoming_url_manga_id(url.clone());
 	let parsed_chapter_id = parser::parse_incoming_url_chapter_id(url);
 
-	if parsed_manga_id.is_none() {
-		return Err(aidoku::error::AidokuError {
+	if let Some(parsed_manga_id) = parsed_manga_id {
+		Ok(DeepLink {
+			manga: Some(get_manga_details(parsed_manga_id)?),
+			chapter: parsed_chapter_id.map(|chapter_id_value| Chapter {
+				id: chapter_id_value,
+				..Default::default()
+			}),
+		})
+	} else {
+		Err(aidoku::error::AidokuError {
 			reason: aidoku::error::AidokuErrorKind::Unimplemented,
-		});
+		})
 	}
-	Ok(DeepLink {
-		manga: Some(get_manga_details(parsed_manga_id.unwrap())?),
-		chapter: parsed_chapter_id.map(|chapter_id_value| Chapter {
-			id: chapter_id_value,
-			..Default::default()
-		}),
-	})
 }
