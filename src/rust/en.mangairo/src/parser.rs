@@ -66,20 +66,19 @@ pub fn parse_manga_details(html: Node, id: String) -> Result<Manga> {
 
 	let url = format!("{}", &id);
 
-	let mut authors: Vec<String> = Vec::new();
-	html.select(".story_info_right li:nth-child(3) a")
+	let author: String = html.select(".story_info_right li:nth-child(3) a")
 		.array()
-		.for_each(|tag| {
-			authors.push(String::from(
+		.map(|tag| {
+			String::from(
 				tag.as_node().expect("node array").text().read().trim(),
-			))
-		});
-	let author = authors.join(", ");
+			)
+		}).collect::<Vec<String>>().join(", ");
 
-	let mut categories: Vec<String> = Vec::new();
-	html.select(".story_info_right .a-h")
+	let categories: Vec<String> = html
+		.select(".story_info_right .a-h")
 		.array()
-		.for_each(|tag| categories.push(tag.as_node().expect("node array").text().read()));
+		.map(|tag| tag.as_node().expect("node array").text().read())
+		.collect();
 
 	let status = match status_str.as_str() {
 		"ongoing" => MangaStatus::Ongoing,
