@@ -29,10 +29,15 @@ pub fn parse_manga_list(html: Node, page: i32) -> (Vec<Manga>, bool) {
 	}
 
 	// Example: 'Total: 38,202 stories'
-	let mut total_str = html.select(".quantitychapter").text().read();
-	total_str = total_str.replace("Total: ", "");
-	total_str = total_str.replace(" stories", "");
-	total_str = total_str.chars().filter(|&c| c != ',').collect();
+	let total_str: String = html
+		.select(".quantitychapter")
+		.text()
+		.read()
+		.replace("Total: ", "")
+		.replace(" stories", "")
+		.chars()
+		.filter(|&c| c != ',')
+		.collect();
 
 	let has_more = total_str
 		.parse::<i32>()
