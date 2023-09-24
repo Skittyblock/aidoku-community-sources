@@ -23,7 +23,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 
 #[get_manga_details]
 fn get_manga_details(manga_id: String) -> Result<Manga> {
-	let html = Request::new(manga_id.clone(), HttpMethod::Get).html()?;
+	let html = Request::new(&manga_id, HttpMethod::Get).html()?;
 	parser::parse_manga_details(html, manga_id)
 }
 
