@@ -295,7 +295,7 @@ pub fn parse_incoming_url_manga_id(url: &str) -> Option<String> {
 	}
 	Some(parts.join("/"))
 
-	//
+	// Excludes the base URL from the manga id.
 	// if parts.len() >= 3 {
 	// 	let manga_id = parts[3];
 	// 	return Some(format!("{}", manga_id));
