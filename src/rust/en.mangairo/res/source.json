@@ -4,7 +4,10 @@
 		"lang": "en",
 		"name": "MangaIro",
 		"version": 1,
-		"url": "https://w.mangairo.com",
+		"urls": [
+			"https://w.mangairo.com",
+			"https://chap.mangairo.com"
+		],
 		"nsfw": 1
 	},
 	"languages": [],
