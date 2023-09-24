@@ -14,17 +14,20 @@ pub fn parse_manga_list(html: Node, page: i32) -> (Vec<Manga>, bool) {
 	for page in html.select(".story-item").array() {
 		let obj = page.as_node().expect("node array");
 
-		let id = obj.select(".story-name a").attr("href").read();
+		let url = obj.select(".story-name a").attr("href").read();
+		let id = parse_incoming_url_manga_id(&url);
 		let title = obj.select(".story-name a ").text().read();
 		let cover = obj.select(".story-list-img img").attr("src").read();
 
-		if !id.is_empty() && !title.is_empty() && !cover.is_empty() {
-			result.push(Manga {
-				id,
-				cover,
-				title,
-				..Default::default()
-			});
+		if let Some(id) = id {
+			if !id.is_empty() && !title.is_empty() && !cover.is_empty() {
+				result.push(Manga {
+					id,
+					cover,
+					title,
+					..Default::default()
+				});
+			}
 		}
 	}
 
@@ -66,13 +69,12 @@ pub fn parse_manga_details(html: Node, id: String) -> Result<Manga> {
 
 	let url = format!("{}", &id);
 
-	let author: String = html.select(".story_info_right li:nth-child(3) a")
+	let author: String = html
+		.select(".story_info_right li:nth-child(3) a")
 		.array()
-		.map(|tag| {
-			String::from(
-				tag.as_node().expect("node array").text().read().trim(),
-			)
-		}).collect::<Vec<String>>().join(", ");
+		.map(|tag| String::from(tag.as_node().expect("node array").text().read().trim()))
+		.collect::<Vec<String>>()
+		.join(", ");
 
 	let categories: Vec<String> = html
 		.select(".story_info_right .a-h")
@@ -127,7 +129,7 @@ pub fn get_chapter_list(html: Node) -> Result<Vec<Chapter>> {
 	for chapter in html.select(".chapter_list ul li a").array() {
 		let obj = chapter.as_node().expect("node array");
 		let url = obj.attr("href").read();
-		let id = parse_incoming_url_chapter_id(url.clone());
+		let id = parse_incoming_url_chapter_id(&url);
 
 		if let Some(id) = id {
 			let chapter = id
@@ -282,18 +284,27 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32) -> String {
 	format!("{BASE_URL}/manga-list/type-{sort}/ctg-{ctg}/state-{status}/page-{page}")
 }
 
-pub fn parse_incoming_url_manga_id(url: String) -> Option<String> {
+pub fn parse_incoming_url_manga_id(url: &str) -> Option<String> {
 	// https://chap.mangairo.com/story-pn279847
 	// https://chap.mangairo.com/story-pn279847/chapter-52
 	let mut parts: Vec<&str> = url.split('/').collect();
+	// Manga URL as ID because otherwise we cannot differentiate `w` and `chap`
+	// subdomains for manga
 	if parts.len() >= 4 {
 		parts.truncate(4);
 	}
-
 	Some(parts.join("/"))
+
+	//
+	// if parts.len() >= 3 {
+	// 	let manga_id = parts[3];
+	// 	return Some(format!("{}", manga_id));
+	// }
+
+	// None
 }
 
-pub fn parse_incoming_url_chapter_id(url: String) -> Option<String> {
+pub fn parse_incoming_url_chapter_id(url: &str) -> Option<String> {
 	// https://chap.mangairo.com/story-pn279847/chapter-52
 	let parts: Vec<&str> = url.split('/').collect();
 	if parts.len() >= 4 {
