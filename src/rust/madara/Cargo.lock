@@ -58,12 +58,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "base64"
-version = "0.13.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9e1b586273c5702936fe7b7d6896644d8be71e6314cfe09d3167c95f712589e8"
-
-[[package]]
 name = "coloredmanga"
 version = "0.1.0"
 dependencies = [
@@ -129,14 +123,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "leviatanscans"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "madara_template",
-]
-
-[[package]]
 name = "lhtranslation"
 version = "0.1.0"
 dependencies = [
@@ -159,6 +145,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "lscomic"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "madara_template",
+]
+
+[[package]]
 name = "madara_template"
 version = "0.1.0"
 dependencies = [
@@ -167,6 +161,14 @@ dependencies = [
 
 [[package]]
 name = "mangabob"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "madara_template",
+]
+
+[[package]]
+name = "mangaread"
 version = "0.1.0"
 dependencies = [
  "aidoku",
@@ -308,7 +310,6 @@ name = "setsuscans"
 version = "0.1.0"
 dependencies = [
  "aidoku",
- "base64",
  "madara_template",
 ]
 
@@ -333,6 +334,14 @@ dependencies = [
 
 [[package]]
 name = "toonily"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "madara_template",
+]
+
+[[package]]
+name = "towerofelectrica"
 version = "0.1.0"
 dependencies = [
  "aidoku",

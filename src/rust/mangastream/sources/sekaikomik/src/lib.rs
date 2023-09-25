@@ -8,7 +8,7 @@ use mangastream_template::template::MangaStreamSource;
 
 fn get_instance() -> MangaStreamSource {
 	MangaStreamSource {
-		base_url: String::from("https://sekaikomik.online"),
+		base_url: String::from("https://sekaikomik.bio"),
 		is_nsfw: true,
 		chapter_date_format: "MMMM d, yyyy",
 		locale: "id",

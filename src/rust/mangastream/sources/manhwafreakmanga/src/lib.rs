@@ -8,7 +8,7 @@ use mangastream_template::template::MangaStreamSource;
 
 fn get_instance() -> MangaStreamSource {
 	MangaStreamSource {
-		base_url: String::from("https://manhwa-freak.com"),
+		base_url: String::from("https://freakcomic.com"),
 		alt_pages: true,
 		..Default::default()
 	}
