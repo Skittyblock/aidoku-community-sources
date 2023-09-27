@@ -1,0 +1,12 @@
+{
+	"info": {
+		"id": "pt-br.prismascans",
+		"lang": "pt-br",
+		"name": "Prisma Scans",
+		"version": 1,
+		"url": "https://prismascans.net",
+		"nsfw": 1
+	},
+	"listings": [
+	]
+}
