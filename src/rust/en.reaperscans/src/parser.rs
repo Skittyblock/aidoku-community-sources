@@ -340,7 +340,7 @@ pub fn parse_page_list(
 	let mut indices: Vec<i32> = Vec::new();
 
 	// Select all images that are not children of a noscript tag.
-	for page in html.select("main div p > img:not(noscript *)").array() {
+	for page in html.select("main div > img:not(noscript *)").array() {
 		let page_node = page
 			.as_node()
 			.expect("Reaperscans: Failed to parse a chapter node. The chapter pages request was unsuccessful");
