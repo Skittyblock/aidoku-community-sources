@@ -123,17 +123,16 @@ pub fn parse_manga_listing(
 			"Latest" => format!("{}/genre?sortOrder=UPDATE", base_url),
 			"Popular" => format!("{}/genre?sortOrder=READ_COUNT", base_url),
 			"Top" => format!("{}/genre?sortOrder=LIKEIT", base_url),
-			"Canvas Latest" => format!("{}/challenge/list?genreTab=ALL&sortOrder=UPDATE", base_url),
-			"Canvas Popular" => format!(
-				"{}/challenge/list?genreTab=ALL&sortOrder=READ_COUNT",
-				base_url
-			),
-			"Canvas Top" => format!("{}/challenge/list?genreTab=ALL&sortOrder=LIKEIT", base_url),
+			"Canvas Latest" => format!("{}/canvas/list?genreTab=ALL&sortOrder=UPDATE", base_url),
+			"Canvas Popular" => {
+				format!("{}/canvas/list?genreTab=ALL&sortOrder=READ_COUNT", base_url)
+			}
+			"Canvas Top" => format!("{}/canvas/list?genreTab=ALL&sortOrder=LIKEIT", base_url),
 			_ => format!("{}/genre", base_url),
 		}
 	};
 
-	if url.contains("challenge") {
+	if url.contains("canvas") {
 		parse_canvas_list(url, page)
 	} else {
 		parse_manga_list(url, Vec::new())

@@ -1,0 +1,20 @@
+{
+	"info": {
+		"id": "fr.phenixscans",
+		"lang": "fr",
+		"name": "Phenix Scans",
+		"version": 1,
+		"url": "https://phenixscans.fr/"
+	},
+	"listings": [
+		{
+			"name": "Populaire"
+		},
+		{
+			"name": "Dernières"
+		},
+		{
+			"name": "Nouveau"
+		}
+	]
+}
