@@ -7,13 +7,12 @@ use aidoku::{
 use madara_template::template;
 
 fn get_data() -> template::MadaraSiteData {
-	let data: template::MadaraSiteData = template::MadaraSiteData {
+	template::MadaraSiteData {
 		base_url: String::from("https://flowermanga.com"),
-		description_selector: String::from("div.summary_content_wrap div p"),
+		description_selector: String::from("div.description-summary div p"),
 		alt_ajax: true,
 		..Default::default()
-	};
-	data
+	}
 }
 
 #[get_manga_list]
