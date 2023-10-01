@@ -8,7 +8,7 @@
 		"filters": [
 			{
 				"type": "check",
-				"name": "OnGoing"
+				"name": "Ongoing"
 			},
 			{
 				"type": "check",
