@@ -29,6 +29,7 @@ pub struct MadaraSiteData {
 	pub search_selector: String,
 	pub image_selector: String,
 	pub genre_selector: String,
+	pub author_selector: String,
 	pub description_selector: String,
 	pub chapter_selector: String,
 	pub base_id_selector: String,
@@ -70,6 +71,8 @@ impl Default for MadaraSiteData {
 			post_type: String::from("wp-manga"),
 			// p to select description from
 			description_selector: String::from("div.description-summary div p"),
+			// a to select author from
+			author_selector: String::from("div.author-content a"),
 			// selector for chapter list
 			chapter_selector: String::from("li.wp-manga-chapter"),
 			// a to get the base id from requests to admin-ajax.php
@@ -335,7 +338,7 @@ pub fn get_manga_details(manga_id: String, data: MadaraSiteData) -> Result<Manga
 		title = String::from(title.trim());
 	}
 	let cover = get_image_url(html.select("div.summary_image img"));
-	let author = html.select("div.author-content a").text().read();
+	let author = html.select(&data.author_selector).text().read();
 	let artist = html.select("div.artist-content a").text().read();
 	let description = html.select(&data.description_selector).text().read();
 

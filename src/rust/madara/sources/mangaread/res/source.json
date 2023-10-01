@@ -1,0 +1,18 @@
+{
+	"info": {
+		"id": "en.mangareadorg",
+		"lang": "en",
+		"name": "MangaRead.org",
+		"version": 1,
+		"url": "https://www.mangaread.org",
+		"nsfw": 1
+	},
+	"listings": [
+		{
+			"name": "Trending"
+		},
+		{
+			"name": "Latest"
+		}
+	]
+}
