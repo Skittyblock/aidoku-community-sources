@@ -1,0 +1,28 @@
+{
+	"info": {
+		"id": "en.mangairo",
+		"lang": "en",
+		"name": "MangaIro",
+		"version": 1,
+		"urls": [
+			"https://w.mangairo.com",
+			"https://chap.mangairo.com"
+		],
+		"nsfw": 1
+	},
+	"languages": [],
+	"listings": [
+		{
+			"name": "Latest"
+		},
+		{
+			"name": "New Releases"
+		},
+		{
+			"name": "Hot"
+		},
+		{
+			"name": "Completed"
+		}
+	]
+}
