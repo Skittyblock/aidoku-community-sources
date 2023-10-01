@@ -1,11 +1,10 @@
 {
 	"info": {
-		"id": "id.komiktap",
+		"id": "id.nonbiri",
 		"lang": "id",
-		"name": "Komiktap",
-		"version": 4,
-		"url": "https://komiktap.me",
-		"nsfw": 2
+		"name": "Nonbiri",
+		"version": 1,
+		"url": "https://nonbiri.space"
 	},
 	"listings": [
 		{

@@ -299,7 +299,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "masterkomik"
+name = "nonbiri"
 version = "0.1.0"
 dependencies = [
  "aidoku",
@@ -443,6 +443,14 @@ dependencies = [
 
 [[package]]
 name = "westmanga"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "mangastream_template",
+]
+
+[[package]]
+name = "yumekomik"
 version = "0.1.0"
 dependencies = [
  "aidoku",

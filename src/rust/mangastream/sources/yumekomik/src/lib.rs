@@ -8,8 +8,7 @@ use mangastream_template::template::MangaStreamSource;
 
 fn get_instance() -> MangaStreamSource {
 	MangaStreamSource {
-		base_url: String::from("https://komiktap.me"),
-		is_nsfw: true,
+		base_url: String::from("https://yumekomik.com"),
 		chapter_date_format: "MMMM d, yyyy",
 		manga_details_author: "td:contains(Author)+td",
 		manga_details_artist: "td:contains(Artist)+td",
