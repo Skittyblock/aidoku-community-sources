@@ -1,14 +1,16 @@
 #![no_std]
 use aidoku::{
-	error::Result, prelude::*, std::net::Request, std::String, std::Vec, Chapter, DeepLink, Filter,
-	Listing, Manga, MangaPageResult, Page,
+	error::Result, prelude::*, std::String, std::Vec, Chapter, DeepLink, Filter, Listing, Manga,
+	MangaPageResult, Page,
 };
 
 use madara_template::template;
 
 fn get_data() -> template::MadaraSiteData {
 	let data: template::MadaraSiteData = template::MadaraSiteData {
-		base_url: String::from("https://1st-kissmanga.net"),
+		base_url: String::from("https://towerofelectrica.com"),
+		lang: String::from("fr"),
+		description_selector: String::from("div.manga-excerpt p"),
 		alt_ajax: true,
 		..Default::default()
 	};
@@ -43,9 +45,4 @@ fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 #[handle_url]
 pub fn handle_url(url: String) -> Result<DeepLink> {
 	template::handle_url(url, get_data())
-}
-
-#[modify_image_request]
-fn modify_image_request(request: Request) {
-	template::modify_image_request(get_data().base_url, request)
 }

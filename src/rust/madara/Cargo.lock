@@ -123,14 +123,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "leviatanscans"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "madara_template",
-]
-
-[[package]]
 name = "lhtranslation"
 version = "0.1.0"
 dependencies = [
@@ -153,6 +145,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "lscomic"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "madara_template",
+]
+
+[[package]]
 name = "madara_template"
 version = "0.1.0"
 dependencies = [
@@ -161,6 +161,14 @@ dependencies = [
 
 [[package]]
 name = "mangabob"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "madara_template",
+]
+
+[[package]]
+name = "mangaread"
 version = "0.1.0"
 dependencies = [
  "aidoku",
@@ -326,6 +334,14 @@ dependencies = [
 
 [[package]]
 name = "toonily"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "madara_template",
+]
+
+[[package]]
+name = "towerofelectrica"
 version = "0.1.0"
 dependencies = [
  "aidoku",

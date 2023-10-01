@@ -1,0 +1,18 @@
+{
+	"info": {
+		"id": "zh.copymanga",
+		"lang": "zh",
+		"name": "拷貝漫畫",
+		"version": 1,
+		"url": "https://copymanga.site",
+		"urls": [
+			"https://copymanga.site",
+			"https://www.copymanga.site",
+			"https://copymanga.tv",
+			"https://www.copymanga.tv",
+			"https://mangacopy.com",
+			"https://www.mangacopy.com"
+		],
+		"nsfw": 1
+	}
+}
