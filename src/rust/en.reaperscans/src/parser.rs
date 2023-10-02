@@ -101,7 +101,7 @@ pub fn parse_manga_listing(
 	// The only alternate listing that reaper has is latest
 	let url = format!("{}/latest/comics?page={}", base_url, page);
 
-	let html = Request::new(&url, HttpMethod::Get)
+	let html = Request::new(url, HttpMethod::Get)
 		.header("User-Agent", USER_AGENT)
 		.html()
 		.expect("ReaperScans: Could not display a listing. Check the website and your internet connection on https://reaperscans.com");
@@ -330,7 +330,7 @@ pub fn parse_page_list(
 ) -> Result<Vec<Page>> {
 	let url = get_chapter_url(chapter_id, manga_id, base_url);
 
-	let html = Request::new(&url, HttpMethod::Get)
+	let html = Request::new(url, HttpMethod::Get)
 		.header("User-Agent", USER_AGENT)
 		.html()
 		.expect("Reaperscans: Failed to display the chapter. Check your internet connection");
@@ -340,7 +340,7 @@ pub fn parse_page_list(
 	let mut indices: Vec<i32> = Vec::new();
 
 	// Select all images that are not children of a noscript tag.
-	for page in html.select("main div p > img:not(noscript *)").array() {
+	for page in html.select("main div > img:not(noscript *)").array() {
 		let page_node = page
 			.as_node()
 			.expect("Reaperscans: Failed to parse a chapter node. The chapter pages request was unsuccessful");
