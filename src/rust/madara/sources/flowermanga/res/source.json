@@ -1,0 +1,18 @@
+{
+	"info": {
+		"id": "pt.flowermanga",
+		"lang": "pt-br",
+		"name": "Flower Manga",
+		"version": 1,
+		"url": "https://flowermanga.com",
+		"nsfw": 1
+	},
+	"listings": [
+		{
+			"name": "Tendencias"
+		},
+		{
+			"name": "Popular"
+		}
+	]
+}
