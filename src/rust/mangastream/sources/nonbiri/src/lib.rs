@@ -1,19 +1,21 @@
 #![no_std]
 use aidoku::{
-	error::Result,
-	prelude::*,
-	std::json::parse,
-	std::net::{HttpMethod, Request},
-	std::String,
-	std::Vec,
-	Chapter, DeepLink, Filter, Listing, Manga, MangaPageResult, Page,
+	error::Result, prelude::*, std::net::Request, std::String, std::Vec, Chapter, DeepLink, Filter,
+	Listing, Manga, MangaPageResult, Page,
 };
 
-use mangastream_template::{helper::urlencode, template::MangaStreamSource};
+use mangastream_template::template::MangaStreamSource;
 
 fn get_instance() -> MangaStreamSource {
 	MangaStreamSource {
-		base_url: String::from("https://readkomik.com"),
+		base_url: String::from("https://nonbiri.space"),
+		chapter_date_format: "MMMM d, yyyy",
+		manga_details_author: "td:contains(Author)+td",
+		manga_details_artist: "td:contains(Artist)+td",
+		manga_details_type: "td:contains(Type)+td",
+		manga_details_categories: ".seriestugenre a",
+		locale: "id",
+		alt_pages: true,
 		..Default::default()
 	}
 }
@@ -40,25 +42,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 
 #[get_page_list]
 fn get_page_list(_manga_id: String, id: String) -> Result<Vec<Page>> {
-	let mut pages: Vec<Page> = Vec::new();
-	let html = Request::new(id, HttpMethod::Get)
-		.header("Referer", &get_instance().base_url)
-		.html()?;
-	let raw_text = html.select("script").html().read();
-	let trimmed_text = &raw_text
-		[raw_text.find(r#":[{"s"#).unwrap_or(0) + 2..raw_text.rfind("}],").unwrap_or(0) + 1];
-	let json = parse(trimmed_text.as_bytes())?.as_object()?;
-	let images = json.get("images").as_array()?;
-	for (index, page) in images.enumerate() {
-		let page_url = urlencode(page.as_string()?.read());
-		pages.push(Page {
-			index: index as i32,
-			url: page_url,
-			base64: String::new(),
-			text: String::new(),
-		});
-	}
-	Ok(pages)
+	get_instance().parse_page_list(id)
 }
 
 #[modify_image_request]

@@ -43,7 +43,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 #[get_page_list]
 fn get_page_list(_manga_id: String, id: String) -> Result<Vec<Page>> {
 	let mut pages: Vec<Page> = Vec::new();
-	let html = Request::new(&id, HttpMethod::Get)
+	let html = Request::new(id, HttpMethod::Get)
 		.header("Referer", &get_instance().base_url)
 		.html()?;
 	let externaljs = html.select("script[data-minify]").attr("src").read();

@@ -191,7 +191,7 @@ impl MangaStreamSource {
 			base_url
 		};
 		let mut mangas: Vec<Manga> = Vec::new();
-		let html = Request::new(&url, HttpMethod::Get).html()?;
+		let html = Request::new(url, HttpMethod::Get).html()?;
 		for manga in html.select(self.manga_selector).array() {
 			let manga_node = manga.as_node().expect("Failed to get manga as node");
 			let title = manga_node.select(self.manga_title).attr("title").read();
@@ -349,7 +349,7 @@ impl MangaStreamSource {
 		};
 
 		let mut chapters: Vec<Chapter> = Vec::new();
-		let html = Request::new(&url, HttpMethod::Get).html()?;
+		let html = Request::new(url, HttpMethod::Get).html()?;
 		for chapter in html.select(self.chapter_selector).array() {
 			let chapter_node = chapter.as_node().expect("Failed to get chapter as node");
 			let raw_title = chapter_node.select(self.chapter_title).text().read();
@@ -426,7 +426,7 @@ impl MangaStreamSource {
 		};
 
 		let mut pages: Vec<Page> = Vec::new();
-		let html = Request::new(&url, HttpMethod::Get)
+		let html = Request::new(url, HttpMethod::Get)
 			.header("Referer", &self.base_url)
 			.html()?;
 		if self.alt_pages {

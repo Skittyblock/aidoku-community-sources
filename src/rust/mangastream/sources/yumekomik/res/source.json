@@ -1,11 +1,10 @@
 {
 	"info": {
-		"id": "id.komiktap",
+		"id": "id.yumekomik",
 		"lang": "id",
-		"name": "Komiktap",
-		"version": 4,
-		"url": "https://komiktap.me",
-		"nsfw": 2
+		"name": "YumeKomik",
+		"version": 1,
+		"url": "https://yumekomik.com"
 	},
 	"listings": [
 		{
