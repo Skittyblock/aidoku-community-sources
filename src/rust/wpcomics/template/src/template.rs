@@ -188,7 +188,7 @@ impl WPComicsSource {
 
 	pub fn get_manga_details(&self, id: String) -> Result<Manga> {
 		cache_manga_page(self, id.as_str());
-		let details = unsafe { Node::new(&CACHED_MANGA.clone().unwrap())? };
+		let details = unsafe { Node::new(CACHED_MANGA.clone().unwrap())? };
 		let title = details.select(self.manga_details_title).text().read();
 		let cover = append_protocol(details.select(self.manga_details_cover).attr("src").read());
 		let author = (self.manga_details_author_transformer)(
@@ -238,7 +238,7 @@ impl WPComicsSource {
 		let mut skipped_first = false;
 		let mut chapters: Vec<Chapter> = Vec::new();
 		cache_manga_page(self, id.as_str());
-		let html = unsafe { Node::new(&CACHED_MANGA.clone().unwrap())? };
+		let html = unsafe { Node::new(CACHED_MANGA.clone().unwrap())? };
 		let title_untrimmed = (self.manga_details_title_transformer)(
 			html.select(self.manga_details_title).text().read(),
 		);
