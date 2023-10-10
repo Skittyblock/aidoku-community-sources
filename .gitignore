@@ -14,4 +14,3 @@ src/rust/node_modules
 
 .idea
 *.iml
-*.asdfgpg
