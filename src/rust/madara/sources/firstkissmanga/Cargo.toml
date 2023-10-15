@@ -8,6 +8,5 @@ publish = false
 crate-type = ["cdylib"]
 
 [dependencies]
-aidoku = { git = "https://github.com/Aidoku/aidoku-rs/", features = ["helpers"] }
-base64 = { version = "0.21.4", default-features = false, features = ["alloc"] }
+aidoku = { git = "https://github.com/Aidoku/aidoku-rs/" }
 madara_template = { path = "../../template" }
