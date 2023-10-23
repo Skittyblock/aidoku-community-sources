@@ -139,14 +139,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "flamescans"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "mangastream_template",
-]
-
-[[package]]
 name = "freakscans"
 version = "0.1.0"
 dependencies = [
@@ -292,6 +284,14 @@ dependencies = [
 
 [[package]]
 name = "manhwax"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "mangastream_template",
+]
+
+[[package]]
+name = "nonbiri"
 version = "0.1.0"
 dependencies = [
  "aidoku",
