@@ -181,6 +181,13 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 					}
 					if date_updated == -1.0 {
 						date_updated = StringRef::from(&book.file_last_modified).as_date(
+							"yyyy-MM-dd'T'HH:mm:ss'Z",
+							Some("en_US"),
+							None,
+						);
+					}
+					if date_updated == -1.0 {
+						date_updated = StringRef::from(&book.file_last_modified).as_date(
 							"yyyy-MM-dd'T'HH:mm:ss.S",
 							Some("en_US"),
 							None,
