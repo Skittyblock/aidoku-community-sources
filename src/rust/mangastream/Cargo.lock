@@ -139,6 +139,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "flamecomics"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "mangastream_template",
+]
+
+[[package]]
 name = "freakscans"
 version = "0.1.0"
 dependencies = [
