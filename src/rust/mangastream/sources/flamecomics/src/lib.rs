@@ -4,21 +4,14 @@ use aidoku::{
 	Listing, Manga, MangaPageResult, Page,
 };
 
-use helper::{get_base_url, get_tag_id};
 use mangastream_template::template::MangaStreamSource;
-pub mod helper;
+
 fn get_instance() -> MangaStreamSource {
 	MangaStreamSource {
+		base_url: String::from("https://flamecomics.com"),
 		has_permanent_manga_url: true,
 		has_permanent_chapter_url: true,
-		tagid_mapping: get_tag_id,
-		base_url: get_base_url(),
 		traverse_pathname: "series",
-		last_page_text_2: "التالي",
-		manga_details_status: ".imptdt:contains(Status) i, r:contains(الحالة) td:eq(1)",
-		chapter_date_format: "MMMM dd, yyyy",
-		status_options_2: ["مستمر", "مكتمل", "متوقف", "ملغي", "متروك"],
-		language_2: "ar",
 		..Default::default()
 	}
 }
