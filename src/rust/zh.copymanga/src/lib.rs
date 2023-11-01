@@ -7,7 +7,9 @@ mod url;
 use aidoku::{
 	error::Result,
 	helpers::substring::Substring,
-	prelude::{get_chapter_list, get_manga_details, get_manga_list, get_page_list, handle_url},
+	prelude::{
+		format, get_chapter_list, get_manga_details, get_manga_list, get_page_list, handle_url,
+	},
 	std::{String, Vec},
 	Chapter, DeepLink, Filter, Manga, MangaPageResult, MangaStatus, Page,
 };
@@ -90,9 +92,17 @@ fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 		.get("groups")
 		.as_object()?
 		.values();
+	let group_values_len = group_values.len();
 	let groups = group_values
 		.map(|group_value| {
 			let group_obj = group_value.as_object()?;
+
+			let title_prefix = if group_values_len > 1 {
+				let group_name = group_obj.get_as_string("name")?;
+				format!("{}：", group_name)
+			} else {
+				String::new()
+			};
 
 			group_obj
 				.get("chapters")
@@ -102,7 +112,8 @@ fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 
 					let chapter_id = chapter_obj.get_as_string("id")?;
 
-					let title = chapter_obj.get_as_string("name")?;
+					let chapter_name = chapter_obj.get_as_string("name")?;
+					let title = format!("{}{}", title_prefix, chapter_name);
 
 					let timestamp = chapter_id.get_timestamp();
 
