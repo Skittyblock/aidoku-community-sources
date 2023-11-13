@@ -13,9 +13,10 @@ fn get_instance() -> MangaStreamSource {
 		// asura has a 10 sec rate limit per request on their api endpoint
 		// making it extremely slow to use postids for chapters
 		use_chapter_postids: false,
+		page_selector: "#readerarea img:not(.alignnone.size-full.asurascans)",
 		tagid_mapping: get_tag_id,
 		base_url: get_base_url(),
-		alt_pages: true,
+		alt_pages: false,
 		last_page_text_2: "Sonraki",
 		chapter_date_format_2: "MMMM d, yyyy",
 		language_2: "tr",
