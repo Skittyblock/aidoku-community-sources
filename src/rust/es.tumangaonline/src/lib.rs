@@ -15,6 +15,7 @@ mod parser;
 
 static USER_AGENT: &str = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36";
 static BASE_URL: &str = "https://lectortmo.com/";
+static BASE_REFERER: &str = "https://visortmo.com";
 
 #[link(wasm_import_module = "net")]
 extern "C" {
@@ -391,5 +392,5 @@ fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 fn modify_image_request(request: Request) {
 	request
 		.header("User-Agent", USER_AGENT)
-		.header("Referer", BASE_URL);
+		.header("Referer", BASE_REFERER);
 }
