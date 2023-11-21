@@ -1,6 +1,6 @@
 #![no_std]
 use aidoku::{
-	error::Result, prelude::*, std::defaults::defaults_get, std::String, std::Vec, Chapter,
+	error::Result, prelude::*, std::net::Request, std::defaults::defaults_get, std::String, std::Vec, Chapter,
 	DeepLink, Filter, Listing, Manga, MangaPageResult, Page,
 };
 
@@ -43,6 +43,11 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 #[get_page_list]
 fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 	template::get_page_list(chapter_id, get_data())
+}
+
+#[modify_image_request]
+fn modify_image_request(request: Request) {
+	template::modify_image_request(String::from("https://hiperdex.com"), request);
 }
 
 #[handle_url]

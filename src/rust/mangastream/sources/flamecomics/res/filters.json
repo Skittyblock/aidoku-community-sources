@@ -8,6 +8,12 @@
 		"filters": [
 			{
 				"type": "genre",
+				"name": "Academy",
+				"id": "253",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
 				"name": "Action",
 				"id": "7",
 				"canExclude": true
@@ -76,6 +82,12 @@
 				"type": "genre",
 				"name": "Ecchi",
 				"id": "19",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Ecchi comedy",
+				"id": "239",
 				"canExclude": true
 			},
 			{
@@ -164,8 +176,20 @@
 			},
 			{
 				"type": "genre",
+				"name": "Modern Fantasy",
+				"id": "217",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
 				"name": "Monster",
 				"id": "93",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "moster",
+				"id": "237",
 				"canExclude": true
 			},
 			{
@@ -178,12 +202,6 @@
 				"type": "genre",
 				"name": "Mystery",
 				"id": "122",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Novel",
-				"id": "50",
 				"canExclude": true
 			},
 			{
@@ -212,8 +230,8 @@
 			},
 			{
 				"type": "genre",
-				"name": "Pyschological",
-				"id": "105",
+				"name": "Regression",
+				"id": "242",
 				"canExclude": true
 			},
 			{
@@ -302,6 +320,12 @@
 			},
 			{
 				"type": "genre",
+				"name": "Swordmaster",
+				"id": "257",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
 				"name": "System",
 				"id": "94",
 				"canExclude": true
@@ -340,6 +364,12 @@
 				"type": "genre",
 				"name": "VR",
 				"id": "162",
+				"canExclude": true
+			},
+			{
+				"type": "genre",
+				"name": "Youth",
+				"id": "221",
 				"canExclude": true
 			},
 			{

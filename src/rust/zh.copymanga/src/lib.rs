@@ -7,7 +7,9 @@ mod url;
 use aidoku::{
 	error::Result,
 	helpers::substring::Substring,
-	prelude::{get_chapter_list, get_manga_details, get_manga_list, get_page_list, handle_url},
+	prelude::{
+		format, get_chapter_list, get_manga_details, get_manga_list, get_page_list, handle_url,
+	},
 	std::{String, Vec},
 	Chapter, DeepLink, Filter, Manga, MangaPageResult, MangaStatus, Page,
 };
@@ -80,10 +82,7 @@ fn get_manga_details(manga_id: String) -> Result<Manga> {
 
 #[get_chapter_list]
 fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
-	let mut chapters = Vec::<Chapter>::new();
-
-	let mut chapter_vec = Vec::<(String, String, f64)>::new();
-	let groups_values = Url::ChapterList(&manga_id)
+	let group_values = Url::ChapterList(&manga_id)
 		.get_json()?
 		.as_object()?
 		.get_as_string("results")?
@@ -93,36 +92,70 @@ fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 		.get("groups")
 		.as_object()?
 		.values();
-	for groups_value in groups_values {
-		let chapters_arr = groups_value.as_object()?.get("chapters").as_array()?;
-		for chapters_value in chapters_arr {
-			let chapters_obj = chapters_value.as_object()?;
+	let group_values_len = group_values.len();
+	let groups = group_values
+		.map(|group_value| {
+			let group_obj = group_value.as_object()?;
 
-			let id = chapters_obj.get_as_string("id")?;
-			let name = chapters_obj.get_as_string("name")?;
-			let timestamp = id.get_timestamp();
+			let title_prefix = if group_values_len > 1 {
+				let group_name = group_obj.get_as_string("name")?;
+				format!("{}：", group_name)
+			} else {
+				String::new()
+			};
 
-			chapter_vec.push((id, name, timestamp));
-		}
-	}
-	chapter_vec.sort_by(|a, b| a.2.total_cmp(&b.2));
+			group_obj
+				.get("chapters")
+				.as_array()?
+				.map(|chapter_value| {
+					let chapter_obj = chapter_value.as_object()?;
 
-	for (index, (chapter_id, title, date_updated)) in chapter_vec.iter().enumerate() {
-		let chapter_num = (index + 1) as f32;
+					let chapter_id = chapter_obj.get_as_string("id")?;
 
-		let chapter_url = Url::Chapter(&manga_id, chapter_id).to_string();
+					let chapter_name = chapter_obj.get_as_string("name")?;
+					let title = format!("{}{}", title_prefix, chapter_name);
 
-		let chapter = Chapter {
-			id: chapter_id.clone(),
-			title: title.clone(),
-			chapter: chapter_num,
-			date_updated: *date_updated,
-			url: chapter_url,
-			lang: "zh".to_string(),
-			..Default::default()
-		};
-		chapters.insert(0, chapter);
-	}
+					let timestamp = chapter_id.get_timestamp();
+
+					Ok((chapter_id, title, timestamp))
+				})
+				.collect::<Result<Vec<_>>>()
+		})
+		.collect::<Result<Vec<_>>>()?;
+
+	let mut groups_iter = groups.iter();
+	let mut sorted_chapters = groups_iter.next().cloned().unwrap_or_default();
+	groups_iter.for_each(|unsorted_chapters| {
+		let mut index = 0;
+		unsorted_chapters.iter().for_each(|unsorted_chapter| {
+			while index < sorted_chapters.len() && unsorted_chapter.2 > sorted_chapters[index].2 {
+				index += 1;
+			}
+			sorted_chapters.insert(index, unsorted_chapter.clone());
+			index += 1;
+		});
+	});
+
+	let chapters = sorted_chapters
+		.iter()
+		.enumerate()
+		.map(|(index, (chapter_id, title, date_updated))| {
+			let chapter_num = (index + 1) as f32;
+
+			let chapter_url = Url::Chapter(&manga_id, chapter_id).to_string();
+
+			Chapter {
+				id: chapter_id.clone(),
+				title: title.clone(),
+				chapter: chapter_num,
+				date_updated: *date_updated,
+				url: chapter_url,
+				lang: "zh".to_string(),
+				..Default::default()
+			}
+		})
+		.rev()
+		.collect::<Vec<_>>();
 
 	Ok(chapters)
 }

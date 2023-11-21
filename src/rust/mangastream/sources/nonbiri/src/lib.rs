@@ -4,21 +4,18 @@ use aidoku::{
 	Listing, Manga, MangaPageResult, Page,
 };
 
-use helper::{get_base_url, get_tag_id};
 use mangastream_template::template::MangaStreamSource;
-pub mod helper;
+
 fn get_instance() -> MangaStreamSource {
 	MangaStreamSource {
-		has_permanent_manga_url: true,
-		has_permanent_chapter_url: true,
-		tagid_mapping: get_tag_id,
-		base_url: get_base_url(),
-		traverse_pathname: "series",
-		last_page_text_2: "التالي",
-		manga_details_status: ".imptdt:contains(Status) i, r:contains(الحالة) td:eq(1)",
-		chapter_date_format: "MMMM dd, yyyy",
-		status_options_2: ["مستمر", "مكتمل", "متوقف", "ملغي", "متروك"],
-		language_2: "ar",
+		base_url: String::from("https://nonbiri.space"),
+		chapter_date_format: "MMMM d, yyyy",
+		manga_details_author: "td:contains(Author)+td",
+		manga_details_artist: "td:contains(Artist)+td",
+		manga_details_type: "td:contains(Type)+td",
+		manga_details_categories: ".seriestugenre a",
+		locale: "id",
+		alt_pages: true,
 		..Default::default()
 	}
 }
