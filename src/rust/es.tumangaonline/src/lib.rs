@@ -15,6 +15,7 @@ mod parser;
 
 static USER_AGENT: &str = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36";
 static BASE_URL: &str = "https://lectortmo.com/";
+static BASE_IMAGE_REFERER: &str = "https://visortmo.com";
 
 #[link(wasm_import_module = "net")]
 extern "C" {
@@ -284,7 +285,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 	} else {
 		format!("{BASE_URL}{id}")
 	};
-	let html = Request::new(&url, HttpMethod::Get)
+	let html = Request::new(url, HttpMethod::Get)
 		.header("User-Agent", USER_AGENT)
 		.header("Referer", BASE_URL)
 		.html()?;
@@ -351,7 +352,7 @@ fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 	} else {
 		format!("{BASE_URL}{chapter_id}")
 	};
-	let mut html = Request::new(&url, HttpMethod::Get)
+	let mut html = Request::new(url, HttpMethod::Get)
 		.header("User-Agent", USER_AGENT)
 		.header("Referer", BASE_URL)
 		.html()?;
@@ -359,7 +360,7 @@ fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 	let uri = html.base_uri().read();
 	if uri.contains("/paginated") {
 		// switch to cascade for full image list
-		html = Request::new(&uri.replace("/paginated", "/cascade"), HttpMethod::Get)
+		html = Request::new(uri.replace("/paginated", "/cascade"), HttpMethod::Get)
 			.header("User-Agent", USER_AGENT)
 			.header("Referer", BASE_URL)
 			.html()?;
@@ -391,5 +392,5 @@ fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 fn modify_image_request(request: Request) {
 	request
 		.header("User-Agent", USER_AGENT)
-		.header("Referer", BASE_URL);
+		.header("Referer", BASE_IMAGE_REFERER);
 }
