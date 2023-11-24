@@ -52,7 +52,7 @@ dependencies = [
 
 [[package]]
 name = "assortedscans"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "aidoku",
  "mangadventure_template",
