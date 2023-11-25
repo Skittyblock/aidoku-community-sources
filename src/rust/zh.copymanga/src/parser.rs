@@ -14,22 +14,23 @@ pub trait MangaListResponse {
 
 impl MangaListResponse for Node {
 	fn get_page_result(self) -> Result<MangaPageResult> {
-		let manga = self
-			.get_attr("div.exemptComic-box", "list")
-			.split('"')
-			.enumerate()
-			.map(|(index, str)| {
-				if index % 2 == 0 {
-					str.replace('\'', "\"")
-				} else {
-					str.to_string()
-				}
-			})
-			.collect::<Vec<_>>()
-			.join("\"")
-			.json()?
-			.as_array()?
-			.get_manga_list()?;
+		let manga =
+			self.get_attr("div.exemptComic-box", "list")
+				.replace(r"\xa0", " ")
+				.split('"')
+				.enumerate()
+				.map(|(index, str)| {
+					if index % 2 == 0 {
+						str.replace('\'', "\"")
+					} else {
+						str.to_string()
+					}
+				})
+				.collect::<Vec<_>>()
+				.join("\"")
+				.json()?
+				.as_array()?
+				.get_manga_list()?;
 
 		let has_more = !self.select("li.page-all-item").last().has_class("active");
 
