@@ -17,8 +17,7 @@ pub fn parse_chapter_and_title(text: String) -> Option<(f32, String)> {
 pub fn word_wrap(text: String) -> String {
 	let mut res = String::new();
 	text.replace("\r\n", " ")
-		.replace("\n", " ")
-		.replace("\r", " ")
+		.replace(['\r', '\n'], " ")
 		.split(' ')
 		.enumerate()
 		.for_each(|(i, w)| {

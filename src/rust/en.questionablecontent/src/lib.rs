@@ -41,21 +41,19 @@ fn get_chapter_list(_: String) -> Result<Vec<Chapter>> {
 		.array()
 		.rev()
 		.filter_map(|element| match element.as_node() {
-			Ok(node) => {
-				parse_chapter_and_title(node.text().read()).and_then(|(chapter, title)| {
-					if known_chapters.insert(chapter as i32) {
-						Some(Chapter {
-							id: chapter.to_string(),
-							title,
-							chapter,
-							url: node.attr("abs:href").read(),
-							..Default::default()
-						})
-					} else {
-						None
-					}
-				})
-			}
+			Ok(node) => parse_chapter_and_title(node.text().read()).and_then(|(chapter, title)| {
+				if known_chapters.insert(chapter as i32) {
+					Some(Chapter {
+						id: chapter.to_string(),
+						title,
+						chapter,
+						url: node.attr("abs:href").read(),
+						..Default::default()
+					})
+				} else {
+					None
+				}
+			}),
 			Err(_) => None,
 		})
 		.rev()
@@ -108,10 +106,7 @@ fn get_page_list(_: String, id: String) -> Result<Vec<Page>> {
 
 #[handle_url]
 fn handle_url(url: String) -> Result<DeepLink> {
-	let url_parts = url
-		.split('/')
-		.filter_map(|p| if p.is_empty() { None } else { Some(p) })
-		.collect::<Vec<_>>();
+	let url_parts = url.split('/').filter(|p| !p.is_empty()).collect::<Vec<_>>();
 
 	let manga = match url_parts[1] {
 		"www.questionablecontent.net" | "questionablecontent.net" => Some(comic_info()),
