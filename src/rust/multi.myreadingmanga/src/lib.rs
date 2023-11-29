@@ -82,7 +82,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 
 		let cover_url = manga_node
 			.select("img")
-			.attr("src")
+			.attr("data-src")
 			.read()
 			.percent_encode(false);
 
@@ -235,9 +235,9 @@ fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 	let chapter_html = request_get(&chapter_url).html()?;
 
 	let mut pages = Vec::<Page>::new();
-	let page_nodes = chapter_html.select("img[decoding=async][src^=https]");
+	let page_nodes = chapter_html.select("img[decoding=async][data-src^=https]");
 	for (page_index, page_value) in page_nodes.array().enumerate() {
-		let page_url = page_value.as_node()?.attr("src").read();
+		let page_url = page_value.as_node()?.attr("data-src").read();
 
 		pages.push(Page {
 			index: page_index as i32,
