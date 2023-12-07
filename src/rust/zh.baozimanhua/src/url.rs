@@ -2,7 +2,7 @@ use aidoku::{helpers::uri::QueryParameters, std::Vec, Filter, FilterType};
 use alloc::string::ToString;
 use core::fmt::Display;
 
-const DOMAIN: &str = "https://www.baozimh.com";
+pub const DOMAIN: &str = "https://www.baozimh.com";
 
 pub enum Url<'a> {
 	/// {DOMAIN}/api/bzmhq/amp_comic_list?{query}

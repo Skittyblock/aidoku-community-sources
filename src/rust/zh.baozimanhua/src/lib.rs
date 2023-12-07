@@ -1,16 +1,17 @@
 #![no_std]
 extern crate alloc;
+mod parser;
 mod url;
 
 use aidoku::{
 	error::Result,
-	helpers::substring::Substring,
-	prelude::get_manga_list,
+	prelude::{format, get_manga_list, get_manga_listing},
 	std::{net::Request, Vec},
-	Filter, Manga, MangaPageResult,
+	Filter, Listing, Manga, MangaPageResult,
 };
 use alloc::string::ToString;
-use url::Url;
+use parser::DivComicsCard;
+use url::{Url, DOMAIN};
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
@@ -90,61 +91,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	let manga = Request::get(manga_list_url.to_string())
 		.html()?
 		.select("div.comics-card")
-		.array()
-		.map(|value| {
-			let div = value.as_node()?;
-
-			let url = div.select("a.comics-card__poster").attr("abs:href").read();
-
-			let id = url
-				.substring_after_last('/')
-				.expect("Unable to get the substring after the last '/'")
-				.to_string();
-
-			let cover = {
-				let resized_cover = div.select("amp-img[noloading]").attr("src").read();
-				resized_cover
-					.clone()
-					.substring_before_last('?')
-					.map_or(resized_cover, ToString::to_string)
-			};
-
-			let title = div.select("h3").text().read();
-
-			let artist = {
-				let mut artists = div
-					.select("small")
-					.text()
-					.read()
-					.split(',')
-					.map(ToString::to_string)
-					.collect::<Vec<_>>();
-				artists.dedup();
-
-				artists.join("、")
-			};
-
-			let categories = div
-				.select("span")
-				.array()
-				.map(|value| {
-					let genre = value.as_node()?.text().read();
-					Ok(genre)
-				})
-				.collect::<Result<_>>()?;
-
-			Ok(Manga {
-				id,
-				cover,
-				title,
-				author: artist.clone(),
-				artist,
-				url,
-				categories,
-				..Default::default()
-			})
-		})
-		.collect::<Result<_>>()?;
+		.get_manga_list()?;
 
 	Ok(MangaPageResult {
 		manga,
@@ -152,10 +99,38 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	})
 }
 
-// #[get_manga_listing]
-// fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult>
-// { 	todo!()
-// }
+#[get_manga_listing]
+fn get_manga_listing(listing: Listing, _: i32) -> Result<MangaPageResult> {
+	let manga = {
+		let selector = {
+			let regex = match listing.name.as_str() {
+				"熱門漫畫" => "熱門漫畫|热门漫画",
+				"推薦中港台漫" => "推薦國漫|推荐国漫",
+				"推薦韓漫" => "推薦韓漫|推荐韩漫",
+				"推薦日漫" => "推薦日漫|推荐日漫",
+				"熱血漫畫" => "熱血漫畫|热血漫画",
+				"最新上架" => "最新上架",
+				"最近更新" => "最近更新",
+				_ => return Ok(MangaPageResult::default()),
+			};
+
+			format!(
+				"div.index-recommend-items:has(div.catalog-title:matches({})) div.comics-card",
+				regex
+			)
+		};
+
+		Request::get(DOMAIN)
+			.html()?
+			.select(selector)
+			.get_manga_list()
+	}?;
+
+	Ok(MangaPageResult {
+		manga,
+		has_more: false,
+	})
+}
 
 // #[get_manga_details]
 // fn get_manga_details(id: String) -> Result<Manga> {
