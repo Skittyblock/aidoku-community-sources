@@ -1,12 +1,10 @@
-extern crate alloc;
-
 use aidoku::{helpers::uri::QueryParameters, std::Vec, Filter, FilterType};
 use alloc::string::ToString;
 use core::fmt::Display;
 
 const DOMAIN: &str = "https://www.baozimh.com";
 
-pub enum Url {
+pub enum Url<'a> {
 	/// {DOMAIN}/api/bzmhq/amp_comic_list?{query}
 	///
 	/// ---
@@ -77,9 +75,15 @@ pub enum Url {
 	///
 	/// Should be percent-encoded
 	Search(QueryParameters),
+
+	/// https://static-tw.baozimh.com/cover/{file_name}
+	Cover(&'a str),
+
+	/// https://www.baozimh.com/comic/{manga_id}
+	Manga(&'a str),
 }
 
-impl From<(Vec<Filter>, i32)> for Url {
+impl From<(Vec<Filter>, i32)> for Url<'_> {
 	fn from((filters, page): (Vec<Filter>, i32)) -> Self {
 		let mut filters_query = QueryParameters::new();
 
@@ -162,11 +166,15 @@ impl From<(Vec<Filter>, i32)> for Url {
 	}
 }
 
-impl Display for Url {
+impl Display for Url<'_> {
 	fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
 		match self {
 			Self::Filters(query) => write!(f, "{}/api/bzmhq/amp_comic_list?{}", DOMAIN, query),
 			Self::Search(query) => write!(f, "{}/search?{}", DOMAIN, query),
+			Self::Cover(file_name) => {
+				write!(f, "https://static-tw.baozimh.com/cover/{}", file_name)
+			}
+			Self::Manga(manga_id) => write!(f, "{}/comic/{}", DOMAIN, manga_id),
 		}
 	}
 }
