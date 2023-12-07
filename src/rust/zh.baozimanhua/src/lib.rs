@@ -4,6 +4,7 @@ mod url;
 
 use aidoku::{
 	error::Result,
+	helpers::substring::Substring,
 	prelude::get_manga_list,
 	std::{net::Request, Vec},
 	Filter, Manga, MangaPageResult,
@@ -86,7 +87,69 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 		return Ok(MangaPageResult { manga, has_more });
 	}
 
-	todo!()
+	let manga = Request::get(manga_list_url.to_string())
+		.html()?
+		.select("div.comics-card")
+		.array()
+		.map(|value| {
+			let div = value.as_node()?;
+
+			let url = div.select("a.comics-card__poster").attr("abs:href").read();
+
+			let id = url
+				.substring_after_last('/')
+				.expect("Unable to get the substring after the last '/'")
+				.to_string();
+
+			let cover = {
+				let resized_cover = div.select("amp-img[noloading]").attr("src").read();
+				resized_cover
+					.clone()
+					.substring_before_last('?')
+					.map_or(resized_cover, ToString::to_string)
+			};
+
+			let title = div.select("h3").text().read();
+
+			let artist = {
+				let mut artists = div
+					.select("small")
+					.text()
+					.read()
+					.split(',')
+					.map(ToString::to_string)
+					.collect::<Vec<_>>();
+				artists.dedup();
+
+				artists.join("、")
+			};
+
+			let categories = div
+				.select("span")
+				.array()
+				.map(|value| {
+					let genre = value.as_node()?.text().read();
+					Ok(genre)
+				})
+				.collect::<Result<_>>()?;
+
+			Ok(Manga {
+				id,
+				cover,
+				title,
+				author: artist.clone(),
+				artist,
+				url,
+				categories,
+				..Default::default()
+			})
+		})
+		.collect::<Result<_>>()?;
+
+	Ok(MangaPageResult {
+		manga,
+		has_more: false,
+	})
 }
 
 // #[get_manga_listing]
