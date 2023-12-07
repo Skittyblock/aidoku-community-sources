@@ -44,7 +44,7 @@ pub fn text_with_newlines(node: Node) -> String {
 /// Returns the ID of a manga from a URL.
 // *NOTE: This was written by GitHub Copilot.
 pub fn get_manga_id(url: String) -> String {
-	// Example Url: https://reaperscans.com/comics/4921-demonic-emperor/chapters/64343350-chapter-324
+	// Example Url: https://reapercomics.com/comics/4921-demonic-emperor/chapters/64343350-chapter-324
 	// parse "4921-demonic-emperor" from the url
 
 	if url.contains("comics") {
@@ -67,7 +67,7 @@ pub fn get_manga_id(url: String) -> String {
 /// Returns the ID of a chapter from a URL.
 // *NOTE: This was written by GitHub Copilot.
 pub fn get_chapter_id(url: String) -> String {
-	// Example Url: https://reaperscans.com/comics/4921-demonic-emperor/chapters/64343350-chapter-324
+	// Example Url: https://reapercomics.com/comics/4921-demonic-emperor/chapters/64343350-chapter-324
 	// parse "64343350-chapter-324" from the url
 
 	if url.contains("chapters") {
@@ -91,7 +91,7 @@ pub fn get_chapter_id(url: String) -> String {
 // *NOTE: This was written by GitHub Copilot.
 pub fn get_manga_url(manga_id: String, base_url: String) -> String {
 	// Example manga id: 4921-demonic-emperor
-	// return "https://reaperscans.com/comics/4921-demonic-emperor"
+	// return "https://reapercomics.com/comics/4921-demonic-emperor"
 
 	format!("{}/comics/{}", base_url, manga_id)
 }
@@ -101,7 +101,7 @@ pub fn get_manga_url(manga_id: String, base_url: String) -> String {
 pub fn get_chapter_url(chapter_id: String, manga_id: String, base_url: String) -> String {
 	// Example chapter id: 64343350-chapter-324
 	// Example manga id: 4921-demonic-emperor
-	// return "https://reaperscans.com/comics/4921-demonic-emperor/chapters/64343350-chapter-324"
+	// return "https://reapercomics.com/comics/4921-demonic-emperor/chapters/64343350-chapter-324"
 
 	format!("{}/comics/{}/chapters/{}", base_url, manga_id, chapter_id)
 }
