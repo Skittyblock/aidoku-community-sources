@@ -66,6 +66,17 @@ pub enum Url {
 	///
 	/// Start from `1`
 	Filters(QueryParameters),
+
+	/// {DOMAIN}/search?{query}
+	///
+	/// ---
+	///
+	/// ## query
+	///
+	/// ### `q`
+	///
+	/// Should be percent-encoded
+	Search(QueryParameters),
 }
 
 impl From<(Vec<Filter>, i32)> for Url {
@@ -129,6 +140,18 @@ impl From<(Vec<Filter>, i32)> for Url {
 					}
 				}
 
+				FilterType::Title => {
+					let Ok(search_str) = filter.value.as_string().map(|str_ref| str_ref.read())
+					else {
+						continue;
+					};
+
+					let mut search_query = QueryParameters::new();
+					search_query.push("q", Some(&search_str));
+
+					return Url::Search(search_query);
+				}
+
 				_ => continue,
 			}
 		}
@@ -143,6 +166,7 @@ impl Display for Url {
 	fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
 		match self {
 			Self::Filters(query) => write!(f, "{}/api/bzmhq/amp_comic_list?{}", DOMAIN, query),
+			Self::Search(query) => write!(f, "{}/search?{}", DOMAIN, query),
 		}
 	}
 }

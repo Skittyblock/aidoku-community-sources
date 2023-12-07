@@ -11,8 +11,8 @@ use url::Url;
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
-	let filters_url = Url::from((filters, page));
-	println!("{}", filters_url);
+	let manga_list_url = Url::from((filters, page));
+	println!("{}", manga_list_url);
 	todo!()
 }
 
