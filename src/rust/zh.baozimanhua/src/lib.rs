@@ -6,12 +6,14 @@ mod url;
 use aidoku::{
 	error::Result,
 	helpers::substring::Substring,
-	prelude::{format, get_manga_details, get_manga_list, get_manga_listing},
-	std::{net::Request, String, Vec},
-	Filter, Listing, Manga, MangaPageResult, MangaStatus,
+	prelude::{format, get_chapter_list, get_manga_details, get_manga_list, get_manga_listing},
+	std::{net::Request, String, ValueRef, Vec},
+	Chapter, Filter, Listing, Manga, MangaPageResult, MangaStatus,
 };
 use alloc::string::ToString;
+use chinese_number::{ChineseCountMethod, ChineseToNumber};
 use parser::DivComicsCard;
+use regex::Regex;
 use url::{Url, DOMAIN};
 
 #[get_manga_list]
@@ -213,10 +215,97 @@ fn get_manga_details(id: String) -> Result<Manga> {
 	})
 }
 
-// #[get_chapter_list]
-// fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
-// 	todo!()
-// }
+#[get_chapter_list]
+fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
+	let get_res_chapter = |value: ValueRef| {
+		let a = value.as_node()?;
+		let url = a.attr("abs:href").read();
+
+		let id = url
+			.substring_after_last('=')
+			.expect("Unable to get the substring after the last '/'")
+			.to_string();
+
+		let title = a.text().read();
+
+		let (volume, chapter) = {
+			let get_volume_and_chapter = |title: &str| {
+				let to_f32 = |str: &str| {
+					str.parse().map_or_else(
+						|_| str.to_number(ChineseCountMethod::TenThousand).ok(),
+						Some,
+					)
+				};
+
+				let Some(caps) = {
+					let pat = concat!(
+						r"^(\[?第?(?<volume>[\d零一二三四五六七八九十百千]+)([-+＋][\d零一二三四五六七八九十百千]+)?",
+						r"[卷季部](\((?<part>[上下])\))?\]?)?\s?(\[?第?(?<chapter>[\d零一二三四五六七八九十百千]+(\.\d+)?)",
+						r"([-+＋][\d零一二三四五六七八九十百千]+)?[話话回]?\]?)?"
+					);
+					Regex::new(pat)
+				}
+				.expect("Invalid regex")
+				.captures(title) else {
+					return (-1.0, -1.0);
+				};
+				let volume = {
+					let part = caps
+						.name("part")
+						.and_then(|m| (m.as_str() == "下").then_some(0.5))
+						.unwrap_or(0.0);
+
+					caps.name("volume")
+						.and_then(|m| {
+							let num = to_f32(m.as_str())? + part;
+
+							Some(num)
+						})
+						.unwrap_or(-1.0)
+				};
+
+				let chapter = caps
+					.name("chapter")
+					.and_then(|m| to_f32(m.as_str()))
+					.unwrap_or(-1.0);
+
+				(volume, chapter)
+			};
+
+			get_volume_and_chapter(&title)
+		};
+
+		Ok(Chapter {
+			id,
+			title,
+			volume,
+			chapter,
+			url,
+			lang: "zh".to_string(),
+			..Default::default()
+		})
+	};
+
+	let manga_page = Request::get(Url::Manga(&manga_id).to_string()).html()?;
+	let chapters = manga_page
+		.select("div.pure-g[id] a.comics-chapters__item")
+		.array()
+		.rev()
+		.map(get_res_chapter)
+		.collect::<Result<Vec<_>>>()?;
+
+	if !chapters.is_empty() {
+		return Ok(chapters);
+	}
+
+	let chapters = manga_page
+		.select("a.comics-chapters__item")
+		.array()
+		.map(get_res_chapter)
+		.collect::<Result<Vec<_>>>()?;
+
+	Ok(chapters)
+}
 
 // #[get_page_list]
 // fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
