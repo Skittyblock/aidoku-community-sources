@@ -8,10 +8,10 @@ use aidoku::{
 	helpers::{substring::Substring, uri::QueryParameters},
 	prelude::{
 		format, get_chapter_list, get_manga_details, get_manga_list, get_manga_listing,
-		get_page_list,
+		get_page_list, handle_url,
 	},
 	std::{net::Request, String, ValueRef, Vec},
-	Chapter, Filter, Listing, Manga, MangaPageResult, MangaStatus, Page,
+	Chapter, DeepLink, Filter, Listing, Manga, MangaPageResult, MangaStatus, Page,
 };
 use alloc::string::ToString;
 use chinese_number::{ChineseCountMethod, ChineseToNumber};
@@ -364,12 +364,28 @@ fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 	Ok(pages)
 }
 
-// #[modify_image_request]
-// fn modify_image_request(request: Request) {
-// 	todo!()
-// }
+#[handle_url]
+fn handle_url(url: String) -> Result<DeepLink> {
+	let Some(caps) = Regex::new(
+		r"\/comic(\/chapter)?\/(?<manga_id>[^/]+)(\/0_(?<chapter_id>\d+)(_\d+)?\.html)?",
+	)
+	.expect("Invalid regex")
+	.captures(&url) else {
+		return Ok(DeepLink::default());
+	};
+	let manga = get_manga_details(caps["manga_id"].into())?;
 
-// #[handle_url]
-// fn handle_url(url: String) -> Result<DeepLink> {
-// 	todo!()
-// }
+	let chapter = caps.name("chapter_id").map(|m| {
+		let id = m.as_str().into();
+
+		Chapter {
+			id,
+			..Default::default()
+		}
+	});
+
+	Ok(DeepLink {
+		manga: Some(manga),
+		chapter,
+	})
+}
