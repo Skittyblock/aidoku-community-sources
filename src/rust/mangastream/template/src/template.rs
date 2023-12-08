@@ -12,7 +12,6 @@ use crate::helper::*;
 
 pub const USER_AGENT: &str = "Mozilla/5.0 (iPhone; CPU iPhone OS 16_1_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1";
 
-
 pub struct MangaStreamSource {
 	/// Use static post ids instead of dynamic ids parsed from urls \
 	/// Cannot be used together with `has_permanent_manga_url` or
