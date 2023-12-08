@@ -5,10 +5,13 @@ mod url;
 
 use aidoku::{
 	error::Result,
-	helpers::substring::Substring,
-	prelude::{format, get_chapter_list, get_manga_details, get_manga_list, get_manga_listing},
+	helpers::{substring::Substring, uri::QueryParameters},
+	prelude::{
+		format, get_chapter_list, get_manga_details, get_manga_list, get_manga_listing,
+		get_page_list,
+	},
 	std::{net::Request, String, ValueRef, Vec},
-	Chapter, Filter, Listing, Manga, MangaPageResult, MangaStatus,
+	Chapter, Filter, Listing, Manga, MangaPageResult, MangaStatus, Page,
 };
 use alloc::string::ToString;
 use chinese_number::{ChineseCountMethod, ChineseToNumber};
@@ -307,10 +310,59 @@ fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 	Ok(chapters)
 }
 
-// #[get_page_list]
-// fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
-// 	todo!()
-// }
+#[get_page_list]
+fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
+	let mut chapter_url = {
+		let mut query = QueryParameters::new();
+		query.push_encoded("comic_id", Some(&manga_id));
+		query.push_encoded("section_slot", Some("0"));
+		query.push_encoded("chapter_slot", Some(&chapter_id));
+
+		Url::Chapter(query).to_string()
+	};
+
+	let mut pages = Vec::new();
+	{
+		let mut index = -1;
+		loop {
+			let chapter_page = Request::get(&chapter_url).html()?;
+			for value in chapter_page.select("amp-img.comic-contain__item").array() {
+				index += 1;
+
+				let url = value.as_node()?.attr("data-src").read();
+
+				pages.push(Page {
+					index,
+					url,
+					..Default::default()
+				});
+			}
+
+			chapter_url = chapter_page
+				.select("a#next-chapter:has(i.icon-xiangxia)")
+				.attr("href")
+				.read();
+
+			if chapter_url.is_empty() {
+				break;
+			}
+		}
+	}
+
+	pages.sort_by_key(|page| page.url.clone());
+	pages.dedup_by_key(|page| page.url.clone());
+	pages.sort_by_key(|page| page.index);
+	pages = pages
+		.iter()
+		.enumerate()
+		.map(|(index, page)| Page {
+			index: index as i32,
+			..page.clone()
+		})
+		.collect();
+
+	Ok(pages)
+}
 
 // #[modify_image_request]
 // fn modify_image_request(request: Request) {

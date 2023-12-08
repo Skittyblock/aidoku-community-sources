@@ -81,6 +81,23 @@ pub enum Url<'a> {
 
 	/// https://www.baozimh.com/comic/{manga_id}
 	Manga(&'a str),
+
+	/// {DOMAIN}/user/page_direct?{query}
+	///
+	/// ## query
+	///
+	/// ### `comic_id`
+	///
+	/// `manga_id`
+	///
+	/// ### `section_slot`
+	///
+	/// `0`
+	///
+	/// ### `chapter_slot`
+	///
+	/// `chapter_id`
+	Chapter(QueryParameters),
 }
 
 impl From<(Vec<Filter>, i32)> for Url<'_> {
@@ -175,6 +192,7 @@ impl Display for Url<'_> {
 				write!(f, "https://static-tw.baozimh.com/cover/{}", file_name)
 			}
 			Self::Manga(manga_id) => write!(f, "{}/comic/{}", DOMAIN, manga_id),
+			Self::Chapter(query) => write!(f, "{}/user/page_direct?{}", DOMAIN, query),
 		}
 	}
 }
