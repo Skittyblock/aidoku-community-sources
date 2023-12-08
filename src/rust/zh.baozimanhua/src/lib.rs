@@ -5,9 +5,10 @@ mod url;
 
 use aidoku::{
 	error::Result,
-	prelude::{format, get_manga_list, get_manga_listing},
-	std::{net::Request, Vec},
-	Filter, Listing, Manga, MangaPageResult,
+	helpers::substring::Substring,
+	prelude::{format, get_manga_details, get_manga_list, get_manga_listing},
+	std::{net::Request, String, Vec},
+	Filter, Listing, Manga, MangaPageResult, MangaStatus,
 };
 use alloc::string::ToString;
 use parser::DivComicsCard;
@@ -132,10 +133,85 @@ fn get_manga_listing(listing: Listing, _: i32) -> Result<MangaPageResult> {
 	})
 }
 
-// #[get_manga_details]
-// fn get_manga_details(id: String) -> Result<Manga> {
-// 	todo!()
-// }
+#[get_manga_details]
+fn get_manga_details(id: String) -> Result<Manga> {
+	let url = Url::Manga(&id).to_string();
+
+	let manga_page = Request::get(&url).html()?;
+	let cover = {
+		let resized_cover = manga_page
+			.select("meta[name=og:image]")
+			.attr("content")
+			.read();
+		resized_cover
+			.clone()
+			.substring_before_last('?')
+			.map_or(resized_cover, ToString::to_string)
+	};
+
+	let title = manga_page
+		.select("meta[name=og:novel:book_name]")
+		.attr("content")
+		.read();
+
+	let artist = {
+		let mut artists = manga_page
+			.select("meta[name=og:novel:author]")
+			.attr("content")
+			.read()
+			.split(',')
+			.map(ToString::to_string)
+			.collect::<Vec<_>>();
+		artists.dedup();
+
+		artists.join("、")
+	};
+
+	let description = {
+		let og_description = manga_page
+			.select("meta[name=og:description]")
+			.attr("content")
+			.read();
+		og_description
+			.clone()
+			.substring_after("》全集,")
+			.map_or(og_description, ToString::to_string)
+	};
+
+	let categories = manga_page
+		.select("span.tag:gt(0)")
+		.array()
+		.filter_map(|value| {
+			let tag = value.as_node().ok()?.text().read();
+
+			(!tag.is_empty()).then_some(tag)
+		})
+		.collect();
+
+	let status = match manga_page
+		.select("meta[name=og:novel:status]")
+		.attr("content")
+		.read()
+		.as_str()
+	{
+		"連載中" | "连载中" => MangaStatus::Ongoing,
+		"已完結" | "已完结" => MangaStatus::Completed,
+		_ => MangaStatus::Unknown,
+	};
+
+	Ok(Manga {
+		id,
+		cover,
+		title,
+		author: artist.clone(),
+		artist,
+		description,
+		url,
+		categories,
+		status,
+		..Default::default()
+	})
+}
 
 // #[get_chapter_list]
 // fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
