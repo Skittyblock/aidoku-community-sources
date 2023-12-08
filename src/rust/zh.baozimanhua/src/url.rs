@@ -1,4 +1,10 @@
-use aidoku::{helpers::uri::QueryParameters, std::Vec, Filter, FilterType};
+extern crate alloc;
+
+use aidoku::{
+	helpers::uri::QueryParameters,
+	std::{net::Request, String, Vec},
+	Filter, FilterType,
+};
 use alloc::string::ToString;
 use core::fmt::Display;
 
@@ -73,13 +79,13 @@ pub enum Url<'a> {
 	///
 	/// ### `q`
 	///
-	/// Should be percent-encoded
+	/// `search_str` ➡️ Should be percent-encoded
 	Search(QueryParameters),
 
-	/// https://static-tw.baozimh.com/cover/{file_name}
+	/// https://static-tw.baozimh.com/cover/{topic_img}
 	Cover(&'a str),
 
-	/// https://www.baozimh.com/comic/{manga_id}
+	/// {DOMAIN}/comic/{manga_id}
 	Manga(&'a str),
 
 	/// {DOMAIN}/user/page_direct?{query}
@@ -98,6 +104,26 @@ pub enum Url<'a> {
 	///
 	/// `chapter_id`
 	Chapter(QueryParameters),
+}
+
+impl Url<'_> {
+	pub fn get(self) -> Request {
+		Request::get(self.to_string())
+	}
+}
+
+impl Display for Url<'_> {
+	fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+		match self {
+			Self::Filters(query) => write!(f, "{}/api/bzmhq/amp_comic_list?{}", DOMAIN, query),
+			Self::Search(query) => write!(f, "{}/search?{}", DOMAIN, query),
+			Self::Cover(topic_img) => {
+				write!(f, "https://static-tw.baozimh.com/cover/{}", topic_img)
+			}
+			Self::Manga(manga_id) => write!(f, "{}/comic/{}", DOMAIN, manga_id),
+			Self::Chapter(query) => write!(f, "{}/user/page_direct?{}", DOMAIN, query),
+		}
+	}
 }
 
 impl From<(Vec<Filter>, i32)> for Url<'_> {
@@ -183,16 +209,8 @@ impl From<(Vec<Filter>, i32)> for Url<'_> {
 	}
 }
 
-impl Display for Url<'_> {
-	fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-		match self {
-			Self::Filters(query) => write!(f, "{}/api/bzmhq/amp_comic_list?{}", DOMAIN, query),
-			Self::Search(query) => write!(f, "{}/search?{}", DOMAIN, query),
-			Self::Cover(file_name) => {
-				write!(f, "https://static-tw.baozimh.com/cover/{}", file_name)
-			}
-			Self::Manga(manga_id) => write!(f, "{}/comic/{}", DOMAIN, manga_id),
-			Self::Chapter(query) => write!(f, "{}/user/page_direct?{}", DOMAIN, query),
-		}
+impl From<Url<'_>> for String {
+	fn from(url: Url<'_>) -> Self {
+		url.to_string()
 	}
 }

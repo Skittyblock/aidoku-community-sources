@@ -1,5 +1,4 @@
 #![no_std]
-extern crate alloc;
 mod parser;
 mod url;
 
@@ -13,50 +12,34 @@ use aidoku::{
 	std::{net::Request, String, ValueRef, Vec},
 	Chapter, DeepLink, Filter, Listing, Manga, MangaPageResult, MangaStatus, Page,
 };
-use alloc::string::ToString;
 use chinese_number::{ChineseCountMethod, ChineseToNumber};
-use parser::DivComicsCard;
+use parser::{Artists, DivComicsCard};
 use regex::Regex;
 use url::{Url, DOMAIN};
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	let manga_list_url = Url::from((filters, page));
-
 	if let Url::Filters(_) = manga_list_url {
-		let filters_obj = Request::get(manga_list_url.to_string())
-			.json()?
-			.as_object()?;
-
+		let filters_obj = manga_list_url.get().json()?.as_object()?;
 		let manga = filters_obj
 			.get("items")
 			.as_array()?
 			.map(|value| {
 				let obj = value.as_object()?;
-
 				let id = obj.get("comic_id").as_string()?.read();
 
 				let cover = {
-					let file_name = obj.get("topic_img").as_string()?.read();
-					Url::Cover(&file_name).to_string()
+					let topic_img = obj.get("topic_img").as_string()?.read();
+
+					Url::Cover(&topic_img).into()
 				};
 
 				let title = obj.get("name").as_string()?.read();
 
-				let artist = {
-					let mut artists = obj
-						.get("author")
-						.as_string()?
-						.read()
-						.split(',')
-						.map(ToString::to_string)
-						.collect::<Vec<_>>();
-					artists.dedup();
+				let artist = obj.get("author").as_string()?.read().dedup_and_join();
 
-					artists.join("、")
-				};
-
-				let url = Url::Manga(&id).to_string();
+				let url = Url::Manga(&id).into();
 
 				let mut categories = obj
 					.get("type_names")
@@ -94,7 +77,8 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 		return Ok(MangaPageResult { manga, has_more });
 	}
 
-	let manga = Request::get(manga_list_url.to_string())
+	let manga = manga_list_url
+		.get()
 		.html()?
 		.select("div.comics-card")
 		.get_manga_list()?;
@@ -140,7 +124,7 @@ fn get_manga_listing(listing: Listing, _: i32) -> Result<MangaPageResult> {
 
 #[get_manga_details]
 fn get_manga_details(id: String) -> Result<Manga> {
-	let url = Url::Manga(&id).to_string();
+	let url = Url::Manga(&id).into();
 
 	let manga_page = Request::get(&url).html()?;
 	let cover = {
@@ -148,10 +132,11 @@ fn get_manga_details(id: String) -> Result<Manga> {
 			.select("meta[name=og:image]")
 			.attr("content")
 			.read();
+
 		resized_cover
 			.clone()
 			.substring_before_last('?')
-			.map_or(resized_cover, ToString::to_string)
+			.map_or(resized_cover, Into::into)
 	};
 
 	let title = manga_page
@@ -159,28 +144,22 @@ fn get_manga_details(id: String) -> Result<Manga> {
 		.attr("content")
 		.read();
 
-	let artist = {
-		let mut artists = manga_page
-			.select("meta[name=og:novel:author]")
-			.attr("content")
-			.read()
-			.split(',')
-			.map(ToString::to_string)
-			.collect::<Vec<_>>();
-		artists.dedup();
-
-		artists.join("、")
-	};
+	let artist = manga_page
+		.select("meta[name=og:novel:author]")
+		.attr("content")
+		.read()
+		.dedup_and_join();
 
 	let description = {
 		let og_description = manga_page
 			.select("meta[name=og:description]")
 			.attr("content")
 			.read();
+
 		og_description
 			.clone()
 			.substring_after("》全集,")
-			.map_or(og_description, ToString::to_string)
+			.map_or(og_description, Into::into)
 	};
 
 	let categories = manga_page
@@ -227,12 +206,12 @@ fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 		let id = url
 			.substring_after_last('=')
 			.expect("Unable to get the substring after the last '/'")
-			.to_string();
+			.into();
 
 		let title = a.text().read();
 
 		let (volume, chapter) = {
-			let get_volume_and_chapter = |title: &str| {
+			let get_volume_and_chapter_from = |title: &str| {
 				let to_f32 = |str: &str| {
 					str.parse().map_or_else(
 						|_| str.to_number(ChineseCountMethod::TenThousand).ok(),
@@ -246,6 +225,7 @@ fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 						r"[卷季部](\((?<part>[上下])\))?\]?)?\s?(\[?第?(?<chapter>[\d零一二三四五六七八九十百千]+(\.\d+)?)",
 						r"([-+＋][\d零一二三四五六七八九十百千]+)?[話话回]?\]?)?"
 					);
+
 					Regex::new(pat)
 				}
 				.expect("Invalid regex")
@@ -257,7 +237,6 @@ fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 						.name("part")
 						.and_then(|m| (m.as_str() == "下").then_some(0.5))
 						.unwrap_or(0.0);
-
 					caps.name("volume")
 						.and_then(|m| {
 							let num = to_f32(m.as_str())? + part;
@@ -275,7 +254,7 @@ fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 				(volume, chapter)
 			};
 
-			get_volume_and_chapter(&title)
+			get_volume_and_chapter_from(&title)
 		};
 
 		Ok(Chapter {
@@ -284,12 +263,12 @@ fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 			volume,
 			chapter,
 			url,
-			lang: "zh".to_string(),
+			lang: "zh".into(),
 			..Default::default()
 		})
 	};
 
-	let manga_page = Request::get(Url::Manga(&manga_id).to_string()).html()?;
+	let manga_page = Url::Manga(&manga_id).get().html()?;
 	let chapters = manga_page
 		.select("div.pure-g[id] a.comics-chapters__item")
 		.array()
@@ -301,13 +280,11 @@ fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 		return Ok(chapters);
 	}
 
-	let chapters = manga_page
+	manga_page
 		.select("a.comics-chapters__item")
 		.array()
 		.map(get_res_chapter)
-		.collect::<Result<Vec<_>>>()?;
-
-	Ok(chapters)
+		.collect()
 }
 
 #[get_page_list]
@@ -318,9 +295,8 @@ fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 		query.push_encoded("section_slot", Some("0"));
 		query.push_encoded("chapter_slot", Some(&chapter_id));
 
-		Url::Chapter(query).to_string()
+		Url::Chapter(query).into()
 	};
-
 	let mut pages = Vec::new();
 	{
 		let mut index = -1;
@@ -375,13 +351,9 @@ fn handle_url(url: String) -> Result<DeepLink> {
 	};
 	let manga = get_manga_details(caps["manga_id"].into())?;
 
-	let chapter = caps.name("chapter_id").map(|m| {
-		let id = m.as_str().into();
-
-		Chapter {
-			id,
-			..Default::default()
-		}
+	let chapter = caps.name("chapter_id").map(|m| Chapter {
+		id: m.as_str().into(),
+		..Default::default()
 	});
 
 	Ok(DeepLink {

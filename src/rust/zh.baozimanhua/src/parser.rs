@@ -1,10 +1,22 @@
 use aidoku::{
 	error::Result,
 	helpers::substring::Substring,
-	std::{html::Node, Vec},
+	std::{html::Node, String, Vec},
 	Manga,
 };
-use alloc::string::ToString;
+
+pub trait Artists {
+	fn dedup_and_join(self) -> String;
+}
+
+impl Artists for String {
+	fn dedup_and_join(self) -> String {
+		let mut artists = self.split(',').map(Into::into).collect::<Vec<String>>();
+		artists.dedup();
+
+		artists.join("、")
+	}
+}
 
 pub trait DivComicsCard {
 	fn get_manga_list(self) -> Result<Vec<Manga>>;
@@ -15,20 +27,19 @@ impl DivComicsCard for Node {
 		self.array()
 			.map(|value| {
 				let div = value.as_node()?;
-
 				let url = div.select("a.comics-card__poster").attr("abs:href").read();
 
 				let id = url
 					.substring_after_last('/')
 					.expect("Unable to get the substring after the last '/'")
-					.to_string();
+					.into();
 
 				let cover = {
 					let resized_cover = div.select("amp-img[noloading]").attr("src").read();
 					resized_cover
 						.clone()
 						.substring_before_last('?')
-						.map_or(resized_cover, ToString::to_string)
+						.map_or(resized_cover, Into::into)
 				};
 
 				let title = div.select("h3").text().read();
@@ -39,8 +50,8 @@ impl DivComicsCard for Node {
 						.text()
 						.read()
 						.split(',')
-						.map(ToString::to_string)
-						.collect::<Vec<_>>();
+						.map(Into::into)
+						.collect::<Vec<String>>();
 					artists.dedup();
 
 					artists.join("、")
@@ -51,6 +62,7 @@ impl DivComicsCard for Node {
 					.array()
 					.map(|value| {
 						let genre = value.as_node()?.text().read();
+
 						Ok(genre)
 					})
 					.collect::<Result<_>>()?;
