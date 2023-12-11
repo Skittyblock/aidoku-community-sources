@@ -24,7 +24,8 @@ pub trait DivComicsCard {
 
 impl DivComicsCard for Node {
 	fn get_manga_list(self) -> Result<Vec<Manga>> {
-		self.array()
+		self.select("div.comics-card")
+			.array()
 			.map(|value| {
 				let div = value.as_node()?;
 				let url = div.select("a.comics-card__poster").attr("abs:href").read();

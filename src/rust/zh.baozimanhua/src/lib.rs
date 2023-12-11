@@ -77,11 +77,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 		return Ok(MangaPageResult { manga, has_more });
 	}
 
-	let manga = manga_list_url
-		.get()
-		.html()?
-		.select("div.comics-card")
-		.get_manga_list()?;
+	let manga = manga_list_url.get().html()?.get_manga_list()?;
 
 	Ok(MangaPageResult {
 		manga,
@@ -91,6 +87,15 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 
 #[get_manga_listing]
 fn get_manga_listing(listing: Listing, _: i32) -> Result<MangaPageResult> {
+	if listing.name == "最新上架" {
+		let manga = Url::New.get().html()?.get_manga_list()?;
+
+		return Ok(MangaPageResult {
+			manga,
+			has_more: false,
+		});
+	}
+
 	let manga = {
 		let selector = {
 			let regex = match listing.name.as_str() {
@@ -99,13 +104,12 @@ fn get_manga_listing(listing: Listing, _: i32) -> Result<MangaPageResult> {
 				"推薦韓漫" => "推薦韓漫|推荐韩漫",
 				"推薦日漫" => "推薦日漫|推荐日漫",
 				"熱血漫畫" => "熱血漫畫|热血漫画",
-				"最新上架" => "最新上架",
 				"最近更新" => "最近更新",
 				_ => return Ok(MangaPageResult::default()),
 			};
 
 			format!(
-				"div.index-recommend-items:has(div.catalog-title:matches({})) div.comics-card",
+				"div.index-recommend-items:has(div.catalog-title:matches({}))",
 				regex
 			)
 		};

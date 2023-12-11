@@ -104,6 +104,9 @@ pub enum Url<'a> {
 	///
 	/// `chapter_id`
 	Chapter(QueryParameters),
+
+	/// {DOMAIN}/list/new
+	New,
 }
 
 impl Url<'_> {
@@ -122,6 +125,7 @@ impl Display for Url<'_> {
 			}
 			Self::Manga(manga_id) => write!(f, "{}/comic/{}", DOMAIN, manga_id),
 			Self::Chapter(query) => write!(f, "{}/user/page_direct?{}", DOMAIN, query),
+			Self::New => write!(f, "{}/list/new", DOMAIN),
 		}
 	}
 }
