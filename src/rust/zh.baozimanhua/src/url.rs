@@ -2,16 +2,25 @@ extern crate alloc;
 
 use aidoku::{
 	helpers::uri::QueryParameters,
-	std::{net::Request, String, Vec},
+	std::{defaults::defaults_get, net::Request, String, Vec},
 	Filter, FilterType,
 };
 use alloc::string::ToString;
 use core::fmt::Display;
 
-pub const DOMAIN: &str = "https://www.baozimh.com";
-
 pub enum Url<'a> {
-	/// {DOMAIN}/api/bzmhq/amp_comic_list?{query}
+	/// https://{subdomain}.baozimh.com
+	///
+	/// ---
+	///
+	/// ## subdomain
+	///
+	/// - `cn`: 简体
+	/// - `www`: 預設
+	/// - `tw`: 繁體
+	Domain,
+
+	/// {Url::Domain}/api/bzmhq/amp_comic_list?{query}
 	///
 	/// ---
 	///
@@ -71,7 +80,7 @@ pub enum Url<'a> {
 	/// Start from `1`
 	Filters(QueryParameters),
 
-	/// {DOMAIN}/search?{query}
+	/// {Url::Domain}/search?{query}
 	///
 	/// ---
 	///
@@ -85,10 +94,10 @@ pub enum Url<'a> {
 	/// https://static-tw.baozimh.com/cover/{topic_img}
 	Cover(&'a str),
 
-	/// {DOMAIN}/comic/{manga_id}
+	/// {Url::Domain}/comic/{manga_id}
 	Manga(&'a str),
 
-	/// {DOMAIN}/user/page_direct?{query}
+	/// {Url::Domain}/user/page_direct?{query}
 	///
 	/// ## query
 	///
@@ -105,7 +114,7 @@ pub enum Url<'a> {
 	/// `chapter_id`
 	Chapter(QueryParameters),
 
-	/// {DOMAIN}/list/new
+	/// {Url::Domain}/list/new
 	New,
 }
 
@@ -118,14 +127,36 @@ impl Url<'_> {
 impl Display for Url<'_> {
 	fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
 		match self {
-			Self::Filters(query) => write!(f, "{}/api/bzmhq/amp_comic_list?{}", DOMAIN, query),
-			Self::Search(query) => write!(f, "{}/search?{}", DOMAIN, query),
+			Self::Domain => {
+				let charset_index = defaults_get("charset")
+					.and_then(|value| value.as_int())
+					.unwrap_or(1);
+				let charset = match charset_index {
+					// ! Cloudflare issue
+					// 0 => "cn",
+					1 => "www",
+					2 => "tw",
+					_ => "www",
+				};
+
+				write!(f, "https://{}.baozimh.com", charset)
+			}
+
+			Self::Filters(query) => {
+				write!(f, "{}/api/bzmhq/amp_comic_list?{}", Self::Domain, query)
+			}
+
+			Self::Search(query) => write!(f, "{}/search?{}", Self::Domain, query),
+
 			Self::Cover(topic_img) => {
 				write!(f, "https://static-tw.baozimh.com/cover/{}", topic_img)
 			}
-			Self::Manga(manga_id) => write!(f, "{}/comic/{}", DOMAIN, manga_id),
-			Self::Chapter(query) => write!(f, "{}/user/page_direct?{}", DOMAIN, query),
-			Self::New => write!(f, "{}/list/new", DOMAIN),
+
+			Self::Manga(manga_id) => write!(f, "{}/comic/{}", Self::Domain, manga_id),
+
+			Self::Chapter(query) => write!(f, "{}/user/page_direct?{}", Self::Domain, query),
+
+			Self::New => write!(f, "{}/list/new", Self::Domain),
 		}
 	}
 }

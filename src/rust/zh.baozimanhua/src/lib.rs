@@ -15,7 +15,7 @@ use aidoku::{
 use chinese_number::{ChineseCountMethod, ChineseToNumber};
 use parser::{Artists, DivComicsCard};
 use regex::Regex;
-use url::{Url, DOMAIN};
+use url::Url;
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
@@ -114,10 +114,7 @@ fn get_manga_listing(listing: Listing, _: i32) -> Result<MangaPageResult> {
 			)
 		};
 
-		Request::get(DOMAIN)
-			.html()?
-			.select(selector)
-			.get_manga_list()
+		Url::Domain.get().html()?.select(selector).get_manga_list()
 	}?;
 
 	Ok(MangaPageResult {
