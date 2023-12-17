@@ -16,7 +16,7 @@
 				"key": "imageFormat",
 				"title": "Image Format",
 				"values": ["jpg", "webp"],
-				"titles": ["jpg (default)", "webp"],
+				"titles": ["JPG", "WebP"],
 				"default": "jpg"
 			}
 		]
