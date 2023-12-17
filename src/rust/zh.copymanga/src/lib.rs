@@ -10,7 +10,7 @@ use aidoku::{
 	prelude::{
 		format, get_chapter_list, get_manga_details, get_manga_list, get_page_list, handle_url,
 	},
-	std::{String, Vec},
+	std::{defaults::defaults_get, String, Vec},
 	Chapter, DeepLink, Filter, Manga, MangaPageResult, MangaStatus, Page,
 };
 use alloc::string::ToString;
@@ -171,8 +171,18 @@ fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 		.json()?
 		.as_array()?;
 
+	let image_format = defaults_get("imageFormat").and_then(|v| v.as_string().map(|v| v.read()))?;
+
+	let image_quality =
+		defaults_get("imageQuality").and_then(|v| v.as_string().map(|v| v.read()))?;
+
+	let image_ext = format!("{}.{}", image_quality, image_format);
+
 	for (index, page_value) in page_arr.enumerate() {
-		let page_url = page_value.as_object()?.get_as_string("url")?;
+		let page_url = page_value
+			.as_object()?
+			.get_as_string("url")?
+			.replace("c800x.jpg", &image_ext);
 
 		pages.push(Page {
 			index: index as i32,
