@@ -1,0 +1,14 @@
+[
+	{
+		"type": "group",
+		"items": [
+			{
+				"type": "segment",
+				"key": "charset",
+				"title": "繁簡轉換",
+				"values": ["简体", "預設", "繁體"],
+				"default": "預設"
+			}
+		]
+	}
+]

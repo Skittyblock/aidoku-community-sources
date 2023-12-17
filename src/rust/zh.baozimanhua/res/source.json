@@ -3,8 +3,37 @@
 		"id": "zh.baozimanhua",
 		"lang": "zh",
 		"name": "包子漫畫",
-		"version": 2,
-		"url": "https://www.baozimh.com",
+		"version": 3,
+		"url": "https://www.baozimh.com/",
+		"urls": [
+			"https://www.baozimh.com/",
+			"https://tw.baozimh.com/",
+			"https://cn.baozimh.com/",
+			"https://www.webmota.com/",
+			"https://tw.webmota.com/",
+			"https://cn.webmota.com/",
+			"https://www.czmanga.com/",
+			"https://tw.czmanga.com/",
+			"https://cn.czmanga.com/",
+			"https://www.dinnerku.com/",
+			"https://tw.dinnerku.com/",
+			"https://cn.dinnerku.com/",
+			"https://www.dociy.net/",
+			"https://tw.dociy.net/",
+			"https://cn.dociy.net/",
+			"https://www.twmanga.com/",
+			"https://tw.twmanga.com/",
+			"https://cn.twmanga.com/"
+		],
 		"nsfw": 1
-	}
+	},
+	"listings": [
+		{ "name": "熱門漫畫" },
+		{ "name": "推薦中港台漫" },
+		{ "name": "推薦韓漫" },
+		{ "name": "推薦日漫" },
+		{ "name": "熱血漫畫" },
+		{ "name": "最新上架" },
+		{ "name": "最近更新" }
+	]
 }
