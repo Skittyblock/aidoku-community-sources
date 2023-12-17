@@ -11,7 +11,7 @@ pub mod helper;
 pub mod parser;
 
 const BASE_URL: &str = "https://comick.cc";
-const API_URL: &str = "https://api.comick.fun";
+const API_URL: &str = "https://api.comick.cc";
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
