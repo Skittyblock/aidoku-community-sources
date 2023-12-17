@@ -10,6 +10,8 @@ use aidoku::{
 
 use crate::helper::*;
 
+pub const USER_AGENT: &str = "Mozilla/5.0 (iPhone; CPU iPhone OS 16_1_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1";
+
 pub struct MangaStreamSource {
 	/// Use static post ids instead of dynamic ids parsed from urls \
 	/// Cannot be used together with `has_permanent_manga_url` or
@@ -191,7 +193,9 @@ impl MangaStreamSource {
 			base_url
 		};
 		let mut mangas: Vec<Manga> = Vec::new();
-		let html = Request::new(url, HttpMethod::Get).html()?;
+		let html = Request::new(url, HttpMethod::Get)
+			.header("User-Agent", USER_AGENT)
+			.html()?;
 		for manga in html.select(self.manga_selector).array() {
 			let manga_node = manga.as_node().expect("Failed to get manga as node");
 			let title = manga_node.select(self.manga_title).attr("title").read();
@@ -258,7 +262,9 @@ impl MangaStreamSource {
 		} else {
 			format!("{}/{}/{}", self.base_url, self.traverse_pathname, id)
 		};
-		let html = Request::new(&url, HttpMethod::Get).html()?;
+		let html = Request::new(&url, HttpMethod::Get)
+			.header("User-Agent", USER_AGENT)
+			.html()?;
 		let mut title = html.select(self.manga_details_title).text().read();
 		for i in self.manga_title_trim.iter() {
 			if title.contains(i) {
@@ -349,7 +355,9 @@ impl MangaStreamSource {
 		};
 
 		let mut chapters: Vec<Chapter> = Vec::new();
-		let html = Request::new(url, HttpMethod::Get).html()?;
+		let html = Request::new(url, HttpMethod::Get)
+			.header("User-Agent", USER_AGENT)
+			.html()?;
 		for chapter in html.select(self.chapter_selector).array() {
 			let chapter_node = chapter.as_node().expect("Failed to get chapter as node");
 			let raw_title = chapter_node.select(self.chapter_title).text().read();
@@ -428,6 +436,7 @@ impl MangaStreamSource {
 		let mut pages: Vec<Page> = Vec::new();
 		let html = Request::new(url, HttpMethod::Get)
 			.header("Referer", &self.base_url)
+			.header("User-Agent", USER_AGENT)
 			.html()?;
 		if self.alt_pages {
 			let raw_text = html.select("script").html().read();
@@ -487,7 +496,8 @@ impl MangaStreamSource {
 				"Accept",
 				"image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
 			)
-			.header("Referer", &self.base_url);
+			.header("Referer", &self.base_url)
+			.header("User-Agent", USER_AGENT);
 	}
 
 	pub fn handle_url(&self, url: String) -> Result<DeepLink> {
