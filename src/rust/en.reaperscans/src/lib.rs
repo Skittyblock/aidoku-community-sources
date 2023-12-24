@@ -10,7 +10,7 @@ mod helper;
 mod parser;
 mod request_helper;
 
-const BASE_URL: &str = "https://reapercomics.com";
+const BASE_URL: &str = "https://reaperscans.com";
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
