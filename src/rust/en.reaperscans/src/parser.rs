@@ -21,7 +21,7 @@ pub fn parse_manga_list(base_url: String, page: i32) -> Result<MangaPageResult> 
 		.header("User-Agent", USER_AGENT)
 		.html()
 		.expect(
-		"ReaperScans: Could not display All listing. Check the website and your internet connection on https://reapercomics.com",
+		"ReaperScans: Could not display All listing. Check the website and your internet connection on https://reaperscans.com",
 		);
 
 	let mut mangas: Vec<Manga> = Vec::new();
@@ -104,7 +104,7 @@ pub fn parse_manga_listing(
 	let html = Request::new(url, HttpMethod::Get)
 		.header("User-Agent", USER_AGENT)
 		.html()
-		.expect("ReaperScans: Could not display a listing. Check the website and your internet connection on https://reapercomics.com");
+		.expect("ReaperScans: Could not display a listing. Check the website and your internet connection on https://reaperscans.com");
 
 	let mut mangas: Vec<Manga> = Vec::new();
 
