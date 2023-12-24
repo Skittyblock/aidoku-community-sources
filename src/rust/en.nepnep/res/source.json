@@ -1,16 +1,11 @@
 {
-	"info": {
-		"id": "en.nepnep",
-		"lang": "en",
-		"name": "MangaSee",
-		"version": 10,
-		"urls": [
-			"https://mangasee123.com",
-			"https://manga4life.com"
-		],
-		"nsfw": 1
-	},
-	"listings": [
-		{ "name": "Hot Updates" }
-	]
+  "info": {
+    "id": "en.nepnep",
+    "lang": "en",
+    "name": "MangaSee",
+    "version": 11,
+    "urls": ["https://mangasee123.com", "https://manga4life.com"],
+    "nsfw": 1
+  },
+  "listings": [{ "name": "Hot Updates" }]
 }
