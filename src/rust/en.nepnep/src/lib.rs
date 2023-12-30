@@ -293,9 +293,9 @@ fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 	for i in 0..page_count {
 		// pad page index to length 3 (e.g. 45 -> "046")
 		let mut vec: Vec<u8> = Vec::new();
-		let mut num = i as u8 + 1;
+		let mut num = i + 1;
 		loop {
-			vec.insert(0, num % 10 + b'0');
+			vec.insert(0, (num % 10) as u8 + b'0');
 			num /= 10;
 			if num < 1 {
 				break;
