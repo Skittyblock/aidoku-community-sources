@@ -10,6 +10,7 @@ use madara_template::template;
 fn get_data() -> template::MadaraSiteData {
     template::MadaraSiteData {
         base_url: String::from("https://demonsect.com.br"),
+        source_path: String::from("comics"),
         description_selector: String::from("div.post-content_item div p"),
         alt_ajax: true,
         ..Default::default()
