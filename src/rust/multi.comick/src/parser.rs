@@ -146,9 +146,10 @@ pub fn parse_manga_list(
 				});
 			}
 		}
+		let has_more = mangas.len() > 0;
 		Ok(MangaPageResult {
 			manga: mangas,
-			has_more: false,
+			has_more,
 		})
 	}
 }
@@ -228,9 +229,10 @@ pub fn parse_manga_listing(
 			}
 		}
 	}
+	let has_more = mangas.len() > 0;
 	Ok(MangaPageResult {
 		manga: mangas,
-		has_more: true,
+		has_more,
 	})
 }
 
@@ -256,38 +258,47 @@ pub fn parse_manga_details(api_url: String, id: String) -> Result<Manga> {
 		.as_array()
 		.expect("Failed to get authors as array");
 	let author = authors
-		.get(0)
-		.as_object()
-		.expect("Failed to get author as object")
-		.get("name")
-		.as_string()
-		.expect("Failed to get author as str")
-		.read();
+		.map(|a| {
+			a.as_object()
+				.expect("Failed to get author as object")
+				.get("name")
+				.as_string()
+				.expect("Failed to get author as str")
+				.read()
+		})
+		.collect::<Vec<String>>()
+		.join(", ");
 	let artists = json
 		.get("artists")
 		.as_array()
 		.expect("Failed to get artists as array");
 	let artist = artists
-		.get(0)
-		.as_object()
-		.expect("Failed to get artist as object")
-		.get("name")
-		.as_string()
-		.expect("Failed to get artist as str")
-		.read();
+		.map(|a| {
+			a.as_object()
+				.expect("Failed to get artist as object")
+				.get("name")
+				.as_string()
+				.expect("Failed to get artist as str")
+				.read()
+		})
+		.collect::<Vec<String>>()
+		.join(", ");
 	let description = unescape_html_entities(data_from_json(&data, "desc"));
 	let status = manga_status(data.get("status").as_int().unwrap_or(0));
-	let genres = json
-		.get("genres")
+	let genres = data
+		.get("md_comic_md_genres")
 		.as_array()
 		.expect("Failed to get genres as array");
 	let categories = genres
 		.map(|genre| {
-			let genre_obj = genre.as_object().expect("genre to get comics as object");
+			let genre_obj = genre.as_object().expect("Failed to get genre as object");
 			Ok(genre_obj
+				.get("md_genres")
+				.as_object()
+				.expect("Failed to get inner genre as object")
 				.get("name")
 				.as_string()
-				.expect("Failed to get genre as str")
+				.expect("Failed to get genre name as str")
 				.read())
 		})
 		.map(|a: Result<String>| a.unwrap_or_default())
@@ -323,7 +334,7 @@ pub fn parse_manga_details(api_url: String, id: String) -> Result<Manga> {
 		artist,
 		description,
 		url: format!(
-			"https://comick.app/comic/{}",
+			"https://comick.cc/comic/{}",
 			id.split('|').next().unwrap_or("")
 		),
 		categories,
