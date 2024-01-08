@@ -204,7 +204,7 @@ fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 			.trim()
 			.to_string();
 		if let Some(caps) = Regex::new(
-			r"(?<chapter>\/bookimages\/\d{8}\/\d+)-(?<page_id>[a-z0-9]{32,})\.(?<file_extension>[^\?]+)",
+			r"(?<chapter>.+[^a-z0-9])(?<page_id>[a-z0-9]{32,})\.(?<file_extension>[^\?]+)",
 		)
 		.expect("Invalid regular expression")
 		.captures(&page_path)
@@ -212,7 +212,7 @@ fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 			let chapter = &caps["chapter"];
 			let page_id = &caps["page_id"][..32];
 			let file_extension = &caps["file_extension"];
-			page_path = format!("{chapter}-{page_id}.{file_extension}");
+			page_path = format!("{chapter}{page_id}.{file_extension}");
 		};
 
 		let page_url = Url::Abs(page_path).to_string();
