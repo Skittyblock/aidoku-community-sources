@@ -205,7 +205,7 @@ fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 		.join(", ");
 
 	let mut chapters = Vec::<Chapter>::new();
-	let mut pages = manga_html.select("a.post-page-numbers").array().len();
+	let mut pages = manga_html.select(".post-page-numbers").array().len();
 	if pages == 0 {
 		pages = 1;
 	}
