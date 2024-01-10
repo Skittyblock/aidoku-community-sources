@@ -255,7 +255,7 @@ pub fn get_page_list(obj: Node) -> Result<Vec<Page>> {
 			None => panic!(),
 		}
 		let img_str;
-		match script_text.substring_after_last("const imgHttpLis = [\"") {
+		match script_text.substring_after_last("const imgHttps = [\"") {
 			Some(v) => match v.substring_before("\"];") {
 				Some(w) => img_str = w,
 				None => panic!(),
