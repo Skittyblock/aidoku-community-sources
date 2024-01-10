@@ -16,6 +16,7 @@ use aidoku::{
 };
 use alloc::string::ToString;
 use base64::{engine::general_purpose, Engine};
+use regex::Regex;
 use url::{Url, CHAPTER_PATH, DOMAIN, MANGA_PATH, USER_AGENT};
 
 #[initialize]
@@ -196,12 +197,24 @@ fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 	let mut pages = Vec::<Page>::new();
 	let page_nodes = chapter_html.select("img.lazy[id]");
 	for (page_index, page_value) in page_nodes.array().enumerate() {
-		let page_path = page_value
+		let mut page_path = page_value
 			.as_node()?
 			.attr("data-original")
 			.read()
 			.trim()
 			.to_string();
+		if let Some(caps) = Regex::new(
+			r"(?<chapter>.+[^a-z0-9])(?<page_id>[a-z0-9]{32,})\.(?<file_extension>[^\?]+)",
+		)
+		.expect("Invalid regular expression")
+		.captures(&page_path)
+		{
+			let chapter = &caps["chapter"];
+			let page_id = &caps["page_id"][..32];
+			let file_extension = &caps["file_extension"];
+			page_path = format!("{chapter}{page_id}.{file_extension}");
+		};
+
 		let page_url = Url::Abs(page_path).to_string();
 
 		pages.push(Page {

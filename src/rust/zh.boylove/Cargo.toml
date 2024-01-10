@@ -18,3 +18,4 @@ lto = true
 [dependencies]
 aidoku = { git = "https://github.com/Aidoku/aidoku-rs", features = ["helpers"] }
 base64 = { version = "0.21.2", default-features = false, features = ["alloc"] }
+regex = { version = "1.10.2", default-features = false, features = ["unicode"] }
