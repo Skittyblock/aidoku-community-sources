@@ -8,7 +8,7 @@ use madara_template::template;
 
 fn get_data() -> template::MadaraSiteData {
 	let data: template::MadaraSiteData = template::MadaraSiteData {
-		base_url: String::from("https://neoxscans.net"),
+		base_url: String::from("https://nexoscans.com"),
 		lang: String::from("pt-br"),
 		status: |html| {
 			let status_str = html
