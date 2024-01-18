@@ -9,7 +9,7 @@ use mangastream_template::template::MangaStreamSource;
 fn get_instance() -> MangaStreamSource {
 	MangaStreamSource {
 		listing: ["الرائج", "آخر", "جَديد"],
-		base_url: String::from("https://aresnov.org"),
+		base_url: String::from("https://en-aresmanga.com"),
 		last_page_text: "التالي",
 		traverse_pathname: "series",
 		manga_details_author: ".imptdt:contains(المؤلف) i",
