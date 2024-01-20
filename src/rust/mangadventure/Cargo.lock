@@ -44,7 +44,7 @@ dependencies = [
 
 [[package]]
 name = "arcrelight"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "aidoku",
  "mangadventure_template",
@@ -52,7 +52,7 @@ dependencies = [
 
 [[package]]
 name = "assortedscans"
-version = "0.1.2"
+version = "0.1.3"
 dependencies = [
  "aidoku",
  "mangadventure_template",
@@ -75,7 +75,7 @@ checksum = "b4668fb0ea861c1df094127ac5f1da3409a82116a4ba74fca2e58ef927159bb3"
 
 [[package]]
 name = "mangadventure_template"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "aidoku",
 ]
