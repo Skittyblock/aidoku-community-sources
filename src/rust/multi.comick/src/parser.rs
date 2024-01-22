@@ -106,7 +106,7 @@ pub fn parse_manga_list(
 			page,
 		);
 		let mut mangas: Vec<Manga> = Vec::new();
-		let json = Request::new(&url, HttpMethod::Get)
+		let json = Request::new(url, HttpMethod::Get)
 			.json()
 			.expect("Failed to load JSON")
 			.as_array()
@@ -160,7 +160,7 @@ pub fn parse_manga_listing(
 ) -> Result<MangaPageResult> {
 	let url = get_listing_url(api_url.clone(), list_type, page);
 	let mut mangas: Vec<Manga> = Vec::new();
-	let json = Request::new(&url, HttpMethod::Get)
+	let json = Request::new(url, HttpMethod::Get)
 		.json()
 		.expect("Failed to load JSON")
 		.as_array()
@@ -351,7 +351,7 @@ pub fn parse_chapter_list(api_url: String, id: String) -> Result<Vec<Chapter>> {
 		page,
 		get_lang_code().unwrap_or_else(|| String::from("en"))
 	);
-	let json = Request::new(&url, HttpMethod::Get)
+	let json = Request::new(url, HttpMethod::Get)
 		.json()
 		.expect("Failed to load JSON")
 		.as_object()
@@ -368,7 +368,7 @@ pub fn parse_chapter_list(api_url: String, id: String) -> Result<Vec<Chapter>> {
 		page,
 		get_lang_code().unwrap_or_else(|| String::from("en"))
 	);
-	let json = Request::new(&url, HttpMethod::Get)
+	let json = Request::new(url, HttpMethod::Get)
 		.json()
 		.expect("Failed to load JSON")
 		.as_object()
@@ -411,7 +411,7 @@ pub fn parse_chapter_list(api_url: String, id: String) -> Result<Vec<Chapter>> {
 pub fn parse_page_list(api_url: String, chapter_id: String) -> Result<Vec<Page>> {
 	let mut pages: Vec<Page> = Vec::new();
 	let url = format!("{}/chapter/{}?tachiyomi=true", api_url, chapter_id);
-	let json = Request::new(&url, HttpMethod::Get)
+	let json = Request::new(url, HttpMethod::Get)
 		.json()
 		.expect("Failed to load JSON")
 		.as_object()
