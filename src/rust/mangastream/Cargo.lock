@@ -3,14 +3,6 @@
 version = 3
 
 [[package]]
-name = " manhwafreakmanga"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "mangastream_template",
-]
-
-[[package]]
 name = "acescans"
 version = "0.1.0"
 dependencies = [
@@ -283,6 +275,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "manhwafreakmanga"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "mangastream_template",
+]
+
+[[package]]
 name = "manhwalist"
 version = "0.1.0"
 dependencies = [
@@ -380,6 +380,14 @@ dependencies = [
 
 [[package]]
 name = "senpaiediciones"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "mangastream_template",
+]
+
+[[package]]
+name = "suryatoon"
 version = "0.1.0"
 dependencies = [
  "aidoku",
