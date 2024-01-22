@@ -263,27 +263,16 @@ pub fn parse_manga_details(api_url: String, id: String) -> Result<Manga> {
 		.as_string()
 		.expect("Failed to get author as str")
 		.read();
-	let artists = json
-		.get("artists")
-		.as_array()
-		.expect("Failed to get artists as array");
-	let artist = artists
-		.get(0)
-		.as_object()
-		.expect("Failed to get artist as object")
-		.get("name")
-		.as_string()
-		.expect("Failed to get artist as str")
-		.read();
 	let description = unescape_html_entities(data_from_json(&data, "desc"));
 	let status = manga_status(data.get("status").as_int().unwrap_or(0));
-	let genres = json
-		.get("genres")
+	let genres = data
+		.get("md_comic_md_genres")
 		.as_array()
 		.expect("Failed to get genres as array");
 	let categories = genres
 		.map(|genre| {
-			let genre_obj = genre.as_object().expect("genre to get comics as object");
+			let genre_obj = genre.as_object().expect("genre to get comics as object")
+			.get("md_genres").as_object().expect("genre to get comics as object");
 			Ok(genre_obj
 				.get("name")
 				.as_string()
@@ -314,6 +303,22 @@ pub fn parse_manga_details(api_url: String, id: String) -> Result<Manga> {
 	{
 		"kr" | "cn" => MangaViewer::Scroll,
 		_ => MangaViewer::Rtl,
+	};
+	let artists = json
+		.get("artists")
+		.as_array()
+		.expect("Failed to get artists as array");
+	let artist = if artists.is_empty() {
+		String::from("")
+	} else { 
+		artists
+		.get(0)
+		.as_object()
+		.expect("Failed to get artist as object")
+		.get("name")
+		.as_string()
+		.expect("Failed to get artist as str")
+		.read()
 	};
 	Ok(Manga {
 		id: id.clone(),
