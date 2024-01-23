@@ -66,6 +66,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "demonsect"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "madara_template",
+]
+
+[[package]]
 name = "disasterscans"
 version = "0.1.0"
 dependencies = [
@@ -99,6 +107,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "flowermanga"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "madara_template",
+]
+
+[[package]]
 name = "hentaicb"
 version = "0.1.0"
 dependencies = [
@@ -116,6 +132,14 @@ dependencies = [
 
 [[package]]
 name = "hscans"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "madara_template",
+]
+
+[[package]]
+name = "immortalupdates"
 version = "0.1.0"
 dependencies = [
  "aidoku",
@@ -240,7 +264,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "neoxscans"
+name = "nexoscans"
 version = "0.1.0"
 dependencies = [
  "aidoku",
