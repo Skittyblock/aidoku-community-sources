@@ -1,6 +1,6 @@
 use aidoku::{
 	error::Result,
-	prelude::{format, println},
+	prelude::format,
 	std::{html::unescape_html_entities, net::HttpMethod, net::Request, String, Vec},
 	Chapter, DeepLink, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
 	MangaViewer, Page,
