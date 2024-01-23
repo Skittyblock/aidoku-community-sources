@@ -15,7 +15,7 @@ use aidoku::{
 	MangaContentRating, MangaStatus, MangaViewer,
 };
 
-const USER_AGENT: &str = "Mozilla 5.0 (Aidoku 0.1.1; Mobile)";
+const USER_AGENT: &str = "Mozilla/5.0 (iPhone; like Mac OS X) Aidoku/0.1";
 
 static NSFW_CATEGORIES: [&str; 2] = ["Hentai", "Smut"];
 
@@ -80,6 +80,8 @@ impl MangAdventure {
 
 		for result in results {
 			let obj = result.as_object().unwrap();
+			// exclude licensed series ("chapters": null)
+			if obj.get("chapters").is_none() { continue; }
 			let mut url = get_value!(obj, url, as_string).read();
 			url.insert_str(0, self.base_url);
 			let id = get_value!(obj, slug, as_string).read();
@@ -191,7 +193,6 @@ impl MangAdventure {
 		let author = get_array_as_vec!(json, authors).join(", ");
 		let artist = get_array_as_vec!(json, artists).join(", ");
 		let categories = get_array_as_vec!(json, categories);
-		// TODO: add licensed status when supported
 		let status = match get_value!(json, status, as_string).read().as_str() {
 			"completed" => MangaStatus::Completed,
 			"ongoing" => MangaStatus::Ongoing,
