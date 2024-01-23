@@ -1,6 +1,6 @@
 use aidoku::{
 	error::Result,
-	prelude::format,
+	prelude::{format, println},
 	std::{html::unescape_html_entities, net::HttpMethod, net::Request, String, Vec},
 	Chapter, DeepLink, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
 	MangaViewer, Page,
@@ -111,7 +111,7 @@ pub fn parse_manga_list(
 			.expect("Failed to load JSON")
 			.as_array()
 			.expect("Failed to get json as array");
-		for data in json {
+		for data in json.clone() {
 			if let Ok(data_obj) = data.as_object() {
 				let title = match data_obj.get("title").as_string() {
 					Ok(node) => node.read(),
@@ -146,9 +146,10 @@ pub fn parse_manga_list(
 				});
 			}
 		}
+		let has_more = json.count() > 0;
 		Ok(MangaPageResult {
 			manga: mangas,
-			has_more: true,
+			has_more,
 		})
 	}
 }
