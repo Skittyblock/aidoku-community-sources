@@ -111,7 +111,8 @@ pub fn parse_manga_list(
 			.expect("Failed to load JSON")
 			.as_array()
 			.expect("Failed to get json as array");
-		for data in json.clone() {
+		let has_more = !json.is_empty();
+		for data in json {
 			if let Ok(data_obj) = data.as_object() {
 				let title = match data_obj.get("title").as_string() {
 					Ok(node) => node.read(),
@@ -146,7 +147,6 @@ pub fn parse_manga_list(
 				});
 			}
 		}
-		let has_more = json.count() > 0;
 		Ok(MangaPageResult {
 			manga: mangas,
 			has_more,
