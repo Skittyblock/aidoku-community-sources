@@ -1,0 +1,15 @@
+{
+	"info": {
+		"id": "ja.rawdevart",
+		"lang": "ja",
+		"name": "Rawdevart",
+		"version": 1,
+		"url": "https://rawdevart.art",
+		"nsfw": 1
+	},
+	"listings": [
+		{
+			"name": "Popular"
+		}
+	]
+}
