@@ -19,5 +19,7 @@ lto = true
 aes = "0.8.3"
 aidoku = { git = "https://github.com/Aidoku/aidoku-rs", features = ["helpers"] }
 cbc = "0.1.2"
+chinese-number = { version = "0.7.7", default-features = false, features = ["chinese-to-number"] }
 hex = { version = "0.4.3", default-features = false, features = ["alloc"] }
+regex = { version = "1.10.3", default-features = false, features = ["unicode"] }
 uuid = { version = "1.4.1", default-features = false }
