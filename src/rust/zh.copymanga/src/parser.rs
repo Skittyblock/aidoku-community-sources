@@ -190,8 +190,8 @@ impl FromStr for Part {
 
 			"全一話" | "全一话" => {
 				return Ok(Self {
-					volume: 1.0,
-					chapter: -1.0,
+					volume: -1.0,
+					chapter: 1.0,
 					title: title.into(),
 				})
 			}
