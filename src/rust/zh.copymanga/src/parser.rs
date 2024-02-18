@@ -1,11 +1,14 @@
 use crate::url::Url;
 use aidoku::{
-	error::Result,
+	error::{AidokuError, Result},
+	prelude::format,
 	std::{html::Node, json, ArrayRef, ObjectRef, String, ValueRef, Vec},
 	Manga, MangaPageResult, MangaStatus,
 };
 use alloc::string::ToString;
+use chinese_number::{ChineseCountMethod, ChineseToNumber as _};
 use core::str::FromStr;
+use regex::Regex;
 use uuid::Uuid;
 
 pub trait MangaListResponse {
@@ -14,23 +17,23 @@ pub trait MangaListResponse {
 
 impl MangaListResponse for Node {
 	fn get_page_result(self) -> Result<MangaPageResult> {
-		let manga =
-			self.get_attr("div.exemptComic-box", "list")
-				.replace(r"\xa0", " ")
-				.split('"')
-				.enumerate()
-				.map(|(index, str)| {
-					if index % 2 == 0 {
-						str.replace('\'', "\"")
-					} else {
-						str.to_string()
-					}
-				})
-				.collect::<Vec<_>>()
-				.join("\"")
-				.json()?
-				.as_array()?
-				.get_manga_list()?;
+		let manga = self
+			.get_attr("div.exemptComic-box", "list")
+			.replace(r"\xa0", " ")
+			.split('"')
+			.enumerate()
+			.map(|(index, str)| {
+				if index % 2 == 0 {
+					str.replace('\'', "\"")
+				} else {
+					str.to_string()
+				}
+			})
+			.collect::<Vec<_>>()
+			.join("\"")
+			.json()?
+			.as_array()?
+			.get_manga_list()?;
 
 		let has_more = !self.select("li.page-all-item").last().has_class("active");
 
@@ -163,5 +166,83 @@ impl UuidString for String {
 			.to_unix();
 
 		(integer_part as f64) + (fractional_part as f64 * 10e-10)
+	}
+}
+
+pub struct Part {
+	pub volume: f32,
+	pub chapter: f32,
+	pub title: String,
+}
+
+impl FromStr for Part {
+	type Err = AidokuError;
+
+	fn from_str(title: &str) -> Result<Self> {
+		match title {
+			"全一卷" => {
+				return Ok(Self {
+					volume: 1.0,
+					chapter: -1.0,
+					title: title.into(),
+				})
+			}
+
+			"全一話" | "全一话" => {
+				return Ok(Self {
+					volume: 1.0,
+					chapter: -1.0,
+					title: title.into(),
+				})
+			}
+
+			_ => (),
+		}
+
+		let re = Regex::new(
+				r"^(单行本：)?(第?(?<volume>[\d零一二三四五六七八九十百千]+(\.\d)?)[卷部季]完?)?((第|连载|CH)?(?<chapter>[\d零一二三四五六七八九十百千]+([\.-]\d+)?)[話话回]?(-?[(（]?(?<part>([前中后上下]|\d+))[)）]?篇?)?(试看)?)?(\s.*|$)",
+			)
+			.unwrap();
+		let Some(caps) = re.captures(title) else {
+			return Ok(Self {
+				volume: -1.0,
+				chapter: -1.0,
+				title: title.into(),
+			});
+		};
+
+		let get_option_number = |name: &str| {
+			caps.name(name).map(|m| m.as_str()).and_then(|str| {
+				str.parse().map_or_else(
+					|_| str.to_number(ChineseCountMethod::TenThousand).ok(),
+					Some,
+				)
+			})
+		};
+
+		let volume = get_option_number("volume").unwrap_or(-1.0);
+
+		let part = caps
+			.name("part")
+			.map(|m| match m.as_str() {
+				"前" | "上" => "0",
+				"中" => "25",
+				"后" | "下" => "5",
+				digit => digit,
+			})
+			.unwrap_or("0");
+		let chapter = get_option_number("chapter")
+			.and_then(|num| {
+				format!("{}{}{}", num, if num % 1.0 == 0.0 { "." } else { "" }, part)
+					.parse()
+					.ok()
+			})
+			.unwrap_or(-1.0);
+
+		Ok(Self {
+			volume,
+			chapter,
+			title: title.into(),
+		})
 	}
 }
