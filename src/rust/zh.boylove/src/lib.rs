@@ -3,7 +3,7 @@ extern crate alloc;
 mod url;
 
 use aidoku::{
-	error::Result,
+	error::{AidokuError, Result},
 	helpers::substring::Substring,
 	prelude::*,
 	std::{
@@ -16,6 +16,8 @@ use aidoku::{
 };
 use alloc::string::ToString;
 use base64::{engine::general_purpose, Engine};
+use chinese_number::{ChineseCountMethod, ChineseToNumber as _};
+use core::str::FromStr;
 use regex::Regex;
 use url::{Url, CHAPTER_PATH, DOMAIN, MANGA_PATH, USER_AGENT};
 
@@ -165,21 +167,25 @@ fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 
 	let mut chapters = Vec::<Chapter>::new();
 	let chapters_arr = result.get("list").as_array()?;
-	for (chapter_index, chapter_value) in chapters_arr.rev().enumerate() {
+	for chapter_value in chapters_arr.rev() {
 		let chapter_obj = chapter_value.as_object()?;
 
 		let chapter_id = chapter_obj.get("id").as_int()?.to_string();
 
-		let chapter_title = chapter_obj.get("title").as_string()?.read();
-
-		let chapter_num = (chapter_index + 1) as f32;
+		let part = chapter_obj
+			.get("title")
+			.as_string()?
+			.read()
+			.trim()
+			.parse::<Part>()?;
 
 		let chapter_url = Url::Chapter(&chapter_id).to_string();
 
 		let chapter = Chapter {
 			id: chapter_id,
-			title: chapter_title,
-			chapter: chapter_num,
+			title: part.title,
+			volume: part.volume,
+			chapter: part.chapter,
 			url: chapter_url,
 			lang: "zh".to_string(),
 			..Default::default()
@@ -358,5 +364,68 @@ trait Parser {
 impl Parser for ValueRef {
 	fn get_is_ok_text(self) -> Option<String> {
 		self.as_node().map(|node| node.text().read()).ok()
+	}
+}
+
+struct Part {
+	volume: f32,
+	chapter: f32,
+	title: String,
+}
+
+impl FromStr for Part {
+	type Err = AidokuError;
+
+	#[allow(clippy::unwrap_in_result, clippy::expect_used)]
+	fn from_str(title: &str) -> Result<Self> {
+		let only_one_re =
+			Regex::new("^全[一1](?<type>[卷話话回])$").expect("Invalid regular expression");
+		if let Some(only_one_caps) = only_one_re.captures(title) {
+			#[allow(clippy::indexing_slicing)]
+			if &only_one_caps["type"] == "卷" {
+				return Ok(Self {
+					volume: 1.0,
+					chapter: -1.0,
+					title: title.into(),
+				});
+			}
+
+			return Ok(Self {
+				volume: -1.0,
+				chapter: 1.0,
+				title: title.into(),
+			});
+		};
+
+		let pat = r"^(第?(?<volume>[\d零一二三四五六七八九十百千]+(\.\d+)?)[卷部季] ?)?(第?(?<chapter>[\d零一二三四五六七八九十百千]+(\.\d+)?)(-(\d+(\.\d+)?))?[话話回]?([(（].*[)）]|完结|END)?)?([ +]|$)";
+		let re = Regex::new(pat).expect("Invalid regular expression");
+		let Some(caps) = re.captures(title) else {
+			return Ok(Self {
+				volume: -1.0,
+				chapter: -1.0,
+				title: title.into(),
+			});
+		};
+
+		let get_group = |name| {
+			caps.name(name)
+				.and_then(|m| {
+					let str = m.as_str();
+
+					str.parse()
+						.ok()
+						.or_else(|| str.to_number(ChineseCountMethod::TenThousand).ok())
+				})
+				.unwrap_or(-1.0)
+		};
+		let volume = get_group("volume");
+
+		let chapter = get_group("chapter");
+
+		Ok(Self {
+			volume,
+			chapter,
+			title: title.into(),
+		})
 	}
 }
