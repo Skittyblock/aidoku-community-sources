@@ -10,7 +10,7 @@ use aidoku::{
 pub mod helper;
 pub mod parser;
 
-const BASE_URL: &str = "https://comick.fun";
+const BASE_URL: &str = "https://comick.cc";
 const API_URL: &str = "https://api.comick.fun";
 
 #[get_manga_list]
