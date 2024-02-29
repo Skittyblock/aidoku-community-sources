@@ -1,0 +1,117 @@
+[
+	{
+		"type": "title"
+	},
+	{
+		"type": "group",
+		"name": "Genres",
+		"filters": [
+			{
+				"type": "genre",
+				"id": "1",
+				"name": "Romance",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"id": "2",
+				"name": "Drama",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"id": "3",
+				"name": "Fantasy",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"id": "4",
+				"name": "Hardcore",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"id": "5",
+				"name": "SM",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"id": "6",
+				"name": "Ability",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"id": "7",
+				"name": "Harem",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"id": "8",
+				"name": "Hypnosis",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"id": "9",
+				"name": "Novel Adaptation",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"id": "10",
+				"name": "Netori",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"id": "11",
+				"name": "Netorare",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"id": "12",
+				"name": "Isekai",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"id": "13",
+				"name": "Yuri",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"id": "14",
+				"name": "MILF",
+				"canExclude": false
+			}
+		]
+	},
+	{
+		"type": "sort",
+		"name": "Sort",
+		"canAscend": false,
+		"options": [
+			"Date Added"
+		],
+		"default": {
+			"index": 0,
+			"ascending": false
+		}
+	}
+	{
+		"type": "select",
+		"name": "Status",
+		"options": [
+			"All",
+			"Ongoing",
+			"Completed",
+			"Hiatus"
+		]
+	}
+]
