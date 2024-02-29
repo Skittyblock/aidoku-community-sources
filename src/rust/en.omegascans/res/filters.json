@@ -93,25 +93,15 @@
 		]
 	},
 	{
-		"type": "sort",
-		"name": "Sort",
-		"canAscend": false,
-		"options": [
-			"Date Added"
-		],
-		"default": {
-			"index": 0,
-			"ascending": false
-		}
-	}
-	{
 		"type": "select",
 		"name": "Status",
 		"options": [
 			"All",
 			"Ongoing",
+			"Hiatus",
+			"Dropped",
 			"Completed",
-			"Hiatus"
+			"Cancelled"
 		]
 	}
 ]

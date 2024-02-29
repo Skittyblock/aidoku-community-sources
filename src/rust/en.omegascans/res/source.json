@@ -10,6 +10,12 @@
 	"listings": [
 		{
 			"name": "Latest"
+		},
+		{
+			"name": "Popular"
+		},
+		{
+			"name": "Alphabetical"
 		}
 	]
 }

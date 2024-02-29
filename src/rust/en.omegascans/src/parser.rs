@@ -1,11 +1,54 @@
 use aidoku::{
 	error::Result, prelude::format, std::net::HttpMethod, std::net::Request, std::String, std::Vec,
 	Chapter, Filter, FilterType, Listing, Manga, MangaContentRating, MangaPageResult, MangaStatus,
-	MangaViewer, Page, std::current_date,
+	MangaViewer, Page, std::current_date, helpers::uri::encode_uri_component
 };
 
 pub fn parse_manga_list(base_url: String, filters: Vec<Filter>, _page: i32) -> Result<MangaPageResult> {
-	let url = "https://api.omegascans.org/query?query_string=&series_status=All&order=desc&orderBy=total_views&series_type=Comic&page=1&perPage=1000&tags_ids=[]";
+	
+	let mut search_query = String::new();
+	let mut status = String::new();
+	let mut genres = String::new();
+	
+	for filter in filters {
+		match filter.kind {
+			FilterType::Title => {
+				if let Ok(filter_value) = filter.value.as_string() {
+					search_query.push_str(&encode_uri_component(filter_value.read()));
+				}
+			}
+			FilterType::Genre => {
+				if let Ok(filter_id) = filter.object.get("id").as_string() {
+					match filter.value.as_int().unwrap_or(-1) {
+						1 => {
+							genres.push_str(filter_id.read().as_str());
+							genres.push(',');
+						}
+						_ => continue,
+					}
+				}
+			}
+			FilterType::Select => match filter.name.as_str() {
+				"Status" => match filter.value.as_int().unwrap_or(-1) {
+					0 => status.push_str("All"),
+					1 => status.push_str("Ongoing"),
+					2 => status.push_str("Hiatus"),
+					3 => status.push_str("Dropped"),
+					4 => status.push_str("Completed"),
+					5 => status.push_str("Cancelled"),
+					_ => continue,
+				},
+				_ => continue,
+			}
+			_ => continue,
+		}
+	}
+
+	if !genres.is_empty() {
+		genres.pop();
+	}
+
+	let url = format!("https://api.omegascans.org/query?query_string={}&series_status={}&order=desc&orderBy=total_views&series_type=Comic&page=1&perPage=1000&tags_ids=[{}]", search_query, status, genres);
 
 	let json = Request::new(url, HttpMethod::Get)
 		.json()
@@ -82,10 +125,8 @@ pub fn parse_manga_list(base_url: String, filters: Vec<Filter>, _page: i32) -> R
 	})
 }
 
-pub fn parse_manga_listing(base_url: String, _listing: Listing, _page: i32) -> Result<MangaPageResult> {
+pub fn parse_manga_listing(base_url: String, url: String, _listing: Listing, _page: i32) -> Result<MangaPageResult> {
 	
-	let url = "https://api.omegascans.org/query?query_string=&series_status=All&order=desc&orderBy=total_views&series_type=Comic&page=1&perPage=1000&tags_ids=[]";
-
 	let json = Request::new(url, HttpMethod::Get)
 		.json()
 		.expect("Failed to load JSON")
@@ -132,6 +173,7 @@ pub fn parse_manga_listing(base_url: String, _listing: Listing, _page: i32) -> R
 			"New" => {}
 			"Ongoing" => manga_status = MangaStatus::Ongoing,
 			"Completed" => manga_status = MangaStatus::Completed,
+			"Cancelled" => manga_status = MangaStatus::Cancelled,
 			"Dropped" => manga_status = MangaStatus::Cancelled,
 			"Hiatus" => manga_status = MangaStatus::Hiatus,
 			_ => manga_status = MangaStatus::Unknown,
@@ -216,6 +258,7 @@ pub fn parse_manga_details(base_url: String, manga_id: String) -> Result<Manga> 
 		"New" => {}
 		"Ongoing" => manga_status = MangaStatus::Ongoing,
 		"Completed" => manga_status = MangaStatus::Completed,
+		"Cancelled" => manga_status = MangaStatus::Cancelled,
 		"Dropped" => manga_status = MangaStatus::Cancelled,
 		"Hiatus" => manga_status = MangaStatus::Hiatus,
 		_ => manga_status = MangaStatus::Unknown,
@@ -305,9 +348,6 @@ pub fn parse_page_list(base_url: String, manga_id: String, chapter_id: String) -
 		let url = obj.attr("data-src").read();
 		let url2 = obj.attr("src").read();
 
-		
-		aidoku::prelude::println!("1 {}", url);
-		aidoku::prelude::println!("2 {}", url2);
 		if url != "" {
 			page_list.push(Page {
 				index: i as i32,
