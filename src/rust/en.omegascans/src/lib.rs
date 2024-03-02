@@ -11,12 +11,12 @@ mod parser;
 const BASE_URL: &str = "https://omegascans.org";
 
 #[get_manga_list]
-fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
-	parser::parse_manga_list(String::from(BASE_URL), filters, page)
+fn get_manga_list(filters: Vec<Filter>, _page: i32) -> Result<MangaPageResult> {
+	parser::parse_manga_list(String::from(BASE_URL), filters)
 }
 
 #[get_manga_listing]
-fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
+fn get_manga_listing(listing: Listing, _page: i32) -> Result<MangaPageResult> {
 	let list_query = match listing.name.as_str() {
 		"Latest" => "latest",
 		"Popular" => "total_views",
@@ -24,7 +24,7 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 		_ => "",
 	};
 	let url = format!("https://api.omegascans.org/query?query_string=&series_status=All&order=desc&orderBy={}&series_type=Comic&page=1&perPage=1000&tags_ids=[]", list_query);
-	parser::parse_manga_listing(String::from(BASE_URL), String::from(url), listing, page)
+	parser::parse_manga_listing(String::from(BASE_URL), url)
 }
 
 #[get_manga_details]
