@@ -1,0 +1,37 @@
+[
+	{
+		"type": "title"
+	},
+	{
+		"type": "select",
+		"name": "Genre",
+		"options": [
+			"All",
+			"Action",
+			"Adventure",
+			"BL",
+			"Comedy",
+			"Drama",
+			"Ecchi",
+			"Fantasy",
+			"GL",
+			"Harem",
+			"Historical",
+			"Horror",
+			"Josei",
+			"Martial arts",
+			"Mature",
+			"Mystery",
+			"Phychological",
+			"Romance",
+			"School life",
+			"Sci-Fi",
+			"Shoujo",
+			"Slice of Life",
+			"Smut",
+			"Sports",
+			"Supernatural",
+			"Thriller",
+		]
+	}
+]

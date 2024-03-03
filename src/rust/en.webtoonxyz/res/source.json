@@ -1,0 +1,31 @@
+{
+	"info": {
+		"id": "en.webtoonxyz",
+		"lang": "en",
+		"name": "WebtoonXYZ",
+		"version": 1,
+		"url": "https://webtoon.xyz",
+		"nsfw": 1
+	},
+	"listings": [
+		{
+			"name": "Latest"
+		},
+		{
+			"name": "Most Views"
+		},
+		{
+			"name": "A-Z"
+		},
+		{
+			"name": "New"
+		},
+		{
+			"name": "No 18+"
+		},
+		{
+			"name": "Only 18+"
+		}
+
+	]
+}
