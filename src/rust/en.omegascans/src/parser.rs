@@ -30,15 +30,17 @@ pub fn parse_manga_list(base_url: String, filters: Vec<Filter>) -> Result<MangaP
 				}
 			}
 			FilterType::Select => match filter.name.as_str() {
-				"Status" => match filter.value.as_int().unwrap_or(-1) {
-					0 => status.push_str("All"),
-					1 => status.push_str("Ongoing"),
-					2 => status.push_str("Hiatus"),
-					3 => status.push_str("Dropped"),
-					4 => status.push_str("Completed"),
-					5 => status.push_str("Cancelled"),
-					_ => continue,
-				},
+				"Status" => {
+					status = match filter.value.as_int().unwrap_or(-1) {
+						0 => String::from("All"),
+						1 => String::from("Ongoing"),
+						2 => String::from("Hiatus"),
+						3 => String::from("Dropped"),
+						4 => String::from("Completed"),
+						5 => String::from("Cancelled"),
+						_ => continue,
+					};
+				}
 				_ => continue,
 			},
 			_ => continue,
@@ -51,25 +53,25 @@ pub fn parse_manga_list(base_url: String, filters: Vec<Filter>) -> Result<MangaP
 
 	let url = format!("{}/query?query_string={}&series_status={}&order=desc&orderBy=total_views&series_type=Comic&page=1&perPage=1000&tags_ids=[{}]", BASE_API_URL, search_query, status, genres);
 	let json = Request::new(url, HttpMethod::Get);
-	let mangas = parse_manga(base_url.clone(), json)?;
+	let manga = parse_manga(&base_url, json)?;
 
 	Ok(MangaPageResult {
-		manga: mangas,
+		manga,
 		has_more: false,
 	})
 }
 
 pub fn parse_manga_listing(base_url: String, url: String) -> Result<MangaPageResult> {
 	let json = Request::new(url, HttpMethod::Get);
-	let mangas = parse_manga(base_url.clone(), json)?;
+	let manga = parse_manga(&base_url, json)?;
 
 	Ok(MangaPageResult {
-		manga: mangas,
+		manga,
 		has_more: false,
 	})
 }
 
-pub fn parse_manga_details(base_url: String, manga_id: String) -> Result<Manga> {
+pub fn parse_manga_details(base_url: &String, manga_id: String) -> Result<Manga> {
 	let url = format!("{}/series/{}", BASE_API_URL, manga_id);
 
 	let data = Request::new(url, HttpMethod::Get).json()?.as_object()?;
@@ -101,10 +103,10 @@ pub fn parse_manga_details(base_url: String, manga_id: String) -> Result<Manga> 
 		artist,
 		description,
 		url,
-		categories: Vec::new(),
 		status: manga_status,
 		nsfw: MangaContentRating::Nsfw,
 		viewer: MangaViewer::Scroll,
+		..Default::default()
 	})
 }
 
@@ -143,7 +145,6 @@ pub fn parse_chapter_list(base_url: String, manga_id: String) -> Result<Vec<Chap
 				chapter: index.parse::<f32>().unwrap_or_default(),
 				date_updated,
 				url,
-				lang: String::from("en"),
 				..Default::default()
 			});
 		}
@@ -152,11 +153,7 @@ pub fn parse_chapter_list(base_url: String, manga_id: String) -> Result<Vec<Chap
 	Ok(all_chapters)
 }
 
-pub fn parse_page_list(
-	base_url: String,
-	manga_id: String,
-	chapter_id: String,
-) -> Result<Vec<Page>> {
+pub fn parse_page_list(base_url: String, manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 	let url = format!("{}/series/{}/{}", base_url, manga_id, chapter_id);
 
 	let obj = Request::new(url, HttpMethod::Get).html()?;
@@ -165,22 +162,17 @@ pub fn parse_page_list(
 
 	for (i, page) in obj.select("img").array().enumerate() {
 		let obj = page.as_node().expect("node array");
-		let url = obj.attr("data-src").read();
+		let mut url = obj.attr("data-src").read();
 
-		if !url.is_empty() {
-			page_list.push(Page {
-				index: i as i32,
-				url,
-				..Default::default()
-			});
-		} else {
-			let url = obj.attr("src").read();
-			page_list.push(Page {
-				index: i as i32,
-				url,
-				..Default::default()
-			});
+		if url.is_empty() {
+			url = obj.attr("src").read();
 		}
+
+		page_list.push(Page {
+			index: i as i32,
+			url,
+			..Default::default()
+		});
 	}
 
 	// Remove icon.png and banners from top and bottom
@@ -196,7 +188,7 @@ pub fn modify_image_request(base_url: String, request: Request) {
 	request.header("Referer", &base_url);
 }
 
-fn parse_manga(base_url: String, json: Request) -> Result<Vec<Manga>> {
+fn parse_manga(base_url: &String, json: Request) -> Result<Vec<Manga>> {
 	let data = json.json()?.as_object()?.get("data").as_array()?;
 	let mut mangas: Vec<Manga> = Vec::new();
 

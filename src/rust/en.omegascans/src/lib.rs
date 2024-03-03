@@ -9,6 +9,7 @@ use aidoku::{
 mod parser;
 
 const BASE_URL: &str = "https://omegascans.org";
+const BASE_API_URL: &str = "https://api.omegascans.org";
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, _page: i32) -> Result<MangaPageResult> {
@@ -23,13 +24,13 @@ fn get_manga_listing(listing: Listing, _page: i32) -> Result<MangaPageResult> {
 		"Alphabetical" => "title",
 		_ => "",
 	};
-	let url = format!("https://api.omegascans.org/query?query_string=&series_status=All&order=desc&orderBy={}&series_type=Comic&page=1&perPage=1000&tags_ids=[]", list_query);
+	let url = format!("{}/query?query_string=&series_status=All&order=desc&orderBy={}&series_type=Comic&page=1&perPage=1000&tags_ids=[]", BASE_API_URL, list_query);
 	parser::parse_manga_listing(String::from(BASE_URL), url)
 }
 
 #[get_manga_details]
 fn get_manga_details(manga_id: String) -> Result<Manga> {
-	parser::parse_manga_details(String::from(BASE_URL), manga_id)
+	parser::parse_manga_details(&String::from(BASE_URL), manga_id)
 }
 
 #[get_chapter_list]
