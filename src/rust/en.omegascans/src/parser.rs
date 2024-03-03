@@ -198,15 +198,6 @@ fn parse_manga(base_url: &String, json: Request) -> Result<Vec<Manga>> {
 		let cover = manga.get("thumbnail").as_string()?.read();
 		let id = manga.get("series_slug").as_string()?.read();
 
-		let status = manga.get("status").as_string()?.read();
-		let manga_status = match status.as_str() {
-			"Ongoing" => MangaStatus::Ongoing,
-			"Completed" => MangaStatus::Completed,
-			"Dropped" => MangaStatus::Cancelled,
-			"Hiatus" => MangaStatus::Hiatus,
-			_ => MangaStatus::Unknown,
-		};
-
 		let url = format!("{}/series/{}", base_url, id);
 
 		mangas.push(Manga {
@@ -214,9 +205,6 @@ fn parse_manga(base_url: &String, json: Request) -> Result<Vec<Manga>> {
 			cover,
 			title,
 			url,
-			status: manga_status,
-			nsfw: MangaContentRating::Nsfw,
-			viewer: MangaViewer::Scroll,
 			..Default::default()
 		});
 	}
