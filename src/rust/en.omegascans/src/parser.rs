@@ -1,5 +1,5 @@
 use aidoku::{
-	error::Result, helpers::uri::encode_uri_component, prelude::format, std::net::HttpMethod,
+	error::Result, prelude::format, std::net::HttpMethod,
 	std::net::Request, std::String, std::Vec, Chapter, Filter, FilterType, Manga,
 	MangaContentRating, MangaPageResult, MangaStatus, MangaViewer, Page, Listing
 };
@@ -14,9 +14,7 @@ pub fn parse_manga_list(base_url: String, filters: Vec<Filter>, page: i32) -> Re
 	for filter in filters {
 		match filter.kind {
 			FilterType::Title => {
-				if let Ok(filter_value) = filter.value.as_string() {
-					search_query.push_str(&encode_uri_component(filter_value.read()));
-				}
+				search_query = filter.value.as_string()?.read();
 			}
 			FilterType::Genre => {
 				if let Ok(filter_id) = filter.object.get("id").as_string() {

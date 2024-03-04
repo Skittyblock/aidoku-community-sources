@@ -17,4 +17,3 @@ lto = true
 
 [dependencies]
 aidoku = { git = "https://github.com/Aidoku/aidoku-rs", features = ["helpers"] }
-unpacker = { git = "https://github.com/beerpiss/unpacker.rs.git" }
