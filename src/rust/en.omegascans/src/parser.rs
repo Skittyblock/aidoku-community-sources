@@ -1,12 +1,12 @@
 use aidoku::{
 	error::Result, helpers::uri::encode_uri_component, prelude::format, std::net::HttpMethod,
 	std::net::Request, std::String, std::Vec, Chapter, Filter, FilterType, Manga,
-	MangaContentRating, MangaPageResult, MangaStatus, MangaViewer, Page,
+	MangaContentRating, MangaPageResult, MangaStatus, MangaViewer, Page, Listing
 };
 
-const BASE_API_URL: &str = "https://api.omegascans.org";
+use crate::BASE_API_URL;
 
-pub fn parse_manga_list(base_url: String, filters: Vec<Filter>) -> Result<MangaPageResult> {
+pub fn parse_manga_list(base_url: String, filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	let mut search_query = String::new();
 	let mut status = String::new();
 	let mut genres = String::new();
@@ -51,23 +51,33 @@ pub fn parse_manga_list(base_url: String, filters: Vec<Filter>) -> Result<MangaP
 		genres.pop();
 	}
 
-	let url = format!("{}/query?query_string={}&series_status={}&order=desc&orderBy=total_views&series_type=Comic&page=1&perPage=1000&tags_ids=[{}]", BASE_API_URL, search_query, status, genres);
-	let json = Request::new(url, HttpMethod::Get);
+	let url = format!("{}/query?query_string={}&series_status={}&order=desc&orderBy=total_views&series_type=Comic&page={}&perPage=10&tags_ids=[{}]", BASE_API_URL, search_query, status, page, genres);
+	let json = Request::new(&url, HttpMethod::Get);
 	let manga = parse_manga(&base_url, json)?;
+	let has_more = is_last_page(&url);
 
 	Ok(MangaPageResult {
 		manga,
-		has_more: false,
+		has_more,
 	})
 }
 
-pub fn parse_manga_listing(base_url: String, url: String) -> Result<MangaPageResult> {
-	let json = Request::new(url, HttpMethod::Get);
+pub fn parse_manga_listing(base_url: String, listing: Listing, page: i32) -> Result<MangaPageResult> {
+	let list_query = match listing.name.as_str() {
+		"Latest" => "latest",
+		"Popular" => "total_views",
+		"Alphabetical" => "title",
+		_ => "",
+	};
+	let url = format!("{}/query?query_string=&series_status=All&order=desc&orderBy={}&series_type=Comic&page={}&perPage=10&tags_ids=[]", BASE_API_URL, list_query, page);
+
+	let json = Request::new(&url, HttpMethod::Get);
 	let manga = parse_manga(&base_url, json)?;
+	let has_more = is_last_page(&url);
 
 	Ok(MangaPageResult {
 		manga,
-		has_more: false,
+		has_more,
 	})
 }
 
@@ -210,4 +220,9 @@ fn parse_manga(base_url: &String, json: Request) -> Result<Vec<Manga>> {
 	}
 
 	Ok(mangas)
+}
+
+fn is_last_page(url: &String) -> bool {
+	let json = Request::new(url, HttpMethod::Get);
+	!json.json().expect("").as_object().expect("").get("data").as_array().expect("").is_empty()
 }

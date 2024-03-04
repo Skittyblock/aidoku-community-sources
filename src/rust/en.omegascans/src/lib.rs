@@ -12,20 +12,13 @@ const BASE_URL: &str = "https://omegascans.org";
 const BASE_API_URL: &str = "https://api.omegascans.org";
 
 #[get_manga_list]
-fn get_manga_list(filters: Vec<Filter>, _page: i32) -> Result<MangaPageResult> {
-	parser::parse_manga_list(String::from(BASE_URL), filters)
+fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
+	parser::parse_manga_list(String::from(BASE_URL), filters, page)
 }
 
 #[get_manga_listing]
-fn get_manga_listing(listing: Listing, _page: i32) -> Result<MangaPageResult> {
-	let list_query = match listing.name.as_str() {
-		"Latest" => "latest",
-		"Popular" => "total_views",
-		"Alphabetical" => "title",
-		_ => "",
-	};
-	let url = format!("{}/query?query_string=&series_status=All&order=desc&orderBy={}&series_type=Comic&page=1&perPage=1000&tags_ids=[]", BASE_API_URL, list_query);
-	parser::parse_manga_listing(String::from(BASE_URL), url)
+fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
+	parser::parse_manga_listing(String::from(BASE_URL), listing, page)
 }
 
 #[get_manga_details]
