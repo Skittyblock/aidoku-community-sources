@@ -62,7 +62,6 @@ name = "omegascans"
 version = "0.1.0"
 dependencies = [
  "aidoku",
- "unpacker",
 ]
 
 [[package]]
@@ -99,8 +98,3 @@ name = "unicode-ident"
 version = "1.0.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "22049a19f4a68748a168c0fc439f9516686aa045927ff767eca0a85101fb6e73"
-
-[[package]]
-name = "unpacker"
-version = "0.1.0"
-source = "git+https://github.com/beerpiss/unpacker.rs.git#c7e94a99e69c90251e6363d4484d726d4b45a5c2"

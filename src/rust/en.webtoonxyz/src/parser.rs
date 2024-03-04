@@ -1,7 +1,7 @@
 use aidoku::{
 	error::Result, prelude::format, std::net::HttpMethod, std::net::Request, std::String, std::Vec,
 	Chapter, Filter, FilterType, Listing, Manga, MangaContentRating, MangaPageResult, MangaStatus,
-	MangaViewer, Page, helpers::uri::encode_uri_component, std::html::Node,
+	MangaViewer, Page, std::html::Node,
 };
 
 const USER_AGENT: &str = "Mozilla/5.0 (iPhone; CPU iPhone OS 16_1_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1";
@@ -14,9 +14,7 @@ pub fn parse_manga_list(base_url: String, filters: Vec<Filter>, page: i32) -> Re
 	for filter in filters {
 		match filter.kind {
 			FilterType::Title => {
-				if let Ok(filter) = filter.value.as_string() {
-					search_query.push_str(&encode_uri_component(filter.read()));
-				}
+				search_query = filter.value.as_string()?.read();
 			}
 			FilterType::Select => match filter.name.as_str() {
 				"Genre" => {
