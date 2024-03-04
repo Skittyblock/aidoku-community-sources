@@ -34,29 +34,11 @@ pub fn parse_manga_list(
 	for filter in filters {
 		match filter.kind {
 			FilterType::Title => {
-				title = filter
-					.value
-					.as_string()
-					.expect("Failed to get title as str")
-					.read();
+				title = filter.value.as_string()?.read();
 			}
 			FilterType::Genre => match filter.value.as_int().unwrap_or(-1) {
-				0 => excluded_tags.push(
-					filter
-						.object
-						.get("id")
-						.as_string()
-						.expect("Failed to get excluded tags as str")
-						.read(),
-				),
-				1 => included_tags.push(
-					filter
-						.object
-						.get("id")
-						.as_string()
-						.expect("Failed to get included tags as str")
-						.read(),
-				),
+				0 => excluded_tags.push(filter.object.get("id").as_string()?.read()),
+				1 => included_tags.push(filter.object.get("id").as_string()?.read()),
 				_ => continue,
 			},
 			FilterType::Select => {
@@ -106,11 +88,8 @@ pub fn parse_manga_list(
 			page,
 		);
 		let mut mangas: Vec<Manga> = Vec::new();
-		let json = Request::new(&url, HttpMethod::Get)
-			.json()
-			.expect("Failed to load JSON")
-			.as_array()
-			.expect("Failed to get json as array");
+		let json = Request::new(url, HttpMethod::Get).json()?.as_array()?;
+		let has_more = !json.is_empty();
 		for data in json {
 			if let Ok(data_obj) = data.as_object() {
 				let title = match data_obj.get("title").as_string() {
@@ -148,7 +127,7 @@ pub fn parse_manga_list(
 		}
 		Ok(MangaPageResult {
 			manga: mangas,
-			has_more: false,
+			has_more,
 		})
 	}
 }
@@ -160,11 +139,7 @@ pub fn parse_manga_listing(
 ) -> Result<MangaPageResult> {
 	let url = get_listing_url(api_url.clone(), list_type, page);
 	let mut mangas: Vec<Manga> = Vec::new();
-	let json = Request::new(&url, HttpMethod::Get)
-		.json()
-		.expect("Failed to load JSON")
-		.as_array()
-		.expect("Failed to get json as array");
+	let json = Request::new(url, HttpMethod::Get).json()?.as_array()?;
 
 	for data in json {
 		if let Ok(data_obj) = data.as_object() {
@@ -193,16 +168,10 @@ pub fn parse_manga_listing(
 						&format!("{}/comic/{}?tachiyomi=true", api_url, id.clone()),
 						HttpMethod::Get,
 					)
-					.json()
-					.expect("Failed to load JSON")
-					.as_object()
-					.expect("Failed to get JSON as object");
+					.json()?
+					.as_object()?;
 					let mut lang_list = Vec::new();
-					for lang in manga_json
-						.get("langList")
-						.as_array()
-						.expect("Failed to get languages as array")
-					{
+					for lang in manga_json.get("langList").as_array()? {
 						lang_list.push(match lang.as_string() {
 							Ok(node) => node.read(),
 							Err(_) => continue,
@@ -240,80 +209,43 @@ pub fn parse_manga_details(api_url: String, id: String) -> Result<Manga> {
 		api_url,
 		id.split('|').next().unwrap_or("")
 	);
-	let json = Request::new(url, HttpMethod::Get)
-		.json()
-		.expect("Failed to load JSON")
-		.as_object()
-		.expect("Failed to get JSON as object");
-	let data = json
-		.get("comic")
-		.as_object()
-		.expect("Failed to get JSON as object");
+	let json = Request::new(url, HttpMethod::Get).json()?.as_object()?;
+	let data = json.get("comic").as_object()?;
 	let title = data_from_json(&data, "title");
-	let cover = data_from_json(&data, "cover_url");
-	let authors = json
-		.get("authors")
-		.as_array()
-		.expect("Failed to get authors as array");
-	let author = authors
-		.get(0)
-		.as_object()
-		.expect("Failed to get author as object")
-		.get("name")
-		.as_string()
-		.expect("Failed to get author as str")
-		.read();
-	let artists = json
-		.get("artists")
-		.as_array()
-		.expect("Failed to get artists as array");
-	let artist = artists
-		.get(0)
-		.as_object()
-		.expect("Failed to get artist as object")
-		.get("name")
-		.as_string()
-		.expect("Failed to get artist as str")
-		.read();
 	let description = unescape_html_entities(data_from_json(&data, "desc"));
 	let status = manga_status(data.get("status").as_int().unwrap_or(0));
-	let genres = json
-		.get("genres")
-		.as_array()
-		.expect("Failed to get genres as array");
+	let genres = data.get("md_comic_md_genres").as_array()?;
 	let categories = genres
 		.map(|genre| {
-			let genre_obj = genre.as_object().expect("genre to get comics as object");
-			Ok(genre_obj
-				.get("name")
-				.as_string()
-				.expect("Failed to get genre as str")
-				.read())
+			let genre_obj = genre.as_object()?.get("md_genres").as_object()?;
+			Ok(genre_obj.get("name").as_string()?.read())
 		})
 		.map(|a: Result<String>| a.unwrap_or_default())
 		.collect::<Vec<String>>();
 	let nsfw = if data.get("hentai").as_bool().unwrap_or(false) {
 		MangaContentRating::Nsfw
-	} else if data
-		.get("content_rating")
-		.as_string()
-		.expect("Failed to get content rating as str")
-		.read() == "Suggestive"
-	{
+	} else if data.get("content_rating").as_string()?.read() == "Suggestive" {
 		MangaContentRating::Suggestive
 	} else {
 		MangaContentRating::Safe
 	};
 
-	let viewer = match data
-		.get("country")
-		.as_string()
-		.expect("Failed to get manga cover as str")
-		.read()
-		.as_str()
-	{
+	let viewer = match data.get("country").as_string()?.read().as_str() {
 		"kr" | "cn" => MangaViewer::Scroll,
 		_ => MangaViewer::Rtl,
+	};
+	let cover = data_from_json(&data, "cover_url");
+	let authors = json.get("authors").as_array()?;
+	let author = if authors.is_empty() {
+		String::from("")
+	} else {
+		authors.get(0).as_object()?.get("name").as_string()?.read()
+	};
+	let artists = json.get("artists").as_array()?;
+	let artist = if artists.is_empty() {
+		String::from("")
+	} else {
+		artists.get(0).as_object()?.get("name").as_string()?.read()
 	};
 	Ok(Manga {
 		id: id.clone(),
@@ -346,11 +278,7 @@ pub fn parse_chapter_list(api_url: String, id: String) -> Result<Vec<Chapter>> {
 		page,
 		get_lang_code().unwrap_or_else(|| String::from("en"))
 	);
-	let json = Request::new(&url, HttpMethod::Get)
-		.json()
-		.expect("Failed to load JSON")
-		.as_object()
-		.expect("Failed to get JSON as object");
+	let json = Request::new(url, HttpMethod::Get).json()?.as_object()?;
 	let total = json.get("total").as_int().unwrap_or(-1) as i32;
 	if total != chapter_limit {
 		chapter_limit = total;
@@ -363,17 +291,10 @@ pub fn parse_chapter_list(api_url: String, id: String) -> Result<Vec<Chapter>> {
 		page,
 		get_lang_code().unwrap_or_else(|| String::from("en"))
 	);
-	let json = Request::new(&url, HttpMethod::Get)
-		.json()
-		.expect("Failed to load JSON")
-		.as_object()
-		.expect("Failed to get JSON as object");
-	let mchapters = json
-		.get("chapters")
-		.as_array()
-		.expect("Failed to get chapters as array");
+	let json = Request::new(url, HttpMethod::Get).json()?.as_object()?;
+	let mchapters = json.get("chapters").as_array()?;
 	for chapter in mchapters {
-		let chapter_obj = chapter.as_object().expect("Failed to get JSON as object");
+		let chapter_obj = chapter.as_object()?;
 		let title = data_from_json(&chapter_obj, "title");
 		let volume = chapter_obj.get("vol").as_float().unwrap_or(-1.0) as f32;
 		let hid = data_from_json(&chapter_obj, "hid");
@@ -406,21 +327,13 @@ pub fn parse_chapter_list(api_url: String, id: String) -> Result<Vec<Chapter>> {
 pub fn parse_page_list(api_url: String, chapter_id: String) -> Result<Vec<Page>> {
 	let mut pages: Vec<Page> = Vec::new();
 	let url = format!("{}/chapter/{}?tachiyomi=true", api_url, chapter_id);
-	let json = Request::new(&url, HttpMethod::Get)
-		.json()
-		.expect("Failed to load JSON")
-		.as_object()
-		.expect("Failed to get JSON as object");
+	let json = Request::new(url, HttpMethod::Get).json()?.as_object()?;
 	if let Ok(chapter_obj) = json.get("chapter").as_object() {
 		if let Ok(images) = chapter_obj.get("images").as_array() {
 			let mut at = 0;
 			for image in images {
 				if let Ok(image_obj) = image.as_object() {
-					let page_url = image_obj
-						.get("url")
-						.as_string()
-						.expect("Failed to get page url as str")
-						.read();
+					let page_url = image_obj.get("url").as_string()?.read();
 					pages.push(Page {
 						index: at,
 						url: page_url,
@@ -441,7 +354,7 @@ pub fn modify_image_request(base_url: String, request: Request) {
 
 pub fn handle_url(base_url: String, url: String) -> Result<DeepLink> {
 	Ok(DeepLink {
-		manga: Some(parse_manga_details(base_url, url).expect("failed to get manga details")),
+		manga: Some(parse_manga_details(base_url, url)?),
 		chapter: None,
 	})
 }
