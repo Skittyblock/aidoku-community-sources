@@ -71,7 +71,7 @@ pub fn parse_manga_list(base_url: String, filters: Vec<Filter>, page: i32) -> Re
 
 	let html = Request::new(url, HttpMethod::Get).header("User-Agent", USER_AGENT).html()?;
 	let manga = parse_manga(&html, manga_selector, thumb_selector, summary_selector, title_selector)?;
-	let has_more = !html.select(manga_selector).array().is_empty();
+	let has_more = !manga.is_empty();
 
 	Ok(MangaPageResult {
 		manga,
@@ -104,7 +104,7 @@ pub fn parse_manga_listing(base_url: String, listing: Listing, page: i32) -> Res
 
 	let html = Request::new(url, HttpMethod::Get).header("User-Agent", USER_AGENT).html()?;
 	let manga = parse_manga(&html, manga_selector, thumb_selector, summary_selector, title_selector)?;
-	let has_more = !html.select(manga_selector).array().is_empty();
+	let has_more = !manga.is_empty();
 
 	Ok(MangaPageResult {
 		manga,
