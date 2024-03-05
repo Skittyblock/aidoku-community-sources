@@ -50,9 +50,9 @@ pub fn parse_manga_list(base_url: String, filters: Vec<Filter>, page: i32) -> Re
 	}
 
 	let url = format!("{}/query?query_string={}&series_status={}&order=desc&orderBy=total_views&series_type=Comic&page={}&perPage=10&tags_ids=[{}]", BASE_API_URL, search_query, status, page, genres);
-	let json = Request::new(&url, HttpMethod::Get);
+	let json = Request::new(url, HttpMethod::Get);
 	let manga = parse_manga(&base_url, json)?;
-	let has_more = is_last_page(&url);
+	let has_more = !manga.is_empty();
 
 	Ok(MangaPageResult {
 		manga,
@@ -69,9 +69,9 @@ pub fn parse_manga_listing(base_url: String, listing: Listing, page: i32) -> Res
 	};
 	let url = format!("{}/query?query_string=&series_status=All&order=desc&orderBy={}&series_type=Comic&page={}&perPage=10&tags_ids=[]", BASE_API_URL, list_query, page);
 
-	let json = Request::new(&url, HttpMethod::Get);
+	let json = Request::new(url, HttpMethod::Get);
 	let manga = parse_manga(&base_url, json)?;
-	let has_more = is_last_page(&url);
+	let has_more = !manga.is_empty();
 
 	Ok(MangaPageResult {
 		manga,
@@ -218,9 +218,4 @@ fn parse_manga(base_url: &String, json: Request) -> Result<Vec<Manga>> {
 	}
 
 	Ok(mangas)
-}
-
-fn is_last_page(url: &String) -> bool {
-	let json = Request::new(url, HttpMethod::Get);
-	!json.json().expect("").as_object().expect("").get("data").as_array().expect("").is_empty()
 }
