@@ -222,7 +222,7 @@ pub fn parse_manga_details(base_url: String, manga_id: String) -> Result<Manga> 
 
 pub fn parse_chapter_list(base_url: String, manga_id: String) -> Result<Vec<Chapter>> {
 	let url = format!("{}/read/{}", base_url, manga_id);
-	let html = Request::new(url.clone(), HttpMethod::Get)
+	let html = Request::new(url, HttpMethod::Get)
 		.header("User-Agent", USER_AGENT)
 		.html()?;
 
@@ -255,7 +255,7 @@ pub fn parse_page_list(
 	chapter_id: String,
 ) -> Result<Vec<Page>> {
 	let url = format!("{}/read/{}/{}", base_url, manga_id, chapter_id);
-	let html = Request::new(url.clone(), HttpMethod::Get)
+	let html = Request::new(url, HttpMethod::Get)
 		.header("User-Agent", USER_AGENT)
 		.html()?;
 
