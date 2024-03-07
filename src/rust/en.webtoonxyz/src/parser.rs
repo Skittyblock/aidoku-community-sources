@@ -1,16 +1,19 @@
 use aidoku::{
-	error::Result, prelude::format, std::net::HttpMethod, std::net::Request, std::String, std::Vec,
-	Chapter, Filter, FilterType, Listing, Manga, MangaContentRating, MangaPageResult, MangaStatus,
-	MangaViewer, Page, std::html::Node,
+	error::Result, prelude::format, std::html::Node, std::net::HttpMethod, std::net::Request,
+	std::String, std::Vec, Chapter, Filter, FilterType, Listing, Manga, MangaContentRating,
+	MangaPageResult, MangaStatus, MangaViewer, Page,
 };
 
 const USER_AGENT: &str = "Mozilla/5.0 (iPhone; CPU iPhone OS 16_1_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1";
 
-pub fn parse_manga_list(base_url: String, filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
-	
+pub fn parse_manga_list(
+	base_url: String,
+	filters: Vec<Filter>,
+	page: i32,
+) -> Result<MangaPageResult> {
 	let mut search_query = String::new();
 	let mut genre = String::new();
-	
+
 	for filter in filters {
 		match filter.kind {
 			FilterType::Title => {
@@ -55,31 +58,48 @@ pub fn parse_manga_list(base_url: String, filters: Vec<Filter>, page: i32) -> Re
 	}
 
 	let mut url = format!("{}/webtoons/page/{}", base_url, page);
-		
+
 	if !search_query.is_empty() {
-		url = format!("{}/page/{}/?s={}&post_type=wp-manga", base_url, page, search_query)
-	}
-	else if !genre.is_empty() {
+		url = format!(
+			"{}/page/{}/?s={}&post_type=wp-manga",
+			base_url, page, search_query
+		)
+	} else if !genre.is_empty() {
 		url = format!("{}/webtoon-genre/{}/page/{}", base_url, genre, page)
 	}
 
-	let (manga_selector, thumb_selector, summary_selector, title_selector) = if !search_query.is_empty() {
-		(".c-tabs-item__content", ".tab-thumb", ".tab-summary", ".post-title")
-	} else {
-		(".manga", ".item-thumb", ".item-summary", ".font-title")
-	};
+	let (manga_selector, thumb_selector, summary_selector, title_selector) =
+		if !search_query.is_empty() {
+			(
+				".c-tabs-item__content",
+				".tab-thumb",
+				".tab-summary",
+				".post-title",
+			)
+		} else {
+			(".manga", ".item-thumb", ".item-summary", ".font-title")
+		};
 
-	let html = Request::new(url, HttpMethod::Get).header("User-Agent", USER_AGENT).html()?;
-	let manga = parse_manga(&html, manga_selector, thumb_selector, summary_selector, title_selector)?;
+	let html = Request::new(url, HttpMethod::Get)
+		.header("User-Agent", USER_AGENT)
+		.html()?;
+	let manga = parse_manga(
+		&html,
+		manga_selector,
+		thumb_selector,
+		summary_selector,
+		title_selector,
+	)?;
 	let has_more = !manga.is_empty();
 
-	Ok(MangaPageResult {
-		manga,
-		has_more,
-	})
+	Ok(MangaPageResult { manga, has_more })
 }
 
-pub fn parse_manga_listing(base_url: String, listing: Listing, page: i32) -> Result<MangaPageResult> {
+pub fn parse_manga_listing(
+	base_url: String,
+	listing: Listing,
+	page: i32,
+) -> Result<MangaPageResult> {
 	let list_query = match listing.name.as_str() {
 		"Latest" => "latest",
 		"Most Views" => "views",
@@ -90,50 +110,80 @@ pub fn parse_manga_listing(base_url: String, listing: Listing, page: i32) -> Res
 		_ => "",
 	};
 
-	let mut url = format!("{}/webtoons/page/{}/?m_orderby={}", base_url, page, list_query);
+	let mut url = format!(
+		"{}/webtoons/page/{}/?m_orderby={}",
+		base_url, page, list_query
+	);
 
 	if list_query.contains("adult") {
-		url = format!("{}/page/{}/?s&post_type=wp-manga{}", base_url, page, list_query);
+		url = format!(
+			"{}/page/{}/?s&post_type=wp-manga{}",
+			base_url, page, list_query
+		);
 	}
 
-	let (manga_selector, thumb_selector, summary_selector, title_selector) = if list_query.contains("adult") {
-		(".c-tabs-item__content", ".tab-thumb", ".tab-summary", ".post-title")
-	} else {
-		(".manga", ".item-thumb", ".item-summary", ".font-title")
-	};
+	let (manga_selector, thumb_selector, summary_selector, title_selector) =
+		if list_query.contains("adult") {
+			(
+				".c-tabs-item__content",
+				".tab-thumb",
+				".tab-summary",
+				".post-title",
+			)
+		} else {
+			(".manga", ".item-thumb", ".item-summary", ".font-title")
+		};
 
-	let html = Request::new(url, HttpMethod::Get).header("User-Agent", USER_AGENT).html()?;
-	let manga = parse_manga(&html, manga_selector, thumb_selector, summary_selector, title_selector)?;
+	let html = Request::new(url, HttpMethod::Get)
+		.header("User-Agent", USER_AGENT)
+		.html()?;
+	let manga = parse_manga(
+		&html,
+		manga_selector,
+		thumb_selector,
+		summary_selector,
+		title_selector,
+	)?;
 	let has_more = !manga.is_empty();
 
-	Ok(MangaPageResult {
-		manga,
-		has_more,
-	})
+	Ok(MangaPageResult { manga, has_more })
 }
 
 pub fn parse_manga_details(base_url: String, manga_id: String) -> Result<Manga> {
-	
 	let url = format!("{}/read/{}", base_url, manga_id);
-	let html = Request::new(&url, HttpMethod::Get).header("User-Agent", USER_AGENT).html()?;
-	
+	let html = Request::new(&url, HttpMethod::Get)
+		.header("User-Agent", USER_AGENT)
+		.html()?;
+
 	let manga = html.select(".container");
-	
+
 	let id = manga_id;
-	let cover = manga.select(".summary_image > a > img").attr("data-src").read();
+	let cover = manga
+		.select(".summary_image > a > img")
+		.attr("data-src")
+		.read();
 	let title = manga.select(".post-title > h1").text().read();
 
 	let info = manga.select(".post-content_item").array();
 
-	let author = info.get(2).as_node()?.select(".author-content").text().read();
-	let artist = info.get(3).as_node()?.select(".artist-content").text().read();
+	let author = info
+		.get(2)
+		.as_node()?
+		.select(".author-content")
+		.text()
+		.read();
+	let artist = info
+		.get(3)
+		.as_node()?
+		.select(".artist-content")
+		.text()
+		.read();
 	let description = manga.select(".summary__content").text().read();
 
-	let categories = manga.select(".genres-content > a")
+	let categories = manga
+		.select(".genres-content > a")
 		.array()
-		.map(|x| {
-			x.as_node().expect("").text().read()
-		})
+		.map(|x| x.as_node().expect("").text().read())
 		.collect::<Vec<String>>();
 
 	let mut nsfw_content = MangaContentRating::Safe;
@@ -141,7 +191,12 @@ pub fn parse_manga_details(base_url: String, manga_id: String) -> Result<Manga> 
 		nsfw_content = MangaContentRating::Nsfw;
 	}
 
-	let status_str = info.get(7).as_node()?.select(".summary-content").text().read();
+	let status_str = info
+		.get(7)
+		.as_node()?
+		.select(".summary-content")
+		.text()
+		.read();
 	let status = if status_str.contains("OnGoing") {
 		MangaStatus::Ongoing
 	} else if status_str.contains("Completed") {
@@ -166,24 +221,22 @@ pub fn parse_manga_details(base_url: String, manga_id: String) -> Result<Manga> 
 }
 
 pub fn parse_chapter_list(base_url: String, manga_id: String) -> Result<Vec<Chapter>> {
-
 	let url = format!("{}/read/{}", base_url, manga_id);
-	let html = Request::new(url.clone(), HttpMethod::Get).header("User-Agent", USER_AGENT).html()?;
-	
+	let html = Request::new(url.clone(), HttpMethod::Get)
+		.header("User-Agent", USER_AGENT)
+		.html()?;
+
 	let mut all_chapters: Vec<Chapter> = Vec::new();
-	
+
 	for chapter in html.select(".wp-manga-chapter").array() {
 		let chapter = chapter.as_node()?;
 
 		let url = chapter.select("a").attr("href").read();
-		
-		let id = url.split('/').collect::<Vec<&str>>();
-		let id = String::from(id[5]);
-		
+
+		let id = String::from(url.split('/').nth(5).unwrap_or_default());
+
 		let index = id.split('-').collect::<Vec<&str>>();
 		let index = String::from(index[1]).parse::<f32>().unwrap_or(-1.0);
-
-		//let date_updated = chapter.select(".chapter-release-date").text().as_date("dd MMM YYYY", Some("en_US"), None);
 
 		all_chapters.push(Chapter {
 			id,
@@ -196,11 +249,16 @@ pub fn parse_chapter_list(base_url: String, manga_id: String) -> Result<Vec<Chap
 	Ok(all_chapters)
 }
 
-pub fn parse_page_list(base_url: String, manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
-	
+pub fn parse_page_list(
+	base_url: String,
+	manga_id: String,
+	chapter_id: String,
+) -> Result<Vec<Page>> {
 	let url = format!("{}/read/{}/{}", base_url, manga_id, chapter_id);
-	let html = Request::new(url.clone(), HttpMethod::Get).header("User-Agent", USER_AGENT).html()?;
-	
+	let html = Request::new(url.clone(), HttpMethod::Get)
+		.header("User-Agent", USER_AGENT)
+		.html()?;
+
 	let mut page_list: Vec<Page> = Vec::new();
 
 	for (i, page) in html.select(".page-break").array().enumerate() {
@@ -220,18 +278,27 @@ pub fn parse_page_list(base_url: String, manga_id: String, chapter_id: String) -
 
 pub fn modify_image_request(base_url: String, request: Request) {
 	request
-	.header("User-Agent", USER_AGENT)
-	.header("Referer", &base_url);
+		.header("User-Agent", USER_AGENT)
+		.header("Referer", &base_url);
 }
 
-fn parse_manga(html: &Node, html_selector: &str, cover_selector: &str, info_selector: &str, title_selector: &str) -> Result<Vec<Manga>> {
-	
+fn parse_manga(
+	html: &Node,
+	html_selector: &str,
+	cover_selector: &str,
+	info_selector: &str,
+	title_selector: &str,
+) -> Result<Vec<Manga>> {
 	let mut mangas: Vec<Manga> = Vec::new();
 
 	for manga in html.select(html_selector).array() {
 		let manga = manga.as_node()?;
-		
-		let cover = manga.select(cover_selector).select("a > img").attr("data-srcset").read();
+
+		let cover = manga
+			.select(cover_selector)
+			.select("a > img")
+			.attr("data-srcset")
+			.read();
 		let cover = cover.split(", ").collect::<Vec<&str>>();
 		let cover = String::from(cover[cover.len() - 1]);
 		let cover = cover.split(' ').collect::<Vec<&str>>();
