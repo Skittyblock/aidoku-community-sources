@@ -238,9 +238,16 @@ pub fn parse_chapter_list(base_url: String, manga_id: String) -> Result<Vec<Chap
 		let index = id.split('-').collect::<Vec<&str>>();
 		let index = String::from(index[1]).parse::<f32>().unwrap_or(-1.0);
 
+		let date_updated = chapter.select(".chapter-release-date").text().as_date(
+			"dd MMM yyyy",
+			Some("en_US"),
+			None,
+		);
+
 		all_chapters.push(Chapter {
 			id,
 			chapter: index,
+			date_updated,
 			url,
 			..Default::default()
 		});
