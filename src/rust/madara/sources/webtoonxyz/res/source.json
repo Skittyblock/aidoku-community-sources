@@ -9,23 +9,10 @@
 	},
 	"listings": [
 		{
-			"name": "Latest"
+			"name": "Trending"
 		},
 		{
-			"name": "Most Views"
-		},
-		{
-			"name": "A-Z"
-		},
-		{
-			"name": "New"
-		},
-		{
-			"name": "No 18+"
-		},
-		{
-			"name": "Only 18+"
+			"name": "Popular"
 		}
-
 	]
 }
