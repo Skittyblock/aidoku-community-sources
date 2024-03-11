@@ -1,6 +1,6 @@
 #![no_std]
 use aidoku::{
-	error::Result, prelude::*, std::net::Request, std::String, std::Vec, Chapter, DeepLink, Filter,
+	error::Result, prelude::*, std::net::Request, std::net::HttpMethod, std::String, std::Vec, Chapter, DeepLink, Filter,
 	Listing, Manga, MangaPageResult, Page,
 };
 
@@ -8,8 +8,9 @@ use mangastream_template::template::MangaStreamSource;
 
 fn get_instance() -> MangaStreamSource {
 	MangaStreamSource {
-		base_url: String::from("https://realmscans.com"),
+		base_url: String::from("https://rizzcomic.com"),
 		traverse_pathname: "series",
+		chapter_date_format: "dd MMM yyyy",
 		alt_pages: true,
 		..Default::default()
 	}
@@ -37,7 +38,21 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 
 #[get_page_list]
 fn get_page_list(_manga_id: String, id: String) -> Result<Vec<Page>> {
-	get_instance().parse_page_list(id)
+	let url = format!("{}/chapter/{}", &get_instance().base_url, id);
+	let mut pages: Vec<Page> = Vec::new();
+	let html = Request::new(url, HttpMethod::Get).html()?;
+		
+	for (index, page) in html.select(".rdminimal > img").array().enumerate() {
+		let page = page.as_node()?;
+		let url = page.attr("src").read();
+
+		pages.push(Page {
+			index: index as i32,
+			url,
+			..Default::default()
+		});
+	}
+	Ok(pages)
 }
 
 #[modify_image_request]
