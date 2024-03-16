@@ -3,7 +3,7 @@
 		"id": "multi.nhentai",
 		"lang": "multi",
 		"name": "NHentai",
-		"version": 4,
+		"version": 5,
 		"url": "https://nhentai.net/",
 		"nsfw": 2
 	},
