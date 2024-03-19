@@ -3,7 +3,7 @@
 		"id": "en.mangabat",
 		"lang": "en",
 		"name": "MangaBat",
-		"version": 1,
+		"version": 2,
 		"nsfw": 1,
 		"urls": [
 			"https://mangabat.com",
