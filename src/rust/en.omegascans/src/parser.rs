@@ -1,14 +1,20 @@
 use aidoku::{
-	error::Result, prelude::format, std::net::HttpMethod,
-	std::net::Request, std::String, std::Vec, Chapter, Filter, FilterType, Manga,
-	MangaContentRating, MangaPageResult, MangaStatus, MangaViewer, Page, Listing
+	error::Result, prelude::format, std::net::HttpMethod, std::net::Request, std::String, std::Vec,
+	Chapter, Filter, FilterType, Listing, Manga, MangaContentRating, MangaPageResult, MangaStatus,
+	MangaViewer, Page,
 };
 
 use crate::BASE_API_URL;
 
-pub fn parse_manga_list(base_url: String, filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
+extern crate alloc;
+use alloc::string::ToString;
+
+pub fn parse_manga_list(
+	base_url: String,
+	filters: Vec<Filter>,
+	page: i32,
+) -> Result<MangaPageResult> {
 	let mut search_query = String::new();
-	let mut status = String::new();
 	let mut genres = String::new();
 
 	for filter in filters {
@@ -27,20 +33,6 @@ pub fn parse_manga_list(base_url: String, filters: Vec<Filter>, page: i32) -> Re
 					}
 				}
 			}
-			FilterType::Select => match filter.name.as_str() {
-				"Status" => {
-					status = match filter.value.as_int().unwrap_or(-1) {
-						0 => String::from("All"),
-						1 => String::from("Ongoing"),
-						2 => String::from("Hiatus"),
-						3 => String::from("Dropped"),
-						4 => String::from("Completed"),
-						5 => String::from("Cancelled"),
-						_ => continue,
-					};
-				}
-				_ => continue,
-			},
 			_ => continue,
 		}
 	}
@@ -49,47 +41,44 @@ pub fn parse_manga_list(base_url: String, filters: Vec<Filter>, page: i32) -> Re
 		genres.pop();
 	}
 
-	let url = format!("{}/query?query_string={}&series_status={}&order=desc&orderBy=total_views&series_type=Comic&page={}&perPage=10&tags_ids=[{}]", BASE_API_URL, search_query, status, page, genres);
+	let url = format!("{}/query?query_string={}&order=desc&orderBy=total_views&series_type=Comic&page={}&perPage=10&tags_ids=[{}]&adult=true", BASE_API_URL, search_query, page, genres);
 	let json = Request::new(url, HttpMethod::Get);
 	let manga = parse_manga(&base_url, json)?;
 	let has_more = !manga.is_empty();
 
-	Ok(MangaPageResult {
-		manga,
-		has_more,
-	})
+	Ok(MangaPageResult { manga, has_more })
 }
 
-pub fn parse_manga_listing(base_url: String, listing: Listing, page: i32) -> Result<MangaPageResult> {
+pub fn parse_manga_listing(
+	base_url: String,
+	listing: Listing,
+	page: i32,
+) -> Result<MangaPageResult> {
 	let list_query = match listing.name.as_str() {
 		"Latest" => "latest",
 		"Popular" => "total_views",
 		"Alphabetical" => "title",
 		_ => "",
 	};
-	let url = format!("{}/query?query_string=&series_status=All&order=desc&orderBy={}&series_type=Comic&page={}&perPage=10&tags_ids=[]", BASE_API_URL, list_query, page);
+	let url = format!("{}/query?query_string=&order=desc&orderBy={}&series_type=Comic&page={}&perPage=10&tags_ids=[]&adult=true", BASE_API_URL, list_query, page);
 
 	let json = Request::new(url, HttpMethod::Get);
 	let manga = parse_manga(&base_url, json)?;
 	let has_more = !manga.is_empty();
 
-	Ok(MangaPageResult {
-		manga,
-		has_more,
-	})
+	Ok(MangaPageResult { manga, has_more })
 }
 
 pub fn parse_manga_details(base_url: &String, manga_id: String) -> Result<Manga> {
 	let url = format!("{}/series/{}", BASE_API_URL, manga_id);
-
 	let data = Request::new(url, HttpMethod::Get).json()?.as_object()?;
+
 	let cover = data.get("thumbnail").as_string()?.read();
 	let title = data.get("title").as_string()?.read();
 	let description = data.get("description").as_string()?.read();
 	let author = data.get("author").as_string()?.read();
 	let artist = data.get("studio").as_string()?.read();
-
-	let id = manga_id;
+	let id = data.get("series_slug").as_string()?.read();
 	let url = format!("{}/series/{}", base_url, id);
 	let status = data.get("status").as_string()?.read();
 
@@ -103,6 +92,13 @@ pub fn parse_manga_details(base_url: &String, manga_id: String) -> Result<Manga>
 		_ => MangaStatus::Unknown,
 	};
 
+	let mut categories: Vec<String> = Vec::new();
+	let tags = data.get("tags").as_array()?;
+	for tag in tags {
+		let tag = tag.as_object()?;
+		categories.push(tag.get("name").as_string()?.read());
+	}
+
 	Ok(Manga {
 		id,
 		cover,
@@ -111,24 +107,36 @@ pub fn parse_manga_details(base_url: &String, manga_id: String) -> Result<Manga>
 		artist,
 		description,
 		url,
+		categories,
 		status: manga_status,
 		nsfw: MangaContentRating::Nsfw,
 		viewer: MangaViewer::Scroll,
-		..Default::default()
 	})
 }
 
 pub fn parse_chapter_list(base_url: String, manga_id: String) -> Result<Vec<Chapter>> {
 	let url = format!("{}/series/{}", BASE_API_URL, manga_id);
 	let data = Request::new(url, HttpMethod::Get).json()?.as_object()?;
+	let manga_id = data.get("id").as_int()?.to_string();
+
+	let url = format!(
+		"{}/chapter/query?page=1&perPage=30&series_id={}",
+		BASE_API_URL, manga_id
+	);
+	let data = Request::new(url, HttpMethod::Get).json()?.as_object()?;
+	let mut page = data.get("meta").as_object()?.get("first_page").as_int()?;
+	let last_page = data.get("meta").as_object()?.get("last_page").as_int()?;
 
 	let mut all_chapters: Vec<Chapter> = Vec::new();
 
-	let seasons = data.get("seasons").as_array()?;
+	while page <= last_page {
+		let url = format!(
+			"{}/chapter/query?page={}&perPage=30&series_id={}",
+			BASE_API_URL, page, manga_id
+		);
+		let data = Request::new(url, HttpMethod::Get).json()?.as_object()?;
 
-	for season in seasons {
-		let season = season.as_object()?;
-		let chapters = season.get("chapters").as_array()?;
+		let chapters = data.get("data").as_array()?;
 
 		for chapter in chapters {
 			let chapter = chapter.as_object()?;
@@ -139,8 +147,11 @@ pub fn parse_chapter_list(base_url: String, manga_id: String) -> Result<Vec<Chap
 				continue;
 			}
 
-			let index = chapter.get("index").as_string()?.read();
 			let id = chapter.get("chapter_slug").as_string()?.read();
+
+			let index = id.split('-').collect::<Vec<&str>>();
+			let index = String::from(index[1]).parse::<f32>().unwrap_or(-1.0);
+
 			let url = format!("{}/series/{}/{}", base_url, manga_id, id);
 
 			let date_updated = chapter
@@ -150,20 +161,24 @@ pub fn parse_chapter_list(base_url: String, manga_id: String) -> Result<Vec<Chap
 
 			all_chapters.push(Chapter {
 				id,
-				chapter: index.parse::<f32>().unwrap_or_default(),
+				chapter: index,
 				date_updated,
 				url,
 				..Default::default()
 			});
 		}
+		page += 1;
 	}
 
 	Ok(all_chapters)
 }
 
-pub fn parse_page_list(base_url: String, manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
+pub fn parse_page_list(
+	base_url: String,
+	manga_id: String,
+	chapter_id: String,
+) -> Result<Vec<Page>> {
 	let url = format!("{}/series/{}/{}", base_url, manga_id, chapter_id);
-
 	let obj = Request::new(url, HttpMethod::Get).html()?;
 
 	let mut page_list: Vec<Page> = Vec::new();
@@ -184,7 +199,6 @@ pub fn parse_page_list(base_url: String, manga_id: String, chapter_id: String) -
 	}
 
 	// Remove icon.png and banners from top and bottom
-	page_list.remove(0);
 	page_list.remove(0);
 	page_list.pop();
 	page_list.pop();
