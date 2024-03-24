@@ -41,7 +41,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 		query = String::from("language:english")
 	}
 
-	let mut sort = String::from("date");
+	let mut sort = String::from("popular");
 
 	for filter in filters {
 		match filter.kind {
