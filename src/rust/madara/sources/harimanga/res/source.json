@@ -1,0 +1,18 @@
+{
+	"info": {
+		"id": "en.harimanga",
+		"lang": "en",
+		"name": "Hari Manga",
+		"version": 1,
+		"url": "https://harimanga.com",
+		"nsfw": 0
+	},
+	"listings": [
+		{
+			"name": "Trending"
+		},
+		{
+			"name": "Popular"
+		}
+	]
+}
