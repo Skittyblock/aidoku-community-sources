@@ -8,8 +8,6 @@ use crate::template::MadaraSiteData;
 extern crate alloc;
 use alloc::string::ToString;
 
-use crate::template::USER_AGENT;
-
 pub fn urlencode(string: String) -> String {
 	let mut result: Vec<u8> = Vec::with_capacity(string.len() * 3);
 	let hex = "0123456789abcdef".as_bytes();
@@ -186,10 +184,25 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32, data: &MadaraSiteData) 
 	(url, is_searching)
 }
 
-pub fn get_int_manga_id(manga_id: String, base_url: String, path: String) -> String {
+pub fn add_user_agent_header(mut req: Request, user_agent: &Option<String>) -> Request {
+	if let Some(agent) = user_agent {
+		req = req.header("User-Agent", agent);
+	}
+	req
+}
+
+pub fn get_int_manga_id(
+	manga_id: String,
+	base_url: String,
+	path: String,
+	user_agent: Option<String>,
+) -> String {
 	let url = base_url + "/" + path.as_str() + "/" + manga_id.as_str();
 
-	if let Ok(html) = Request::new(url.as_str(), HttpMethod::Get).header("User-Agent", USER_AGENT).html() {
+	let mut req = Request::new(url.as_str(), HttpMethod::Get);
+	req = add_user_agent_header(req, &user_agent);
+
+	if let Ok(html) = req.html() {
 		let id_html = html.select("script#wp-manga-js-extra").html().read();
 		let id = &id_html[id_html.find("manga_id").expect("Could not find manga_id") + 11
 			..id_html.find("\"}").expect("Could not find end of manga_id")];
