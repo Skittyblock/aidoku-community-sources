@@ -5,12 +5,7 @@
 		"name": "MangaBat",
 		"version": 2,
 		"nsfw": 1,
-		"urls": [
-			"https://mangabat.com",
-			"https://m.mangabat.com",
-			"https://h.mangabat.com",
-			"https://readmangabat.com"
-		]
+		"urls": "https://readmangabat.com"
 	},
 	"listings": [
 		{
