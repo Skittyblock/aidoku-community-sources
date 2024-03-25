@@ -33,7 +33,7 @@ pub struct MadaraSiteData {
 	pub description_selector: String,
 	pub chapter_selector: String,
 	pub base_id_selector: String,
-	
+
 	pub date_format: String,
 
 	pub status_filter_ongoing: String,
@@ -46,17 +46,15 @@ pub struct MadaraSiteData {
 	pub trending: String,
 
 	pub alt_ajax: bool,
-	pub use_user_agent: bool,
+	pub user_agent: Option<String>,
 
-	pub get_manga_id: fn(String, String, String) -> String,
+	pub get_manga_id: fn(String, String, String, Option<String>) -> String,
 	pub viewer: fn(&Node, &Vec<String>) -> MangaViewer,
 	pub status: fn(&Node) -> MangaStatus,
 	pub nsfw: fn(&Node, &Vec<String>) -> MangaContentRating,
 
 	pub ignore_class: String,
 }
-
-pub const USER_AGENT: &str = "Mozilla/5.0 (iPhone; CPU iPhone OS 16_1_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1";
 
 impl Default for MadaraSiteData {
 	fn default() -> MadaraSiteData {
@@ -70,7 +68,7 @@ impl Default for MadaraSiteData {
 			// selector div for search results page
 			search_selector: String::from("div.c-tabs-item__content"),
 			// cookies to pass for search request
-			search_cookies: String::from("wpmanga-adult=1"),
+			search_cookies: String::from("wpmanga-adault=1"),
 			// the type of request to perform "post_type={post_type}", some sites (toonily) do not
 			// work with the default
 			post_type: String::from("wp-manga"),
@@ -90,8 +88,8 @@ impl Default for MadaraSiteData {
 			genre_selector: String::from("div.genres-content > a"),
 			// choose between two options for chapter list POST request
 			alt_ajax: false,
-			// use user agent for all http requests
-			use_user_agent: false,
+			// user agent for all http requests
+			user_agent: None,
 			// get the manga id from script tag
 			get_manga_id: get_int_manga_id,
 			// default viewer
@@ -211,12 +209,10 @@ pub fn get_manga_list(
 }
 
 pub fn get_search_result(data: MadaraSiteData, url: String) -> Result<MangaPageResult> {
-	let mut req = Request::new(url.as_str(), HttpMethod::Get)
-		.header("Cookie", &data.search_cookies);
-	
-	if data.use_user_agent {
-		req = req.header("User-Agent", USER_AGENT);
-	}
+	let mut req =
+		Request::new(url.as_str(), HttpMethod::Get).header("Cookie", &data.search_cookies);
+
+	req = add_user_agent_header(req, &data.user_agent);
 
 	let html = req.html()?;
 	let mut manga: Vec<Manga> = Vec::new();
@@ -269,10 +265,8 @@ pub fn get_series_page(data: MadaraSiteData, listing: &str, page: i32) -> Result
 		.body(body_content.as_bytes())
 		.header("Referer", &data.base_url)
 		.header("Content-Type", "application/x-www-form-urlencoded");
-	
-	if data.use_user_agent {
-		req = req.header("User-Agent", USER_AGENT);
-	}
+
+	req = add_user_agent_header(req, &data.user_agent);
 
 	let html = req.html()?;
 
@@ -346,16 +340,9 @@ pub fn get_manga_listing(
 pub fn get_manga_details(manga_id: String, data: MadaraSiteData) -> Result<Manga> {
 	let url = data.base_url.clone() + "/" + data.source_path.as_str() + "/" + manga_id.as_str();
 
-	aidoku::prelude::println!("base: {}", data.base_url.clone());
-	aidoku::prelude::println!("source: {}", data.source_path.as_str());
-	aidoku::prelude::println!("mangaId: {}", manga_id.as_str());
-	aidoku::prelude::println!("urL: {}", url);
-
 	let mut req = Request::new(url.as_str(), HttpMethod::Get);
-	
-	if data.use_user_agent {
-		req = req.header("User-Agent", USER_AGENT);
-	}
+
+	req = add_user_agent_header(req, &data.user_agent);
 
 	let html = req.html()?;
 
@@ -404,17 +391,20 @@ pub fn get_chapter_list(manga_id: String, data: MadaraSiteData) -> Result<Vec<Ch
 			+ "/ajax/chapters";
 	}
 
-	let int_id = (data.get_manga_id)(manga_id, data.base_url.clone(), data.source_path.clone());
+	let int_id = (data.get_manga_id)(
+		manga_id,
+		data.base_url.clone(),
+		data.source_path.clone(),
+		data.user_agent.clone(),
+	);
 	let body_content = format!("action=manga_get_chapters&manga={}", int_id);
 
 	let mut req = Request::new(url.as_str(), HttpMethod::Post)
 		.body(body_content.as_bytes())
 		.header("Referer", &data.base_url)
 		.header("Content-Type", "application/x-www-form-urlencoded");
-	
-	if data.use_user_agent {
-		req = req.header("User-Agent", USER_AGENT);
-	}
+
+	req = add_user_agent_header(req, &data.user_agent);
 
 	let html = req.html()?;
 
@@ -510,11 +500,9 @@ pub fn get_chapter_list(manga_id: String, data: MadaraSiteData) -> Result<Vec<Ch
 pub fn get_page_list(chapter_id: String, data: MadaraSiteData) -> Result<Vec<Page>> {
 	let url = data.base_url.clone() + "/" + data.source_path.as_str() + "/" + chapter_id.as_str();
 	let mut req = Request::new(url.as_str(), HttpMethod::Get);
-	
-	if data.use_user_agent {
-		req = req.header("User-Agent", USER_AGENT);
-	}
-	
+
+	req = add_user_agent_header(req, &data.user_agent);
+
 	let html = req.html()?;
 
 	let mut pages: Vec<Page> = Vec::new();

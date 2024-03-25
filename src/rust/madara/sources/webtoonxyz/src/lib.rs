@@ -1,7 +1,7 @@
 #![no_std]
 use aidoku::{
-	error::Result, prelude::*, std::String, std::Vec, Chapter, DeepLink, Filter, Listing, Manga,
-	MangaPageResult, Page, std::net::Request,
+	error::Result, prelude::*, std::net::Request, std::String, std::Vec, Chapter, DeepLink, Filter,
+	Listing, Manga, MangaPageResult, Page,
 };
 
 use madara_template::template;
@@ -14,7 +14,7 @@ fn get_data() -> template::MadaraSiteData {
 		source_path: String::from("read"),
 		date_format: String::from("dd MMM yyyy"),
 		alt_ajax: true,
-		use_user_agent: true,
+		user_agent: Some(String::from(USER_AGENT)),
 		..Default::default()
 	};
 	data
@@ -47,7 +47,10 @@ fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 
 #[modify_image_request]
 fn modify_image_request(request: Request) {
-	template::modify_image_request(String::from("https://www.webtoon.xyz/"), request.header("User-Agent", USER_AGENT));
+	template::modify_image_request(
+		String::from("https://www.webtoon.xyz/"),
+		request.header("User-Agent", USER_AGENT),
+	);
 }
 
 #[handle_url]
