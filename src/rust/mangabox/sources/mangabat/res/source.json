@@ -3,14 +3,9 @@
 		"id": "en.mangabat",
 		"lang": "en",
 		"name": "MangaBat",
-		"version": 1,
+		"version": 2,
 		"nsfw": 1,
-		"urls": [
-			"https://mangabat.com",
-			"https://m.mangabat.com",
-			"https://h.mangabat.com",
-			"https://readmangabat.com"
-		]
+		"url": "https://readmangabat.com"
 	},
 	"listings": [
 		{

@@ -10,7 +10,7 @@ use mangabox_template::template;
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	template::get_manga_list(
-		String::from("https://m.mangabat.com"),
+		String::from("https://readmangabat.com"),
 		String::from("div.list-story-item"),
 		filters,
 		page,
@@ -20,7 +20,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 #[get_manga_listing]
 fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 	template::get_manga_listing(
-		String::from("https://m.mangabat.com"),
+		String::from("https://readmangabat.com"),
 		String::from("div.list-story-item"),
 		listing,
 		page,
@@ -44,7 +44,7 @@ fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 
 #[modify_image_request]
 fn modify_image_request(request: Request) {
-	template::modify_image_request(String::from("https://m.mangabat.com"), request)
+	template::modify_image_request(String::from("https://readmangabat.com"), request)
 }
 
 #[handle_url]
