@@ -8,7 +8,7 @@ use aidoku::{
 	error::Result,
 	prelude::{
 		format, get_chapter_list, get_manga_details, get_manga_list, get_manga_listing,
-		get_page_list, println,
+		get_page_list,
 	},
 	std::{
 		net::{HttpMethod, Request},
@@ -93,7 +93,6 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 			status,
 			page,
 		);
-		println!("{}", url);
 		let html = Request::new(url, HttpMethod::Get).html()?;
 		parse_manga_listing(html)
 	}
