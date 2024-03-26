@@ -1,11 +1,48 @@
 use aidoku::error::Result;
 use aidoku::prelude::format;
+use aidoku::std::ObjectRef;
 use aidoku::{std::html::Node, Manga};
 use aidoku::{Chapter, MangaContentRating, MangaPageResult, MangaViewer, Page};
 use alloc::string::ToString;
 use alloc::{string::String, vec::Vec};
 
 use crate::helper::{get_date, get_image_src, manga_status, parse_chapter_number};
+
+pub fn parse_manga_list(json: ObjectRef) -> Result<MangaPageResult> {
+	let results = json.get("manga").as_array()?;
+		let mut mangas: Vec<Manga> = Vec::new();
+		for manga in results {
+			if let Ok(manga_obj) = manga.as_object() {
+				let title = match manga_obj.get("title").as_string() {
+					Ok(node) => node.read(),
+					Err(_) => continue,
+				};
+				let id = match manga_obj.get("url").as_string() {
+					Ok(node) => node
+						.read()
+						.split('/')
+						.nth_back(0)
+						.unwrap_or_default()
+						.to_string(),
+					Err(_) => continue,
+				};
+				let cover = match manga_obj.get("image").as_string() {
+					Ok(node) => node.read(),
+					Err(_) => continue,
+				};
+				mangas.push(Manga {
+					id,
+					cover,
+					title,
+					..Default::default()
+				});
+			}
+		}
+		Ok(MangaPageResult {
+			manga: mangas,
+			has_more: false,
+		})
+}
 
 pub fn parse_manga_listing(html: Node) -> Result<MangaPageResult> {
 	let mut titles: Vec<Manga> = Vec::new();
@@ -115,14 +152,12 @@ pub fn parse_chapter_list(html: Node) -> Result<Vec<Chapter>> {
 
 	for chapter in html.select(".chapter-list li").array() {
 		let node = chapter.as_node().expect("Failed to get node");
-		let title = node.select("span:nth-child(1)").text().read();
 		let url = node.select("a").attr("href").to_string();
-		let id = parse_chapter_number(&title);
+		let id = parse_chapter_number(&node.select("span:nth-child(1)").text().read());
 		let date_updated = get_date(node.select("span:nth-child(2)").text().read());
 
 		chapters.push(Chapter {
 			id: id.to_string(),
-			title,
 			url,
 			chapter: id,
 			lang: String::from("en"),

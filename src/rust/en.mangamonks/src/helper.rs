@@ -1,7 +1,5 @@
 use aidoku::{
-	prelude::format,
-	std::{current_date, html::Node, String, Vec},
-	MangaStatus,
+	helpers::uri::QueryParameters, prelude::format, std::{current_date, html::Node, String, Vec}, MangaStatus
 };
 
 pub fn get_image_src(node: &Node, selector: &str) -> String {
@@ -59,30 +57,30 @@ pub fn get_search_url(
 	status: String,
 	page: i32,
 ) -> String {
-	let mut url = format!("{}/genre/action/{}?term=", base_url, page);
+	let mut query = QueryParameters::new();
 	if !included_tags.is_empty() || !excluded_tags.is_empty() {
 		if excluded_tags.is_empty() {
 			for tag in included_tags {
-				url.push_str(&format!("&include%5B%5D={}", tag));
+				query.set("include[]", Some(tag.as_str()));
 			}
 		} else if !included_tags.is_empty() && !excluded_tags.is_empty() {
 			for tag in included_tags {
-				url.push_str(&format!("&include%5B%5D={}", tag));
+				query.set("include[]", Some(tag.as_str()));
 			}
 			for tag in excluded_tags {
-				url.push_str(&format!("&exclude%5B%5D={}", tag));
+				query.set("exclude[]", Some(tag.as_str()));
 			}
 		} else {
 			for tag in excluded_tags {
-				url.push_str(&format!("&exclude%5B%5D={}", tag));
+				query.set("exclude[]", Some(tag.as_str()));
 			}
 		}
 	}
 	if !manga_type.is_empty() {
-		url.push_str(&format!("&language%5B%5D={}", manga_type));
+		query.set("language[]", Some(manga_type.as_str()));
 	}
 	if !status.is_empty() {
-		url.push_str(&format!("&status%5B%5D={}", status));
+		query.set("status[]", Some(status.as_str()));
 	}
-	url
+	format!("{base_url}/genre/action/{page}?term=&{query}")
 }

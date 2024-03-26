@@ -8,7 +8,7 @@ use aidoku::{
 	error::Result,
 	prelude::{
 		format, get_chapter_list, get_manga_details, get_manga_list, get_manga_listing,
-		get_page_list,
+		get_page_list, println,
 	},
 	std::{
 		net::{HttpMethod, Request},
@@ -16,12 +16,13 @@ use aidoku::{
 	},
 	Chapter, Filter, FilterType, Listing, Manga, MangaPageResult, Page,
 };
-use alloc::string::ToString;
 use helper::get_search_url;
 const BASE_URL: &str = "https://mangamonks.com";
 const TRAVERSE_PATH: &str = "manga";
 
-use parser::{parse_chapter_list, parse_manga_details, parse_manga_listing, parse_page_list};
+use parser::{
+	parse_chapter_list, parse_manga_details, parse_manga_list, parse_manga_listing, parse_page_list,
+};
 
 #[get_manga_listing]
 fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
@@ -82,51 +83,20 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 			.body(parameters)
 			.json()?
 			.as_object()?;
-		let results = json.get("manga").as_array()?;
-		let mut mangas: Vec<Manga> = Vec::new();
-		for manga in results {
-			if let Ok(manga_obj) = manga.as_object() {
-				let title = match manga_obj.get("title").as_string() {
-					Ok(node) => node.read(),
-					Err(_) => continue,
-				};
-				let id = match manga_obj.get("url").as_string() {
-					Ok(node) => node
-						.read()
-						.split('/')
-						.nth_back(0)
-						.unwrap_or_default()
-						.to_string(),
-					Err(_) => continue,
-				};
-				let cover = match manga_obj.get("image").as_string() {
-					Ok(node) => node.read(),
-					Err(_) => continue,
-				};
-				mangas.push(Manga {
-					id,
-					cover,
-					title,
-					..Default::default()
-				});
-			}
-		}
-		return Ok(MangaPageResult {
-			manga: mangas,
-			has_more: false,
-		});
+		parse_manga_list(json)
+	} else {
+		let url = get_search_url(
+			BASE_URL,
+			included_tags,
+			excluded_tags,
+			manga_type,
+			status,
+			page,
+		);
+		println!("{}", url);
+		let html = Request::new(url, HttpMethod::Get).html()?;
+		parse_manga_listing(html)
 	}
-
-	let url = get_search_url(
-		BASE_URL,
-		included_tags,
-		excluded_tags,
-		manga_type,
-		status,
-		page,
-	);
-	let html = Request::new(url, HttpMethod::Get).html()?;
-	parse_manga_listing(html)
 }
 
 #[get_manga_details]
