@@ -1,0 +1,91 @@
+[
+    {
+        "type": "title"
+    },
+    {
+        "type": "group",
+        "name": "Статус тайтла",
+        "filters": [
+            {
+                "type": "check",
+                "name": "Онгоинг",
+                "id": 1
+            },
+            {
+                "type": "check",
+                "name": "Завершён",
+                "id": 2
+            },
+            {
+                "type": "check",
+                "name": "Анонс",
+                "id": 3
+            },
+            {
+                "type": "check",
+                "name": "Приостановлен",
+                "id": 4
+            },
+            {
+                "type": "check",
+                "name": "Выпуск прекращён",
+                "id": 5
+            }
+        ]
+    },
+    {
+        "type": "group",
+        "name": "Тип",
+        "filters": [
+            {
+                "type": "check",
+                "name": "Манга",
+                "id": 1
+            },
+            {
+                "type": "check",
+                "name": "Манхва",
+                "id": 2
+            },
+            {
+                "type": "check",
+                "name": "Руманга",
+                "id": 3
+            },
+            {
+                "type": "check",
+                "name": "OEL-манга",
+                "id": 4
+            },
+            {
+                "type": "check",
+                "name": "Маньхуа",
+                "id": 5
+            },
+            {
+                "type": "check",
+                "name": "Комикс",
+                "id": 6
+            }
+        ]
+    },
+    {
+        "type": "sort",
+		"name": "Сортировать",
+		"canAscend": true,
+		"options": [
+			"По популярности",
+			"По рейтингу",
+			"По просмотрам",
+			"Количеству глав",
+            "Дате обновления",
+            "Дате добавления",
+            "По названию (A-Z)",
+            "По названию (А-Я)"
+		],
+		"default": {
+			"index": 0,
+			"ascending": false
+		}
+    }
+]
