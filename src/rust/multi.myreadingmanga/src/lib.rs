@@ -236,7 +236,7 @@ fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 	let chapter_html = request_get(&chapter_url).html()?;
 
 	let mut pages = Vec::<Page>::new();
-	let page_nodes = chapter_html.select("noscript > img[decoding=async]");
+	let page_nodes = chapter_html.select("noscript > img.img-myreadingmanga");
 	for (page_index, page_value) in page_nodes.array().enumerate() {
 		let page_url = page_value.as_node()?.attr("src").read();
 
