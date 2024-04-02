@@ -45,8 +45,8 @@ enum Url<'a> {
 
 const DOMAIN: &str = "https://myreadingmanga.info";
 
-/// Safari on iOS 16.4
-const USER_AGENT: &str = "Mozilla/5.0 (iPhone; CPU iPhone OS 16_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.4 Mobile/15E148 Safari/604.1";
+/// Safari on iOS 17.4
+const USER_AGENT: &str = "Mozilla/5.0 (iPhone; CPU iPhone OS 17_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.3.1 Mobile/15E148 Safari/604.1";
 
 /// Sort by: \[More relevant, Newest, Oldest, Random\]
 const SORT: [&str; 4] = [
