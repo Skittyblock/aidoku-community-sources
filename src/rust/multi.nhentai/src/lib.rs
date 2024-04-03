@@ -31,6 +31,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 						"en" => "language:english",
 						"ja" => "language:japanese",
 						"zh" => "language:chinese",
+						"All" => "\"\"",
 						_ => "",
 					})
 					.collect::<Vec<&str>>()
