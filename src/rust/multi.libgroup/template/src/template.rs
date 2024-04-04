@@ -1,5 +1,6 @@
+
 use aidoku::{
-	error::{AidokuError, Result}, helpers::uri::QueryParameters, prelude::{format, println}, std::{net::{HttpMethod, Request}, Vec}, Filter, Listing, MangaPageResult
+	error::{AidokuError, Result}, helpers::uri::QueryParameters, prelude::{format, println}, std::{net::{HttpMethod, Request}, String, Vec}, Chapter, Filter, Listing, Manga, MangaPageResult, Page
 };
 use alloc::string::ToString;
 extern crate alloc;
@@ -53,25 +54,43 @@ impl SocialLibSource {
 			})
 		}
 	}
-	/*
-	pub fn get_manga_details(todo!()) -> Result<Manga> {
-		todo!()
+
+	pub fn get_manga_details(&self, id: String) -> Result<Manga> {
+		let mut query = QueryParameters::new();
+		query.push("fields[]", Some("eng_name"));
+		query.push("fields[]", Some("summary"));
+		query.push("fields[]", Some("genres"));
+		query.push("fields[]", Some("authors"));
+		query.push("fields[]", Some("manga_status_id"));
+		query.push("fields[]", Some("status_id"));
+		query.push("fields[]", Some("artists"));
+		let url = format!("{}manga/{}?{}", DOMAIN_API, id, query.to_string());
+		println!("{}", url);
+		let request = Request::new(url, HttpMethod::Get);
+		let json = request.json()?.as_object()?;
+
+		parser::parse_manga_details(json, &self.site_id)
+	}
+
+	pub fn get_chapter_list(&self, id: String) -> Result<Vec<Chapter>> {
+		let url = format!("{}manga/{}/chapters", DOMAIN_API, id);
+		println!("{}", url);
+
+		let request = Request::new(url, HttpMethod::Get);
+		let json = request.json()?.as_object()?;
+
+		parser::parse_chapter_list(json, &self.site_id, id)
 	}
 	
-	pub fn get_chapter_list(todo!()) -> Result<Vec<Chapter>> {
-		todo!()
+	pub fn get_page_list(&self, manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
+
+		let numbers: Vec<&str> = chapter_id.split("#").collect::<Vec<&str>>();
+
+		let url = format!("{}manga/{}/chapter?number={}&volume={}", DOMAIN_API, manga_id, numbers.get(0).unwrap(), numbers.get(1).unwrap());
+		println!("{}", url);
+		let request = Request::new(url, HttpMethod::Get);
+		let json = request.json()?.as_object()?;
+
+		parser::parse_page_list(json)
 	}
-	
-	pub fn get_page_list(todo!()) -> Result<Vec<Page>> {
-		todo!()
-	}
-	
-	pub fn modify_image_request(todo!(), request: Request) {
-		todo!()
-	}
-	
-	pub fn handle_url(todo!()) -> Result<DeepLink> {
-		todo!()
-	}
-	*/
 }

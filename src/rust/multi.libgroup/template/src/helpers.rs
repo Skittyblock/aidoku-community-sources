@@ -1,4 +1,3 @@
-use aidoku::prelude::println;
 
 use aidoku::{helpers::uri::QueryParameters, std::String, Filter, FilterType, MangaStatus};
 use alloc::{string::ToString, vec::Vec};
@@ -129,4 +128,17 @@ pub fn route(site: &SiteId) -> String {
 		SiteId::HentaiLib => String::from("4"),
 		SiteId::YaoiLib => String::from("2"),
 	}
+}
+
+pub fn extract_f32_from_string(title: String, text: String) -> Vec<f32> {
+	text.replace(&title, "")
+		.chars()
+		.filter(|a| (*a >= '0' && *a <= '9') || *a == ' ' || *a == '.' || *a == '+')
+		.collect::<String>()
+		.split(' ')
+		.collect::<Vec<&str>>()
+		.into_iter()
+		.map(|a| a.parse::<f32>().unwrap_or(-1.0))
+		.filter(|a| *a >= 0.0)
+		.collect::<Vec<f32>>()
 }

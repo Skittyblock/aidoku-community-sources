@@ -1,0 +1,32 @@
+[
+    {
+        "type": "group",
+        "title": "Настройки",
+        "items": [
+            {
+                "type": "select",
+                "title": "Сервер изображений",
+                "key": "server_image",
+                "default": "first",
+                "values": [
+                    "first", "second", "compression"
+                ],
+                "titles": [
+                    "Первый", "Второй", "Сжатие"
+                ]
+            },
+            {
+                "type": "select",
+                "title": "Язык нейминга",
+                "key": "naming_language",
+                "default": "eng",
+                "values": [
+                    "rus", "eng", "jap"
+                ],
+                "titles": [
+                    "по-русски", "по-английски", "по-японски"
+                ]
+            }
+        ]
+    },
+]
