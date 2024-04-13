@@ -1,6 +1,6 @@
 
 use aidoku::{
-	error::{AidokuError, Result}, helpers::uri::QueryParameters, prelude::{format, println}, std::{net::{HttpMethod, Request}, String, Vec}, Chapter, Filter, Listing, Manga, MangaPageResult, Page
+	error::{AidokuError, Result}, helpers::uri::QueryParameters, prelude::format, std::{net::{HttpMethod, Request}, String, Vec}, Chapter, Filter, Listing, Manga, MangaPageResult, Page
 };
 use alloc::string::ToString;
 extern crate alloc;
@@ -26,7 +26,6 @@ impl SocialLibSource {
 		}
 		
 		let url = format!("{}manga?{}", DOMAIN_API, query);
-		println!("{}", url);
 		let request = Request::new(url, HttpMethod::Get);
 		let json = request.json()?.as_object()?;
 	
@@ -43,7 +42,6 @@ impl SocialLibSource {
 			let query = qs.to_string();
 	
 			let url = format!("{}media/top-views?{}", DOMAIN_API, query);
-			println!("{}", url);
 			let request = Request::new(url, HttpMethod::Get);
 			let json = request.json()?.as_object()?;
 	
@@ -65,7 +63,6 @@ impl SocialLibSource {
 		query.push("fields[]", Some("status_id"));
 		query.push("fields[]", Some("artists"));
 		let url = format!("{}manga/{}?{}", DOMAIN_API, id, query.to_string());
-		println!("{}", url);
 		let request = Request::new(url, HttpMethod::Get);
 		let json = request.json()?.as_object()?;
 
@@ -74,7 +71,6 @@ impl SocialLibSource {
 
 	pub fn get_chapter_list(&self, id: String) -> Result<Vec<Chapter>> {
 		let url = format!("{}manga/{}/chapters", DOMAIN_API, id);
-		println!("{}", url);
 
 		let request = Request::new(url, HttpMethod::Get);
 		let json = request.json()?.as_object()?;
@@ -87,7 +83,6 @@ impl SocialLibSource {
 		let numbers: Vec<&str> = chapter_id.split("#").collect::<Vec<&str>>();
 
 		let url = format!("{}manga/{}/chapter?number={}&volume={}", DOMAIN_API, manga_id, numbers.get(0).unwrap(), numbers.get(1).unwrap());
-		println!("{}", url);
 		let request = Request::new(url, HttpMethod::Get);
 		let json = request.json()?.as_object()?;
 

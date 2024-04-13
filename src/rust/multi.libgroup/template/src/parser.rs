@@ -1,4 +1,4 @@
-use aidoku::prelude::{format, println};
+use aidoku::prelude::format;
 use aidoku::std::String;
 use aidoku::{Chapter, MangaContentRating, MangaViewer, Page};
 use aidoku::{std::ObjectRef, Manga, MangaPageResult};
@@ -6,13 +6,9 @@ use aidoku::error::Result;
 use alloc::string::ToString;
 use alloc::vec::Vec;
 
-use crate::helpers::{extract_f32_from_string, id_to_status, siteid_to_domain};
+use crate::helpers::{display_title, extract_f32_from_string, get_image_server, id_to_status, siteid_to_domain};
 use crate::helpers::SiteId;
 extern crate alloc;
-                            
-static FIRST_SERVER: &str = "https://img2.mixlib.me";
-static SECOND_SERVER: &str = "https://img4.mixlib.me";
-static COMPRESS_SERVER: &str = "https://img33.imgslib.link";
 
 pub fn parse_manga_list(js: ObjectRef, site: &SiteId) -> Result<MangaPageResult> {
     let has_more = js.get("meta").as_object()?.get("has_next_page").as_bool()?;
@@ -22,7 +18,7 @@ pub fn parse_manga_list(js: ObjectRef, site: &SiteId) -> Result<MangaPageResult>
     let domain = siteid_to_domain(site);
     for data in mangas {
         if let Ok(data_obj) = data.as_object() {
-            let title = match data_obj.get("eng_name").as_string() {
+            let title = match data_obj.get(&display_title()).as_string() {
                 Ok(x) => x.read(),
                 Err(_) => continue
             };
@@ -68,11 +64,8 @@ pub fn parse_manga_list(js: ObjectRef, site: &SiteId) -> Result<MangaPageResult>
 pub fn parse_manga_details(js: ObjectRef, site: &SiteId) -> Result<Manga> {
     let detail = js.get("data").as_object()?;
     let id = detail.get("slug_url").as_string()?.read();
-    println!("{}", id);
     let cover = detail.get("cover").as_object()?.get("default").as_string()?.read();
-    println!("{}", cover);
-    let title = detail.get("eng_name").as_string()?.read();
-    println!("{}", title);
+    let title = detail.get(&display_title()).as_string()?.read();
     
     let authors = detail.get("authors").as_array()?;
     let author = authors
@@ -83,7 +76,6 @@ pub fn parse_manga_details(js: ObjectRef, site: &SiteId) -> Result<Manga> {
 		.map(|a: Result<String>| a.unwrap_or_default())
 		.collect::<Vec<String>>()
 		.join(", ");
-    println!("{}", author);
 
     let artists = detail.get("artists").as_array()?;
     let artist = artists
@@ -94,14 +86,15 @@ pub fn parse_manga_details(js: ObjectRef, site: &SiteId) -> Result<Manga> {
 		.map(|x: Result<String>| x.unwrap_or_default())
 		.collect::<Vec<String>>()
 		.join(", ");
-    println!("{}", artist);
 
     let description = detail.get("summary").as_string()?.read();
-    let url = format!("https://{}/ru/manga/{}", siteid_to_domain(&site), detail.get("slug_url").as_string()?);
+    let url = format!("https://{}/{}", siteid_to_domain(&site), detail.get("slug_url").as_string()?.read()
+    .split("--").collect::<Vec<&str>>()
+    .get(1).unwrap());
 
-    let categories: Vec<String> = detail.get("genres").as_array()?.map(|category| {
-        let category_object = category.as_object()?;
-        Ok(category_object.get("name").as_string()?.read())
+    let categories: Vec<String> = detail.get("genres").as_array()?.map(|genre| {
+        let genre_object = genre.as_object()?;
+        Ok(genre_object.get("name").as_string()?.read())
     })
     .map(|x: Result<String>| x.unwrap_or_default())
     .collect::<Vec<String>>();
@@ -163,8 +156,7 @@ pub fn parse_chapter_list(js: ObjectRef, site: &SiteId, id: String) -> Result<Ve
 pub fn parse_page_list(js: ObjectRef) -> Result<Vec<Page>> {
     let chapters: Vec<Page> = js.get("data").as_object()?.get("pages").as_array()?.map(|page| {
         let page_object = page.as_object()?;
-        let url = format!("{}{}", COMPRESS_SERVER, page_object.get("url").as_string()?.read());
-        println!("{}", url);
+        let url = format!("{}{}", get_image_server(), page_object.get("url").as_string()?.read());
         Ok(Page {
             index: page_object.get("slug").as_int().unwrap() as i32,
             url,

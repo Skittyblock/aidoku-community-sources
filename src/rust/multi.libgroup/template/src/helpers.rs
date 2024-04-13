@@ -1,6 +1,6 @@
 
-use aidoku::{helpers::uri::QueryParameters, std::String, Filter, FilterType, MangaStatus};
-use alloc::{string::ToString, vec::Vec};
+use aidoku::{helpers::uri::QueryParameters, std::{defaults::defaults_get, String}, Filter, FilterType, MangaStatus};
+use alloc::{borrow::ToOwned, string::ToString, vec::Vec};
 extern crate alloc;
 
 pub enum SiteId {
@@ -8,6 +8,10 @@ pub enum SiteId {
 	HentaiLib,
 	YaoiLib,
 }
+
+static FIRST_SERVER: &str = "https://img4.imgslib.link";
+static SECOND_SERVER: &str = "https://img4.mixlib.me";
+static COMPRESS_SERVER: &str = "https://img33.imgslib.link";
 
 pub fn search(filters: Vec<Filter>) -> String {
     let mut query = QueryParameters::new();
@@ -142,3 +146,22 @@ pub fn extract_f32_from_string(title: String, text: String) -> Vec<f32> {
 		.filter(|a| *a >= 0.0)
 		.collect::<Vec<f32>>()
 }
+
+pub fn display_title() -> String {
+    if defaults_get("display_in_eng").and_then(|value| value.as_bool())
+    .unwrap_or(false) {
+        "eng_name".to_owned()
+    } else {
+        "rus_name".to_owned()
+    }
+}
+
+pub fn get_image_server() -> String {
+    match defaults_get("server_image").unwrap().as_string().unwrap().read().as_str() {
+        "first" => FIRST_SERVER.to_owned(),
+        "second" => SECOND_SERVER.to_owned(),
+        "compression" => COMPRESS_SERVER.to_owned(),
+        _ => COMPRESS_SERVER.to_owned()
+    }
+}
+

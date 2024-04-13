@@ -7,7 +7,7 @@
                 "type": "select",
                 "title": "Сервер изображений",
                 "key": "server_image",
-                "default": "first",
+                "default": "compression",
                 "values": [
                     "first", "second", "compression"
                 ],
@@ -16,17 +16,11 @@
                 ]
             },
             {
-                "type": "select",
-                "title": "Язык нейминга",
-                "key": "naming_language",
-                "default": "eng",
-                "values": [
-                    "rus", "eng", "jap"
-                ],
-                "titles": [
-                    "по-русски", "по-английски", "по-японски"
-                ]
+                "type": "switch",
+                "default": false,
+                "key": "display_in_eng",
+                "title": "Название на англ."
             }
         ]
-    },
+    }
 ]
