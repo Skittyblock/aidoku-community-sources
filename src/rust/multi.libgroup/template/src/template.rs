@@ -35,14 +35,13 @@ impl SocialLibSource {
 	pub fn get_manga_listing(&self, listing: Listing, page: i32) -> Result<MangaPageResult> {
 		if &listing.name == "Сейчас читают" {
 			let mut qs = QueryParameters::new();
-			qs.push("site_id[]", Some(&route(self.site_id)));
 			qs.push("page", Some(&format!("{}", page)));
-			qs.push("popularity", Some("0"));
+			qs.push("popularity", Some("1"));
 			qs.push("time", Some("day"));
 			let query = qs.to_string();
 	
 			let url = format!("{}media/top-views?{}", DOMAIN_API, query);
-			let request = Request::new(url, HttpMethod::Get);
+			let request = Request::new(url, HttpMethod::Get).header("Site-Id", &route(self.site_id));
 			let json = request.json()?.as_object()?;
 	
 			parser::parse_manga_list(json, self.site_id)
