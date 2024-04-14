@@ -1,14 +1,23 @@
-
 use aidoku::{
-	error::{AidokuError, Result}, helpers::uri::QueryParameters, prelude::format, std::{net::{HttpMethod, Request}, String, Vec}, Chapter, Filter, Listing, Manga, MangaPageResult, Page
+	error::{AidokuError, Result},
+	helpers::uri::QueryParameters,
+	prelude::format,
+	std::{
+		net::{HttpMethod, Request},
+		String, Vec,
+	},
+	Chapter, Filter, Listing, Manga, MangaPageResult, Page,
 };
 use alloc::string::ToString;
 extern crate alloc;
 
-use crate::{helpers::{route, SiteId}, parser};
+use crate::{
+	helpers::{route, SiteId},
+	parser,
+};
 
 pub struct SocialLibSource {
-	pub site_id: &'static SiteId
+	pub site_id: &'static SiteId,
 }
 
 static DOMAIN_API: &str = "https://api.lib.social/api/";
@@ -19,19 +28,19 @@ impl SocialLibSource {
 		qs.push("site_id[]", Some(&route(self.site_id)));
 		qs.push("page", Some(&format!("{}", page)));
 		let mut query = qs.to_string();
-		let search_parameters =  crate::helpers::search(filters);
-	
+		let search_parameters = crate::helpers::search(filters);
+
 		if !search_parameters.is_empty() {
 			query += &format!("&{}", &search_parameters)
 		}
-		
+
 		let url = format!("{}manga?{}", DOMAIN_API, query);
 		let request = Request::new(url, HttpMethod::Get);
 		let json = request.json()?.as_object()?;
-	
+
 		parser::parse_manga_list(json, self.site_id)
 	}
-	
+
 	pub fn get_manga_listing(&self, listing: Listing, page: i32) -> Result<MangaPageResult> {
 		if &listing.name == "Сейчас читают" {
 			let mut qs = QueryParameters::new();
@@ -39,11 +48,12 @@ impl SocialLibSource {
 			qs.push("popularity", Some("1"));
 			qs.push("time", Some("day"));
 			let query = qs.to_string();
-	
+
 			let url = format!("{}media/top-views?{}", DOMAIN_API, query);
-			let request = Request::new(url, HttpMethod::Get).header("Site-Id", &route(self.site_id));
+			let request =
+				Request::new(url, HttpMethod::Get).header("Site-Id", &route(self.site_id));
 			let json = request.json()?.as_object()?;
-	
+
 			parser::parse_manga_list(json, self.site_id)
 		} else {
 			Err(AidokuError {
@@ -76,12 +86,17 @@ impl SocialLibSource {
 
 		parser::parse_chapter_list(json, &self.site_id, id)
 	}
-	
-	pub fn get_page_list(&self, manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 
+	pub fn get_page_list(&self, manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 		let numbers: Vec<&str> = chapter_id.split("#").collect::<Vec<&str>>();
 
-		let url = format!("{}manga/{}/chapter?number={}&volume={}", DOMAIN_API, manga_id, numbers.get(0).unwrap(), numbers.get(1).unwrap());
+		let url = format!(
+			"{}manga/{}/chapter?number={}&volume={}",
+			DOMAIN_API,
+			manga_id,
+			numbers.get(0).unwrap(),
+			numbers.get(1).unwrap()
+		);
 		let request = Request::new(url, HttpMethod::Get);
 		let json = request.json()?.as_object()?;
 
