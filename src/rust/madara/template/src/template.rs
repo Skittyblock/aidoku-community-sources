@@ -91,9 +91,7 @@ impl Default for MadaraSiteData {
 			alt_ajax: false,
 			// user agent for all http requests
 			user_agent: None,
-			// use admin-ajax to get listing. Back in mid 2023 the madara wp-theme
-			// was exploited and the admin-ajax was disabled for listing requests.
-			// Sites that still haven't updated their theme will have this set to true.
+			// use admin-ajax to get listings
 			use_ajax_listing: true,
 			// get the manga id from script tag
 			get_manga_id: get_int_manga_id,
