@@ -1,6 +1,7 @@
 use aidoku::{
-	error::Result, std::defaults::defaults_get, std::html::Node, std::ObjectRef, std::String,
-	std::Vec, Chapter, Manga, MangaContentRating, MangaStatus, MangaViewer,
+	error::Result, std::defaults::defaults_get, std::html::unescape_html_entities, std::html::Node,
+	std::ObjectRef, std::String, std::Vec, Chapter, Manga, MangaContentRating, MangaStatus,
+	MangaViewer,
 };
 
 use crate::model::{Directory, HotUpdate};
@@ -15,7 +16,7 @@ const COVER_SERVER: &str = "https://temp.compsci88.com/cover/{{Result.i}}.jpg";
 // Parse manga with title and cover
 pub fn parse_manga_listing(manga_object: &HotUpdate) -> Result<Manga> {
 	let id = &manga_object.id;
-	let title = &manga_object.title;
+	let title = unescape_html_entities(&manga_object.title);
 	let cover = String::from(COVER_SERVER).replace("{{Result.i}}", id);
 
 	let mut url = defaults_get("sourceURL")?.as_string()?.read();
@@ -33,7 +34,7 @@ pub fn parse_manga_listing(manga_object: &HotUpdate) -> Result<Manga> {
 
 pub fn parse_basic_manga(nepnep: &Directory) -> Result<Manga> {
 	let id = &nepnep.id;
-	let title = &nepnep.title;
+	let title = unescape_html_entities(&nepnep.title);
 	let cover = String::from(COVER_SERVER).replace("{{Result.i}}", id);
 
 	let mut url = defaults_get("sourceURL")?.as_string()?.read();

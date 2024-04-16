@@ -1,0 +1,161 @@
+[
+	{
+		"type": "title"
+	},
+	{
+		"type": "group",
+		"name": "Genres",
+		"filters": [
+			{
+				"type": "genre",
+				"id": "1",
+				"name": "Romance",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"id": "2",
+				"name": "Drama",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"id": "3",
+				"name": "Fantasy",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"id": "4",
+				"name": "Hardcore",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"id": "5",
+				"name": "SM",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"id": "8",
+				"name": "Harem",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"id": "9",
+				"name": "Hypnosis",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"id": "10",
+				"name": "Novel Adaptation",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"id": "11",
+				"name": "Netori",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"id": "12",
+				"name": "Netorare",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"id": "13",
+				"name": "Isekai",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"id": "14",
+				"name": "Yuri",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"id": "16",
+				"name": "MILF",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"id": "17",
+				"name": "Office",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"id": "18",
+				"name": "Short Story",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"id": "19",
+				"name": "Comedy",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"id": "20",
+				"name": "Campus",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"id": "21",
+				"name": "Crime",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"id": "22",
+				"name": "Revenge",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"id": "23",
+				"name": "Supernatural",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"id": "24",
+				"name": "Action",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"id": "25",
+				"name": "Military",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"id": "27",
+				"name": "Cohabitation",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"id": "28",
+				"name": "Training",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"id": "29",
+				"name": "Ability",
+				"canExclude": false
+			}
+		]
+	}
+]

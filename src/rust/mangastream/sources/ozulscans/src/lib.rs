@@ -8,9 +8,10 @@ use mangastream_template::template::MangaStreamSource;
 
 fn get_instance() -> MangaStreamSource {
 	MangaStreamSource {
-		base_url: String::from("https://ozulscans.com"),
+		base_url: String::from("https://thunderscans.com"),
 		chapter_date_format: "MMMM d, yyyy",
 		manga_details_author: ".imptdt:contains(المؤلف) i",
+		chapter_selector: "#aa",
 		locale: "ar_EH",
 		last_page_text: "التالي",
 		alt_pages: true,

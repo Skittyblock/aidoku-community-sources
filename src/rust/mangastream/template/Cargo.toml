@@ -6,4 +6,4 @@ publish = false
 
 [dependencies]
 aidoku = { git = "https://github.com/Aidoku/aidoku-rs", features = ["helpers"] }
-hashbrown = "0.14.0"
+hashbrown = "0.14.3"

@@ -113,7 +113,7 @@ pub enum Url<'a> {
 	/// Manga per response
 	Filters(QueryParameters),
 
-	/// https://copymanga.site/api/kb/web/searchs/comics?offset={}&platform={}&limit={}&q={}&q_type={}
+	/// https://copymanga.site/api/kb/web/searcha/comics?offset={}&platform={}&limit={}&q={}&q_type={}
 	///
 	/// ---
 	///
@@ -290,7 +290,7 @@ impl<'a> Display for Url<'a> {
 	fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
 		match self {
 			Self::Filters(query) => write!(f, "{}/comics?{}", DOMAIN, query),
-			Self::Search(query) => write!(f, "{}/api/kb/web/searchs/comics?{}", DOMAIN, query),
+			Self::Search(query) => write!(f, "{}/api/kb/web/searcha/comics?{}", DOMAIN, query),
 			Self::Manga(manga_id) => write!(f, "{}{}{}", DOMAIN, MANGA_PATH, manga_id),
 			Self::ChapterList(manga_id) => {
 				write!(f, "{}/comicdetail/{}/chapters", DOMAIN, manga_id)

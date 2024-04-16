@@ -3,12 +3,15 @@
 		"id": "multi.nhentai",
 		"lang": "multi",
 		"name": "NHentai",
-		"version": 4,
+		"version": 6,
 		"url": "https://nhentai.net/",
 		"nsfw": 2
 	},
 	"languageSelectType": "single",
 	"languages": [
+		{
+			"code": "All"
+		},
 		{
 			"code": "en",
 			"default": true

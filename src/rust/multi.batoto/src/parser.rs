@@ -255,7 +255,7 @@ pub fn get_page_list(obj: Node) -> Result<Vec<Page>> {
 			None => panic!(),
 		}
 		let img_str;
-		match script_text.substring_after_last("const imgHttpLis = [\"") {
+		match script_text.substring_after_last("const imgHttps = [\"") {
 			Some(v) => match v.substring_before("\"];") {
 				Some(w) => img_str = w,
 				None => panic!(),
@@ -271,13 +271,14 @@ pub fn get_page_list(obj: Node) -> Result<Vec<Page>> {
 			None => panic!(),
 		}
 		let img_arr = img_str.split("\",\"").collect::<Vec<&str>>();
-		let tkn_str = batojs_decrypt(String::from(server_token), String::from(bato_js));
-		let t = tkn_str.replace(['[', ']'], "");
-		let tkn_arr = t.split(',').collect::<Vec<&str>>();
+		
+		//let tkn_str = batojs_decrypt(String::from(server_token), String::from(bato_js));
+		//let t = tkn_str.replace(['[', ']'], "");
+		//let tkn_arr = t.split(',').collect::<Vec<&str>>();
 
 		for (index, item) in img_arr.iter().enumerate() {
 			let ind = index as i32;
-			let url = format!("{}?{}", item, tkn_arr[index]);
+			let url = format!("{}", item);
 			pages.push(Page {
 				index: ind,
 				url,

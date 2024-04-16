@@ -1,5 +1,5 @@
 [package]
-name = " manhwafreakmanga"
+name = "manhwafreakmanga"
 version = "0.1.0"
 edition = "2021"
 publish = false

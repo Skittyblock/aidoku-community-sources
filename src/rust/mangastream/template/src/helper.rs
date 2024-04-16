@@ -1,3 +1,4 @@
+use core::ptr;
 use aidoku::{
 	error::{AidokuError, AidokuErrorKind, Result},
 	helpers::substring::Substring,
@@ -12,6 +13,8 @@ use crate::template::MangaStreamSource;
 
 extern crate hashbrown;
 use hashbrown::HashMap;
+
+pub const USER_AGENT: &str = "Mozilla/5.0 (iPhone; CPU iPhone OS 16_1_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1";
 
 // generate url for listing page
 pub fn get_listing_url(
@@ -394,7 +397,7 @@ fn generate_manga_url_to_postid_mapping(
 	unsafe {
 		// if the mapping was generated less than 10 minutes ago, use the cached mapping
 		if current_date() - CACHED_MAPPING_AT < 600.0 {
-			if let Some(mapping) = &CACHED_MANGA_URL_TO_POSTID_MAPPING {
+			if let Some(mapping) = &mut *ptr::addr_of_mut!(CACHED_MANGA_URL_TO_POSTID_MAPPING) {
 				return Ok(mapping.clone());
 			}
 		}
@@ -402,7 +405,9 @@ fn generate_manga_url_to_postid_mapping(
 
 	let all_manga_listing_url = format!("{}/{}/list-mode", url, pathname);
 
-	let html = Request::get(all_manga_listing_url).html()?;
+	let html = Request::get(all_manga_listing_url)
+		.header("User-Agent", USER_AGENT)
+		.html()?;
 	let mut mapping = HashMap::new();
 
 	for node in html.select(".soralist .series").array() {
@@ -448,6 +453,7 @@ pub fn generate_chapter_url_to_postid_mapping(
 	let html = Request::post(ajax_url)
 		.body(body.as_bytes())
 		.header("Referer", base_url)
+		.header("User-Agent", USER_AGENT)
 		.html()?;
 
 	// Janky retry logic to bypass rate limiting

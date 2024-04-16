@@ -10,12 +10,12 @@ use aidoku::{
 	prelude::{
 		format, get_chapter_list, get_manga_details, get_manga_list, get_page_list, handle_url,
 	},
-	std::{String, Vec},
+	std::{defaults::defaults_get, String, Vec},
 	Chapter, DeepLink, Filter, Manga, MangaPageResult, MangaStatus, Page,
 };
 use alloc::string::ToString;
 use decryptor::EncryptedString;
-use parser::{Element, JsonObj, JsonString, MangaListResponse, NodeArrValue, UuidString};
+use parser::{Element, JsonObj, JsonString, MangaListResponse, NodeArrValue, Part, UuidString};
 use url::{Url, CHAPTER_PATH, MANGA_PATH};
 
 #[get_manga_list]
@@ -92,16 +92,15 @@ fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 		.get("groups")
 		.as_object()?
 		.values();
-	let group_values_len = group_values.len();
 	let groups = group_values
 		.map(|group_value| {
 			let group_obj = group_value.as_object()?;
 
-			let title_prefix = if group_values_len > 1 {
-				let group_name = group_obj.get_as_string("name")?;
-				format!("{}：", group_name)
-			} else {
+			let group_name = group_obj.get_as_string("name")?;
+			let title_prefix = if group_name == "默認" {
 				String::new()
+			} else {
+				format!("{}：", group_name)
 			};
 
 			group_obj
@@ -138,24 +137,24 @@ fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 
 	let chapters = sorted_chapters
 		.iter()
-		.enumerate()
-		.map(|(index, (chapter_id, title, date_updated))| {
-			let chapter_num = (index + 1) as f32;
+		.map(|(chapter_id, title, date_updated)| {
+			let part = title.parse::<Part>()?;
 
 			let chapter_url = Url::Chapter(&manga_id, chapter_id).to_string();
 
-			Chapter {
+			Ok(Chapter {
 				id: chapter_id.clone(),
-				title: title.clone(),
-				chapter: chapter_num,
+				title: part.title,
+				volume: part.volume,
+				chapter: part.chapter,
 				date_updated: *date_updated,
 				url: chapter_url,
 				lang: "zh".to_string(),
 				..Default::default()
-			}
+			})
 		})
 		.rev()
-		.collect::<Vec<_>>();
+		.collect::<Result<_>>()?;
 
 	Ok(chapters)
 }
@@ -171,8 +170,18 @@ fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 		.json()?
 		.as_array()?;
 
+	let image_format = defaults_get("imageFormat").and_then(|v| v.as_string().map(|v| v.read()))?;
+
+	let image_quality =
+		defaults_get("imageQuality").and_then(|v| v.as_string().map(|v| v.read()))?;
+
+	let image_ext = format!("{}.{}", image_quality, image_format);
+
 	for (index, page_value) in page_arr.enumerate() {
-		let page_url = page_value.as_object()?.get_as_string("url")?;
+		let page_url = page_value
+			.as_object()?
+			.get_as_string("url")?
+			.replace("c800x.jpg", &image_ext);
 
 		pages.push(Page {
 			index: index as i32,

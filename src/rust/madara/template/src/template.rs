@@ -34,6 +34,8 @@ pub struct MadaraSiteData {
 	pub chapter_selector: String,
 	pub base_id_selector: String,
 
+	pub date_format: String,
+
 	pub status_filter_ongoing: String,
 	pub status_filter_completed: String,
 	pub status_filter_cancelled: String,
@@ -44,8 +46,9 @@ pub struct MadaraSiteData {
 	pub trending: String,
 
 	pub alt_ajax: bool,
+	pub user_agent: Option<String>,
 
-	pub get_manga_id: fn(String, String, String) -> String,
+	pub get_manga_id: fn(String, String, String, Option<String>) -> String,
 	pub viewer: fn(&Node, &Vec<String>) -> MangaViewer,
 	pub status: fn(&Node) -> MangaStatus,
 	pub nsfw: fn(&Node, &Vec<String>) -> MangaContentRating,
@@ -77,12 +80,16 @@ impl Default for MadaraSiteData {
 			chapter_selector: String::from("li.wp-manga-chapter"),
 			// a to get the base id from requests to admin-ajax.php
 			base_id_selector: String::from("h3.h5 > a"),
+			// chapter date format
+			date_format: String::from("MMM d, yyyy"),
 			// div to select images from a chapter
 			image_selector: String::from("div.page-break > img"),
 			// div to select all the genres
 			genre_selector: String::from("div.genres-content > a"),
 			// choose between two options for chapter list POST request
 			alt_ajax: false,
+			// user agent for all http requests
+			user_agent: None,
 			// get the manga id from script tag
 			get_manga_id: get_int_manga_id,
 			// default viewer
@@ -202,9 +209,12 @@ pub fn get_manga_list(
 }
 
 pub fn get_search_result(data: MadaraSiteData, url: String) -> Result<MangaPageResult> {
-	let html = Request::new(url.as_str(), HttpMethod::Get)
-		.header("Cookie", &data.search_cookies)
-		.html()?;
+	let mut req =
+		Request::new(url.as_str(), HttpMethod::Get).header("Cookie", &data.search_cookies);
+
+	req = add_user_agent_header(req, &data.user_agent);
+
+	let html = req.html()?;
 	let mut manga: Vec<Manga> = Vec::new();
 	let mut has_more = false;
 
@@ -251,10 +261,12 @@ pub fn get_series_page(data: MadaraSiteData, listing: &str, page: i32) -> Result
 
 	let body_content =  format!("action=madara_load_more&page={}&template=madara-core%2Fcontent%2Fcontent-archive&vars%5Bpaged%5D=1&vars%5Borderby%5D=meta_value_num&vars%5Btemplate%5D=archive&vars%5Bsidebar%5D=full&vars%5Bpost_type%5D=wp-manga&vars%5Bpost_status%5D=publish&vars%5Bmeta_key%5D={}&vars%5Border%5D=desc&vars%5Bmeta_query%5D%5Brelation%5D=OR&vars%5Bmanga_archives_item_layout%5D=big_thumbnail", &page-1, listing);
 
-	let req = Request::new(url.as_str(), HttpMethod::Post)
+	let mut req = Request::new(url.as_str(), HttpMethod::Post)
 		.body(body_content.as_bytes())
 		.header("Referer", &data.base_url)
 		.header("Content-Type", "application/x-www-form-urlencoded");
+
+	req = add_user_agent_header(req, &data.user_agent);
 
 	let html = req.html()?;
 
@@ -328,7 +340,11 @@ pub fn get_manga_listing(
 pub fn get_manga_details(manga_id: String, data: MadaraSiteData) -> Result<Manga> {
 	let url = data.base_url.clone() + "/" + data.source_path.as_str() + "/" + manga_id.as_str();
 
-	let html = Request::new(url.as_str(), HttpMethod::Get).html()?;
+	let mut req = Request::new(url.as_str(), HttpMethod::Get);
+
+	req = add_user_agent_header(req, &data.user_agent);
+
+	let html = req.html()?;
 
 	// These are useless badges that are added to the title like "HOT", "NEW", etc.
 	let title_badges = html.select("span.manga-title-badges").text().read();
@@ -375,13 +391,20 @@ pub fn get_chapter_list(manga_id: String, data: MadaraSiteData) -> Result<Vec<Ch
 			+ "/ajax/chapters";
 	}
 
-	let int_id = (data.get_manga_id)(manga_id, data.base_url.clone(), data.source_path.clone());
+	let int_id = (data.get_manga_id)(
+		manga_id,
+		data.base_url.clone(),
+		data.source_path.clone(),
+		data.user_agent.clone(),
+	);
 	let body_content = format!("action=manga_get_chapters&manga={}", int_id);
 
-	let req = Request::new(url.as_str(), HttpMethod::Post)
+	let mut req = Request::new(url.as_str(), HttpMethod::Post)
 		.body(body_content.as_bytes())
 		.header("Referer", &data.base_url)
 		.header("Content-Type", "application/x-www-form-urlencoded");
+
+	req = add_user_agent_header(req, &data.user_agent);
 
 	let html = req.html()?;
 
@@ -445,7 +468,7 @@ pub fn get_chapter_list(manga_id: String, data: MadaraSiteData) -> Result<Vec<Ch
 		let date_str = obj.select("span.chapter-release-date > i").text().read();
 		let mut date_updated = StringRef::from(&date_str)
 			.0
-			.as_date("MMM d, yyyy", Some("en"), None)
+			.as_date(data.date_format.as_str(), Some("en"), None)
 			.unwrap_or(-1.0);
 		if date_updated < -1.0 {
 			date_updated = StringRef::from(&date_str)
@@ -476,7 +499,11 @@ pub fn get_chapter_list(manga_id: String, data: MadaraSiteData) -> Result<Vec<Ch
 
 pub fn get_page_list(chapter_id: String, data: MadaraSiteData) -> Result<Vec<Page>> {
 	let url = data.base_url.clone() + "/" + data.source_path.as_str() + "/" + chapter_id.as_str();
-	let html = Request::new(url.as_str(), HttpMethod::Get).html()?;
+	let mut req = Request::new(url.as_str(), HttpMethod::Get);
+
+	req = add_user_agent_header(req, &data.user_agent);
+
+	let html = req.html()?;
 
 	let mut pages: Vec<Page> = Vec::new();
 	for (index, item) in html
