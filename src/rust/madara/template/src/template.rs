@@ -270,8 +270,8 @@ pub fn get_series_page(data: MadaraSiteData, listing: &str, page: i32) -> Result
 		};
 
 		let url = format!(
-			"https://manhuaplus.com/page/{}?s&post_type=wp-manga&m_orderby={}",
-			page, listing
+			"{}/page/{}?s&post_type=wp-manga&m_orderby={}",
+			data.base_url, page, listing
 		);
 
 		return get_search_result(data, url);
