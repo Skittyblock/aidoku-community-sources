@@ -24,7 +24,8 @@
 			{ "type": "check", "name": "Traditional Chinese", "id": "lang_str" },
 			{ "type": "check", "name": "Italian", "id": "lang_str" },
 			{ "type": "check", "name": "German", "id": "lang_str" },
-			{ "type": "check", "name": "Filipino", "id": "lang_str" }
+			{ "type": "check", "name": "Filipino", "id": "lang_str" },
+			{ "type": "check", "name": "Bulgarian", "id": "lang_str" }
 		]
 	},
 	{
@@ -57,7 +58,12 @@
 			{ "type": "check", "name": "Supernatural", "id": "genre_str" },
 			{ "type": "check", "name": "Omegaverse", "id": "genre_str" },
 			{ "type": "check", "name": "Tragedy", "id": "genre_str" },
-			{ "type": "check", "name": "Sports", "id": "genre_str" }
+			{ "type": "check", "name": "Sports", "id": "genre_str" },
+			{
+				"type": "check",
+				"name": "HET (heterosexual)/ Hentai",
+				"id": "genre_str"
+			}
 		]
 	},
 	{
@@ -86,11 +92,15 @@
 			},
 			{ "type": "check", "name": "Attack on Titan dj", "id": "categories" },
 			{ "type": "check", "name": "Osomatsu-san dj", "id": "categories" },
+			{ "type": "check", "name": "Jujutsu Kaisen dj", "id": "categories" },
 			{ "type": "check", "name": "One Piece dj", "id": "categories" },
 			{ "type": "check", "name": "Tiger and Bunny dj", "id": "categories" },
-			{ "type": "check", "name": "Jujutsu Kaisen dj", "id": "categories" },
-			{ "type": "check", "name": "Naruto dj", "id": "categories" },
-			{ "type": "check", "name": "Gintama dj", "id": "categories" }
+			{
+				"type": "check",
+				"name": "Hetalia: Axis Powers dj",
+				"id": "categories"
+			},
+			{ "type": "check", "name": "Naruto dj", "id": "categories" }
 		]
 	},
 	{
@@ -100,18 +110,19 @@
 			{ "type": "check", "name": "Hardcore", "id": "tags" },
 			{ "type": "check", "name": "Uncensored", "id": "tags" },
 			{ "type": "check", "name": "Full Color", "id": "tags" },
-			{ "type": "check", "name": "Rape", "id": "tags" },
 			{ "type": "check", "name": "Threesome", "id": "tags" },
+			{ "type": "check", "name": "Rape", "id": "tags" },
 			{ "type": "check", "name": "Cross-dressing", "id": "tags" },
 			{ "type": "check", "name": "Incest", "id": "tags" },
+			{ "type": "check", "name": "Big Penis", "id": "tags" },
 			{ "type": "check", "name": "Western", "id": "tags" },
 			{ "type": "check", "name": "Group Sex/ Foursome", "id": "tags" },
-			{ "type": "check", "name": "Big Penis", "id": "tags" },
+			{ "type": "check", "name": "Blowjob", "id": "tags" },
 			{ "type": "check", "name": "Masturbation", "id": "tags" },
 			{ "type": "check", "name": "Bondage", "id": "tags" },
 			{ "type": "check", "name": "Sex toy", "id": "tags" },
-			{ "type": "check", "name": "Blowjob", "id": "tags" },
-			{ "type": "check", "name": "Dark skin", "id": "tags" }
+			{ "type": "check", "name": "Dark skin", "id": "tags" },
+			{ "type": "check", "name": "Animal Characteristic", "id": "tags" }
 		]
 	},
 	{
@@ -188,6 +199,11 @@
 				"type": "check",
 				"name": "Sousuke Yamazaki x Rin Matsuoka",
 				"id": "pairing_str"
+			},
+			{
+				"type": "check",
+				"name": "Gojo Satoru x Itadori Yuuji",
+				"id": "pairing_str"
 			}
 		]
 	},
@@ -203,17 +219,18 @@
 			{ "type": "check", "name": "Silver Lining", "id": "group_str" },
 			{ "type": "check", "name": "Team Katsudon", "id": "group_str" },
 			{ "type": "check", "name": "Otokonoko Scans", "id": "group_str" },
-			{ "type": "check", "name": "Fujoshi Bitches", "id": "group_str" },
 			{ "type": "check", "name": "Yuuta's Blog", "id": "group_str" },
+			{ "type": "check", "name": "Fujoshi Bitches", "id": "group_str" },
 			{ "type": "check", "name": "Rose Squad Scans", "id": "group_str" },
 			{ "type": "check", "name": "Nakama", "id": "group_str" },
-			{ "type": "check", "name": "Exiled Rebels Scans", "id": "group_str" },
 			{ "type": "check", "name": "Team MilkBoy", "id": "group_str" },
-			{ "type": "check", "name": "gachimayan", "id": "group_str" },
+			{ "type": "check", "name": "Exiled Rebels Scans", "id": "group_str" },
 			{ "type": "check", "name": "Good Girls Scan BL", "id": "group_str" },
-			{ "type": "check", "name": "Rotti Totti", "id": "group_str" },
+			{ "type": "check", "name": "gachimayan", "id": "group_str" },
+			{ "type": "check", "name": "Nonsense Group HQ", "id": "group_str" },
 			{ "type": "check", "name": "Ikemen Scans", "id": "group_str" },
-			{ "type": "check", "name": "Nonsense Group HQ", "id": "group_str" }
+			{ "type": "check", "name": "Rotti Totti", "id": "group_str" },
+			{ "type": "check", "name": "HQ!! Scans", "id": "group_str" }
 		]
 	}
 ]
