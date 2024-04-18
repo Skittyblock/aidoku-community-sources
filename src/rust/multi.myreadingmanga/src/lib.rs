@@ -226,6 +226,13 @@ fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 		};
 		chapters.insert(0, chapter);
 	}
+	if let Some(last_chapter) = chapters.first_mut() {
+		last_chapter.date_updated =
+			manga_html
+				.select("time.entry-time")
+				.text()
+				.as_date("MMMM d, yyyy", None, None);
+	}
 
 	Ok(chapters)
 }
