@@ -315,12 +315,17 @@ pub fn parse_chapters(html: &WNode, manga_id: &str) -> Result<Vec<Chapter>> {
 pub fn get_page_list(html: &WNode) -> Result<Vec<Page>> {
 	let parsing_error = helpers::create_parsing_error();
 
-	let script_text = html
+	// aidoku::prelude::println!("get_pages_html: {}", html.text());
+	let mut script_text = html
 		.select(r"div.reader-controller > script[type=text/javascript]")
 		.pop()
 		.map(|script_node| script_node.data())
 		.ok_or(parsing_error)?;
 
+	// removing first part of scirpt containing unnecessary links for reader
+	script_text.replace_range(0..script_text.find("rm_h.readerDoInit(").unwrap_or_default(), "");
+
+	// aidoku::prelude::println!("get_script_text: {}", script_text);
 	let chapters_list_str = script_text
 		.find("[[")
 		.zip(script_text.find("]]"))
@@ -366,6 +371,7 @@ pub fn get_page_list(html: &WNode) -> Result<Vec<Page>> {
 		})
 		.collect();
 
+	// aidoku::prelude::println!("get_chapter_urls: {:?}", urls);
 	Ok(urls
 		.into_iter()
 		.enumerate()
