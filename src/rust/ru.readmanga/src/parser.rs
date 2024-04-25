@@ -316,16 +316,16 @@ pub fn get_page_list(html: &WNode) -> Result<Vec<Page>> {
 	let parsing_error = helpers::create_parsing_error();
 
 	// aidoku::prelude::println!("get_pages_html: {}", html.text());
-	let mut script_text = html
+	let script_text = html
 		.select(r"div.reader-controller > script[type=text/javascript]")
 		.pop()
 		.map(|script_node| script_node.data())
-		.ok_or(parsing_error)?;
+		.ok_or(parsing_error)
+		.and_then(|mut text| {
+			text.replace_range(0..text.find("rm_h.readerDoInit(").unwrap_or_default(), "");
+			Ok(text)
+		})?;
 
-	// removing first part of scirpt containing unnecessary links for reader
-	script_text.replace_range(0..script_text.find("rm_h.readerDoInit(").unwrap_or_default(), "");
-
-	// aidoku::prelude::println!("get_script_text: {}", script_text);
 	let chapters_list_str = script_text
 		.find("[[")
 		.zip(script_text.find("]]"))
