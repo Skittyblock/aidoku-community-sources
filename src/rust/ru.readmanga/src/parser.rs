@@ -321,9 +321,9 @@ pub fn get_page_list(html: &WNode) -> Result<Vec<Page>> {
 		.pop()
 		.map(|script_node| script_node.data())
 		.ok_or(parsing_error)
-		.and_then(|mut text| {
+		.map(|mut text| {
 			text.replace_range(0..text.find("rm_h.readerDoInit(").unwrap_or_default(), "");
-			Ok(text)
+			text
 		})?;
 
 	let chapters_list_str = script_text
