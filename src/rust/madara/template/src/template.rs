@@ -1,12 +1,12 @@
 use aidoku::{
 	error::Result,
 	prelude::*,
-	std::current_date,
-	std::net::HttpMethod,
-	std::net::Request,
-	std::String,
-	std::StringRef,
-	std::{html::Node, Vec},
+	std::{
+		current_date,
+		html::Node,
+		net::{HttpMethod, Request},
+		String, StringRef, Vec,
+	},
 	Chapter, DeepLink, Filter, Listing, Manga, MangaContentRating, MangaPageResult, MangaStatus,
 	MangaViewer, Page,
 };
@@ -47,6 +47,7 @@ pub struct MadaraSiteData {
 
 	pub alt_ajax: bool,
 	pub user_agent: Option<String>,
+	pub use_ajax_listing: bool,
 
 	pub get_manga_id: fn(String, String, String, Option<String>) -> String,
 	pub viewer: fn(&Node, &Vec<String>) -> MangaViewer,
@@ -90,6 +91,8 @@ impl Default for MadaraSiteData {
 			alt_ajax: false,
 			// user agent for all http requests
 			user_agent: None,
+			// use admin-ajax to get listings
+			use_ajax_listing: true,
 			// get the manga id from script tag
 			get_manga_id: get_int_manga_id,
 			// default viewer
@@ -257,6 +260,23 @@ pub fn get_search_result(data: MadaraSiteData, url: String) -> Result<MangaPageR
 }
 
 pub fn get_series_page(data: MadaraSiteData, listing: &str, page: i32) -> Result<MangaPageResult> {
+	// Monkeypatch for now until the source api rewrite
+	if !data.use_ajax_listing {
+		let listing = match listing {
+			"_wp_manga_views" => "views",
+			"_wp_manga_week_views_value" => "trending",
+			"_latest_update" => "latest",
+			_ => "latest",
+		};
+
+		let url = format!(
+			"{}/page/{}?s&post_type=wp-manga&m_orderby={}",
+			data.base_url, page, listing
+		);
+
+		return get_search_result(data, url);
+	}
+
 	let url = data.base_url.clone() + "/wp-admin/admin-ajax.php";
 
 	let body_content =  format!("action=madara_load_more&page={}&template=madara-core%2Fcontent%2Fcontent-archive&vars%5Bpaged%5D=1&vars%5Borderby%5D=meta_value_num&vars%5Btemplate%5D=archive&vars%5Bsidebar%5D=full&vars%5Bpost_type%5D=wp-manga&vars%5Bpost_status%5D=publish&vars%5Bmeta_key%5D={}&vars%5Border%5D=desc&vars%5Bmeta_query%5D%5Brelation%5D=OR&vars%5Bmanga_archives_item_layout%5D=big_thumbnail", &page-1, listing);
