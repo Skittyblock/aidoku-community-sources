@@ -315,7 +315,6 @@ pub fn parse_chapters(html: &WNode, manga_id: &str) -> Result<Vec<Chapter>> {
 pub fn get_page_list(html: &WNode) -> Result<Vec<Page>> {
 	let parsing_error = helpers::create_parsing_error();
 
-	// aidoku::prelude::println!("get_pages_html: {}", html.text());
 	let script_text = html
 		.select(r"div.reader-controller > script[type=text/javascript]")
 		.pop()
@@ -371,7 +370,6 @@ pub fn get_page_list(html: &WNode) -> Result<Vec<Page>> {
 		})
 		.collect();
 
-	// aidoku::prelude::println!("get_chapter_urls: {:?}", urls);
 	Ok(urls
 		.into_iter()
 		.enumerate()
