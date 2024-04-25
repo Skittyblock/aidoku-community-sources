@@ -6,16 +6,6 @@ use aidoku::{
 use alloc::{borrow::ToOwned, string::ToString, vec::Vec};
 extern crate alloc;
 
-pub enum SiteId {
-	MangaLib,
-	HentaiLib,
-	SlashLib,
-}
-
-static FIRST_SERVER: &str = "https://img4.imgslib.link";
-static SECOND_SERVER: &str = "https://img4.mixlib.me";
-static COMPRESS_SERVER: &str = "https://img33.imgslib.link";
-
 pub fn search(filters: Vec<Filter>) -> String {
 	let mut query = QueryParameters::new();
 	for filter in filters {
@@ -106,22 +96,6 @@ pub fn id_to_status(id: i64) -> MangaStatus {
 	}
 }
 
-pub fn siteid_to_domain(site: &SiteId) -> String {
-	match site {
-		SiteId::MangaLib => String::from("mangalib.me"),
-		SiteId::SlashLib => String::from("slashlib.me"),
-		SiteId::HentaiLib => String::from("hentailib.me"),
-	}
-}
-
-pub fn route(site: &SiteId) -> String {
-	match site {
-		SiteId::MangaLib => String::from("1"),
-		SiteId::HentaiLib => String::from("4"),
-		SiteId::SlashLib => String::from("2"),
-	}
-}
-
 pub fn extract_f32_from_string(title: String, text: String) -> Vec<f32> {
 	text.replace(&title, "")
 		.chars()
@@ -143,20 +117,5 @@ pub fn display_title() -> String {
 		"eng_name".to_owned()
 	} else {
 		"rus_name".to_owned()
-	}
-}
-
-pub fn get_image_server() -> String {
-	match defaults_get("server_image")
-		.unwrap()
-		.as_string()
-		.unwrap()
-		.read()
-		.as_str()
-	{
-		"first" => FIRST_SERVER.to_owned(),
-		"second" => SECOND_SERVER.to_owned(),
-		"compression" => COMPRESS_SERVER.to_owned(),
-		_ => COMPRESS_SERVER.to_owned(),
 	}
 }

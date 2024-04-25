@@ -9,10 +9,10 @@
                 "key": "server_image",
                 "default": "compression",
                 "values": [
-                    "first", "second", "compression"
+                    "main", "second", "compression"
                 ],
                 "titles": [
-                    "Первый", "Второй", "Сжатие"
+                    "Главный", "Второй", "Сжатие"
                 ]
             },
             {

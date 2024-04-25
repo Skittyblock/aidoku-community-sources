@@ -6,18 +6,24 @@ use aidoku::{
 		net::{HttpMethod, Request},
 		String, Vec,
 	},
-	Chapter, Filter, Listing, Manga, MangaPageResult, Page,
+	Chapter, Filter, Listing, Manga, MangaContentRating, MangaPageResult, Page,
 };
 use alloc::string::ToString;
 extern crate alloc;
 
-use crate::{
-	helpers::{route, SiteId},
-	parser,
-};
+use crate::parser;
 
 pub struct SocialLibSource {
-	pub site_id: &'static SiteId,
+	pub site_id: &'static str,
+	pub domain: &'static str,
+	pub nsfw: &'static MangaContentRating,
+	pub cdn: &'static CDN,
+}
+
+pub struct CDN {
+	pub main: &'static str,
+	pub second: &'static str,
+	pub compress: &'static str,
 }
 
 static DOMAIN_API: &str = "https://api.lib.social/api/";
@@ -25,7 +31,7 @@ static DOMAIN_API: &str = "https://api.lib.social/api/";
 impl SocialLibSource {
 	pub fn get_manga_list(&self, filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 		let mut qs = QueryParameters::new();
-		qs.push("site_id[]", Some(&route(self.site_id)));
+		qs.push("site_id[]", Some(self.site_id));
 		qs.push("page", Some(&format!("{}", page)));
 		let mut query = qs.to_string();
 		let search_parameters = crate::helpers::search(filters);
@@ -38,7 +44,7 @@ impl SocialLibSource {
 		let request = Request::new(url, HttpMethod::Get);
 		let json = request.json()?.as_object()?;
 
-		parser::parse_manga_list(json, self.site_id)
+		parser::parse_manga_list(json, &self.domain.to_string(), &self.nsfw)
 	}
 
 	pub fn get_manga_listing(&self, listing: Listing, page: i32) -> Result<MangaPageResult> {
@@ -50,11 +56,10 @@ impl SocialLibSource {
 			let query = qs.to_string();
 
 			let url = format!("{}media/top-views?{}", DOMAIN_API, query);
-			let request =
-				Request::new(url, HttpMethod::Get).header("Site-Id", &route(self.site_id));
+			let request = Request::new(url, HttpMethod::Get).header("Site-Id", self.site_id);
 			let json = request.json()?.as_object()?;
 
-			parser::parse_manga_list(json, self.site_id)
+			parser::parse_manga_list(json, &self.domain.to_string(), self.nsfw)
 		} else {
 			Err(AidokuError {
 				reason: aidoku::error::AidokuErrorKind::Unimplemented,
@@ -75,7 +80,7 @@ impl SocialLibSource {
 		let request = Request::new(url, HttpMethod::Get);
 		let json = request.json()?.as_object()?;
 
-		parser::parse_manga_details(json, &self.site_id)
+		parser::parse_manga_details(json, self.domain, &self.nsfw)
 	}
 
 	pub fn get_chapter_list(&self, id: String) -> Result<Vec<Chapter>> {
@@ -84,7 +89,7 @@ impl SocialLibSource {
 		let request = Request::new(url, HttpMethod::Get);
 		let json = request.json()?.as_object()?;
 
-		parser::parse_chapter_list(json, &self.site_id, id)
+		parser::parse_chapter_list(json, &id, &self.domain)
 	}
 
 	pub fn get_page_list(&self, manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
@@ -100,6 +105,6 @@ impl SocialLibSource {
 		let request = Request::new(url, HttpMethod::Get);
 		let json = request.json()?.as_object()?;
 
-		parser::parse_page_list(json)
+		parser::parse_page_list(json, self.cdn)
 	}
 }

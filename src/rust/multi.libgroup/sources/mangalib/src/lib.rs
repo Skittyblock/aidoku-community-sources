@@ -6,10 +6,17 @@ use aidoku::{
 	std::{String, Vec},
 	Chapter, Filter, Listing, Manga, MangaPageResult, Page,
 };
-use mangalib_template::{helpers::SiteId, template::SocialLibSource};
+use mangalib_template::template::{SocialLibSource, CDN};
 
 static INSTANCE: SocialLibSource = SocialLibSource {
-	site_id: &SiteId::MangaLib,
+	site_id: "1",
+	domain: "mangalib.me",
+	nsfw: &aidoku::MangaContentRating::Safe,
+	cdn: &CDN {
+		main: "https://img4.imgslib.link",
+		second: "https://img4.mixlib.me",
+		compress: "https://img33.imgslib.link",
+	},
 };
 
 #[get_manga_list]

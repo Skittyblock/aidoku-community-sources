@@ -1,23 +1,25 @@
 use aidoku::error::Result;
 use aidoku::prelude::format;
+use aidoku::std::defaults::defaults_get;
 use aidoku::std::String;
 use aidoku::{std::ObjectRef, Manga, MangaPageResult};
 use aidoku::{Chapter, MangaContentRating, MangaViewer, Page};
 use alloc::string::ToString;
 use alloc::vec::Vec;
 
-use crate::helpers::SiteId;
-use crate::helpers::{
-	display_title, extract_f32_from_string, get_image_server, id_to_status, siteid_to_domain,
-};
+use crate::helpers::{display_title, extract_f32_from_string, id_to_status};
+use crate::template::CDN;
 extern crate alloc;
 
-pub fn parse_manga_list(js: ObjectRef, site: &SiteId) -> Result<MangaPageResult> {
+pub fn parse_manga_list(
+	js: ObjectRef,
+	domain: &String,
+	nsfw: &MangaContentRating,
+) -> Result<MangaPageResult> {
 	let has_more = js.get("meta").as_object()?.get("has_next_page").as_bool()?;
 	let mangas = js.get("data").as_array()?;
 	let mut manga: Vec<Manga> = Vec::new();
 
-	let domain = siteid_to_domain(site);
 	for data in mangas {
 		if let Ok(data_obj) = data.as_object() {
 			let title = match data_obj.get(&display_title()).as_string() {
@@ -50,8 +52,6 @@ pub fn parse_manga_list(js: ObjectRef, site: &SiteId) -> Result<MangaPageResult>
 				Err(_) => continue,
 			};
 
-			let nsfw = MangaContentRating::Safe;
-
 			let viewer = aidoku::MangaViewer::Rtl;
 
 			manga.push(Manga {
@@ -60,7 +60,7 @@ pub fn parse_manga_list(js: ObjectRef, site: &SiteId) -> Result<MangaPageResult>
 				title,
 				url: url,
 				status,
-				nsfw,
+				nsfw: *nsfw,
 				viewer,
 				..Default::default()
 			})
@@ -70,7 +70,11 @@ pub fn parse_manga_list(js: ObjectRef, site: &SiteId) -> Result<MangaPageResult>
 	Ok(MangaPageResult { manga, has_more })
 }
 
-pub fn parse_manga_details(js: ObjectRef, site: &SiteId) -> Result<Manga> {
+pub fn parse_manga_details(
+	js: ObjectRef,
+	domain: &str,
+	is_nsfw: &MangaContentRating,
+) -> Result<Manga> {
 	let detail = js.get("data").as_object()?;
 
 	let id = detail.get("slug_url").as_string()?.read();
@@ -108,7 +112,7 @@ pub fn parse_manga_details(js: ObjectRef, site: &SiteId) -> Result<Manga> {
 
 	let url = format!(
 		"https://{}/{}",
-		siteid_to_domain(&site),
+		domain,
 		detail
 			.get("slug_url")
 			.as_string()?
@@ -138,11 +142,7 @@ pub fn parse_manga_details(js: ObjectRef, site: &SiteId) -> Result<Manga> {
 			.unwrap_or_default(),
 	);
 
-	let nsfw = match site {
-		SiteId::MangaLib => MangaContentRating::Safe,
-		SiteId::HentaiLib => MangaContentRating::Nsfw,
-		SiteId::SlashLib => MangaContentRating::Nsfw,
-	};
+	let nsfw = *is_nsfw;
 
 	let viewer = MangaViewer::Rtl;
 
@@ -161,7 +161,7 @@ pub fn parse_manga_details(js: ObjectRef, site: &SiteId) -> Result<Manga> {
 	})
 }
 
-pub fn parse_chapter_list(js: ObjectRef, site: &SiteId, id: String) -> Result<Vec<Chapter>> {
+pub fn parse_chapter_list(js: ObjectRef, id: &str, domain: &str) -> Result<Vec<Chapter>> {
 	let chapters: Vec<Chapter> = js
 		.get("data")
 		.as_array()?
@@ -208,7 +208,7 @@ pub fn parse_chapter_list(js: ObjectRef, site: &SiteId, id: String) -> Result<Ve
 					.get("username")
 					.as_string()?
 					.read(),
-				url: format!("https://{}/{}", siteid_to_domain(site), id),
+				url: format!("https://{}/{}", domain, id),
 				lang: "ru".to_string(),
 			})
 		})
@@ -219,7 +219,7 @@ pub fn parse_chapter_list(js: ObjectRef, site: &SiteId, id: String) -> Result<Ve
 	Ok(chapters)
 }
 
-pub fn parse_page_list(js: ObjectRef) -> Result<Vec<Page>> {
+pub fn parse_page_list(js: ObjectRef, cdn: &CDN) -> Result<Vec<Page>> {
 	let chapters: Vec<Page> = js
 		.get("data")
 		.as_object()?
@@ -227,12 +227,26 @@ pub fn parse_page_list(js: ObjectRef) -> Result<Vec<Page>> {
 		.as_array()?
 		.map(|page| {
 			let page_object = page.as_object()?;
+			let image_server = match defaults_get("server_image")
+				.unwrap()
+				.as_string()
+				.unwrap()
+				.read()
+				.as_str()
+			{
+				"main" => &cdn.main,
+				"second" => &cdn.second,
+				"compression" => &cdn.compress,
+				_ => &cdn.compress,
+			};
+
 			let url = format!(
 				"{}{}",
-				get_image_server(),
+				image_server,
 				page_object.get("url").as_string()?.read()
 			);
 			let index = page_object.get("slug").as_int().unwrap() as i32;
+
 			Ok(Page {
 				index,
 				url,
