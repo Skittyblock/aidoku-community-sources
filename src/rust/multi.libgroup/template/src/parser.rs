@@ -58,7 +58,7 @@ pub fn parse_manga_list(
 				id,
 				cover,
 				title,
-				url: url,
+				url,
 				status,
 				nsfw: *nsfw,
 				viewer,

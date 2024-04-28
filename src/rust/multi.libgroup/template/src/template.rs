@@ -44,7 +44,7 @@ impl SocialLibSource {
 		let request = Request::new(url, HttpMethod::Get);
 		let json = request.json()?.as_object()?;
 
-		parser::parse_manga_list(json, &self.domain.to_string(), &self.nsfw)
+		parser::parse_manga_list(json, &self.domain.to_string(), self.nsfw)
 	}
 
 	pub fn get_manga_listing(&self, listing: Listing, page: i32) -> Result<MangaPageResult> {
@@ -80,7 +80,7 @@ impl SocialLibSource {
 		let request = Request::new(url, HttpMethod::Get);
 		let json = request.json()?.as_object()?;
 
-		parser::parse_manga_details(json, self.domain, &self.nsfw)
+		parser::parse_manga_details(json, self.domain, self.nsfw)
 	}
 
 	pub fn get_chapter_list(&self, id: String) -> Result<Vec<Chapter>> {
@@ -89,17 +89,17 @@ impl SocialLibSource {
 		let request = Request::new(url, HttpMethod::Get);
 		let json = request.json()?.as_object()?;
 
-		parser::parse_chapter_list(json, &id, &self.domain)
+		parser::parse_chapter_list(json, &id, self.domain)
 	}
 
 	pub fn get_page_list(&self, manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
-		let numbers: Vec<&str> = chapter_id.split("#").collect::<Vec<&str>>();
+		let numbers: Vec<&str> = chapter_id.split('#').collect::<Vec<&str>>();
 
 		let url = format!(
 			"{}manga/{}/chapter?number={}&volume={}",
 			DOMAIN_API,
 			manga_id,
-			numbers.get(0).unwrap(),
+			numbers.first().unwrap(),
 			numbers.get(1).unwrap()
 		);
 		let request = Request::new(url, HttpMethod::Get);
