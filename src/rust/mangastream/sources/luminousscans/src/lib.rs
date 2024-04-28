@@ -10,7 +10,7 @@ fn get_instance() -> MangaStreamSource {
 	MangaStreamSource {
 		use_manga_postids: true,
 		use_chapter_postids: true,
-		base_url: String::from("https://lumitoon.com"),
+		base_url: String::from("https://luminouscomics.org"),
 		traverse_pathname: "series",
 		alt_pages: true,
 		..Default::default()
