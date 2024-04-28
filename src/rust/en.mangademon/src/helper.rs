@@ -3,6 +3,8 @@ use aidoku::{
 	std::{html::Node, String},
 };
 
+use crate::BASE_URL;
+
 /// Converts `<br>` into newlines.
 pub fn text_with_newlines(node: Node) -> String {
 	let html = node.html().read();
@@ -71,13 +73,13 @@ pub fn get_chapter_id(url: &str) -> String {
 }
 
 /// Returns full URL of a manga from a manga ID.
-pub fn get_manga_url(manga_id: &String, base_url: &String) -> String {
+pub fn get_manga_url(manga_id: &String) -> String {
 	// Append the `-VA` suffix to the manga id to get the proper url.
-	format!("{}/manga/{}-VA", base_url, manga_id)
+	format!("{}/manga/{}-VA", BASE_URL, manga_id)
 }
 
 /// Returns full URL of a chapter from a chapter ID.
-pub fn get_chapter_url(chapter_id: &String, manga_id: &String, base_url: &String) -> String {
+pub fn get_chapter_url(chapter_id: &String, manga_id: &String) -> String {
 	// Append the `-VA` suffix to the chapter id to get the proper url.
-	format!("{}/manga/{}/chapter/{}-VA", base_url, manga_id, chapter_id)
+	format!("{}/manga/{}/chapter/{}-VA", BASE_URL, manga_id, chapter_id)
 }

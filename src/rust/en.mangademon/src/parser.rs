@@ -5,8 +5,9 @@ use aidoku::{
 };
 
 use crate::helper::*;
+use crate::BASE_URL;
 
-pub fn parse_manga_list(html: Node, base_url: String, searching: bool) -> MangaPageResult {
+pub fn parse_manga_list(html: Node, searching: bool) -> MangaPageResult {
 	let mut manga: Vec<Manga> = Vec::new();
 
 	if searching {
@@ -15,8 +16,8 @@ pub fn parse_manga_list(html: Node, base_url: String, searching: bool) -> MangaP
 
 			let raw_url = node.attr("href").read();
 			let id = get_manga_id(&raw_url);
-			let url = get_manga_url(&id, &base_url);
-			let cover = format!("{}/img/noimg.jpg", base_url);
+			let url = get_manga_url(&id);
+			let cover = format!("{}/img/noimg.jpg", BASE_URL);
 			let title = String::from(node.text().read().trim());
 
 			manga.push(Manga {
@@ -41,7 +42,7 @@ pub fn parse_manga_list(html: Node, base_url: String, searching: bool) -> MangaP
 
 		let title = node.attr("title").read();
 		let id = get_manga_id(&raw_url);
-		let url = get_manga_url(&id, &base_url);
+		let url = get_manga_url(&id);
 		let cover = node.select("img").attr("src").read();
 
 		manga.push(Manga {
@@ -140,7 +141,7 @@ pub fn parse_manga_details(html: Node, manga_url: String) -> Manga {
 	}
 }
 
-pub fn parse_chapter_list(html: Node, base_url: String) -> Vec<Chapter> {
+pub fn parse_chapter_list(html: Node) -> Vec<Chapter> {
 	let mut chapters: Vec<Chapter> = Vec::new();
 
 	for node in html
@@ -153,7 +154,7 @@ pub fn parse_chapter_list(html: Node, base_url: String) -> Vec<Chapter> {
 		let id = node.attr("data-chapterno").read();
 
 		let manga_id = get_manga_id(&raw_url);
-		let url = get_chapter_url(&id, &manga_id, &base_url);
+		let url = get_chapter_url(&id, &manga_id);
 
 		let chapter = node
 			.attr("data-chapterno")
