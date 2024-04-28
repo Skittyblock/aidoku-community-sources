@@ -1,4 +1,3 @@
-use core::ptr;
 use aidoku::{
 	error::{AidokuError, AidokuErrorKind, Result},
 	helpers::substring::Substring,
@@ -8,6 +7,7 @@ use aidoku::{
 	std::{String, StringRef, Vec},
 	MangaStatus,
 };
+use core::ptr;
 
 use crate::template::MangaStreamSource;
 
