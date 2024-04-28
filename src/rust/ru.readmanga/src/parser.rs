@@ -319,7 +319,11 @@ pub fn get_page_list(html: &WNode) -> Result<Vec<Page>> {
 		.select(r"div.reader-controller > script[type=text/javascript]")
 		.pop()
 		.map(|script_node| script_node.data())
-		.ok_or(parsing_error)?;
+		.ok_or(parsing_error)
+		.map(|mut text| {
+			text.replace_range(0..text.find("rm_h.readerDoInit(").unwrap_or_default(), "");
+			text
+		})?;
 
 	let chapters_list_str = script_text
 		.find("[[")
