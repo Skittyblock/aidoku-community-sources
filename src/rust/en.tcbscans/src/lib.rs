@@ -139,7 +139,7 @@ fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 #[handle_url]
 fn handle_url(url: String) -> Result<DeepLink> {
 	// https://tcb-backup.bihar-mirchi.com/mangas/x/x
-	// hhttps://tcb-backup.bihar-mirchi.com/chapters/x/x -> not handled because no manga id
+	// https://tcb-backup.bihar-mirchi.com/chapters/x/x -> not handled because no manga id
 	// todo: can get manga url from
 	// ".flex.items-center.justify-center.my-6.gap-2.text-sm.font-bold a".last()
 	let split = url.split('/').collect::<Vec<&str>>();
