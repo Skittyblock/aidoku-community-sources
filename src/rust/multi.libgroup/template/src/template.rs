@@ -41,7 +41,7 @@ impl SocialLibSource {
 		}
 
 		let url = format!("{}manga?{}", DOMAIN_API, query);
-		let request = Request::new(url, HttpMethod::Get);
+		let request = Request::new(url, HttpMethod::Get).header("Site-Id", self.site_id);
 		let json = request.json()?.as_object()?;
 
 		parser::parse_manga_list(json, &self.domain.to_string(), self.nsfw)
@@ -77,7 +77,7 @@ impl SocialLibSource {
 		query.push("fields[]", Some("status_id"));
 		query.push("fields[]", Some("artists"));
 		let url = format!("{}manga/{}?{}", DOMAIN_API, id, query.to_string());
-		let request = Request::new(url, HttpMethod::Get);
+		let request = Request::new(url, HttpMethod::Get).header("Site-Id", self.site_id);
 		let json = request.json()?.as_object()?;
 
 		parser::parse_manga_details(json, self.domain, self.nsfw)
@@ -86,7 +86,7 @@ impl SocialLibSource {
 	pub fn get_chapter_list(&self, id: String) -> Result<Vec<Chapter>> {
 		let url = format!("{}manga/{}/chapters", DOMAIN_API, id);
 
-		let request = Request::new(url, HttpMethod::Get);
+		let request = Request::new(url, HttpMethod::Get).header("Site-Id", self.site_id);
 		let json = request.json()?.as_object()?;
 
 		parser::parse_chapter_list(json, &id, self.domain)
@@ -102,7 +102,7 @@ impl SocialLibSource {
 			numbers.first().unwrap(),
 			numbers.get(1).unwrap()
 		);
-		let request = Request::new(url, HttpMethod::Get);
+		let request = Request::new(url, HttpMethod::Get).header("Site-Id", self.site_id);
 		let json = request.json()?.as_object()?;
 
 		parser::parse_page_list(json, self.cdn)
