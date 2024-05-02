@@ -9,7 +9,7 @@ use aidoku::{
 
 #[get_manga_list]
 fn get_manga_list(_filters: Vec<Filter>, _page: i32) -> Result<MangaPageResult> {
-	let html = Request::new("https://onepiecechapters.com/projects", HttpMethod::Get).html()?;
+	let html = Request::new("https://tcb-backup.bihar-mirchi.com/projects", HttpMethod::Get).html()?;
 
 	let elements = html.select(".bg-card.border.border-border.rounded.p-3.mb-3");
 
@@ -49,7 +49,7 @@ fn get_manga_list(_filters: Vec<Filter>, _page: i32) -> Result<MangaPageResult> 
 
 #[get_manga_details]
 fn get_manga_details(id: String) -> Result<Manga> {
-	let url = String::from("https://onepiecechapters.com") + &id;
+	let url = String::from("https://tcb-backup.bihar-mirchi.com") + &id;
 	let html = Request::new(url.clone(), HttpMethod::Get).html()?;
 
 	let element = html.select(".order-1.bg-card.border.border-border.rounded.py-3");
@@ -77,7 +77,7 @@ fn get_manga_details(id: String) -> Result<Manga> {
 
 #[get_chapter_list]
 fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
-	let url = String::from("https://onepiecechapters.com") + &id;
+	let url = String::from("https://tcb-backup.bihar-mirchi.com") + &id;
 	let html = Request::new(url, HttpMethod::Get).html()?;
 
 	let elements = html.select(".bg-card.border.border-border.rounded.p-3.mb-3");
@@ -90,7 +90,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 		let title = item.select(".text-lg.font-bold:not(.flex)").text().read();
 		let subtitle = item.select(".text-gray-500").text().read();
 		let url_path = item.attr("href").read();
-		let url = String::from("https://onepiecechapters.com") + &url_path;
+		let url = String::from("https://tcb-backup.bihar-mirchi.com") + &url_path;
 
 		let chapter = match title.rsplit_once(' ') {
 			Some((_, str)) => str.parse::<f32>().unwrap_or(-1.0),
@@ -114,7 +114,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 
 #[get_page_list]
 fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
-	let url = String::from("https://onepiecechapters.com") + &chapter_id;
+	let url = String::from("https://tcb-backup.bihar-mirchi.com") + &chapter_id;
 	let html = Request::new(url, HttpMethod::Get).html()?;
 
 	let elements = html.select(".flex.flex-col.items-center.justify-center picture img");
@@ -138,8 +138,8 @@ fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 
 #[handle_url]
 fn handle_url(url: String) -> Result<DeepLink> {
-	// https://onepiecechapters.com/mangas/x/x
-	// https://onepiecechapters.com/chapters/x/x -> not handled because no manga id
+	// https://tcb-backup.bihar-mirchi.com/mangas/x/x
+	// https://tcb-backup.bihar-mirchi.com/chapters/x/x -> not handled because no manga id
 	// todo: can get manga url from
 	// ".flex.items-center.justify-center.my-6.gap-2.text-sm.font-bold a".last()
 	let split = url.split('/').collect::<Vec<&str>>();
