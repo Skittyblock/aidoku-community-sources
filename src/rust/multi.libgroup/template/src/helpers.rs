@@ -16,41 +16,41 @@ pub fn search(filters: Vec<Filter>) -> String {
 				}
 			}
 			FilterType::Check => {
-				match filter.name.as_str() {
+				match filter.object.get("id").as_string().unwrap().read().as_str() {
 					// Status
-					"Онгоинг" => {
+					"ongoing" => {
 						query.push("status[]", Some("1"));
 					}
-					"Завершён" => {
+					"completed" => {
 						query.push("status[]", Some("2"));
 					}
-					"Анонс" => {
+					"announce" => {
 						query.push("status[]", Some("3"));
 					}
-					"Приостановлен" => {
+					"halted" => {
 						query.push("status[]", Some("4"));
 					}
-					"Выпуск прекращён" => {
+					"ended" => {
 						query.push("status[]", Some("5"));
 					}
 
 					// Type of manga
-					"Манга" => {
+					"manga" => {
 						query.push("types[]", Some("1"));
 					}
-					"Манхва" => {
+					"manhwa" => {
 						query.push("types[]", Some("5"));
 					}
-					"Руманга" => {
+					"rumanga" => {
 						query.push("types[]", Some("8"));
 					}
-					"OEL-манга" => {
+					"oelmanga" => {
 						query.push("types[]", Some("4"));
 					}
-					"Маньхуа" => {
+					"manhua" => {
 						query.push("types[]", Some("6"));
 					}
-					"Комикс" => {
+					"comics" => {
 						query.push("types[]", Some("9"));
 					}
 					_ => continue,

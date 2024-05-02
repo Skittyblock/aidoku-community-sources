@@ -9,27 +9,27 @@
 			{
 				"type": "check",
 				"name": "Онгоинг",
-				"id": 1
+				"id": "ongoing"
 			},
 			{
 				"type": "check",
 				"name": "Завершён",
-				"id": 2
+				"id": "completed"
 			},
 			{
 				"type": "check",
 				"name": "Анонс",
-				"id": 3
+				"id": "announce"
 			},
 			{
 				"type": "check",
 				"name": "Приостановлен",
-				"id": 4
+				"id": "halted"
 			},
 			{
 				"type": "check",
 				"name": "Выпуск прекращён",
-				"id": 5
+				"id": "ended"
 			}
 		]
 	},
@@ -40,32 +40,32 @@
 			{
 				"type": "check",
 				"name": "Манга",
-				"id": 1
+				"id": "manga"
 			},
 			{
 				"type": "check",
 				"name": "Манхва",
-				"id": 2
+				"id": "manhwa"
 			},
 			{
 				"type": "check",
 				"name": "Руманга",
-				"id": 3
+				"id": "rumanga"
 			},
 			{
 				"type": "check",
 				"name": "OEL-манга",
-				"id": 4
+				"id": "oelmanga"
 			},
 			{
 				"type": "check",
 				"name": "Маньхуа",
-				"id": 5
+				"id": "manhua"
 			},
 			{
 				"type": "check",
 				"name": "Комикс",
-				"id": 6
+				"id": "comics"
 			}
 		]
 	},
