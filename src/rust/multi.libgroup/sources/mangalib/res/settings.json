@@ -1,0 +1,26 @@
+[
+	{
+		"type": "group",
+		"title": "Настройки",
+		"items": [
+			{
+				"type": "select",
+				"title": "Сервер изображений",
+				"key": "server_image",
+				"default": "compression",
+				"values": [
+					"main", "second", "compression"
+				],
+				"titles": [
+					"Главный", "Второй", "Сжатие"
+				]
+			},
+			{
+				"type": "switch",
+				"default": false,
+				"key": "display_in_eng",
+				"title": "Название на англ."
+			}
+		]
+	}
+]
