@@ -13,7 +13,7 @@ use wpcomics_template::{helper::urlencode, template, template::WPComicsSource};
 
 fn get_instance() -> WPComicsSource {
 	WPComicsSource {
-		base_url: String::from("https://www.nettruyenff.com"),
+		base_url: String::from("https://www.nettruyenvv.com"),
 		next_page: "li.active + li > a[title*=\"kết quả\"]",
 		viewer: MangaViewer::Rtl,
 		listing_mapping: |listing| {
@@ -145,7 +145,7 @@ fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 #[modify_image_request]
 fn modify_image_request(request: Request) {
 	template::modify_image_request(
-		String::from("https://www.nettruyenff.com"),
+		String::from("https://www.nettruyenvv.com"),
 		String::from("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.54 Safari/537.36 Edg/101.0.1210.39"),
 		request,
 	)
