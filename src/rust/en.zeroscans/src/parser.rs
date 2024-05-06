@@ -131,7 +131,9 @@ pub fn parse_manga_details(manga_id: String) -> Result<Manga> {
 	let manga = all_comics()?
 		.into_iter()
 		.find(|manga| manga.id == manga_id)
-		.expect("Manga not found");
+		.ok_or(AidokuError {
+			reason: AidokuErrorKind::Unimplemented,
+		})?;
 
 	Ok(manga)
 }
@@ -221,7 +223,7 @@ pub fn modify_image_request(request: Request) {
 
 pub fn handle_url(url: String) -> Result<DeepLink> {
 	if let Some((slug, chapter_id)) = parse_url(&url) {
-		let data = all_comics().expect("Failed to load cached comics");
+		let data = all_comics()?;
 		let comic = data.into_iter().find(|comic| comic.id.contains(&slug));
 
 		if let Some(chapter_id) = chapter_id {
