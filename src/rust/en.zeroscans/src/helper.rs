@@ -1,5 +1,5 @@
 use aidoku::{
-	error::Result,
+	error::{AidokuError, Result},
 	prelude::format,
 	std::{
 		current_date,
@@ -101,13 +101,22 @@ pub fn all_comics() -> Result<Vec<Manga>> {
 }
 
 /// Returns the ID and slug of a manga from a combined ID.
-pub fn get_identifiers(string: &str) -> (i32, String) {
+pub fn get_identifiers(string: &str) -> Result<(i32, String)> {
 	let parts = string.split(">]").collect::<Vec<&str>>();
+
+	// Handle edge case for comics that have not been migrated to the new id logic
+	// Old id's were just the slug, which breaks this function as it expects the
+	// new id format which is `[<id>]slug`
+	if parts.len() != 2 {
+		return Err(AidokuError {
+			reason: aidoku::error::AidokuErrorKind::Unimplemented,
+		});
+	}
 
 	let id = parts[0].replace("[<", "").parse::<i32>().unwrap_or(0);
 	let slug = String::from(parts[1]);
 
-	(id, slug)
+	Ok((id, slug))
 }
 
 /// Given a valid url parse the slug and chapter id.

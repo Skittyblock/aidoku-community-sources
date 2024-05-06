@@ -142,7 +142,7 @@ pub fn parse_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 	let mut all_chapters: Vec<Chapter> = Vec::new();
 	let mut page = 1;
 
-	let (id, slug) = get_identifiers(&manga_id);
+	let (id, slug) = get_identifiers(&manga_id)?;
 
 	loop {
 		let url = format!(
@@ -189,7 +189,7 @@ pub fn parse_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 }
 
 pub fn parse_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
-	let (_, slug) = get_identifiers(&manga_id);
+	let (_, slug) = get_identifiers(&manga_id)?;
 
 	let url = format!(
 		"{}/swordflake/comic/{}/chapters/{}",
