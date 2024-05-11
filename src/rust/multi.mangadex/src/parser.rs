@@ -240,8 +240,7 @@ pub fn parse_chapter(chapter_object: ObjectRef) -> Result<Chapter> {
 
 	// Fix for Skittyblock/aidoku-community-sources#25
 	let ext_url = attributes.get("externalUrl");
-	if ext_url.is_none()
-		|| ext_url.as_string().is_ok()
+	if ext_url.as_string().is_ok()
 		|| date_updated > crate::helper::current_date()
 	{
 		return Err(aidoku::error::AidokuError {
