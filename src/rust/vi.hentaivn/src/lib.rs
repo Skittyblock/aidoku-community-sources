@@ -18,7 +18,7 @@ use parser::{
 };
 use search::get_search_url;
 
-pub static BASE_URL: &str = "https://hentaivn.tv";
+pub static BASE_URL: &str = "https://hentaihvn.tv";
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
