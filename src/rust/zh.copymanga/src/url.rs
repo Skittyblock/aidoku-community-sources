@@ -199,7 +199,6 @@ enum Sort {
 	Popularity(bool),
 }
 
-const DOMAIN: &str = "https://copymanga.site";
 pub const MANGA_PATH: &str = "/comic/";
 pub const CHAPTER_PATH: &str = "/chapter/";
 
