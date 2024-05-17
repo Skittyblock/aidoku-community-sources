@@ -1,6 +1,7 @@
 #![no_std]
 extern crate alloc;
 mod decryptor;
+mod helper;
 mod parser;
 mod url;
 
@@ -86,7 +87,7 @@ fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 		.get_json()?
 		.as_object()?
 		.get_as_string("results")?
-		.decrypt()
+		.decrypt()?
 		.json()?
 		.as_object()?
 		.get("groups")
@@ -124,21 +125,23 @@ fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 
 	let mut groups_iter = groups.iter();
 	let mut sorted_chapters = groups_iter.next().cloned().unwrap_or_default();
-	groups_iter.for_each(|unsorted_chapters| {
+	for unsorted_chapters in groups_iter {
 		let mut index = 0;
-		unsorted_chapters.iter().for_each(|unsorted_chapter| {
-			while index < sorted_chapters.len() && unsorted_chapter.2 > sorted_chapters[index].2 {
+		for unsorted_chapter in unsorted_chapters {
+			while index < sorted_chapters.len() && unsorted_chapter.2? > sorted_chapters[index].2? {
 				index += 1;
 			}
 			sorted_chapters.insert(index, unsorted_chapter.clone());
 			index += 1;
-		});
-	});
+		}
+	}
 
 	let chapters = sorted_chapters
 		.iter()
-		.map(|(chapter_id, title, date_updated)| {
+		.map(|(chapter_id, title, res_date_updated)| {
 			let part = title.parse::<Part>()?;
+
+			let date_updated = (*res_date_updated)?;
 
 			let chapter_url = Url::Chapter {
 				manga_id: &manga_id,
@@ -151,7 +154,7 @@ fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 				title: part.title,
 				volume: part.volume,
 				chapter: part.chapter,
-				date_updated: *date_updated,
+				date_updated,
 				url: chapter_url,
 				lang: "zh".to_string(),
 				..Default::default()
@@ -173,7 +176,7 @@ fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 	}
 	.get_html()?
 	.get_attr("div.imageData", "contentkey")
-	.decrypt()
+	.decrypt()?
 	.json()?
 	.as_array()?;
 

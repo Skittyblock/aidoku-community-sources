@@ -1,14 +1,13 @@
-use crate::url::Url;
+use crate::{helper::Regex, url::Url};
 use aidoku::{
-	error::{AidokuError, Result},
-	prelude::format,
+	error::{AidokuError, AidokuErrorKind, Result},
+	prelude::{format, println},
 	std::{html::Node, json, ArrayRef, ObjectRef, String, ValueRef, Vec},
 	Manga, MangaPageResult, MangaStatus,
 };
 use alloc::string::ToString;
 use chinese_number::{ChineseCountMethod, ChineseToNumber as _};
 use core::str::FromStr;
-use regex::Regex;
 use uuid::Uuid;
 
 pub trait MangaListResponse {
@@ -154,18 +153,30 @@ impl JsonObj for ObjectRef {
 }
 
 pub trait UuidString {
-	fn get_timestamp(&self) -> f64;
+	fn get_timestamp(&self) -> Result<f64>;
 }
 
 impl UuidString for String {
-	fn get_timestamp(&self) -> f64 {
-		let (integer_part, fractional_part) = Uuid::from_str(self)
-			.expect("Failed to parse String 'id' to UUID.")
-			.get_timestamp()
-			.expect("Failed to parse UUID to timestamp.")
-			.to_unix();
+	fn get_timestamp(&self) -> Result<f64> {
+		let Some(timestamp) = Uuid::from_str(self)
+			.map_err(|e| {
+				println!("{e}");
 
-		(integer_part as f64) + (fractional_part as f64 * 10e-10)
+				AidokuError {
+					reason: AidokuErrorKind::Unimplemented,
+				}
+			})?
+			.get_timestamp()
+		else {
+			println!("Failed to parse UUID to timestamp.");
+
+			return Err(AidokuError {
+				reason: AidokuErrorKind::Unimplemented,
+			});
+		};
+		let (integer_part, fractional_part) = timestamp.to_unix();
+
+		Ok((integer_part as f64) + (fractional_part as f64 * 10e-10))
 	}
 }
 
@@ -200,9 +211,8 @@ impl FromStr for Part {
 		}
 
 		let re = Regex::new(
-				r"^(单行本：)?(第?(?<volume>[\d零一二三四五六七八九十百千]+(\.\d)?)[卷部季]完?)?((第|连载|CH)?(?<chapter>[\d零一二三四五六七八九十百千]+([\.-]\d+)?)[話话回]?(-?[(（]?(?<part>([前中后上下]|\d+))[)）]?篇?)?(试看)?)?(\s.*|$)",
-			)
-			.unwrap();
+			r"^(单行本：)?(第?(?<volume>[\d零一二三四五六七八九十百千]+(\.\d)?)[卷部季]完?)?((第|连载|CH)?(?<chapter>[\d零一二三四五六七八九十百千]+([\.-]\d+)?)[話话回]?(-?[(（]?(?<part>([前中后上下]|\d+))[)）]?篇?)?(试看)?)?(\s.*|$)",
+		)?;
 		let Some(caps) = re.captures(title) else {
 			return Ok(Self {
 				volume: -1.0,
