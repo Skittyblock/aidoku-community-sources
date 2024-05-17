@@ -1,7 +1,10 @@
-use crate::{helper::Regex, url::Url};
+use crate::{
+	helper::{to_aidoku_error, Regex},
+	url::Url,
+};
 use aidoku::{
-	error::{AidokuError, AidokuErrorKind, Result},
-	prelude::{format, println},
+	error::{AidokuError, Result},
+	prelude::format,
 	std::{html::Node, json, ArrayRef, ObjectRef, String, ValueRef, Vec},
 	Manga, MangaPageResult, MangaStatus,
 };
@@ -159,20 +162,10 @@ pub trait UuidString {
 impl UuidString for String {
 	fn get_timestamp(&self) -> Result<f64> {
 		let Some(timestamp) = Uuid::from_str(self)
-			.map_err(|e| {
-				println!("{e}");
-
-				AidokuError {
-					reason: AidokuErrorKind::Unimplemented,
-				}
-			})?
+			.map_err(to_aidoku_error)?
 			.get_timestamp()
 		else {
-			println!("Failed to parse UUID to timestamp.");
-
-			return Err(AidokuError {
-				reason: AidokuErrorKind::Unimplemented,
-			});
+			return Err(to_aidoku_error("Failed to parse UUID to timestamp."));
 		};
 		let (integer_part, fractional_part) = timestamp.to_unix();
 
