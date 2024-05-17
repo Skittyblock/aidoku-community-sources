@@ -19,15 +19,12 @@ pub trait EncryptedString {
 impl EncryptedString for String {
 	fn decrypt(self) -> Result<Self> {
 		let encrypted_data = self.as_bytes();
-		// let iv = &encrypted_data[..16];
-		let Some(iv) = encrypted_data.get(..16) else {
-			return Err(to_aidoku_error("Failed to get `iv` from `encrypted_data`"));
-		};
-		let Some(hex_ciphertext) = encrypted_data.get(16..) else {
-			return Err(to_aidoku_error(
-				"Failed to get `hex_ciphertext` from `encrypted_data`",
-			));
-		};
+		let iv = encrypted_data
+			.get(..16)
+			.ok_or_else(|| to_aidoku_error("Failed to get `iv` from `encrypted_data`"))?;
+		let hex_ciphertext = encrypted_data.get(16..).ok_or_else(|| {
+			to_aidoku_error("Failed to get `hex_ciphertext` from `encrypted_data`")
+		})?;
 		let mut ciphertext = hex::decode(hex_ciphertext).map_err(to_aidoku_error)?;
 
 		let plaintext = Aes128CbcDec::new(KEY.into(), iv.into())

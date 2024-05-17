@@ -161,13 +161,11 @@ pub trait UuidString {
 
 impl UuidString for String {
 	fn get_timestamp(&self) -> Result<f64> {
-		let Some(timestamp) = Uuid::from_str(self)
+		let (integer_part, fractional_part) = Uuid::from_str(self)
 			.map_err(to_aidoku_error)?
 			.get_timestamp()
-		else {
-			return Err(to_aidoku_error("Failed to parse UUID to timestamp."));
-		};
-		let (integer_part, fractional_part) = timestamp.to_unix();
+			.ok_or_else(|| to_aidoku_error("Failed to parse UUID to timestamp."))?
+			.to_unix();
 
 		Ok((integer_part as f64) + (fractional_part as f64 * 10e-10))
 	}
