@@ -33,7 +33,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 
 #[get_manga_details]
 fn get_manga_details(manga_id: String) -> Result<Manga> {
-	let manga_page = Url::Manga(&manga_id).get_html()?;
+	let manga_page = Url::Manga { id: &manga_id }.get_html()?;
 
 	let cover = manga_page
 		.get_attr("img.lazyload", "data-src")
@@ -50,7 +50,7 @@ fn get_manga_details(manga_id: String) -> Result<Manga> {
 
 	let description = manga_page.get_text("p.intro");
 
-	let manga_url = Url::Manga(&manga_id).to_string();
+	let manga_url = Url::Manga { id: &manga_id }.to_string();
 
 	let categories = manga_page
 		.select("span.comicParticulars-left-theme-all.comicParticulars-tag > a")
@@ -82,7 +82,7 @@ fn get_manga_details(manga_id: String) -> Result<Manga> {
 
 #[get_chapter_list]
 fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
-	let group_values = Url::ChapterList(&manga_id)
+	let group_values = Url::ChapterList { id: &manga_id }
 		.get_json()?
 		.as_object()?
 		.get_as_string("results")?
@@ -140,7 +140,11 @@ fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 		.map(|(chapter_id, title, date_updated)| {
 			let part = title.parse::<Part>()?;
 
-			let chapter_url = Url::Chapter(&manga_id, chapter_id).to_string();
+			let chapter_url = Url::Chapter {
+				manga_id: &manga_id,
+				chapter_id,
+			}
+			.to_string();
 
 			Ok(Chapter {
 				id: chapter_id.clone(),
@@ -163,12 +167,15 @@ fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 	let mut pages = Vec::<Page>::new();
 
-	let page_arr = Url::Chapter(&manga_id, &chapter_id)
-		.get_html()?
-		.get_attr("div.imageData", "contentkey")
-		.decrypt()
-		.json()?
-		.as_array()?;
+	let page_arr = Url::Chapter {
+		manga_id: &manga_id,
+		chapter_id: &chapter_id,
+	}
+	.get_html()?
+	.get_attr("div.imageData", "contentkey")
+	.decrypt()
+	.json()?
+	.as_array()?;
 
 	let image_format = defaults_get("imageFormat").and_then(|v| v.as_string().map(|v| v.read()))?;
 

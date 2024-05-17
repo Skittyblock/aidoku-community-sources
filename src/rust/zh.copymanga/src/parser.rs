@@ -83,7 +83,7 @@ impl MangaArr for ArrayRef {
 				.collect::<Vec<_>>()
 				.join("、");
 
-			let manga_url = Url::Manga(&manga_id).to_string();
+			let manga_url = Url::Manga { id: &manga_id }.to_string();
 
 			let status_code = manga_obj.get("status").as_int().unwrap_or(-1);
 			let status = match status_code {
