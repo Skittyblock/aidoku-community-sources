@@ -1,17 +1,17 @@
 use aidoku::{
 	error::Result,
 	helpers::uri::QueryParameters,
+	prelude::format,
 	std::{html::Node, net::Request, ValueRef, Vec},
 	Filter, FilterType,
 };
 use alloc::string::ToString;
 use core::fmt::Display;
+use strum_macros::Display;
 
+#[derive(Display)]
+#[strum(prefix = "https://copymanga.site")]
 pub enum Url<'a> {
-	/// https://copymanga.site/comics?theme={}&status={}&region={}&ordering={}&offset={}&limit={}
-	///
-	/// ---
-	///
 	/// ## `theme`
 	///
 	/// - : 全部
@@ -111,12 +111,9 @@ pub enum Url<'a> {
 	/// ## `limit`
 	///
 	/// Manga per response
-	Filters(QueryParameters),
+	#[strum(to_string = "/comics?{query}")]
+	Filters { query: QueryParameters },
 
-	/// https://copymanga.site/api/kb/web/searcha/comics?offset={}&platform={}&limit={}&q={}&q_type={}
-	///
-	/// ---
-	///
 	/// ## `offset`
 	///
 	/// `({page} - 1) * {limit}`
@@ -139,16 +136,20 @@ pub enum Url<'a> {
 	/// - `name`: 名稱
 	/// - `author`: 作者
 	/// - `local`: 漢化組
-	Search(QueryParameters),
+	#[strum(to_string = "/api/kb/web/searchb/comics?{query}")]
+	Search { query: QueryParameters },
 
-	/// https://copymanga.site/comic/{manga_id}
-	Manga(&'a str),
+	#[strum(to_string = "/comic/{id}")]
+	Manga { id: &'a str },
 
-	/// https://copymanga.site/comicdetail/{manga_id}/chapters
-	ChapterList(&'a str),
+	#[strum(to_string = "/comicdetail/{id}/chapters")]
+	ChapterList { id: &'a str },
 
-	/// https://copymanga.site/comic/{manga_id}/chapter/{chapter_id}
-	Chapter(&'a str, &'a str),
+	#[strum(to_string = "/comic/{manga_id}/chapter/{chapter_id}")]
+	Chapter {
+		manga_id: &'a str,
+		chapter_id: &'a str,
+	},
 }
 
 /// # 狀態
@@ -198,7 +199,6 @@ enum Sort {
 	Popularity(bool),
 }
 
-const DOMAIN: &str = "https://copymanga.site";
 pub const MANGA_PATH: &str = "/comic/";
 pub const CHAPTER_PATH: &str = "/chapter/";
 
@@ -286,24 +286,6 @@ impl<'a> Url<'a> {
 	}
 }
 
-impl<'a> Display for Url<'a> {
-	fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-		match self {
-			Self::Filters(query) => write!(f, "{}/comics?{}", DOMAIN, query),
-			Self::Search(query) => write!(f, "{}/api/kb/web/searcha/comics?{}", DOMAIN, query),
-			Self::Manga(manga_id) => write!(f, "{}{}{}", DOMAIN, MANGA_PATH, manga_id),
-			Self::ChapterList(manga_id) => {
-				write!(f, "{}/comicdetail/{}/chapters", DOMAIN, manga_id)
-			}
-			Self::Chapter(manga_id, chapter_id) => write!(
-				f,
-				"{}{}{}{}{}",
-				DOMAIN, MANGA_PATH, manga_id, CHAPTER_PATH, chapter_id
-			),
-		}
-	}
-}
-
 impl<'a> From<(Vec<Filter>, i32)> for Url<'a> {
 	fn from((filters, page): (Vec<Filter>, i32)) -> Self {
 		let mut genre_index = 0;
@@ -357,7 +339,7 @@ impl<'a> From<(Vec<Filter>, i32)> for Url<'a> {
 					query.push("q", Some(&search_str));
 					query.push_encoded("q_type", None);
 
-					return Url::Search(query);
+					return Url::Search { query };
 				}
 
 				_ => continue,
@@ -369,7 +351,7 @@ impl<'a> From<(Vec<Filter>, i32)> for Url<'a> {
 		query.push_encoded("region", Some(region.to_string().as_str()));
 		query.push_encoded("ordering", Some(sort_by.to_string().as_str()));
 
-		Url::Filters(query)
+		Url::Filters { query }
 	}
 }
 
