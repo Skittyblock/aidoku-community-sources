@@ -10,7 +10,7 @@ use wpcomics_template::{helper::urlencode, template::WPComicsSource};
 
 fn get_instance() -> WPComicsSource {
 	WPComicsSource {
-		base_url: String::from("https://truyenqqvn.com"),
+		base_url: String::from("https://truyenqqviet.com"),
 		viewer: MangaViewer::Rtl,
 		listing_mapping: |listing| {
 			String::from(match listing.as_str() {
@@ -90,7 +90,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 					);
 					if !title.is_empty() {
 						return format!(
-							"https://truyenqqvn.com/tim-kiem/trang-{page}.html?q={title}"
+							"https://truyenqqviet.com/tim-kiem/trang-{page}.html?q={title}"
 						);
 					}
 				}
@@ -152,7 +152,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 			}
 		}
 		format!(
-			"https://truyenqqvn.com/tim-kiem-nang-cao.html?category={}&notcategory={}{}",
+			"https://truyenqqviet.com/tim-kiem-nang-cao.html?category={}&notcategory={}{}",
 			included_tags.join(","),
 			excluded_tags.join(","),
 			query
