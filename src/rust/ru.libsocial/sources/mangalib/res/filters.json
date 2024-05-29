@@ -1,0 +1,1054 @@
+[
+  {
+    "type": "title"
+  },
+  {
+    "type": "sort",
+    "name": "Сортировка",
+    "canAscend": true,
+    "options": [
+      "Рейтинг",
+      "Имя",
+      "Просмотры",
+      "Дата добавления",
+      "Дата обновления",
+      "Количество глав"
+    ],
+    "default": {
+      "index": 0,
+      "ascending": false
+    }
+  },
+  {
+    "type": "group",
+    "name": "Тип",
+    "filters": [
+      {
+        "type": "check",
+        "name": "Манга",
+        "id": "types=1",
+        "canExclude": false
+      },
+      {
+        "type": "check",
+        "name": "OEL-Манга",
+        "id": "types=4",
+        "canExclude": false
+      },
+      {
+        "type": "check",
+        "name": "Манхва",
+        "id": "types=5",
+        "canExclude": false
+      },
+      {
+        "type": "check",
+        "name": "Маньхуа",
+        "id": "types=6",
+        "canExclude": false
+      },
+      {
+        "type": "check",
+        "name": "Руманга",
+        "id": "types=8",
+        "canExclude": false
+      },
+      {
+        "type": "check",
+        "name": "Комикс западный",
+        "id": "types=9",
+        "canExclude": false
+      }
+    ]
+  },
+  {
+    "type": "group",
+    "name": "Формат выпуска",
+    "filters": [
+      {
+        "type": "check",
+        "name": "4-кома (Ёнкома)",
+        "id": "format=1",
+        "canExclude": true
+      },
+      {
+        "type": "check",
+        "name": "Сборник",
+        "id": "format=2",
+        "canExclude": true
+      },
+      {
+        "type": "check",
+        "name": "Додзинси",
+        "id": "format=3",
+        "canExclude": true
+      },
+      {
+        "type": "check",
+        "name": "Сингл",
+        "id": "format=4",
+        "canExclude": true
+      },
+      {
+        "type": "check",
+        "name": "В цвете",
+        "id": "format=5",
+        "canExclude": true
+      },
+      {
+        "type": "check",
+        "name": "Веб",
+        "id": "format=6",
+        "canExclude": true
+      }
+    ]
+  },
+  {
+    "type": "group",
+    "name": "Жанры",
+    "filters": [
+      {
+        "name": "арт",
+        "id": "genres=32",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "боевик",
+        "id": "genres=34",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "боевые искусства",
+        "id": "genres=35",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "вампиры",
+        "id": "genres=36",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "гарем",
+        "id": "genres=37",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "гендерная интрига",
+        "id": "genres=38",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "героическое фэнтези",
+        "id": "genres=39",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "детектив",
+        "id": "genres=40",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "дзёсэй",
+        "id": "genres=41",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "драма",
+        "id": "genres=43",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "игра",
+        "id": "genres=44",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "исекай",
+        "id": "genres=79",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "история",
+        "id": "genres=45",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "киберпанк",
+        "id": "genres=46",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "кодомо",
+        "id": "genres=76",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "комедия",
+        "id": "genres=47",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "махо-сёдзё",
+        "id": "genres=48",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "меха",
+        "id": "genres=49",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "мистика",
+        "id": "genres=50",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "научная фантастика",
+        "id": "genres=51",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "омегаверс",
+        "id": "genres=77",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "повседневность",
+        "id": "genres=52",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "постапокалиптика",
+        "id": "genres=53",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "приключения",
+        "id": "genres=54",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "психология",
+        "id": "genres=55",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "романтика",
+        "id": "genres=56",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "самурайский боевик",
+        "id": "genres=57",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "сверхъестественное",
+        "id": "genres=58",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "сёдзё",
+        "id": "genres=59",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "сёдзё-ай",
+        "id": "genres=60",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "сёнэн",
+        "id": "genres=61",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "сёнэн-ай",
+        "id": "genres=62",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "спорт",
+        "id": "genres=63",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "сэйнэн",
+        "id": "genres=64",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "трагедия",
+        "id": "genres=65",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "триллер",
+        "id": "genres=66",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "ужасы",
+        "id": "genres=67",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "фантастика",
+        "id": "genres=68",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "фэнтези",
+        "id": "genres=69",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "школа",
+        "id": "genres=70",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "эротика",
+        "id": "genres=71",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "этти",
+        "id": "genres=72",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "юри",
+        "id": "genres=73",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "яой",
+        "id": "genres=74",
+        "canExclude": true,
+        "type": "genre"
+      }
+    ]
+  },
+  {
+    "type": "group",
+    "name": "Теги",
+    "filters": [
+      {
+        "name": "Азартные игры",
+        "id": "tags=304",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Алхимия",
+        "id": "tags=225",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Ангелы",
+        "id": "tags=226",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Антигерой",
+        "id": "tags=175",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Антиутопия",
+        "id": "tags=227",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Апокалипсис",
+        "id": "tags=228",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Армия",
+        "id": "tags=229",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Артефакты",
+        "id": "tags=230",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Боги",
+        "id": "tags=215",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Бои на мечах",
+        "id": "tags=231",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Борьба за власть",
+        "id": "tags=231",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Брат и сестра",
+        "id": "tags=233",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Будущее",
+        "id": "tags=234",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Ведьма",
+        "id": "tags=338",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Вестерн",
+        "id": "tags=235",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Видеоигры",
+        "id": "tags=185",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Виртуальная реальность",
+        "id": "tags=195",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Владыка демонов",
+        "id": "tags=236",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Военные",
+        "id": "tags=179",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Война",
+        "id": "tags=237",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Волшебники / маги",
+        "id": "tags=281",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Волшебные существа",
+        "id": "tags=239",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Воспоминания из другого мира",
+        "id": "tags=240",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Выживание",
+        "id": "tags=193",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "ГГ женщина",
+        "id": "tags=243",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "ГГ имба",
+        "id": "tags=291",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "ГГ мужчина",
+        "id": "tags=244",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Геймеры",
+        "id": "tags=241",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Гильдии",
+        "id": "tags=242",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Глупый ГГ",
+        "id": "tags=297",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Гоблины",
+        "id": "tags=245",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Горничные",
+        "id": "tags=169",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Гяру",
+        "id": "tags=178",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Демоны",
+        "id": "tags=151",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Драконы",
+        "id": "tags=246",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Дружба",
+        "id": "tags=247",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Жестокий мир",
+        "id": "tags=249",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Животные компаньоны",
+        "id": "tags=250",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Завоевание мира",
+        "id": "tags=251",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Зверолюди",
+        "id": "tags=162",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Злые духи",
+        "id": "tags=252",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Зомби",
+        "id": "tags=149",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Игровые элементы",
+        "id": "tags=253",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Империи",
+        "id": "tags=254",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Квесты",
+        "id": "tags=255",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Космос",
+        "id": "tags=256",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Кулинария",
+        "id": "tags=152",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Культивация",
+        "id": "tags=160",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Легендарное оружие",
+        "id": "tags=257",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Лоли",
+        "id": "tags=187",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Магическая академия",
+        "id": "tags=258",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Магия",
+        "id": "tags=168",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Мафия",
+        "id": "tags=172",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Медицина",
+        "id": "tags=153",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Месть",
+        "id": "tags=259",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Монстр Девушки",
+        "id": "tags=188",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Монстры",
+        "id": "tags=189",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Музыка",
+        "id": "tags=190",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Навыки / способности",
+        "id": "tags=260",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Насилие / жестокость",
+        "id": "tags=262",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Наёмники",
+        "id": "tags=261",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Нежить",
+        "id": "tags=263",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Ниндая",
+        "id": "tags=180",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Обратный Гарем",
+        "id": "tags=191",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Огнестрельное оружие",
+        "id": "tags=264",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Офисные Работники",
+        "id": "tags=181",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Пародия",
+        "id": "tags=265",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Пираты",
+        "id": "tags=340",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Подземелья",
+        "id": "tags=266",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Политика",
+        "id": "tags=267",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Полиция",
+        "id": "tags=182",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Преступники / Криминал",
+        "id": "tags=186",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Призраки / Духи",
+        "id": "tags=177",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Путешествие во времени",
+        "id": "tags=194",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Разумные расы",
+        "id": "tags=268",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Ранги силы",
+        "id": "tags=248",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Реинкарнация",
+        "id": "tags=148",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Роботы",
+        "id": "tags=269",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Рыцари",
+        "id": "tags=270",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Самураи",
+        "id": "tags=183",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Система",
+        "id": "tags=271",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Скрытие личности",
+        "id": "tags=273",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Спасение мира",
+        "id": "tags=274",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Спортивное тело",
+        "id": "tags=334",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Средневековье",
+        "id": "tags=173",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Стимпанк",
+        "id": "tags=272",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Супергерои",
+        "id": "tags=275",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Традиционные игры",
+        "id": "tags=184",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Умный ГГ",
+        "id": "tags=302",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Учитель / ученик",
+        "id": "tags=276",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Философия",
+        "id": "tags=277",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Хикикомори",
+        "id": "tags=166",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Холодное оружие",
+        "id": "tags=278",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Шантаж",
+        "id": "tags=279",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Эльфы",
+        "id": "tags=216",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Якудза",
+        "id": "tags=164",
+        "canExclude": true,
+        "type": "genre"
+      },
+      {
+        "name": "Япония",
+        "id": "tags=280",
+        "canExclude": true,
+        "type": "genre"
+      }
+    ]
+  },
+  {
+    "type": "group",
+    "name": "Статус перевода",
+    "filters": [
+      {
+        "type": "check",
+        "name": "Продолжается",
+        "id": "status=1",
+        "canExclude": false
+      },
+      {
+        "type": "check",
+        "name": "Завершен",
+        "id": "status=2",
+        "canExclude": false
+      },
+      {
+        "type": "check",
+        "name": "Заморожен",
+        "id": "status=3",
+        "canExclude": false
+      },
+      {
+        "type": "check",
+        "name": "Заброшен",
+        "id": "status=4",
+        "canExclude": false
+      }
+    ]
+  },
+  {
+    "type": "group",
+    "name": "Статус тайтла",
+    "filters": [
+      {
+        "type": "check",
+        "name": "Онгоинг",
+        "id": "manga_status=1",
+        "canExclude": false
+      },
+      {
+        "type": "check",
+        "name": "Завершён",
+        "id": "manga_status=2",
+        "canExclude": false
+      },
+      {
+        "type": "check",
+        "name": "Анонс",
+        "id": "manga_status=3",
+        "canExclude": false
+      },
+      {
+        "type": "check",
+        "name": "Приостановлен",
+        "id": "manga_status=4",
+        "canExclude": false
+      },
+      {
+        "type": "check",
+        "name": "Выпуск прекращён",
+        "id": "manga_status=5",
+        "canExclude": false
+      }
+    ]
+  },
+  {
+    "type": "group",
+    "name": "Возрастное ограничение",
+    "filters": [
+      {
+        "type": "check",
+        "name": "Отсутствует",
+        "id": "caution=0",
+        "canExclude": true
+      },
+      {
+        "type": "check",
+        "name": "16+",
+        "id": "caution=1",
+        "canExclude": true
+      },
+      {
+        "type": "check",
+        "name": "18+",
+        "id": "caution=2",
+        "canExclude": true
+      }
+    ]
+  }
+]
