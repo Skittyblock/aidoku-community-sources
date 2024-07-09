@@ -57,9 +57,9 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 				let ascending = value.get("ascending").as_bool().unwrap_or(false);
 				url.push_str(match (index, ascending) {
 					(0, true) => "&orderby=NAME%20ASC",
-					(0, false) => "&orderby=NAME%20ASC",
+					(0, false) => "&orderby=NAME%20DESC",
 					(1, true) => "&orderby=VIEWS%20ASC",
-					(1, false) => "&orderby=VIEWS%20ASC",
+					(1, false) => "&orderby=VIEWS%20DESC",
 					_ => continue,
 				});
 			}
