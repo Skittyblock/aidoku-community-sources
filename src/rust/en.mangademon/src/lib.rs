@@ -17,7 +17,7 @@ use aidoku::{
 use helper::*;
 use parser::*;
 
-const BASE_URL: &str = "https://comicdemons.com";
+const BASE_URL: &str = "https://mgdemon.org";
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
@@ -56,10 +56,10 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 				let index = value.get("index").as_int().unwrap_or(0);
 				let ascending = value.get("ascending").as_bool().unwrap_or(false);
 				url.push_str(match (index, ascending) {
-					(0, true) => "&orderby=name%20asc",
-					(0, false) => "&orderby=name%20desc",
-					(1, true) => "&orderby=views%20asc",
-					(1, false) => "&orderby=views%20desc",
+					(0, true) => "&orderby=NAME%20ASC",
+					(0, false) => "&orderby=NAME%20DESC",
+					(1, true) => "&orderby=VIEWS%20ASC",
+					(1, false) => "&orderby=VIEWS%20DESC",
 					_ => continue,
 				});
 			}
