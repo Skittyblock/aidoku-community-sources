@@ -55,8 +55,9 @@ pub fn parse_manga_listing(
 	page: i32,
 ) -> Result<MangaPageResult> {
 	let list_query = match listing.name.as_str() {
-		"Latest" => "latest",
+		"Latest Updates" => "latest",
 		"Popular" => "total_views",
+		"Newest" => "created_at",
 		"Alphabetical" => "title",
 		_ => "",
 	};
@@ -200,7 +201,6 @@ pub fn parse_page_list(
 
 	// Remove icon.png and banners from top and bottom
 	page_list.remove(0);
-	page_list.pop();
 	page_list.pop();
 
 	Ok(page_list)
