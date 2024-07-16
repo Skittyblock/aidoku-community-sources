@@ -1,0 +1,15 @@
+[
+  {
+    "type": "title"
+  },
+  {
+    "type": "sort",
+    "name": "Sort by",
+    "canAscend": true,
+    "options": ["Date released", "Date added", "Title", "Pages"],
+    "default": {
+      "index": 0,
+      "ascending": false
+    }
+  }
+]
