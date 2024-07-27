@@ -163,3 +163,25 @@ pub fn parse_chapter_list(html: Node) -> Vec<Chapter> {
 	chapters
 }
 
+pub fn parse_page_list(html: Node) -> Vec<Page> {
+	let mut pages: Vec<Page> = Vec::new();
+
+	for node in html.select("div > img[alt=chapter]").array() {
+		let node = node.as_node().expect("Failed to get page node");
+
+		let url = node.attr("src").read();
+		let index = {
+			let before = url.substring_after_last('/').unwrap_or("");
+			let after = before.substring_before('.').unwrap_or("");
+			after.parse::<i32>().unwrap_or(-1)
+		};
+
+		pages.push(Page {
+			index,
+			url,
+			..Default::default()
+		});
+	}
+
+	pages
+}

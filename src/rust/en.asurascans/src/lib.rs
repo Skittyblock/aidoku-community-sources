@@ -90,16 +90,16 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 		url.push_str("&genres=-1");
 	}
 
-	let html = Request::new(url, HttpMethod::Get).html();
+	let html = Request::new(url, HttpMethod::Get).html()?;
 
-	Ok(parse_manga_list(html?))
+	Ok(parse_manga_list(html))
 }
 
 #[get_manga_details]
 fn get_manga_details(manga_id: String) -> Result<Manga> {
-	let manga_url = get_manga_url(&manga_id);
+	let url = get_manga_url(&manga_id);
 
-	let html = Request::new(manga_url, HttpMethod::Get).html()?;
+	let html = Request::new(url, HttpMethod::Get).html()?;
 
 	Ok(parse_manga_details(html, manga_id))
 }
@@ -108,24 +108,35 @@ fn get_manga_details(manga_id: String) -> Result<Manga> {
 fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 	let url = get_manga_url(&manga_id);
 
-	let html = Request::new(url, HttpMethod::Get)
-		.html()
-		.expect("Failed to get html from mangakatana");
+	let html = Request::new(url, HttpMethod::Get).html()?;
 
 	Ok(parse_chapter_list(html))
 }
 
 #[get_page_list]
 fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
-	todo!()
+	let url = get_chapter_url(&chapter_id, &manga_id);
+
+	let html = Request::new(url, HttpMethod::Get).html()?;
+
+	Ok(parse_page_list(html))
 }
 
 #[modify_image_request]
 fn modify_image_request(request: Request) {
-	todo!()
+	request.header("Referrer", BASE_URL);
 }
 
 #[handle_url]
 fn handle_url(url: String) -> Result<DeepLink> {
-	todo!()
+	let manga_id = get_manga_id(&url)?;
+	let chapter_id = get_chapter_id(&url)?;
+
+	Ok(DeepLink {
+		manga: get_manga_details(manga_id).ok(),
+		chapter: Some(Chapter {
+			id: chapter_id,
+			..Default::default()
+		}),
+	})
 }
