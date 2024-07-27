@@ -20,4 +20,4 @@ function Package-Source {
 		Set-Location ../../..
 	}
 }
-Package-Source mangakatana -Build
+Package-Source asurascans -Build
