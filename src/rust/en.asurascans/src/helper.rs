@@ -1,30 +1,10 @@
 use aidoku::{
 	error::{AidokuError, AidokuErrorKind},
 	prelude::format,
-	std::{html::Node, String, Vec},
-	MangaContentRating, MangaStatus, MangaViewer,
+	std::String,
 };
 
 use crate::BASE_URL;
-
-/// Converts `<br>` into newlines.
-pub fn text_with_newlines(node: Node) -> String {
-	let html = node.html().read();
-	if !String::from(html.trim()).is_empty() {
-		Node::new_fragment(
-			node.html()
-				.read()
-				.replace("<br>", "{{ .LINEBREAK }}")
-				.as_bytes(),
-		)
-		.expect("Failed to create new fragment")
-		.text()
-		.read()
-		.replace("{{ .LINEBREAK }}", "\n")
-	} else {
-		String::new()
-	}
-}
 
 /// Returns the ID of a manga from a URL.
 pub fn get_manga_id(url: &String) -> Result<String, AidokuError> {
