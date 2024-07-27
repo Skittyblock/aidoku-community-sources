@@ -115,3 +115,51 @@ pub fn parse_manga_details(html: Node, manga_id: String) -> Manga {
 		..Default::default()
 	}
 }
+
+pub fn parse_chapter_list(html: Node) -> Vec<Chapter> {
+	let mut chapters: Vec<Chapter> = Vec::new();
+
+	for node in html
+		.select("div.scrollbar-thumb-themecolor > div.group")
+		.array()
+	{
+		let node = node.as_node().expect("Failed to get chapter node");
+
+		let raw_url = node.select("a").attr("abs:href").read();
+
+		let id = get_chapter_id(&raw_url).expect("Failed to get chapter id");
+		let manga_id = get_manga_id(&raw_url).expect("Failed to get manga id");
+
+		let url = get_chapter_url(&id, &manga_id);
+
+		// Chapter's title if it exists
+		let title = node.select("h3:eq(0) > a > span").text().read();
+
+		let chapter = node
+			.select("h3:eq(0) > a")
+			.text()
+			.read()
+			.replace(&title, "")
+			.replace("Chapter", "")
+			.trim()
+			.parse::<f32>()
+			.unwrap_or(-1.0);
+
+		let date_updated =
+			node.select("h3:eq(1)")
+				.text()
+				.as_date("MMMM d yyyy", Some("en-US"), None);
+
+		chapters.push(Chapter {
+			id,
+			title,
+			chapter,
+			date_updated,
+			url,
+			..Default::default()
+		});
+	}
+
+	chapters
+}
+

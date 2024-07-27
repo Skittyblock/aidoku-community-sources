@@ -106,7 +106,13 @@ fn get_manga_details(manga_id: String) -> Result<Manga> {
 
 #[get_chapter_list]
 fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
-	todo!()
+	let url = get_manga_url(&manga_id);
+
+	let html = Request::new(url, HttpMethod::Get)
+		.html()
+		.expect("Failed to get html from mangakatana");
+
+	Ok(parse_chapter_list(html))
 }
 
 #[get_page_list]
