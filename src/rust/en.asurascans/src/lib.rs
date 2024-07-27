@@ -97,7 +97,11 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 
 #[get_manga_details]
 fn get_manga_details(manga_id: String) -> Result<Manga> {
-	todo!()
+	let manga_url = get_manga_url(&manga_id);
+
+	let html = Request::new(manga_url, HttpMethod::Get).html()?;
+
+	Ok(parse_manga_details(html, manga_id))
 }
 
 #[get_chapter_list]
