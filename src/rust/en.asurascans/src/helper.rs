@@ -7,7 +7,7 @@ use aidoku::{
 use crate::BASE_URL;
 
 /// Returns the ID of a manga from a URL.
-pub fn get_manga_id(url: &String) -> Result<String, AidokuError> {
+pub fn get_manga_id(url: &str) -> Result<String, AidokuError> {
 	// Asura Scans appends a random string at the end of each series slug
 	// The random string is not necessary, but we must leave the trailing '-' else
 	// the url will break
@@ -40,7 +40,7 @@ pub fn get_manga_id(url: &String) -> Result<String, AidokuError> {
 }
 
 /// Returns the chapter ID of a chapter from a URL.
-pub fn get_chapter_id(url: &String) -> Result<String, AidokuError> {
+pub fn get_chapter_id(url: &str) -> Result<String, AidokuError> {
 	// Asura Scans appends a random string at the end of each series slug
 	// The random string is not necessary, but we must leave the trailing '-' else
 	// the url will break
@@ -73,11 +73,11 @@ pub fn get_chapter_id(url: &String) -> Result<String, AidokuError> {
 }
 
 /// Returns full URL of a manga from a manga ID.
-pub fn get_manga_url(manga_id: &String) -> String {
+pub fn get_manga_url(manga_id: &str) -> String {
 	format!("{BASE_URL}/series/{manga_id}")
 }
 
 /// Returns full URL of a chapter from a chapter ID and manga ID.
-pub fn get_chapter_url(chapter_id: &String, manga_id: &String) -> String {
+pub fn get_chapter_url(chapter_id: &str, manga_id: &str) -> String {
 	format!("{BASE_URL}/series/{manga_id}/chapter/{chapter_id}")
 }

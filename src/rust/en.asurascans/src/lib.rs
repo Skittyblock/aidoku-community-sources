@@ -89,27 +89,28 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 		url.push_str("&genres=-1");
 	}
 
-	let html = Request::new(url, HttpMethod::Get).html()?;
+	let html = Request::new(&url, HttpMethod::Get).html()?;
 
 	let mut manga: Vec<Manga> = Vec::new();
 
 	for node in html.select("div.grid > a[href]").array() {
-		if let Ok(node) = node.as_node() {
-			let raw_url = node.attr("href").read();
+		let node = node.as_node()?;
 
-			let id = get_manga_id(&raw_url).expect("Failed to get manga id");
-			let url = get_manga_url(&id);
-			let cover = node.select("img").attr("src").read();
-			let title = node.select("div.block > span.block").text().read();
+		let raw_url = node.attr("href").read();
 
-			manga.push(Manga {
-				id,
-				cover,
-				title,
-				url,
-				..Default::default()
-			});
-		}
+		let id = get_manga_id(&raw_url)?;
+		let url = get_manga_url(&id);
+
+		let cover = node.select("img").attr("src").read();
+		let title = node.select("div.block > span.block").text().read();
+
+		manga.push(Manga {
+			id,
+			cover,
+			title,
+			url,
+			..Default::default()
+		});
 	}
 
 	let has_more = !html
@@ -127,6 +128,7 @@ fn get_manga_details(manga_id: String) -> Result<Manga> {
 	let html = Request::new(&url, HttpMethod::Get).html()?;
 
 	let wrapper = html.select("div.relative.grid");
+
 	let cover = wrapper.select("img[alt=poster]").attr("src").read();
 	let title = wrapper.select("span.text-xl.font-bold").text().read();
 	let author = wrapper
@@ -168,6 +170,7 @@ fn get_manga_details(manga_id: String) -> Result<Manga> {
 			"Hiatus" => MangaStatus::Hiatus,
 			"Completed" => MangaStatus::Completed,
 			"Dropped" => MangaStatus::Cancelled,
+			"Season End" => MangaStatus::Hiatus,
 			_ => MangaStatus::Unknown,
 		}
 	};
@@ -198,7 +201,6 @@ fn get_manga_details(manga_id: String) -> Result<Manga> {
 		status,
 		nsfw,
 		viewer,
-		..Default::default()
 	})
 }
 
