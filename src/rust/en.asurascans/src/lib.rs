@@ -33,7 +33,17 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 		match filter.kind {
 			FilterType::Title => {
 				if let Ok(value) = filter.value.as_string() {
-					let query = encode_uri_component(value.read());
+					let query = {
+						// replace apple smart quotes with normal quotes
+						let value = value
+							.read()
+							.replace("“", "\"")
+							.replace("”", "\"")
+							.replace("‘", "'")
+							.replace("’", "'");
+
+						encode_uri_component(value)
+					};
 					url.push_str(format!("&name={query}").as_str());
 				}
 			}
