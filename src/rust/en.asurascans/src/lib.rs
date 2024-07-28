@@ -37,10 +37,8 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 						// replace apple smart quotes with normal quotes
 						let value = value
 							.read()
-							.replace("“", "\"")
-							.replace("”", "\"")
-							.replace("‘", "'")
-							.replace("’", "'");
+							.replace(['“', '”'], "\"")
+							.replace(['‘', '’'], "\'");
 
 						encode_uri_component(value)
 					};
