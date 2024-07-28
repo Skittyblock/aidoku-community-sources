@@ -4,11 +4,12 @@ mod helper;
 
 use aidoku::{
 	error::Result,
-	helpers::substring::Substring,
-	helpers::uri::encode_uri_component,
+	helpers::{substring::Substring, uri::encode_uri_component},
 	prelude::*,
-	std::net::{HttpMethod, Request},
-	std::{String, Vec},
+	std::{
+		net::{HttpMethod, Request},
+		String, StringRef, Vec,
+	},
 	Chapter, DeepLink, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
 	MangaViewer, Page,
 };
@@ -246,10 +247,31 @@ fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 			.parse::<f32>()
 			.unwrap_or(-1.0);
 
-		let date_updated =
-			node.select("h3:eq(1)")
-				.text()
-				.as_date("MMMM d yyyy", Some("en-US"), None);
+		let cleaned_date: StringRef = {
+			let mut date = node.select("h3:eq(1)").text().read();
+
+			let mut parts = date.split_whitespace().collect::<Vec<&str>>();
+
+			// Check if the date has 3 parts, Month Day Year
+			if parts.len() == 3 {
+				let day = parts[1];
+
+				// Remove any non-digit characters from the day
+				// We are trying to remove all the suffixes from the day
+				let cleaned_day = day
+					.chars()
+					.filter(|c| c.is_ascii_digit())
+					.collect::<String>();
+
+				parts[1] = &cleaned_day;
+
+				date = parts.join(" ");
+			}
+
+			date.into()
+		};
+
+		let date_updated = cleaned_date.as_date("MMMM d yyyy", Some("en-US"), None);
 
 		chapters.push(Chapter {
 			id,
