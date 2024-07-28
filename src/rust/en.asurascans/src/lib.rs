@@ -4,12 +4,11 @@ mod helper;
 
 use aidoku::{
 	error::Result,
-	helpers::{substring::Substring, uri::encode_uri_component},
+	helpers::substring::Substring,
+	helpers::uri::encode_uri_component,
 	prelude::*,
-	std::{
-		net::{HttpMethod, Request},
-		String, StringRef, Vec,
-	},
+	std::net::{HttpMethod, Request},
+	std::{String, StringRef, Vec},
 	Chapter, DeepLink, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
 	MangaViewer, Page,
 };
