@@ -131,14 +131,32 @@ fn get_manga_details(manga_id: String) -> Result<Manga> {
 
 	let cover = wrapper.select("img[alt=poster]").attr("src").read();
 	let title = wrapper.select("span.text-xl.font-bold").text().read();
-	let author = wrapper
-		.select("div:has(h3:eq(0):containsOwn(Author)) > h3:eq(1)")
-		.text()
-		.read();
-	let artist = wrapper
-		.select("div:has(h3:eq(0):containsOwn(Artist)) > h3:eq(1)")
-		.text()
-		.read();
+	let author = {
+		let text = wrapper
+			.select("div:has(h3:eq(0):containsOwn(Author)) > h3:eq(1)")
+			.text()
+			.read();
+
+		if text != "_" {
+			text
+		} else {
+			String::new()
+		}
+	};
+
+	let artist = {
+		let text = wrapper
+			.select("div:has(h3:eq(0):containsOwn(Artist)) > h3:eq(1)")
+			.text()
+			.read();
+
+		if text != "_" {
+			text
+		} else {
+			String::new()
+		}
+	};
+
 	let description = wrapper.select("span.font-medium.text-sm").text().read();
 
 	let mut categories = Vec::new();
