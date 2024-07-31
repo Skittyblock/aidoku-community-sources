@@ -1,13 +1,12 @@
 use aidoku::{
 	error::Result,
+	helpers::substring::Substring,
 	prelude::*,
 	std::{current_date, defaults::defaults_get, html::Node, String, Vec},
 	Chapter, Filter, FilterType, Manga, MangaContentRating, MangaStatus, MangaViewer, Page,
 };
 
-use crate::crypto::batojs_decrypt;
 use crate::helper::{i32_to_string, lang_encoder, urlencode};
-use crate::substring::Substring;
 extern crate alloc;
 use alloc::string::ToString;
 
@@ -246,14 +245,6 @@ pub fn get_page_list(obj: Node) -> Result<Vec<Page>> {
 			continue;
 		}
 
-		let bato_js;
-		match script_text.substring_after_last("const batoPass = ") {
-			Some(v) => match v.substring_before(";") {
-				Some(w) => bato_js = w,
-				None => panic!(),
-			},
-			None => panic!(),
-		}
 		let img_str;
 		match script_text.substring_after_last("const imgHttps = [\"") {
 			Some(v) => match v.substring_before("\"];") {
@@ -262,19 +253,7 @@ pub fn get_page_list(obj: Node) -> Result<Vec<Page>> {
 			},
 			None => panic!(),
 		}
-		let server_token;
-		match script_text.substring_after_last("batoWord = \"") {
-			Some(v) => match v.substring_before("\";") {
-				Some(w) => server_token = w,
-				None => panic!(),
-			},
-			None => panic!(),
-		}
 		let img_arr = img_str.split("\",\"").collect::<Vec<&str>>();
-		
-		//let tkn_str = batojs_decrypt(String::from(server_token), String::from(bato_js));
-		//let t = tkn_str.replace(['[', ']'], "");
-		//let tkn_arr = t.split(',').collect::<Vec<&str>>();
 
 		for (index, item) in img_arr.iter().enumerate() {
 			let ind = index as i32;

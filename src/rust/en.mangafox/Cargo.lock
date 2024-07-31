@@ -5,7 +5,7 @@ version = 3
 [[package]]
 name = "aidoku"
 version = "0.2.0"
-source = "git+https://github.com/Aidoku/aidoku-rs#6b714d8e63f25105ee5d33a031c750b6593c1851"
+source = "git+https://github.com/Aidoku/aidoku-rs#bae338b15a3840dc0428c7af64fe9fc92abfa2fb"
 dependencies = [
  "aidoku_helpers",
  "aidoku_imports",
@@ -17,7 +17,7 @@ dependencies = [
 [[package]]
 name = "aidoku_helpers"
 version = "0.1.0"
-source = "git+https://github.com/Aidoku/aidoku-rs#6b714d8e63f25105ee5d33a031c750b6593c1851"
+source = "git+https://github.com/Aidoku/aidoku-rs#bae338b15a3840dc0428c7af64fe9fc92abfa2fb"
 dependencies = [
  "aidoku_imports",
 ]
@@ -25,17 +25,17 @@ dependencies = [
 [[package]]
 name = "aidoku_imports"
 version = "0.2.0"
-source = "git+https://github.com/Aidoku/aidoku-rs#6b714d8e63f25105ee5d33a031c750b6593c1851"
+source = "git+https://github.com/Aidoku/aidoku-rs#bae338b15a3840dc0428c7af64fe9fc92abfa2fb"
 
 [[package]]
 name = "aidoku_macros"
 version = "0.1.0"
-source = "git+https://github.com/Aidoku/aidoku-rs#6b714d8e63f25105ee5d33a031c750b6593c1851"
+source = "git+https://github.com/Aidoku/aidoku-rs#bae338b15a3840dc0428c7af64fe9fc92abfa2fb"
 
 [[package]]
 name = "aidoku_proc_macros"
 version = "0.2.0"
-source = "git+https://github.com/Aidoku/aidoku-rs#6b714d8e63f25105ee5d33a031c750b6593c1851"
+source = "git+https://github.com/Aidoku/aidoku-rs#bae338b15a3840dc0428c7af64fe9fc92abfa2fb"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -111,7 +111,7 @@ checksum = "3354b9ac3fae1ff6755cb6db53683adb661634f67557942dea4facebec0fee4b"
 [[package]]
 name = "unpacker"
 version = "0.1.0"
-source = "git+https://github.com/beerpiss/unpacker.rs.git#c7e94a99e69c90251e6363d4484d726d4b45a5c2"
+source = "git+https://github.com/beerpiss/unpacker.rs.git#9046f987da3883bcfad85cc22211ddf7b485efeb"
 
 [[package]]
 name = "windows-sys"
