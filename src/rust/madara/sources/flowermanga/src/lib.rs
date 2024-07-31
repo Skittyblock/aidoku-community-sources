@@ -8,7 +8,7 @@ use madara_template::template;
 
 fn get_data() -> template::MadaraSiteData {
 	template::MadaraSiteData {
-		base_url: String::from("https://flowermanga.com"),
+		base_url: String::from("https://flowermanga.net"),
 		description_selector: String::from("div.description-summary div p"),
 		alt_ajax: true,
 		..Default::default()
