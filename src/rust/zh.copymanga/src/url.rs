@@ -10,7 +10,7 @@ use core::fmt::Display;
 use strum_macros::Display;
 
 #[derive(Display)]
-#[strum(prefix = "https://copymanga.site")]
+#[strum(prefix = "https://copymanga.tv")]
 pub enum Url<'a> {
 	/// ## `theme`
 	///
