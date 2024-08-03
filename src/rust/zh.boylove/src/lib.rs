@@ -1,6 +1,7 @@
 #![no_std]
+
 extern crate alloc;
-mod url;
+mod helper;
 
 use aidoku::{
 	error::{AidokuError, Result},
@@ -18,8 +19,8 @@ use alloc::string::ToString;
 use base64::{engine::general_purpose, Engine};
 use chinese_number::{ChineseCountMethod, ChineseToNumber as _};
 use core::str::FromStr;
+use helper::url::{Url, CHAPTER_PATH, DOMAIN, MANGA_PATH, USER_AGENT};
 use regex::Regex;
-use url::{Url, CHAPTER_PATH, DOMAIN, MANGA_PATH, USER_AGENT};
 
 #[initialize]
 fn initialize() {
