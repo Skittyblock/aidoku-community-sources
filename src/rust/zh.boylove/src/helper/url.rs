@@ -10,6 +10,7 @@ use aidoku::{
 };
 use alloc::string::ToString;
 use core::fmt::Display;
+use strum_macros::Display;
 
 #[derive(Clone, Copy)]
 enum ViewingPermission {
@@ -39,15 +40,7 @@ enum Sort {
 }
 
 pub enum Url<'a> {
-	/// https://boylove.cc/home/user/to{char_set}.html
-	///
-	/// ---
-	///
-	/// `char_set`:
-	///
-	/// - `T`: 繁體中文
-	/// - `S`: 簡體中文
-	CharSet(&'a str),
+	Charset(Charset),
 
 	/// https://boylove.cc{path}
 	Abs(String),
@@ -119,6 +112,16 @@ pub enum Url<'a> {
 
 	/// https://boylove.cc/home/api/signup.html
 	CheckIn,
+}
+
+#[derive(Default, Display)]
+pub enum Charset {
+	#[strum(to_string = "S")]
+	Simplified,
+
+	#[default]
+	#[strum(to_string = "T")]
+	Traditional,
 }
 
 pub const DOMAIN: &str = "https://boylove.cc";
@@ -210,6 +213,12 @@ impl<'a> Url<'a> {
 			.header("Referer", DOMAIN)
 			.header("User-Agent", USER_AGENT)
 	}
+
+	pub fn get(self) -> Request {
+		Request::get(self.to_string())
+			.header("Referer", DOMAIN)
+			.header("User-Agent", USER_AGENT)
+	}
 }
 
 impl<'a> Display for Url<'a> {
@@ -219,7 +228,7 @@ impl<'a> Display for Url<'a> {
 		let auth_path = format!("{}/home/auth/", DOMAIN);
 
 		match self {
-			Self::CharSet(char_set) => write!(f, "{}/home/user/to{}.html", DOMAIN, char_set),
+			Self::Charset(charset) => write!(f, "{DOMAIN}/home/user/to{charset}.html"),
 
 			Self::Abs(path) => write!(f, "{}{}", DOMAIN, path),
 

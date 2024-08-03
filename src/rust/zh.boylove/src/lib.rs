@@ -19,12 +19,15 @@ use alloc::string::ToString;
 use base64::{engine::general_purpose, Engine};
 use chinese_number::{ChineseCountMethod, ChineseToNumber as _};
 use core::str::FromStr;
-use helper::url::{Url, CHAPTER_PATH, DOMAIN, MANGA_PATH, USER_AGENT};
+use helper::{
+	setting::change_charset,
+	url::{Url, CHAPTER_PATH, DOMAIN, MANGA_PATH, USER_AGENT},
+};
 use regex::Regex;
 
 #[initialize]
 fn initialize() {
-	switch_chinese_char_set();
+	change_charset();
 }
 
 #[get_manga_list]
@@ -286,19 +289,10 @@ fn handle_url(url: String) -> Result<DeepLink> {
 #[handle_notification]
 fn handle_notification(notification: String) {
 	match notification.as_str() {
-		"switchChineseCharSet" => switch_chinese_char_set(),
+		"changeCharset" => change_charset(),
 		"signIn" => sign_in().unwrap_or_default(),
 		_ => (),
 	}
-}
-
-fn switch_chinese_char_set() {
-	let is_tc = defaults_get("isTC")
-		.and_then(|value| value.as_bool())
-		.unwrap_or(true);
-	let char_set = if is_tc { "T" } else { "S" };
-
-	Url::CharSet(char_set).request(HttpMethod::Get).send();
 }
 
 /// Returns [`Safe`](MangaContentRating::Safe) if the given slice contains

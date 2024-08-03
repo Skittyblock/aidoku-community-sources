@@ -1,14 +1,15 @@
 [
 	{
 		"type": "group",
-		"title": "變更語系",
+		"title": "更改語系",
 		"items": [
 			{
-				"type": "switch",
+				"type": "segment",
 				"key": "isTC",
-				"title": "切換為 简体/繁體",
-				"notification": "switchChineseCharSet",
-				"default": true
+				"title": "選擇語系",
+				"notification": "changeCharset",
+				"values": ["简体字", "繁體字"],
+				"default": "繁體字"
 			}
 		]
 	},
