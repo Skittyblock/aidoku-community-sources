@@ -65,12 +65,6 @@ impl Url<'_> {
 	pub fn get(&self) -> Request {
 		Request::get(self.to_string()).default_headers()
 	}
-
-	pub fn post<S: AsRef<str>>(self, data: S) -> Request {
-		Request::post(self.to_string())
-			.body(data.as_ref())
-			.default_headers()
-	}
 }
 
 impl From<Url<'_>> for String {
