@@ -101,7 +101,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 		let id = get_manga_id(&raw_url)?;
 		let url = get_manga_url(&id);
 
-		let cover = node.select("img").attr("src").read();
+		let cover = node.select("img").attr("abs:src").read();
 		let title = node.select("div.block > span.block").text().read();
 
 		manga.push(Manga {
@@ -129,7 +129,7 @@ fn get_manga_details(manga_id: String) -> Result<Manga> {
 
 	let wrapper = html.select("div.relative.grid");
 
-	let cover = wrapper.select("img[alt=poster]").attr("src").read();
+	let cover = wrapper.select("img[alt=poster]").attr("abs:src").read();
 	let title = wrapper.select("span.text-xl.font-bold").text().read();
 	let author = {
 		let text = wrapper
