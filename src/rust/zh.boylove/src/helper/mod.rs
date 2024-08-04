@@ -8,6 +8,8 @@ use aidoku::{
 	Manga, MangaContentRating, MangaPageResult, MangaStatus,
 };
 use alloc::string::ToString as _;
+use chinese_number::{ChineseCountMethod, ChineseToNumber as _};
+use core::str::FromStr;
 use regex::Regex as OriginalRegex;
 use url::Url;
 
@@ -23,6 +25,64 @@ impl Regex {
 				reason: AidokuErrorKind::Unimplemented,
 			}
 		})
+	}
+}
+
+pub struct Part {
+	pub volume: f32,
+	pub chapter: f32,
+}
+
+impl Default for Part {
+	fn default() -> Self {
+		let volume = -1.0;
+
+		let chapter = -1.0;
+
+		Self { volume, chapter }
+	}
+}
+
+impl FromStr for Part {
+	type Err = AidokuError;
+
+	fn from_str(title: &str) -> Result<Self> {
+		if let Some(caps) = Regex::new("^全[一1](?<type>[卷話话回])$")?.captures(title) {
+			if &caps["type"] == "卷" {
+				let volume = 1.0;
+
+				let chapter = -1.0;
+
+				return Ok(Self { volume, chapter });
+			}
+
+			let volume = -1.0;
+
+			let chapter = 1.0;
+
+			return Ok(Self { volume, chapter });
+		};
+
+		let pat = r"^(第?(?<volume>[\d零一二三四五六七八九十百千]+(\.\d+)?)[卷部季] ?)?(第?(?<chapter>[\d零一二三四五六七八九十百千]+(\.\d+)?)(-(\d+(\.\d+)?))?[话話回]?([(（].*[)）]|完结|END)?)?([ +]|$)";
+		let Some(caps) = Regex::new(pat)?.captures(title) else {
+			return Ok(Self::default());
+		};
+		let get_group = |name| {
+			caps.name(name)
+				.and_then(|m| {
+					let str = m.as_str();
+
+					str.parse()
+						.ok()
+						.or_else(|| str.to_number(ChineseCountMethod::TenThousand).ok())
+				})
+				.unwrap_or(-1.0)
+		};
+		let volume = get_group("volume");
+
+		let chapter = get_group("chapter");
+
+		Ok(Self { volume, chapter })
 	}
 }
 

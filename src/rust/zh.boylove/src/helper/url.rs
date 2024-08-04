@@ -47,8 +47,13 @@ pub enum Url<'a> {
 
 	Random,
 
-	/// https://boylove.cc/home/api/chapter_list/tp/{manga_id}-0-0-10
-	ChapterList(String),
+	ChapterList {
+		id: &'a str,
+	},
+
+	ChapterPage {
+		id: &'a str,
+	},
 
 	/// https://boylove.cc/home/book/capter/id/{chapter_id}
 	Chapter(&'a str),
@@ -258,9 +263,9 @@ impl<'a> Display for Url<'a> {
 
 			Self::Random => write!(f, "{DOMAIN}/home/Api/getCnxh.html"),
 
-			Self::ChapterList(manga_id) => {
-				write!(f, "{}chapter_list/tp/{}-0-0-10", api_path, manga_id)
-			}
+			Self::ChapterList { id } => write!(f, "{DOMAIN}/home/api/chapter_list/tp/{id}-0-0-10"),
+
+			Self::ChapterPage { id } => write!(f, "{DOMAIN}/home/book/capter/id/{id}"),
 
 			Self::Chapter(chapter_id) => write!(f, "{}{}{}", html_path, CHAPTER_PATH, chapter_id),
 
