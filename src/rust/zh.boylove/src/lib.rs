@@ -269,47 +269,47 @@ fn modify_image_request(request: Request) {
 	request.default_headers();
 }
 
+#[expect(clippy::needless_pass_by_value)]
 #[handle_url]
 fn handle_url(url: String) -> Result<DeepLink> {
-	if url.contains(MANGA_PATH) {
-		let Some(manga_id) = url.substring_after_last("/") else {
-			return Ok(DeepLink::default());
-		};
-		let manga = Some(get_manga_details(manga_id.to_string())?);
-
-		return Ok(DeepLink {
-			manga,
-			chapter: None,
-		});
-	}
-
-	if !url.contains(CHAPTER_PATH) {
-		return Ok(DeepLink::default());
-	}
-
-	let Some(chapter_id) = url.substring_after_last("/") else {
+	let Some(caps) =
+		Regex::new(r"^https?:\/\/[^/]+\/home\/book\/(?<type>index|capter)\/id\/(?<id>\d+)$")?
+			.captures(&url)
+	else {
 		return Ok(DeepLink::default());
 	};
-	let chapter = Some(Chapter {
-		id: chapter_id.to_string(),
-		..Default::default()
-	});
 
-	let query = ChapterQuery { id: chapter_id };
-	let chapter_html = Url::Chapter { query }.get().html()?;
-	let manga_url = chapter_html
-		.select("a.icon-only.link.back")
-		.attr("href")
-		.read();
-	let Some(manga_id) = manga_url.substring_after_last("/") else {
+	let id = &caps["id"];
+	if &caps["type"] == "index" {
+		let manga = get_manga_details(id.into())?;
+
+		let chapter = None;
+
 		return Ok(DeepLink {
-			manga: None,
+			manga: Some(manga),
 			chapter,
 		});
-	};
-	let manga = Some(get_manga_details(manga_id.to_string())?);
+	}
 
-	Ok(DeepLink { manga, chapter })
+	let manga = Url::ChapterPage { id }
+		.get()
+		.html()?
+		.select("a.back")
+		.attr("href")
+		.read()
+		.substring_after_last('/')
+		.map(|manga_id| get_manga_details(manga_id.into()))
+		.transpose()?;
+
+	let chapter = Chapter {
+		id: id.into(),
+		..Default::default()
+	};
+
+	Ok(DeepLink {
+		manga,
+		chapter: Some(chapter),
+	})
 }
 
 #[handle_notification]
