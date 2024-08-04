@@ -21,9 +21,8 @@ use core::str::FromStr;
 use helper::{
 	setting::change_charset,
 	url::{DefaultRequest as _, Index, LastUpdatedQuery, Url, CHAPTER_PATH, MANGA_PATH},
-	MangaList as _, MangaListRes as _,
+	MangaList as _, MangaListRes as _, Regex,
 };
-use regex::Regex;
 
 #[initialize]
 fn initialize() {
@@ -107,61 +106,74 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 	}
 }
 
+#[expect(clippy::needless_pass_by_value)]
 #[get_manga_details]
-fn get_manga_details(manga_id: String) -> Result<Manga> {
-	let manga_html = Url::Manga { id: &manga_id }.get().html()?;
+fn get_manga_details(id: String) -> Result<Manga> {
+	let url = Url::Manga { id: &id };
 
-	let cover_url = manga_html.select("a.play").attr("abs:data-original").read();
+	let manga_page = url.get().html()?;
+	let cover = manga_page.select("div.book img").attr("abs:src").read();
 
-	let manga_title = manga_html.select("div.title > h1").text().read();
+	let title = manga_page.select("p.book-title").text().read();
 
-	let artists_str = manga_html
-		.select("p.data:contains(作者：) > a")
+	let author = manga_page
+		.select("li.info a")
 		.array()
-		.filter_map(Parser::get_is_ok_text)
-		.collect::<Vec<String>>()
+		.filter_map(|val| {
+			let author = val.as_node().ok()?.text().read();
+
+			Some(author)
+		})
+		.collect::<Vec<_>>()
 		.join("、");
 
-	let mut description =
-		unescape_html_entities(manga_html.select("span.detail-text").html().read())
-			.split("<br>")
+	let description = {
+		let html = manga_page.select("p.book-desc").html().read();
+		let unescaped_html = unescape_html_entities(html);
+		let desc = Regex::new(r"<br ?\/?>")?
+			.split(&unescaped_html)
 			.map(str::trim)
-			.collect::<Vec<&str>>()
-			.join("\n")
+			.collect::<Vec<_>>()
+			.join("\n");
+
+		desc.clone()
+			.substring_before("</")
+			.map_or(desc, Into::into)
 			.trim()
-			.to_string();
-	if let Some(description_removed_closing_tag) = description.substring_before_last("</") {
-		description = description_removed_closing_tag.trim().to_string();
-	}
+			.into()
+	};
 
-	let manga_url = Url::Manga { id: &manga_id }.to_string();
-
-	let categories = manga_html
-		.select("a.tag > span")
+	let mut nsfw = MangaContentRating::Nsfw;
+	let categories = manga_page
+		.select("a.tag span.tag")
 		.array()
-		.filter_map(Parser::get_is_ok_text)
-		.filter(|tag| !tag.is_empty())
-		.collect::<Vec<String>>();
+		.filter_map(|val| {
+			let tag = val.as_node().ok()?.text().read();
 
-	let status = match manga_html.select("p.data").first().text().read().as_str() {
-		"连载中" | "連載中" => MangaStatus::Ongoing,
-		"完结" | "完結" => MangaStatus::Completed,
+			if tag == "清水" {
+				nsfw = MangaContentRating::Safe;
+			}
+
+			(!tag.is_empty()).then_some(tag)
+		})
+		.collect();
+
+	let status = match manga_page.select("ul.pl-0 li:eq(1)").text().read().as_str() {
+		"連載中" | "连载中" => MangaStatus::Ongoing,
+		"完結" | "完结" => MangaStatus::Completed,
 		_ => MangaStatus::Unknown,
 	};
 
-	let content_rating = get_content_rating(&categories);
-
 	Ok(Manga {
-		id: manga_id,
-		cover: cover_url,
-		title: manga_title,
-		author: artists_str.clone(),
-		artist: artists_str,
+		id: id.clone(),
+		cover,
+		title,
+		author,
 		description,
-		url: manga_url,
+		url: url.into(),
 		categories,
 		status,
-		nsfw: content_rating,
+		nsfw,
 		..Default::default()
 	})
 }

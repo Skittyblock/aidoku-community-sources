@@ -2,12 +2,29 @@ pub mod setting;
 pub mod url;
 
 use aidoku::{
-	error::Result,
+	error::{AidokuError, AidokuErrorKind, Result},
+	prelude::println,
 	std::{ArrayRef, ObjectRef, Vec},
 	Manga, MangaContentRating, MangaPageResult, MangaStatus,
 };
 use alloc::string::ToString as _;
+use regex::Regex as OriginalRegex;
 use url::Url;
+
+pub struct Regex;
+
+impl Regex {
+	#[expect(clippy::new_ret_no_self)]
+	pub fn new<S: AsRef<str>>(re: S) -> Result<OriginalRegex> {
+		OriginalRegex::new(re.as_ref()).map_err(|e| {
+			println!("{e}");
+
+			AidokuError {
+				reason: AidokuErrorKind::Unimplemented,
+			}
+		})
+	}
+}
 
 pub trait MangaListRes {
 	fn get_manga_page_res(self) -> Result<MangaPageResult>;

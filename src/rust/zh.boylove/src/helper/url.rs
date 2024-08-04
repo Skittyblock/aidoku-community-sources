@@ -120,7 +120,7 @@ impl DefaultRequest for Request {
 }
 
 impl Url<'_> {
-	pub fn get(self) -> Request {
+	pub fn get(&self) -> Request {
 		Request::get(self.to_string()).default_headers()
 	}
 
