@@ -4,7 +4,7 @@ use aidoku::{
 	std::{net::Request, String, Vec},
 	Filter, FilterType,
 };
-use alloc::string::ToString;
+use alloc::string::ToString as _;
 use core::fmt::{Display, Formatter, Result as FmtResult};
 use strum_macros::{Display, FromRepr};
 
