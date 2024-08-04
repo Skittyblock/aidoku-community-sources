@@ -59,12 +59,6 @@ pub enum Url<'a> {
 
 	#[strum(to_string = "/chapter_view_template?{query}")]
 	Chapter { query: ChapterQuery<'a> },
-
-	#[strum(to_string = "/home/auth/login/type/login.html")]
-	SignInPage,
-
-	#[strum(to_string = "/home/auth/login.html")]
-	SignIn,
 }
 
 impl Url<'_> {

@@ -17,7 +17,7 @@ use aidoku::{
 };
 use alloc::{borrow::ToOwned as _, string::ToString as _};
 use helper::{
-	setting::{change_charset, sign_in},
+	setting::change_charset,
 	url::{ChapterQuery, DefaultRequest as _, Index, LastUpdatedQuery, Url},
 	MangaList as _, MangaListRes as _, Part, Regex,
 };
@@ -313,9 +313,7 @@ fn handle_url(url: String) -> Result<DeepLink> {
 #[expect(clippy::needless_pass_by_value)]
 #[handle_notification]
 fn handle_notification(notification: String) {
-	match notification.as_str() {
-		"changeCharset" => change_charset(),
-		"signIn" => sign_in().unwrap_or_default(),
-		_ => (),
+	if notification == "changeCharset" {
+		change_charset();
 	}
 }
