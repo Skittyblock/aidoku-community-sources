@@ -18,7 +18,9 @@ use alloc::{borrow::ToOwned as _, string::ToString};
 use base64::{engine::general_purpose, Engine};
 use helper::{
 	setting::change_charset,
-	url::{DefaultRequest as _, Index, LastUpdatedQuery, Url, CHAPTER_PATH, MANGA_PATH},
+	url::{
+		ChapterQuery, DefaultRequest as _, Index, LastUpdatedQuery, Url, CHAPTER_PATH, MANGA_PATH,
+	},
 	MangaList as _, MangaListRes as _, Part, Regex,
 };
 
@@ -229,39 +231,35 @@ fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 	Ok(chapters)
 }
 
+#[expect(clippy::needless_pass_by_value)]
 #[get_page_list]
 fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
-	let chapter_html = Url::Chapter(&chapter_id).get().html()?;
+	let query = ChapterQuery { id: &chapter_id };
+	let pages = Url::Chapter { query }
+		.get()
+		.html()?
+		.select("img.lazy")
+		.array()
+		.enumerate()
+		.map(|(i, val)| {
+			#[expect(clippy::cast_possible_truncation, clippy::cast_possible_wrap)]
+			let index = i as _;
 
-	let mut pages = Vec::<Page>::new();
-	let page_nodes = chapter_html.select("img.lazy[id]");
-	for (page_index, page_value) in page_nodes.array().enumerate() {
-		let mut page_path = page_value
-			.as_node()?
-			.attr("data-original")
-			.read()
-			.trim()
-			.to_string();
-		if let Some(caps) = Regex::new(
-			r"(?<chapter>.+[^a-z0-9])(?<page_id>[a-z0-9]{32,})\.(?<file_extension>[^\?]+)",
-		)
-		.expect("Invalid regular expression")
-		.captures(&page_path)
-		{
-			let chapter = &caps["chapter"];
-			let page_id = &caps["page_id"][..32];
-			let file_extension = &caps["file_extension"];
-			page_path = format!("{chapter}{page_id}.{file_extension}");
-		};
+			let path = &val
+				.as_node()?
+				.attr("data-original")
+				.read()
+				.trim()
+				.to_owned();
+			let url = Url::Abs { path }.into();
 
-		let page_url = Url::Abs { path: &page_path }.to_string();
-
-		pages.push(Page {
-			index: page_index as i32,
-			url: page_url,
-			..Default::default()
-		});
-	}
+			Ok(Page {
+				index,
+				url,
+				..Default::default()
+			})
+		})
+		.collect::<Result<_>>()?;
 
 	Ok(pages)
 }
@@ -297,7 +295,8 @@ fn handle_url(url: String) -> Result<DeepLink> {
 		..Default::default()
 	});
 
-	let chapter_html = Url::Chapter(chapter_id).get().html()?;
+	let query = ChapterQuery { id: chapter_id };
+	let chapter_html = Url::Chapter { query }.get().html()?;
 	let manga_url = chapter_html
 		.select("a.icon-only.link.back")
 		.attr("href")

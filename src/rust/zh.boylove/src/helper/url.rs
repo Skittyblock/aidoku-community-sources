@@ -55,8 +55,9 @@ pub enum Url<'a> {
 		id: &'a str,
 	},
 
-	/// https://boylove.cc/home/book/capter/id/{chapter_id}
-	Chapter(&'a str),
+	Chapter {
+		query: ChapterQuery<'a>,
+	},
 
 	/// https://boylove.cc/home/auth/login/type/login.html
 	SignInPage,
@@ -101,6 +102,19 @@ impl Display for LastUpdatedQuery {
 		let page = self.page;
 		let index = Index { page }.to_string();
 		query.push_encoded("page", Some(&index));
+
+		write!(f, "{query}")
+	}
+}
+
+pub struct ChapterQuery<'a> {
+	pub id: &'a str,
+}
+
+impl Display for ChapterQuery<'_> {
+	fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
+		let mut query = QueryParameters::new();
+		query.push_encoded("id", Some(self.id));
 
 		write!(f, "{query}")
 	}
@@ -267,7 +281,7 @@ impl<'a> Display for Url<'a> {
 
 			Self::ChapterPage { id } => write!(f, "{DOMAIN}/home/book/capter/id/{id}"),
 
-			Self::Chapter(chapter_id) => write!(f, "{}{}{}", html_path, CHAPTER_PATH, chapter_id),
+			Self::Chapter { query } => write!(f, "{DOMAIN}/chapter_view_template?{query}"),
 
 			Self::SignInPage => write!(f, "{}login/type/login.html", auth_path),
 
