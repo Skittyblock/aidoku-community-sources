@@ -1,6 +1,5 @@
 use aidoku::{
 	helpers::uri::{encode_uri_component, QueryParameters},
-	prelude::format,
 	std::{net::Request, String, Vec},
 	Filter, FilterType,
 };
@@ -59,83 +58,9 @@ pub enum Url<'a> {
 		query: ChapterQuery<'a>,
 	},
 
-	/// https://boylove.cc/home/auth/login/type/login.html
 	SignInPage,
 
-	/// https://boylove.cc/home/auth/login.html
 	SignIn,
-}
-
-#[derive(Default, Display)]
-pub enum Charset {
-	#[strum(to_string = "S")]
-	Simplified,
-
-	#[default]
-	#[strum(to_string = "T")]
-	Traditional,
-}
-
-pub struct Index {
-	pub page: i32,
-}
-
-impl Display for Index {
-	fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
-		#[expect(clippy::arithmetic_side_effects)]
-		let index = self.page - 1;
-
-		write!(f, "{index}")
-	}
-}
-
-pub struct LastUpdatedQuery {
-	pub page: i32,
-}
-
-impl Display for LastUpdatedQuery {
-	fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
-		let mut query = QueryParameters::new();
-
-		query.push_encoded("widx", Some("11"));
-
-		let page = self.page;
-		let index = Index { page }.to_string();
-		query.push_encoded("page", Some(&index));
-
-		write!(f, "{query}")
-	}
-}
-
-pub struct ChapterQuery<'a> {
-	pub id: &'a str,
-}
-
-impl Display for ChapterQuery<'_> {
-	fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
-		let mut query = QueryParameters::new();
-		query.push_encoded("id", Some(self.id));
-
-		write!(f, "{query}")
-	}
-}
-
-pub const DOMAIN: &str = "https://boylove.cc";
-pub const MANGA_PATH: &str = "index/id/";
-pub const CHAPTER_PATH: &str = "capter/id/";
-
-pub trait DefaultRequest {
-	fn default_headers(self) -> Self;
-}
-
-impl DefaultRequest for Request {
-	fn default_headers(self) -> Self {
-		self.header("Referer", DOMAIN).header(
-			"User-Agent",
-			"Mozilla/5.0 (iPhone; CPU iPhone OS 17_6 like Mac OS X) \
-			 AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Mobile/15E148 Safari/604.1",
-		)
-	}
 }
 
 impl Url<'_> {
@@ -237,10 +162,6 @@ impl From<(Vec<Filter>, i32)> for Url<'_> {
 
 impl<'a> Display for Url<'a> {
 	fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
-		let api_path = format!("{}/home/api/", DOMAIN);
-		let html_path = format!("{}/home/book/", DOMAIN);
-		let auth_path = format!("{}/home/auth/", DOMAIN);
-
 		match self {
 			Self::Charset(charset) => write!(f, "{DOMAIN}/home/user/to{charset}.html"),
 
@@ -283,10 +204,80 @@ impl<'a> Display for Url<'a> {
 
 			Self::Chapter { query } => write!(f, "{DOMAIN}/chapter_view_template?{query}"),
 
-			Self::SignInPage => write!(f, "{}login/type/login.html", auth_path),
+			Self::SignInPage => write!(f, "{DOMAIN}/home/auth/login/type/login.html"),
 
-			Self::SignIn => write!(f, "{}login.html", auth_path),
+			Self::SignIn => write!(f, "{DOMAIN}/home/auth/login.html"),
 		}
+	}
+}
+
+#[derive(Default, Display)]
+pub enum Charset {
+	#[strum(to_string = "S")]
+	Simplified,
+
+	#[default]
+	#[strum(to_string = "T")]
+	Traditional,
+}
+
+pub struct Index {
+	pub page: i32,
+}
+
+impl Display for Index {
+	fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
+		#[expect(clippy::arithmetic_side_effects)]
+		let index = self.page - 1;
+
+		write!(f, "{index}")
+	}
+}
+
+pub struct LastUpdatedQuery {
+	pub page: i32,
+}
+
+impl Display for LastUpdatedQuery {
+	fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
+		let mut query = QueryParameters::new();
+
+		query.push_encoded("widx", Some("11"));
+
+		let page = self.page;
+		let index = Index { page }.to_string();
+		query.push_encoded("page", Some(&index));
+
+		write!(f, "{query}")
+	}
+}
+
+pub struct ChapterQuery<'a> {
+	pub id: &'a str,
+}
+
+impl Display for ChapterQuery<'_> {
+	fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
+		let mut query = QueryParameters::new();
+		query.push_encoded("id", Some(self.id));
+
+		write!(f, "{query}")
+	}
+}
+
+pub const DOMAIN: &str = "https://boylove.cc";
+
+pub trait DefaultRequest {
+	fn default_headers(self) -> Self;
+}
+
+impl DefaultRequest for Request {
+	fn default_headers(self) -> Self {
+		self.header("Referer", DOMAIN).header(
+			"User-Agent",
+			"Mozilla/5.0 (iPhone; CPU iPhone OS 17_6 like Mac OS X) \
+			 AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Mobile/15E148 Safari/604.1",
+		)
 	}
 }
 

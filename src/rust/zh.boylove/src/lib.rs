@@ -5,13 +5,16 @@ mod helper;
 
 use aidoku::{
 	error::{AidokuError, AidokuErrorKind, Result},
-	helpers::substring::Substring,
-	prelude::*,
-	std::{html::unescape_html_entities, json, net::Request, String, ValueRef, Vec},
+	helpers::substring::Substring as _,
+	prelude::{
+		get_chapter_list, get_manga_details, get_manga_list, get_manga_listing, get_page_list,
+		handle_notification, handle_url, initialize, modify_image_request,
+	},
+	std::{html::unescape_html_entities, json, net::Request, String, Vec},
 	Chapter, DeepLink, Filter, Listing, Manga, MangaContentRating, MangaPageResult, MangaStatus,
 	Page,
 };
-use alloc::{borrow::ToOwned as _, string::ToString};
+use alloc::{borrow::ToOwned as _, string::ToString as _};
 use helper::{
 	setting::{change_charset, sign_in},
 	url::{ChapterQuery, DefaultRequest as _, Index, LastUpdatedQuery, Url},
@@ -306,31 +309,12 @@ fn handle_url(url: String) -> Result<DeepLink> {
 	})
 }
 
+#[expect(clippy::needless_pass_by_value)]
 #[handle_notification]
 fn handle_notification(notification: String) {
 	match notification.as_str() {
 		"changeCharset" => change_charset(),
 		"signIn" => sign_in().unwrap_or_default(),
 		_ => (),
-	}
-}
-
-/// Returns [`Safe`](MangaContentRating::Safe) if the given slice contains
-/// `清水`, or else returns [`Nsfw`](MangaContentRating::Nsfw).
-fn get_content_rating(categories: &[String]) -> MangaContentRating {
-	if categories.contains(&"清水".to_string()) {
-		return MangaContentRating::Safe;
-	}
-	MangaContentRating::Nsfw
-}
-
-trait Parser {
-	/// Returns [`None`], or the text of the Node (if [`Ok`]).
-	fn get_is_ok_text(self) -> Option<String>;
-}
-
-impl Parser for ValueRef {
-	fn get_is_ok_text(self) -> Option<String> {
-		self.as_node().map(|node| node.text().read()).ok()
 	}
 }
