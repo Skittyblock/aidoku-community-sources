@@ -32,10 +32,6 @@ fn initialize() {
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
-	if page == 1 {
-		check_in();
-	}
-
 	let manga_list_json = Url::from(filters, page)?.request(HttpMethod::Get).json()?;
 	let manga_list_obj = manga_list_json.as_object()?;
 	let result = manga_list_obj.get("result").as_object()?;
@@ -333,22 +329,6 @@ fn sign_in() -> Result<()> {
 	let info = reponse_obj.get("info").as_string()?;
 
 	Ok(println!("{}", info))
-}
-
-fn check_in() {
-	let not_auto_check_in = !defaults_get("autoCheckIn")
-		.and_then(|value| value.as_bool())
-		.unwrap_or(false);
-	if not_auto_check_in {
-		return;
-	}
-
-	let check_in_data = "auto=false&td=&type=1";
-
-	Url::CheckIn
-		.request(HttpMethod::Post)
-		.body(check_in_data)
-		.send();
 }
 
 trait Parser {

@@ -109,9 +109,6 @@ pub enum Url<'a> {
 
 	/// https://boylove.cc/home/auth/login.html
 	SignIn,
-
-	/// https://boylove.cc/home/api/signup.html
-	CheckIn,
 }
 
 #[derive(Default, Display)]
@@ -262,8 +259,6 @@ impl<'a> Display for Url<'a> {
 			Self::SignInPage => write!(f, "{}login/type/login.html", auth_path),
 
 			Self::SignIn => write!(f, "{}login.html", auth_path),
-
-			Self::CheckIn => write!(f, "{}signup.html", api_path),
 		}
 	}
 }
