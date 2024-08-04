@@ -17,7 +17,7 @@ pub fn change_charset() {
 		})
 		.unwrap_or_default();
 
-	Url::Charset(charset).get().send();
+	Url::Charset { charset }.get().send();
 }
 
 pub fn sign_in() -> Result<()> {

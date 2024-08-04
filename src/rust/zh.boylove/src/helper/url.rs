@@ -1,5 +1,6 @@
 use aidoku::{
 	helpers::uri::{encode_uri_component, QueryParameters},
+	prelude::format,
 	std::{net::Request, String, Vec},
 	Filter, FilterType,
 };
@@ -8,9 +9,18 @@ use core::fmt::{Display, Formatter, Result as FmtResult};
 use strum_macros::{Display, FromRepr};
 
 #[expect(private_interfaces)]
+#[derive(Display)]
+#[strum(prefix = "https://boylove.cc")]
 pub enum Url<'a> {
-	Charset(Charset),
+	#[strum(to_string = "")]
+	Domain,
 
+	#[strum(to_string = "/home/user/to{charset}.html")]
+	Charset { charset: Charset },
+
+	#[strum(
+		to_string = "/home/api/cate/tp/1-{tags}-{status}-{sort_by}-{page}-{content_rating}-1-{viewing_permission}"
+	)]
 	Filters {
 		tags: Tags,
 		status: Status,
@@ -20,46 +30,40 @@ pub enum Url<'a> {
 		viewing_permission: ViewingPermission,
 	},
 
-	Abs {
-		path: &'a str,
-	},
+	#[strum(to_string = "{path}")]
+	Abs { path: &'a str },
 
-	Manga {
-		id: &'a str,
-	},
+	#[strum(to_string = "/home/book/index/id/{id}")]
+	Manga { id: &'a str },
 
-	Search {
-		query: SearchQuery,
-	},
+	#[strum(to_string = "/home/api/searchk?{query}")]
+	Search { query: SearchQuery },
 
-	Uncensored {
-		index: Index,
-	},
+	#[strum(to_string = "/home/api/getpage/tp/1-recommend-{index}")]
+	Uncensored { index: Index },
 
-	LastUpdated {
-		query: LastUpdatedQuery,
-	},
+	#[strum(to_string = "/home/Api/getDailyUpdate.html?{query}")]
+	LastUpdated { query: LastUpdatedQuery },
 
-	Chart {
-		page: i32,
-	},
+	#[strum(to_string = "/home/index/pages/w/topestmh/page/{page}.html")]
+	Chart { page: i32 },
 
+	#[strum(to_string = "/home/Api/getCnxh.html")]
 	Random,
 
-	ChapterList {
-		id: &'a str,
-	},
+	#[strum(to_string = "/home/api/chapter_list/tp/{id}-0-0-10")]
+	ChapterList { id: &'a str },
 
-	ChapterPage {
-		id: &'a str,
-	},
+	#[strum(to_string = "/home/book/capter/id/{id}")]
+	ChapterPage { id: &'a str },
 
-	Chapter {
-		query: ChapterQuery<'a>,
-	},
+	#[strum(to_string = "/chapter_view_template?{query}")]
+	Chapter { query: ChapterQuery<'a> },
 
+	#[strum(to_string = "/home/auth/login/type/login.html")]
 	SignInPage,
 
+	#[strum(to_string = "/home/auth/login.html")]
 	SignIn,
 }
 
@@ -160,57 +164,6 @@ impl From<(Vec<Filter>, i32)> for Url<'_> {
 	}
 }
 
-impl<'a> Display for Url<'a> {
-	fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
-		match self {
-			Self::Charset(charset) => write!(f, "{DOMAIN}/home/user/to{charset}.html"),
-
-			Self::Filters {
-				tags,
-				status,
-				sort_by,
-				page,
-				content_rating,
-				viewing_permission,
-			} => write!(
-				f,
-				"{DOMAIN}/home/api/cate/tp/\
-				 1-{tags}-{status}-{sort_by}-{page}-{content_rating}-1-{viewing_permission}",
-			),
-
-			Self::Abs { path } => write!(f, "{DOMAIN}{path}"),
-
-			Self::Manga { id } => write!(f, "{DOMAIN}/home/book/index/id/{id}"),
-
-			Self::Search { query } => write!(f, "{DOMAIN}/home/api/searchk?{query}"),
-
-			Self::Uncensored { index } => {
-				write!(f, "{DOMAIN}/home/api/getpage/tp/1-recommend-{index}")
-			}
-
-			Self::LastUpdated { query } => {
-				write!(f, "{DOMAIN}/home/Api/getDailyUpdate.html?{query}")
-			}
-
-			Self::Chart { page } => {
-				write!(f, "{DOMAIN}/home/index/pages/w/topestmh/page/{page}.html")
-			}
-
-			Self::Random => write!(f, "{DOMAIN}/home/Api/getCnxh.html"),
-
-			Self::ChapterList { id } => write!(f, "{DOMAIN}/home/api/chapter_list/tp/{id}-0-0-10"),
-
-			Self::ChapterPage { id } => write!(f, "{DOMAIN}/home/book/capter/id/{id}"),
-
-			Self::Chapter { query } => write!(f, "{DOMAIN}/chapter_view_template?{query}"),
-
-			Self::SignInPage => write!(f, "{DOMAIN}/home/auth/login/type/login.html"),
-
-			Self::SignIn => write!(f, "{DOMAIN}/home/auth/login.html"),
-		}
-	}
-}
-
 #[derive(Default, Display)]
 pub enum Charset {
 	#[strum(to_string = "S")]
@@ -265,15 +218,14 @@ impl Display for ChapterQuery<'_> {
 	}
 }
 
-pub const DOMAIN: &str = "https://boylove.cc";
-
 pub trait DefaultRequest {
 	fn default_headers(self) -> Self;
 }
 
 impl DefaultRequest for Request {
 	fn default_headers(self) -> Self {
-		self.header("Referer", DOMAIN).header(
+		let referer = Url::Domain.to_string();
+		self.header("Referer", &referer).header(
 			"User-Agent",
 			"Mozilla/5.0 (iPhone; CPU iPhone OS 17_6 like Mac OS X) \
 			 AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Mobile/15E148 Safari/604.1",
