@@ -4,16 +4,15 @@ extern crate alloc;
 mod helper;
 
 use aidoku::{
-	error::{AidokuError, Result},
+	error::{AidokuError, AidokuErrorKind, Result},
 	helpers::substring::Substring,
 	prelude::*,
 	std::{
-		defaults::defaults_get,
-		html::unescape_html_entities,
-		net::{HttpMethod, Request},
-		String, ValueRef, Vec,
+		defaults::defaults_get, html::unescape_html_entities, json, net::Request, String, ValueRef,
+		Vec,
 	},
-	Chapter, DeepLink, Filter, Manga, MangaContentRating, MangaPageResult, MangaStatus, Page,
+	Chapter, DeepLink, Filter, Listing, Manga, MangaContentRating, MangaPageResult, MangaStatus,
+	Page,
 };
 use alloc::string::ToString;
 use base64::{engine::general_purpose, Engine};
@@ -21,8 +20,8 @@ use chinese_number::{ChineseCountMethod, ChineseToNumber as _};
 use core::str::FromStr;
 use helper::{
 	setting::change_charset,
-	url::{Url, CHAPTER_PATH, DOMAIN, MANGA_PATH, USER_AGENT},
-	MangaListRes as _,
+	url::{DefaultRequest as _, Index, LastUpdatedQuery, Url, CHAPTER_PATH, MANGA_PATH},
+	MangaList as _, MangaListRes as _,
 };
 use regex::Regex;
 
@@ -42,11 +41,75 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 		.get_manga_page_res()
 }
 
+#[expect(clippy::needless_pass_by_value)]
+#[get_manga_listing]
+fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
+	match listing.name.as_str() {
+		"無碼專區" => {
+			let index = Index { page };
+
+			Url::Uncensored { index }
+				.get()
+				.json()?
+				.as_object()?
+				.get("result")
+				.as_object()?
+				.get_manga_page_res()
+		}
+
+		"最新" => {
+			let query = LastUpdatedQuery { page };
+			let manga = Url::LastUpdated { query }
+				.get()
+				.json()?
+				.as_object()?
+				.get("result")
+				.as_array()?
+				.get_manga_list()?;
+
+			let has_more = !manga.is_empty();
+
+			Ok(MangaPageResult { manga, has_more })
+		}
+
+		"排行榜" => {
+			let chart_json = Url::Chart { page }
+				.get()
+				.html()?
+				.html()
+				.read()
+				.substring_after("JSON.parse(\"")
+				.and_then(|str| str.substring_before("\");"))
+				.ok_or(AidokuError {
+					reason: AidokuErrorKind::JsonParseError,
+				})?
+				.replace(r#"\""#, r#"""#)
+				.replace(r"\\", r"\");
+
+			json::parse(chart_json)?.as_object()?.get_manga_page_res()
+		}
+
+		"猜你喜歡" => {
+			let manga = Url::Random
+				.get()
+				.json()?
+				.as_object()?
+				.get("data")
+				.as_array()?
+				.get_manga_list()?;
+
+			let has_more = true;
+
+			Ok(MangaPageResult { manga, has_more })
+		}
+
+		_ => Ok(MangaPageResult::default()),
+	}
+}
+
 #[get_manga_details]
 fn get_manga_details(manga_id: String) -> Result<Manga> {
-	let manga_html = Url::Manga { id: &manga_id }
-		.request(HttpMethod::Get)
-		.html()?;
+	let manga_html = Url::Manga { id: &manga_id }.get().html()?;
 
 	let cover_url = manga_html.select("a.play").attr("abs:data-original").read();
 
@@ -105,7 +168,7 @@ fn get_manga_details(manga_id: String) -> Result<Manga> {
 
 #[get_chapter_list]
 fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
-	let chapter_list_json = Url::ChapterList(manga_id).request(HttpMethod::Get).json()?;
+	let chapter_list_json = Url::ChapterList(manga_id).get().json()?;
 	let chapter_list_obj = chapter_list_json.as_object()?;
 	let result = chapter_list_obj.get("result").as_object()?;
 
@@ -142,7 +205,7 @@ fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 
 #[get_page_list]
 fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
-	let chapter_html = Url::Chapter(&chapter_id).request(HttpMethod::Get).html()?;
+	let chapter_html = Url::Chapter(&chapter_id).get().html()?;
 
 	let mut pages = Vec::<Page>::new();
 	let page_nodes = chapter_html.select("img.lazy[id]");
@@ -179,9 +242,7 @@ fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 
 #[modify_image_request]
 fn modify_image_request(request: Request) {
-	request
-		.header("Referer", DOMAIN)
-		.header("User-Agent", USER_AGENT);
+	request.default_headers();
 }
 
 #[handle_url]
@@ -210,7 +271,7 @@ fn handle_url(url: String) -> Result<DeepLink> {
 		..Default::default()
 	});
 
-	let chapter_html = Url::Chapter(chapter_id).request(HttpMethod::Get).html()?;
+	let chapter_html = Url::Chapter(chapter_id).get().html()?;
 	let manga_url = chapter_html
 		.select("a.icon-only.link.back")
 		.attr("href")
@@ -249,13 +310,13 @@ fn sign_in() -> Result<()> {
 
 	let is_wrong_captcha_format = captcha.parse::<u16>().is_err() || captcha.chars().count() != 4;
 	if is_wrong_captcha_format {
-		let sign_in_page = Url::SignInPage.request(HttpMethod::Get).html()?;
+		let sign_in_page = Url::SignInPage.get().html()?;
 
 		let captcha_img_path = sign_in_page.select("img#verifyImg").attr("src").read();
 		let captcha_img = Url::Abs {
 			path: &captcha_img_path,
 		}
-		.request(HttpMethod::Get)
+		.get()
 		.data();
 		let base64_img = general_purpose::STANDARD_NO_PAD.encode(captcha_img);
 
@@ -269,10 +330,7 @@ fn sign_in() -> Result<()> {
 		username, password, captcha
 	);
 
-	let response_json = Url::SignIn
-		.request(HttpMethod::Post)
-		.body(sign_in_data)
-		.json()?;
+	let response_json = Url::SignIn.post(sign_in_data).json()?;
 	let reponse_obj = response_json.as_object()?;
 	let info = reponse_obj.get("info").as_string()?;
 

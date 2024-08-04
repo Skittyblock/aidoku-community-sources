@@ -12,5 +12,11 @@
 			"https://boyloves.space"
 		],
 		"nsfw": 2
-	}
+	},
+	"listings": [
+		{ "name": "無碼專區" },
+		{ "name": "最新" },
+		{ "name": "排行榜" },
+		{ "name": "猜你喜歡" }
+	]
 }

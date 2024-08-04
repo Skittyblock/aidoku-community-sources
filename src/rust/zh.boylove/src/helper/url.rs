@@ -1,10 +1,7 @@
 use aidoku::{
 	helpers::uri::{encode_uri_component, QueryParameters},
 	prelude::format,
-	std::{
-		net::{HttpMethod, Request},
-		String, Vec,
-	},
+	std::{net::Request, String, Vec},
 	Filter, FilterType,
 };
 use alloc::string::ToString;
@@ -36,6 +33,20 @@ pub enum Url<'a> {
 		query: SearchQuery,
 	},
 
+	Uncensored {
+		index: Index,
+	},
+
+	LastUpdated {
+		query: LastUpdatedQuery,
+	},
+
+	Chart {
+		page: i32,
+	},
+
+	Random,
+
 	/// https://boylove.cc/home/api/chapter_list/tp/{manga_id}-0-0-10
 	ChapterList(String),
 
@@ -59,26 +70,64 @@ pub enum Charset {
 	Traditional,
 }
 
+pub struct Index {
+	pub page: i32,
+}
+
+impl Display for Index {
+	fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
+		#[expect(clippy::arithmetic_side_effects)]
+		let index = self.page - 1;
+
+		write!(f, "{index}")
+	}
+}
+
+pub struct LastUpdatedQuery {
+	pub page: i32,
+}
+
+impl Display for LastUpdatedQuery {
+	fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
+		let mut query = QueryParameters::new();
+
+		query.push_encoded("widx", Some("11"));
+
+		let page = self.page;
+		let index = Index { page }.to_string();
+		query.push_encoded("page", Some(&index));
+
+		write!(f, "{query}")
+	}
+}
+
 pub const DOMAIN: &str = "https://boylove.cc";
 pub const MANGA_PATH: &str = "index/id/";
 pub const CHAPTER_PATH: &str = "capter/id/";
 
-/// Chrome 114 on macOS
-pub const USER_AGENT: &str = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36";
+pub trait DefaultRequest {
+	fn default_headers(self) -> Self;
+}
 
-impl<'a> Url<'a> {
-	/// Start a new request with the given URL with headers `Referer` and
-	/// `User-Agent` set.
-	pub fn request(self, method: HttpMethod) -> Request {
-		Request::new(self.to_string(), method)
-			.header("Referer", DOMAIN)
-			.header("User-Agent", USER_AGENT)
+impl DefaultRequest for Request {
+	fn default_headers(self) -> Self {
+		self.header("Referer", DOMAIN).header(
+			"User-Agent",
+			"Mozilla/5.0 (iPhone; CPU iPhone OS 17_6 like Mac OS X) \
+			 AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Mobile/15E148 Safari/604.1",
+		)
+	}
+}
+
+impl Url<'_> {
+	pub fn get(self) -> Request {
+		Request::get(self.to_string()).default_headers()
 	}
 
-	pub fn get(self) -> Request {
-		Request::get(self.to_string())
-			.header("Referer", DOMAIN)
-			.header("User-Agent", USER_AGENT)
+	pub fn post<S: AsRef<str>>(self, data: S) -> Request {
+		Request::post(self.to_string())
+			.body(data.as_ref())
+			.default_headers()
 	}
 }
 
@@ -194,6 +243,20 @@ impl<'a> Display for Url<'a> {
 			Self::Manga { id } => write!(f, "{DOMAIN}/home/book/index/id/{id}"),
 
 			Self::Search { query } => write!(f, "{DOMAIN}/home/api/searchk?{query}"),
+
+			Self::Uncensored { index } => {
+				write!(f, "{DOMAIN}/home/api/getpage/tp/1-recommend-{index}")
+			}
+
+			Self::LastUpdated { query } => {
+				write!(f, "{DOMAIN}/home/Api/getDailyUpdate.html?{query}")
+			}
+
+			Self::Chart { page } => {
+				write!(f, "{DOMAIN}/home/index/pages/w/topestmh/page/{page}.html")
+			}
+
+			Self::Random => write!(f, "{DOMAIN}/home/Api/getCnxh.html"),
 
 			Self::ChapterList(manga_id) => {
 				write!(f, "{}chapter_list/tp/{}-0-0-10", api_path, manga_id)
