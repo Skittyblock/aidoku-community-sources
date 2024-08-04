@@ -22,6 +22,7 @@ use core::str::FromStr;
 use helper::{
 	setting::change_charset,
 	url::{Url, CHAPTER_PATH, DOMAIN, MANGA_PATH, USER_AGENT},
+	MangaListRes as _,
 };
 use regex::Regex;
 
@@ -32,77 +33,20 @@ fn initialize() {
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
-	let manga_list_json = Url::from(filters, page)?.request(HttpMethod::Get).json()?;
-	let manga_list_obj = manga_list_json.as_object()?;
-	let result = manga_list_obj.get("result").as_object()?;
-
-	let mut manga = Vec::<Manga>::new();
-	let manga_arr = result.get("list").as_array()?;
-	for manga_value in manga_arr {
-		let manga_obj = manga_value.as_object()?;
-		let keyword = manga_obj.get("keyword").as_string()?.read();
-
-		// !! There's an ad whose lanmu_id is not 5, DO NOT use
-		// // let is_ad = manga_obj.get("lanmu_id").as_int().unwrap_or(0) == 5;
-		let is_ad = keyword.contains("公告");
-		if is_ad {
-			continue;
-		}
-
-		let manga_id = manga_obj.get("id").as_int()?.to_string();
-
-		let cover_path = manga_obj.get("image").as_string()?.read();
-		let cover_url = Url::Abs(cover_path).to_string();
-
-		let manga_title = manga_obj.get("title").as_string()?.read();
-
-		let artists_str = manga_obj
-			.get("auther")
-			.as_string()?
-			.read()
-			.replace('&', "、");
-
-		let description = manga_obj.get("desc").as_string()?.read();
-
-		let manga_url = Url::Manga(&manga_id).to_string();
-
-		let categories = keyword
-			.split(',')
-			.filter(|tag| !tag.is_empty())
-			.map(ToString::to_string)
-			.collect::<Vec<String>>();
-
-		let status = match manga_obj.get("mhstatus").as_int()? {
-			0 => MangaStatus::Ongoing,
-			1 => MangaStatus::Completed,
-			_ => MangaStatus::Unknown,
-		};
-
-		let content_rating = get_content_rating(&categories);
-
-		manga.push(Manga {
-			id: manga_id,
-			cover: cover_url,
-			title: manga_title,
-			author: artists_str.clone(),
-			artist: artists_str,
-			description,
-			url: manga_url,
-			categories,
-			status,
-			nsfw: content_rating,
-			..Default::default()
-		});
-	}
-
-	let has_more = !result.get("lastPage").as_bool()?;
-
-	Ok(MangaPageResult { manga, has_more })
+	Url::from((filters, page))
+		.get()
+		.json()?
+		.as_object()?
+		.get("result")
+		.as_object()?
+		.get_manga_page_res()
 }
 
 #[get_manga_details]
 fn get_manga_details(manga_id: String) -> Result<Manga> {
-	let manga_html = Url::Manga(&manga_id).request(HttpMethod::Get).html()?;
+	let manga_html = Url::Manga { id: &manga_id }
+		.request(HttpMethod::Get)
+		.html()?;
 
 	let cover_url = manga_html.select("a.play").attr("abs:data-original").read();
 
@@ -127,7 +71,7 @@ fn get_manga_details(manga_id: String) -> Result<Manga> {
 		description = description_removed_closing_tag.trim().to_string();
 	}
 
-	let manga_url = Url::Manga(&manga_id).to_string();
+	let manga_url = Url::Manga { id: &manga_id }.to_string();
 
 	let categories = manga_html
 		.select("a.tag > span")
@@ -221,7 +165,7 @@ fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 			page_path = format!("{chapter}{page_id}.{file_extension}");
 		};
 
-		let page_url = Url::Abs(page_path).to_string();
+		let page_url = Url::Abs { path: &page_path }.to_string();
 
 		pages.push(Page {
 			index: page_index as i32,
@@ -308,7 +252,11 @@ fn sign_in() -> Result<()> {
 		let sign_in_page = Url::SignInPage.request(HttpMethod::Get).html()?;
 
 		let captcha_img_path = sign_in_page.select("img#verifyImg").attr("src").read();
-		let captcha_img = Url::Abs(captcha_img_path).request(HttpMethod::Get).data();
+		let captcha_img = Url::Abs {
+			path: &captcha_img_path,
+		}
+		.request(HttpMethod::Get)
+		.data();
 		let base64_img = general_purpose::STANDARD_NO_PAD.encode(captcha_img);
 
 		return Ok(println!("{}", base64_img));
