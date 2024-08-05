@@ -303,7 +303,7 @@ fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 
 	let mut pages: Vec<Page> = Vec::new();
 
-	for node in html.select("div > img[alt=chapter]").array() {
+	for node in html.select("div > img[alt=chapter page]").array() {
 		let node = node.as_node()?;
 
 		let url = node.attr("abs:src").read();
