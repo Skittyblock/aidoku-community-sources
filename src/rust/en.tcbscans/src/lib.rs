@@ -11,7 +11,7 @@ const BASE_URL: &str = "https://tcbscans.me";
 
 #[get_manga_list]
 fn get_manga_list(_filters: Vec<Filter>, _page: i32) -> Result<MangaPageResult> {
-	let html = Request::new(&format!("{}/projects", BASE_URL), HttpMethod::Get).html()?;
+	let html = Request::new(format!("{}/projects", BASE_URL), HttpMethod::Get).html()?;
 
 	let elements = html.select(".bg-card.border.border-border.rounded.p-3.mb-3");
 
