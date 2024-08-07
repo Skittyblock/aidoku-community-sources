@@ -1,431 +1,319 @@
 #![no_std]
+
 extern crate alloc;
-mod url;
+
+mod helper;
 
 use aidoku::{
-	error::{AidokuError, Result},
-	helpers::substring::Substring,
-	prelude::*,
-	std::{
-		defaults::defaults_get,
-		html::unescape_html_entities,
-		net::{HttpMethod, Request},
-		String, ValueRef, Vec,
+	error::{AidokuError, AidokuErrorKind, Result},
+	helpers::substring::Substring as _,
+	prelude::{
+		get_chapter_list, get_manga_details, get_manga_list, get_manga_listing, get_page_list,
+		handle_notification, handle_url, initialize, modify_image_request,
 	},
-	Chapter, DeepLink, Filter, Manga, MangaContentRating, MangaPageResult, MangaStatus, Page,
+	std::{html::unescape_html_entities, json, net::Request, String, Vec},
+	Chapter, DeepLink, Filter, Listing, Manga, MangaContentRating, MangaPageResult, MangaStatus,
+	Page,
 };
-use alloc::string::ToString;
-use base64::{engine::general_purpose, Engine};
-use chinese_number::{ChineseCountMethod, ChineseToNumber as _};
-use core::str::FromStr;
-use regex::Regex;
-use url::{Url, CHAPTER_PATH, DOMAIN, MANGA_PATH, USER_AGENT};
+use alloc::{borrow::ToOwned as _, string::ToString as _};
+use helper::{
+	setting::change_charset,
+	url::{ChapterQuery, DefaultRequest as _, Index, LastUpdatedQuery, Url},
+	MangaList as _, MangaListRes as _, Part, Regex,
+};
 
 #[initialize]
 fn initialize() {
-	switch_chinese_char_set();
+	change_charset();
 }
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
-	if page == 1 {
-		check_in();
-	}
-
-	let manga_list_json = Url::from(filters, page)?.request(HttpMethod::Get).json()?;
-	let manga_list_obj = manga_list_json.as_object()?;
-	let result = manga_list_obj.get("result").as_object()?;
-
-	let mut manga = Vec::<Manga>::new();
-	let manga_arr = result.get("list").as_array()?;
-	for manga_value in manga_arr {
-		let manga_obj = manga_value.as_object()?;
-		let keyword = manga_obj.get("keyword").as_string()?.read();
-
-		// !! There's an ad whose lanmu_id is not 5, DO NOT use
-		// // let is_ad = manga_obj.get("lanmu_id").as_int().unwrap_or(0) == 5;
-		let is_ad = keyword.contains("公告");
-		if is_ad {
-			continue;
-		}
-
-		let manga_id = manga_obj.get("id").as_int()?.to_string();
-
-		let cover_path = manga_obj.get("image").as_string()?.read();
-		let cover_url = Url::Abs(cover_path).to_string();
-
-		let manga_title = manga_obj.get("title").as_string()?.read();
-
-		let artists_str = manga_obj
-			.get("auther")
-			.as_string()?
-			.read()
-			.replace('&', "、");
-
-		let description = manga_obj.get("desc").as_string()?.read();
-
-		let manga_url = Url::Manga(&manga_id).to_string();
-
-		let categories = keyword
-			.split(',')
-			.filter(|tag| !tag.is_empty())
-			.map(ToString::to_string)
-			.collect::<Vec<String>>();
-
-		let status = match manga_obj.get("mhstatus").as_int()? {
-			0 => MangaStatus::Ongoing,
-			1 => MangaStatus::Completed,
-			_ => MangaStatus::Unknown,
-		};
-
-		let content_rating = get_content_rating(&categories);
-
-		manga.push(Manga {
-			id: manga_id,
-			cover: cover_url,
-			title: manga_title,
-			author: artists_str.clone(),
-			artist: artists_str,
-			description,
-			url: manga_url,
-			categories,
-			status,
-			nsfw: content_rating,
-			..Default::default()
-		});
-	}
-
-	let has_more = !result.get("lastPage").as_bool()?;
-
-	Ok(MangaPageResult { manga, has_more })
+	Url::from((filters, page))
+		.get()
+		.json()?
+		.as_object()?
+		.get("result")
+		.as_object()?
+		.get_manga_page_res()
 }
 
+#[expect(clippy::needless_pass_by_value)]
+#[get_manga_listing]
+fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
+	match listing.name.as_str() {
+		"無碼專區" => {
+			let index = Index { page };
+
+			Url::Uncensored { index }
+				.get()
+				.json()?
+				.as_object()?
+				.get("result")
+				.as_object()?
+				.get_manga_page_res()
+		}
+
+		"最新" => {
+			let query = LastUpdatedQuery { page };
+			let manga = Url::LastUpdated { query }
+				.get()
+				.json()?
+				.as_object()?
+				.get("result")
+				.as_array()?
+				.get_manga_list()?;
+
+			let has_more = !manga.is_empty();
+
+			Ok(MangaPageResult { manga, has_more })
+		}
+
+		"排行榜" => {
+			let chart_json = Url::Chart { page }
+				.get()
+				.html()?
+				.html()
+				.read()
+				.substring_after("JSON.parse(\"")
+				.and_then(|str| str.substring_before("\");"))
+				.ok_or(AidokuError {
+					reason: AidokuErrorKind::JsonParseError,
+				})?
+				.replace(r#"\""#, r#"""#)
+				.replace(r"\\", r"\");
+
+			json::parse(chart_json)?.as_object()?.get_manga_page_res()
+		}
+
+		"猜你喜歡" => {
+			let manga = Url::Random
+				.get()
+				.json()?
+				.as_object()?
+				.get("data")
+				.as_array()?
+				.get_manga_list()?;
+
+			let has_more = true;
+
+			Ok(MangaPageResult { manga, has_more })
+		}
+
+		_ => Ok(MangaPageResult::default()),
+	}
+}
+
+#[expect(clippy::needless_pass_by_value)]
 #[get_manga_details]
-fn get_manga_details(manga_id: String) -> Result<Manga> {
-	let manga_html = Url::Manga(&manga_id).request(HttpMethod::Get).html()?;
+fn get_manga_details(id: String) -> Result<Manga> {
+	let url = Url::Manga { id: &id };
 
-	let cover_url = manga_html.select("a.play").attr("abs:data-original").read();
+	let manga_page = url.get().html()?;
+	let cover = manga_page.select("div.book img").attr("abs:src").read();
 
-	let manga_title = manga_html.select("div.title > h1").text().read();
+	let title = manga_page.select("p.book-title").text().read();
 
-	let artists_str = manga_html
-		.select("p.data:contains(作者：) > a")
+	let author = manga_page
+		.select("li.info a")
 		.array()
-		.filter_map(Parser::get_is_ok_text)
-		.collect::<Vec<String>>()
+		.filter_map(|val| {
+			let author = val.as_node().ok()?.text().read();
+
+			Some(author)
+		})
+		.collect::<Vec<_>>()
 		.join("、");
 
-	let mut description =
-		unescape_html_entities(manga_html.select("span.detail-text").html().read())
-			.split("<br>")
+	let description = {
+		let html = manga_page.select("p.book-desc").html().read();
+		let unescaped_html = unescape_html_entities(html);
+		let desc = Regex::new(r"<br ?\/?>")?
+			.split(&unescaped_html)
 			.map(str::trim)
-			.collect::<Vec<&str>>()
-			.join("\n")
+			.collect::<Vec<_>>()
+			.join("\n");
+
+		desc.clone()
+			.substring_before("</")
+			.map_or(desc, Into::into)
 			.trim()
-			.to_string();
-	if let Some(description_removed_closing_tag) = description.substring_before_last("</") {
-		description = description_removed_closing_tag.trim().to_string();
-	}
+			.into()
+	};
 
-	let manga_url = Url::Manga(&manga_id).to_string();
-
-	let categories = manga_html
-		.select("a.tag > span")
+	let mut nsfw = MangaContentRating::Nsfw;
+	let categories = manga_page
+		.select("a.tag span.tag")
 		.array()
-		.filter_map(Parser::get_is_ok_text)
-		.filter(|tag| !tag.is_empty())
-		.collect::<Vec<String>>();
+		.filter_map(|val| {
+			let tag = val.as_node().ok()?.text().read();
 
-	let status = match manga_html.select("p.data").first().text().read().as_str() {
-		"连载中" | "連載中" => MangaStatus::Ongoing,
-		"完结" | "完結" => MangaStatus::Completed,
+			if tag == "清水" {
+				nsfw = MangaContentRating::Safe;
+			}
+
+			(!tag.is_empty()).then_some(tag)
+		})
+		.collect();
+
+	let status = match manga_page.select("ul.pl-0 li:eq(1)").text().read().as_str() {
+		"連載中" | "连载中" => MangaStatus::Ongoing,
+		"完結" | "完结" => MangaStatus::Completed,
 		_ => MangaStatus::Unknown,
 	};
 
-	let content_rating = get_content_rating(&categories);
-
 	Ok(Manga {
-		id: manga_id,
-		cover: cover_url,
-		title: manga_title,
-		author: artists_str.clone(),
-		artist: artists_str,
+		id: id.clone(),
+		cover,
+		title,
+		author,
 		description,
-		url: manga_url,
+		url: url.into(),
 		categories,
 		status,
-		nsfw: content_rating,
+		nsfw,
 		..Default::default()
 	})
 }
 
+#[expect(clippy::needless_pass_by_value)]
 #[get_chapter_list]
 fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
-	let chapter_list_json = Url::ChapterList(manga_id).request(HttpMethod::Get).json()?;
-	let chapter_list_obj = chapter_list_json.as_object()?;
-	let result = chapter_list_obj.get("result").as_object()?;
+	let chapters = Url::ChapterList { id: &manga_id }
+		.get()
+		.json()?
+		.as_object()?
+		.get("result")
+		.as_object()?
+		.get("list")
+		.as_array()?
+		.map(|val| {
+			let item = val.as_object()?;
+			let id = item.get("id").as_int()?.to_string();
 
-	let mut chapters = Vec::<Chapter>::new();
-	let chapters_arr = result.get("list").as_array()?;
-	for chapter_value in chapters_arr.rev() {
-		let chapter_obj = chapter_value.as_object()?;
+			let title = item
+				.get("title")
+				.as_string()
+				.unwrap_or_default()
+				.read()
+				.trim()
+				.to_owned();
 
-		let chapter_id = chapter_obj.get("id").as_int()?.to_string();
+			let part = title.parse::<Part>().unwrap_or_default();
+			let volume = part.volume;
 
-		let part = chapter_obj
-			.get("title")
-			.as_string()?
-			.read()
-			.trim()
-			.parse::<Part>()?;
+			let chapter = part.chapter;
 
-		let chapter_url = Url::Chapter(&chapter_id).to_string();
+			let date_updated = item
+				.get("create_time")
+				.as_date("yyyy-MM-dd HH:mm:ss", None, None)
+				.unwrap_or(-1.0);
 
-		let chapter = Chapter {
-			id: chapter_id,
-			title: part.title,
-			volume: part.volume,
-			chapter: part.chapter,
-			url: chapter_url,
-			lang: "zh".to_string(),
-			..Default::default()
-		};
-		chapters.insert(0, chapter);
-	}
+			let url = Url::ChapterPage { id: &id }.into();
+
+			let lang = "zh".into();
+
+			Ok(Chapter {
+				id,
+				title,
+				volume,
+				chapter,
+				date_updated,
+				url,
+				lang,
+				..Default::default()
+			})
+		})
+		.collect::<Result<_>>()?;
 
 	Ok(chapters)
 }
 
+#[expect(clippy::needless_pass_by_value)]
 #[get_page_list]
 fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
-	let chapter_html = Url::Chapter(&chapter_id).request(HttpMethod::Get).html()?;
+	let query = ChapterQuery { id: &chapter_id };
+	let pages = Url::Chapter { query }
+		.get()
+		.html()?
+		.select("img.lazy")
+		.array()
+		.enumerate()
+		.map(|(i, val)| {
+			#[expect(clippy::cast_possible_truncation, clippy::cast_possible_wrap)]
+			let index = i as _;
 
-	let mut pages = Vec::<Page>::new();
-	let page_nodes = chapter_html.select("img.lazy[id]");
-	for (page_index, page_value) in page_nodes.array().enumerate() {
-		let mut page_path = page_value
-			.as_node()?
-			.attr("data-original")
-			.read()
-			.trim()
-			.to_string();
-		if let Some(caps) = Regex::new(
-			r"(?<chapter>.+[^a-z0-9])(?<page_id>[a-z0-9]{32,})\.(?<file_extension>[^\?]+)",
-		)
-		.expect("Invalid regular expression")
-		.captures(&page_path)
-		{
-			let chapter = &caps["chapter"];
-			let page_id = &caps["page_id"][..32];
-			let file_extension = &caps["file_extension"];
-			page_path = format!("{chapter}{page_id}.{file_extension}");
-		};
+			let path = &val
+				.as_node()?
+				.attr("data-original")
+				.read()
+				.trim()
+				.to_owned();
+			let url = Url::Abs { path }.into();
 
-		let page_url = Url::Abs(page_path).to_string();
-
-		pages.push(Page {
-			index: page_index as i32,
-			url: page_url,
-			..Default::default()
-		});
-	}
+			Ok(Page {
+				index,
+				url,
+				..Default::default()
+			})
+		})
+		.collect::<Result<_>>()?;
 
 	Ok(pages)
 }
 
 #[modify_image_request]
 fn modify_image_request(request: Request) {
-	request
-		.header("Referer", DOMAIN)
-		.header("User-Agent", USER_AGENT);
+	request.default_headers();
 }
 
+#[expect(clippy::needless_pass_by_value)]
 #[handle_url]
 fn handle_url(url: String) -> Result<DeepLink> {
-	if url.contains(MANGA_PATH) {
-		let Some(manga_id) = url.substring_after_last("/") else {
-			return Ok(DeepLink::default());
-		};
-		let manga = Some(get_manga_details(manga_id.to_string())?);
-
-		return Ok(DeepLink {
-			manga,
-			chapter: None,
-		});
-	}
-
-	if !url.contains(CHAPTER_PATH) {
-		return Ok(DeepLink::default());
-	}
-
-	let Some(chapter_id) = url.substring_after_last("/") else {
+	let Some(caps) =
+		Regex::new(r"^https?:\/\/[^/]+\/home\/book\/(?<type>index|capter)\/id\/(?<id>\d+)$")?
+			.captures(&url)
+	else {
 		return Ok(DeepLink::default());
 	};
-	let chapter = Some(Chapter {
-		id: chapter_id.to_string(),
-		..Default::default()
-	});
 
-	let chapter_html = Url::Chapter(chapter_id).request(HttpMethod::Get).html()?;
-	let manga_url = chapter_html
-		.select("a.icon-only.link.back")
-		.attr("href")
-		.read();
-	let Some(manga_id) = manga_url.substring_after_last("/") else {
+	let id = &caps["id"];
+	if &caps["type"] == "index" {
+		let manga = get_manga_details(id.into())?;
+
+		let chapter = None;
+
 		return Ok(DeepLink {
-			manga: None,
+			manga: Some(manga),
 			chapter,
 		});
-	};
-	let manga = Some(get_manga_details(manga_id.to_string())?);
+	}
 
-	Ok(DeepLink { manga, chapter })
+	let manga = Url::ChapterPage { id }
+		.get()
+		.html()?
+		.select("a.back")
+		.attr("href")
+		.read()
+		.substring_after_last('/')
+		.map(|manga_id| get_manga_details(manga_id.into()))
+		.transpose()?;
+
+	let chapter = Chapter {
+		id: id.into(),
+		..Default::default()
+	};
+
+	Ok(DeepLink {
+		manga,
+		chapter: Some(chapter),
+	})
 }
 
+#[expect(clippy::needless_pass_by_value)]
 #[handle_notification]
 fn handle_notification(notification: String) {
-	match notification.as_str() {
-		"switchChineseCharSet" => switch_chinese_char_set(),
-		"signIn" => sign_in().unwrap_or_default(),
-		_ => (),
-	}
-}
-
-fn switch_chinese_char_set() {
-	let is_tc = defaults_get("isTC")
-		.and_then(|value| value.as_bool())
-		.unwrap_or(true);
-	let char_set = if is_tc { "T" } else { "S" };
-
-	Url::CharSet(char_set).request(HttpMethod::Get).send();
-}
-
-/// Returns [`Safe`](MangaContentRating::Safe) if the given slice contains
-/// `清水`, or else returns [`Nsfw`](MangaContentRating::Nsfw).
-fn get_content_rating(categories: &[String]) -> MangaContentRating {
-	if categories.contains(&"清水".to_string()) {
-		return MangaContentRating::Safe;
-	}
-	MangaContentRating::Nsfw
-}
-
-fn sign_in() -> Result<()> {
-	let captcha = defaults_get("captcha")?.as_string()?.read();
-
-	let is_wrong_captcha_format = captcha.parse::<u16>().is_err() || captcha.chars().count() != 4;
-	if is_wrong_captcha_format {
-		let sign_in_page = Url::SignInPage.request(HttpMethod::Get).html()?;
-
-		let captcha_img_path = sign_in_page.select("img#verifyImg").attr("src").read();
-		let captcha_img = Url::Abs(captcha_img_path).request(HttpMethod::Get).data();
-		let base64_img = general_purpose::STANDARD_NO_PAD.encode(captcha_img);
-
-		return Ok(println!("{}", base64_img));
-	}
-
-	let username = defaults_get("username")?.as_string()?.read();
-	let password = defaults_get("password")?.as_string()?.read();
-	let sign_in_data = format!(
-		"username={}&password={}&vfycode={}&type=login",
-		username, password, captcha
-	);
-
-	let response_json = Url::SignIn
-		.request(HttpMethod::Post)
-		.body(sign_in_data)
-		.json()?;
-	let reponse_obj = response_json.as_object()?;
-	let info = reponse_obj.get("info").as_string()?;
-
-	Ok(println!("{}", info))
-}
-
-fn check_in() {
-	let not_auto_check_in = !defaults_get("autoCheckIn")
-		.and_then(|value| value.as_bool())
-		.unwrap_or(false);
-	if not_auto_check_in {
-		return;
-	}
-
-	let check_in_data = "auto=false&td=&type=1";
-
-	Url::CheckIn
-		.request(HttpMethod::Post)
-		.body(check_in_data)
-		.send();
-}
-
-trait Parser {
-	/// Returns [`None`], or the text of the Node (if [`Ok`]).
-	fn get_is_ok_text(self) -> Option<String>;
-}
-
-impl Parser for ValueRef {
-	fn get_is_ok_text(self) -> Option<String> {
-		self.as_node().map(|node| node.text().read()).ok()
-	}
-}
-
-struct Part {
-	volume: f32,
-	chapter: f32,
-	title: String,
-}
-
-impl FromStr for Part {
-	type Err = AidokuError;
-
-	#[allow(clippy::unwrap_in_result, clippy::expect_used)]
-	fn from_str(title: &str) -> Result<Self> {
-		let only_one_re =
-			Regex::new("^全[一1](?<type>[卷話话回])$").expect("Invalid regular expression");
-		if let Some(only_one_caps) = only_one_re.captures(title) {
-			#[allow(clippy::indexing_slicing)]
-			if &only_one_caps["type"] == "卷" {
-				return Ok(Self {
-					volume: 1.0,
-					chapter: -1.0,
-					title: title.into(),
-				});
-			}
-
-			return Ok(Self {
-				volume: -1.0,
-				chapter: 1.0,
-				title: title.into(),
-			});
-		};
-
-		let pat = r"^(第?(?<volume>[\d零一二三四五六七八九十百千]+(\.\d+)?)[卷部季] ?)?(第?(?<chapter>[\d零一二三四五六七八九十百千]+(\.\d+)?)(-(\d+(\.\d+)?))?[话話回]?([(（].*[)）]|完结|END)?)?([ +]|$)";
-		let re = Regex::new(pat).expect("Invalid regular expression");
-		let Some(caps) = re.captures(title) else {
-			return Ok(Self {
-				volume: -1.0,
-				chapter: -1.0,
-				title: title.into(),
-			});
-		};
-
-		let get_group = |name| {
-			caps.name(name)
-				.and_then(|m| {
-					let str = m.as_str();
-
-					str.parse()
-						.ok()
-						.or_else(|| str.to_number(ChineseCountMethod::TenThousand).ok())
-				})
-				.unwrap_or(-1.0)
-		};
-		let volume = get_group("volume");
-
-		let chapter = get_group("chapter");
-
-		Ok(Self {
-			volume,
-			chapter,
-			title: title.into(),
-		})
+	if notification == "changeCharset" {
+		change_charset();
 	}
 }
