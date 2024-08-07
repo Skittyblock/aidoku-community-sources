@@ -1,0 +1,26 @@
+[
+	{
+		"type": "group",
+		"title": "Settings",
+		"items": [
+			{
+				"type": "text",
+				"placeholder": "Base URL",
+				"key": "baseURL",
+				"default": "https://faccina.letrix.xyz"
+			},
+			{
+				"type": "text",
+				"placeholder": "CDN URL",
+				"key": "cdnURL",
+				"default": "https://images.letrix.xyz"
+			},
+			{
+				"type": "text",
+				"placeholder": "API Key",
+				"key": "apiKey",
+				"default": ""
+			}
+		]
+	}
+]
