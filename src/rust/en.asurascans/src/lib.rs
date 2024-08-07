@@ -298,12 +298,11 @@ fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 #[get_page_list]
 fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 	let url = get_chapter_url(&chapter_id, &manga_id);
-
 	let html = Request::new(url, HttpMethod::Get).html()?;
 
 	let mut pages: Vec<Page> = Vec::new();
 
-	for node in html.select("div > img[alt=chapter]").array() {
+	for node in html.select("div > img[alt=chapter page]").array() {
 		let node = node.as_node()?;
 
 		let url = node.attr("src").read();
