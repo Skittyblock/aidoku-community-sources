@@ -3,11 +3,8 @@
 		"id": "zh.copymanga",
 		"lang": "zh",
 		"name": "拷貝漫畫",
-		"version": 6,
-		"url": "https://copymanga.tv",
+		"version": 7,
 		"urls": [
-			"https://copymanga.tv",
-			"https://www.copymanga.tv",
 			"https://copymanga.tv",
 			"https://www.copymanga.tv",
 			"https://mangacopy.com",

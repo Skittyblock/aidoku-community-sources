@@ -96,12 +96,12 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	for node in html.select("div.grid > a[href]").array() {
 		let node = node.as_node()?;
 
-		let raw_url = node.attr("href").read();
+		let raw_url = node.attr("abs:href").read();
 
 		let id = get_manga_id(&raw_url)?;
 		let url = get_manga_url(&id);
 
-		let cover = node.select("img").attr("src").read();
+		let cover = node.select("img").attr("abs:src").read();
 		let title = node.select("div.block > span.block").text().read();
 
 		manga.push(Manga {
@@ -129,7 +129,7 @@ fn get_manga_details(manga_id: String) -> Result<Manga> {
 
 	let wrapper = html.select("div.relative.grid");
 
-	let cover = wrapper.select("img[alt=poster]").attr("src").read();
+	let cover = wrapper.select("img[alt=poster]").attr("abs:src").read();
 	let title = wrapper.select("span.text-xl.font-bold").text().read();
 	let author = {
 		let text = wrapper
@@ -303,10 +303,10 @@ fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 
 	let mut pages: Vec<Page> = Vec::new();
 
-	for node in html.select("div > img[alt=chapter]").array() {
+	for node in html.select("div > img[alt=chapter page]").array() {
 		let node = node.as_node()?;
 
-		let url = node.attr("src").read();
+		let url = node.attr("abs:src").read();
 		let index = {
 			let before = url.substring_after_last('/').unwrap_or("");
 			let after = before.substring_before('.').unwrap_or("");
