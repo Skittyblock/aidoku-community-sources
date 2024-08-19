@@ -136,7 +136,7 @@ pub enum Url<'a> {
 	/// - `name`: 名稱
 	/// - `author`: 作者
 	/// - `local`: 漢化組
-	#[strum(to_string = "/api/kb/web/searchb/comics?{query}")]
+	#[strum(to_string = "/api/kb/web/searchba/comics?{query}")]
 	Search { query: QueryParameters },
 
 	#[strum(to_string = "/comic/{id}")]
