@@ -26,27 +26,18 @@ pub fn text_with_newlines(node: Node) -> String {
 
 /// Returns the ID of a manga from a URL.
 pub fn get_manga_id(url: &str) -> String {
-	// NOTE: From my limited testing every manga seems to have a suffix of `-VA54`
-	// But it looks like only `-VA` is required we can remove it for the id and
-	// add it back for the url
-	//
-	// Example Url: https://demonreader.org/manga/Skeleton-Soldier-VA54
-	// Example Url: https://demonreader.org/manga/Skeleton-Soldier/chapter/1-VA54
-	// parse "Skeleton-Soldier" from the url
+  // Two Formats
+  // https://demonicscans.org/title/Overgeared/chapter/1/2024090306
+  // https://demonicscans.org/manga/Overgeared
+  // For the chapter format it seems as if the ending part is <year><month><day><hour> where hour is 12hr time in UTC
 
-	let id_with_suffix = url.split("/manga/").last().unwrap_or("");
+	let id_with_suffix= url.split("/manga/").last().unwrap_or(url.split("/title/").last().unwrap_or(""));
 
-	let id_without_suffix = if let Some(index) = id_with_suffix.rfind("-VA") {
+	// Handle chapter suffix 
+	let id_without_chapter_suffix = if let Some(index) = id_with_suffix.rfind("/chapter/") {
 		&id_with_suffix[..index]
 	} else {
 		id_with_suffix
-	};
-
-	// Handle additional suffixes like "/chapter/1-VA54"
-	let id_without_chapter_suffix = if let Some(index) = id_without_suffix.rfind("/chapter/") {
-		&id_without_suffix[..index]
-	} else {
-		id_without_suffix
 	};
 
 	String::from(id_without_chapter_suffix)
