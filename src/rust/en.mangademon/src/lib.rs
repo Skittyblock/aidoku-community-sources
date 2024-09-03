@@ -32,6 +32,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 					searching = true;
 					let query = encode_uri_component(value.read());
 					url = format!("{}/search.php?manga={}", BASE_URL, query);
+          break;
 				}
 			}
 			FilterType::Genre => {
