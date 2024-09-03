@@ -75,11 +75,11 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 
 #[get_manga_listing]
 fn get_manga_listing(_listing: Listing, page: i32) -> Result<MangaPageResult> {
-	let url = format!("{}/updates.php?list={}", BASE_URL, page);
+	let url = format!("{}/lastupdates.php?list={}", BASE_URL, page);
 
 	let html = Request::new(url, HttpMethod::Get).html()?;
 
-	Ok(parse_manga_list(html, false))
+	Ok(parse_latest_manga_list(html))
 }
 
 #[get_manga_details]

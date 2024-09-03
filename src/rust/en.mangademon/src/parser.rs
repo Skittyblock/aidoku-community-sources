@@ -5,6 +5,38 @@ use aidoku::{
 
 use crate::helper::*;
 
+pub fn parse_latest_manga_list(html: Node) -> MangaPageResult{
+  let mut manga: Vec<Manga> = Vec::new();
+
+  for node in html.select(".updates-element").array(){
+    let node = node.as_node().expect("Failed to get node");
+
+    let cover_node = node.select("img").first();
+    let cover = cover_node.attr("abs:src").read();
+    let title = cover_node.attr("title").read();
+
+    let link_node = node.select("a").first();
+    let raw_url = link_node.attr("href").read();
+    let id = get_manga_id(&raw_url);
+    let url = get_manga_url(&id);
+
+    manga.push(Manga {
+      id,
+      cover,
+      title,
+      url,
+      ..Default::default()
+    });
+  }
+
+  let has_more = !manga.is_empty();
+
+  MangaPageResult {
+    manga,
+    has_more,
+  }
+}
+
 pub fn parse_manga_list(html: Node, searching: bool) -> MangaPageResult {
 	let mut manga: Vec<Manga> = Vec::new();
 
