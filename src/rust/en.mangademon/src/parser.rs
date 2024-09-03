@@ -1,11 +1,9 @@
 use aidoku::{
-	prelude::format,
 	std::{html::Node, String, Vec},
 	Chapter, Manga, MangaContentRating, MangaPageResult, MangaStatus, MangaViewer, Page,
 };
 
 use crate::helper::*;
-use crate::BASE_URL;
 
 pub fn parse_manga_list(html: Node, searching: bool) -> MangaPageResult {
 	let mut manga: Vec<Manga> = Vec::new();
@@ -17,8 +15,12 @@ pub fn parse_manga_list(html: Node, searching: bool) -> MangaPageResult {
 			let raw_url = node.attr("href").read();
 			let id = get_manga_id(&raw_url);
 			let url = get_manga_url(&id);
-			let cover = format!("{}/img/noimg.jpg", BASE_URL);
-			let title = String::from(node.text().read().trim());
+
+			let cover_node = node.select("img").first();
+			let cover = cover_node.attr("abs:src").read();
+
+			let title_node = node.select("div:first-child").first();
+			let title = String::from(title_node.text().read().trim());
 
 			manga.push(Manga {
 				id,
@@ -35,15 +37,15 @@ pub fn parse_manga_list(html: Node, searching: bool) -> MangaPageResult {
 		};
 	}
 
-	for node in html.select("#content .updates-item .leftside a").array() {
-		let node = node.as_node().expect("Failed to get node");
+	for node in html.select(".advanced-element").array() {
+		let node = node.as_node().expect("Failed to get node").select("a").first();
 
 		let raw_url = node.attr("href").read();
 
 		let title = node.attr("title").read();
 		let id = get_manga_id(&raw_url);
 		let url = get_manga_url(&id);
-		let cover = node.select("img").attr("src").read();
+		let cover = node.select("img").attr("abs:src").read();
 
 		manga.push(Manga {
 			id,
