@@ -65,8 +65,7 @@ pub fn get_chapter_id(url: &str) -> String {
 
 /// Returns full URL of a manga from a manga ID.
 pub fn get_manga_url(manga_id: &String) -> String {
-	// Append the `-VA` suffix to the manga id to get the proper url.
-	format!("{}/manga/{}-VA", BASE_URL, manga_id)
+	format!("{}/manga/{}", BASE_URL, manga_id)
 }
 
 /// Returns full URL of a chapter from a chapter ID.
