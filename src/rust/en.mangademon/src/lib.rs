@@ -17,7 +17,7 @@ use aidoku::{
 use helper::*;
 use parser::*;
 
-const BASE_URL: &str = "https://mgdemon.org";
+const BASE_URL: &str = "https://demonicscans.org";
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
