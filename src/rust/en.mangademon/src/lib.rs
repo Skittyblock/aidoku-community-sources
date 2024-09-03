@@ -21,7 +21,7 @@ const BASE_URL: &str = "https://demonicscans.org";
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
-	let mut url = format!("{}/browse.php?list={}", BASE_URL, page);
+	let mut url = format!("{}/advanced.php?list={}", BASE_URL, page);
 
 	let mut searching = false;
 
