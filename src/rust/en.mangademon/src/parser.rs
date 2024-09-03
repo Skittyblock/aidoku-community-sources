@@ -38,7 +38,11 @@ pub fn parse_manga_list(html: Node, searching: bool) -> MangaPageResult {
 	}
 
 	for node in html.select(".advanced-element").array() {
-		let node = node.as_node().expect("Failed to get node").select("a").first();
+		let node = node
+			.as_node()
+			.expect("Failed to get node")
+			.select("a")
+			.first();
 
 		let raw_url = node.attr("href").read();
 
