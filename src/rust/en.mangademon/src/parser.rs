@@ -96,81 +96,74 @@ pub fn parse_manga_list(html: Node, searching: bool) -> MangaPageResult {
 
 pub fn parse_manga_details(html: Node, manga_url: String) -> Manga {
 	let id = get_manga_id(&manga_url);
-	let title = html.select("#novel .novel-title").text().read();
 
-	let wrapper = html.select("#novel .novel-header");
-
-	// yes there is a typo on the website
-	let cover = wrapper.select("#thumbonail").attr("src").read();
-
-	let author = String::from(
-		wrapper
-			.select("#mangainfo .author")
-			.text()
-			.read()
-			.replace("Author:", "")
-			.replace("updating", "")
-			.trim(),
-	);
-
-	let description = {
-		let description = text_with_newlines(wrapper.select("#info .description"));
-
-		if description == "Not Provided" {
-			String::new()
-		} else {
-			description
-		}
-	};
-
-	let status = {
-		let status_string = wrapper.select("#mangainfo .header-stats").text().read();
-		if status_string.contains("Ongoing") {
-			MangaStatus::Ongoing
-		} else if status_string.contains("Completed") {
-			MangaStatus::Completed
-		} else {
-			MangaStatus::Unknown
-		}
-	};
+	let title = html.select(".big-fat-titles").first().text().read();
 
 	let mut categories = Vec::new();
-	for genre in wrapper.select("#mangainfo .categories ul li a").array() {
-		let genre = genre.as_node().expect("Failed to get genre node");
-		let genre = String::from(genre.text().read().trim());
+	let genre_list_node = html.select(".genres-list").first();
+	for node in genre_list_node.select("li").array() {
+		let node = node.as_node().expect("Failed to get genre node");
+		let genre = node.text().read();
 		categories.push(genre);
 	}
 
+	let description = html.select(".white-font").first().text().read();
+
+	let mut author = String::from("");
+	let mut artist = String::from("");
+	let mut status = String::from("");
+
+	let manga_info_node = html.select("#manga-info-stats").first();
+	for node in manga_info_node.select("#manga-info-stats > div").array() {
+		let node = node.as_node().expect("Failed to get manga info node");
+
+		let label = node.select("li").first().text().read();
+		let value = node.select("li").last().text().read();
+
+		match label.as_str() {
+			"Author" => author = value,
+			"Status" => status = value,
+			// Artist doesn't exist at the time of writing this but it's here for future proofing
+			"Artist" => artist = value,
+			_ => {}
+		}
+	}
+
+	let status = match status.to_lowercase().trim() {
+		"ongoing" => MangaStatus::Ongoing,
+		"completed" => MangaStatus::Completed,
+		"cancelled" => MangaStatus::Cancelled,
+		"hiatus" => MangaStatus::Hiatus,
+		_ => MangaStatus::Unknown,
+	};
+
 	let nsfw = {
 		let mut rating = MangaContentRating::Safe;
-
-		if !categories.is_empty() {
-			if categories
-				.iter()
-				.any(|e| e == "Ecchi" || e == "Harem" || e == "Mature")
-			{
-				rating = MangaContentRating::Suggestive;
-			}
-			if categories.iter().any(|e| e == "Smut") {
-				rating = MangaContentRating::Nsfw;
+		for genre in categories.iter() {
+			match genre.to_lowercase().trim() {
+				"Ecchi" | "Harem" | "Mature" => rating = MangaContentRating::Suggestive,
+				"Smut" => rating = MangaContentRating::Nsfw,
+				_ => {}
 			}
 		}
-
 		rating
 	};
+
+	let cover_node = html.select("img.border-box").first();
+	let cover = cover_node.attr("abs:src").read();
 
 	let viewer = MangaViewer::Scroll;
 
 	Manga {
 		id,
-		cover,
 		title,
-		author,
-		description,
-		url: manga_url,
 		categories,
+		description,
+		author,
+		artist,
 		status,
 		nsfw,
+		cover,
 		viewer,
 		..Default::default()
 	}
