@@ -167,7 +167,7 @@ pub fn parse_manga_details(html: Node, manga_url: String) -> Manga {
 		nsfw,
 		cover,
 		viewer,
-    url: manga_url,
+		url: manga_url,
 		..Default::default()
 	}
 }
@@ -206,26 +206,21 @@ pub fn parse_chapter_list(html: Node) -> Vec<Chapter> {
 }
 
 pub fn parse_page_list(html: Node) -> Vec<Page> {
-	let mut pages: Vec<Page> = Vec::new();
+  let mut pages = Vec::new();
 
-	for node in html.select("main .wrapper center img.imgholder").array() {
-		let node = node.as_node().expect("Failed to get image node");
-
-		let url = node.attr("src").read();
-
-		let index = url
-			.split('/')
-			.last()
-			.and_then(|part| part.split('.').next())
-			.and_then(|part| part.parse::<i32>().ok())
-			.unwrap_or(-1);
-
+  for (index, node) in html.select(".imgholder").array().enumerate() {
+		let url = node
+			.as_node()
+			.expect("Failed to get chapter image")
+			.attr("abs:src")
+			.read();
+    let index: i32 = index.try_into().unwrap();
 		pages.push(Page {
 			index,
 			url,
 			..Default::default()
-		});
+		})
 	}
 
-	pages
+  pages
 }

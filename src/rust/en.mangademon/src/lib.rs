@@ -32,7 +32,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 					searching = true;
 					let query = encode_uri_component(value.read());
 					url = format!("{}/search.php?manga={}", BASE_URL, query);
-          break;
+					break;
 				}
 			}
 			FilterType::Genre => {
@@ -102,9 +102,9 @@ fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 
 #[get_page_list]
 fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
-	let url = get_chapter_url(&chapter_id, &manga_id);
+	let chap_url = get_chapter_url(&manga_id,&chapter_id)?;
 
-	let html = Request::new(url, HttpMethod::Get).html()?;
+	let html = Request::new(chap_url, HttpMethod::Get).html()?;
 
 	Ok(parse_page_list(html))
 }

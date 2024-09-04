@@ -1,6 +1,5 @@
 use aidoku::{
-	prelude::format,
-	std::{html::Node, String},
+	error::Result, prelude::format, std::{Vec,net::{HttpMethod, Request}, String}
 };
 
 use crate::BASE_URL;
@@ -26,22 +25,16 @@ pub fn get_manga_id(url: &str) -> String {
 
 /// Returns the ID of a chapter from a URL.
 pub fn get_chapter_id(url: &str) -> String {
-	// NOTE: From my limited testing every chapter seems to have a suffix of `-VA54`
-	// But it looks like only `-VA` is required we can remove it for the id and
-	// add it back for the url
-	//
-	// Example Url: https://demonreader.org/manga/Skeleton-Soldier/chapter/1-VA54
+	// Example Url: https://demonicscans.org/chaptered.php?manga=<num>&chapter=1
+	// Example Url: https://demonicscans.org/title/Overgeared/chapter/1/2024090306
 	// parse "1" from the url
 
-	let id_with_suffix = url.split("/chapter/").last().unwrap_or("");
-
-	let id_without_suffix = if let Some(index) = id_with_suffix.rfind("-VA") {
-		&id_with_suffix[..index]
-	} else {
-		id_with_suffix
-	};
-
-	String::from(id_without_suffix)
+  if url.contains("chaptered"){
+    String::from(url.split("=").last().unwrap_or(""))
+  } else{
+    let split_url = url.split("/").collect::<Vec<_>>();
+    String::from(split_url[split_url.len()-2])
+  }
 }
 
 /// Returns full URL of a manga from a manga ID.
@@ -49,8 +42,15 @@ pub fn get_manga_url(manga_id: &String) -> String {
 	format!("{}/manga/{}", BASE_URL, manga_id)
 }
 
-/// Returns full URL of a chapter from a chapter ID.
-pub fn get_chapter_url(chapter_id: &String, manga_id: &String) -> String {
-	// Append the `-VA` suffix to the chapter id to get the proper url.
-	format!("{}/manga/{}/chapter/{}-VA", BASE_URL, manga_id, chapter_id)
+pub fn get_chapter_url(manga_id: &String, chapter_id: &String) -> Result<String>{
+  let manga_url = get_manga_url(manga_id);
+  let html = Request::new(manga_url,HttpMethod::Get).html()?;
+
+  let chap_link = html.select(".chplinks").first();
+  let raw_url = chap_link.attr("href").read();
+  let mut split_url = raw_url.split("=").collect::<Vec<_>>();
+  split_url.pop();
+  split_url.push(chapter_id.as_str());
+
+  Ok(format!("{}{}",BASE_URL,split_url.join("=")))
 }
