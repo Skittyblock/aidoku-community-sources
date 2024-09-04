@@ -172,7 +172,7 @@ pub fn parse_manga_details(html: Node, manga_url: String) -> Manga {
 	}
 }
 
-pub fn parse_chapter_list(html: Node, manga_id: String) -> Vec<Chapter> {
+pub fn parse_chapter_list(html: Node) -> Vec<Chapter> {
 	let mut chapters: Vec<Chapter> = Vec::new();
 
 	for node in html.select("#chapters-list").select("li").array() {
@@ -183,15 +183,17 @@ pub fn parse_chapter_list(html: Node, manga_id: String) -> Vec<Chapter> {
 		let url = format!("{}{}", BASE_URL, name_node.attr("href").read());
 
 		let num_str = name_node.attr("title").read();
-		let num_str = String::from(num_str.split(" ").last().unwrap_or("0"));
+		let num_str = String::from(num_str.split(" ").last().unwrap_or("1"));
 		let chapter = num_str.parse::<f32>().unwrap_or(-1.0);
+
+    let id = get_chapter_id(&url);
 
 		let lang = String::from("en");
 
 		let date_updated = date_node.text().as_date("yyyy-MM-dd", Some("en-US"), None);
 
 		chapters.push(Chapter {
-			id: manga_id.clone(),
+			id,
 			lang,
 			chapter,
 			date_updated,
