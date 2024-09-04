@@ -101,8 +101,8 @@ fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 }
 
 #[get_page_list]
-fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
-	let chap_url = get_chapter_url(&manga_id,&chapter_id)?;
+fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
+	let chap_url = get_chapter_url(&chapter_id)?;
 
 	let html = Request::new(chap_url, HttpMethod::Get).html()?;
 

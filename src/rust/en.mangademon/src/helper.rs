@@ -1,5 +1,5 @@
 use aidoku::{
-	error::Result, prelude::format, std::{Vec,net::{HttpMethod, Request}, String}
+	error::Result, prelude::format, std::String
 };
 
 use crate::BASE_URL;
@@ -25,15 +25,13 @@ pub fn get_manga_id(url: &str) -> String {
 
 /// Returns the ID of a chapter from a URL.
 pub fn get_chapter_id(url: &str) -> String {
-	// Example Url: https://demonicscans.org/chaptered.php?manga=<num>&chapter=1
-	// Example Url: https://demonicscans.org/title/Overgeared/chapter/1/2024090306
-	// parse "1" from the url
+	// Example Url: https://demonicscans.org/chaptered.php?manga=4&chapter=1
+  // Example Url: /chaptered.php?manga=4&chapter=1
+	// parse "/chaptered.php?manga=4&chapter=1" from the url
 
-  if url.contains("chaptered"){
-    String::from(url.split("=").last().unwrap_or(""))
-  } else{
-    let split_url = url.split("/").collect::<Vec<_>>();
-    String::from(split_url[split_url.len()-2])
+  match url.find("/chaptered.php"){
+    Some(i) => url[i..].into(),
+    None => String::from("")
   }
 }
 
@@ -42,15 +40,6 @@ pub fn get_manga_url(manga_id: &String) -> String {
 	format!("{}/manga/{}", BASE_URL, manga_id)
 }
 
-pub fn get_chapter_url(manga_id: &String, chapter_id: &String) -> Result<String>{
-  let manga_url = get_manga_url(manga_id);
-  let html = Request::new(manga_url,HttpMethod::Get).html()?;
-
-  let chap_link = html.select(".chplinks").first();
-  let raw_url = chap_link.attr("href").read();
-  let mut split_url = raw_url.split("=").collect::<Vec<_>>();
-  split_url.pop();
-  split_url.push(chapter_id.as_str());
-
-  Ok(format!("{}{}",BASE_URL,split_url.join("=")))
+pub fn get_chapter_url(chapter_id: &String) -> Result<String>{
+  Ok(format!("{}{}",BASE_URL,chapter_id))
 }
