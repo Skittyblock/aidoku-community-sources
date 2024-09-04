@@ -186,7 +186,7 @@ pub fn parse_chapter_list(html: Node) -> Vec<Chapter> {
 		let num_str = String::from(num_str.split(" ").last().unwrap_or("1"));
 		let chapter = num_str.parse::<f32>().unwrap_or(-1.0);
 
-    let id = get_chapter_id(&url);
+		let id = get_chapter_id(&url);
 
 		let lang = String::from("en");
 
@@ -206,15 +206,15 @@ pub fn parse_chapter_list(html: Node) -> Vec<Chapter> {
 }
 
 pub fn parse_page_list(html: Node) -> Vec<Page> {
-  let mut pages = Vec::new();
+	let mut pages = Vec::new();
 
-  for (index, node) in html.select(".imgholder").array().enumerate() {
+	for (index, node) in html.select(".imgholder").array().enumerate() {
 		let url = node
 			.as_node()
 			.expect("Failed to get chapter image")
 			.attr("abs:src")
 			.read();
-    let index: i32 = index.try_into().unwrap();
+		let index: i32 = index.try_into().unwrap();
 		pages.push(Page {
 			index,
 			url,
@@ -222,5 +222,5 @@ pub fn parse_page_list(html: Node) -> Vec<Page> {
 		})
 	}
 
-  pages
+	pages
 }
