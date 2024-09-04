@@ -1,9 +1,11 @@
 use aidoku::{
+	prelude::format,
 	std::{html::Node, String, Vec},
 	Chapter, Manga, MangaContentRating, MangaPageResult, MangaStatus, MangaViewer, Page,
 };
 
 use crate::helper::*;
+use crate::BASE_URL;
 
 pub fn parse_latest_manga_list(html: Node) -> MangaPageResult {
 	let mut manga: Vec<Manga> = Vec::new();
@@ -169,42 +171,28 @@ pub fn parse_manga_details(html: Node, manga_url: String) -> Manga {
 	}
 }
 
-pub fn parse_chapter_list(html: Node) -> Vec<Chapter> {
+pub fn parse_chapter_list(html: Node, manga_id: String) -> Vec<Chapter> {
 	let mut chapters: Vec<Chapter> = Vec::new();
 
-	for node in html
-		.select("#novel .novel-header #mangainfo #chapters .chapter-list li")
-		.array()
-	{
+	for node in html.select("#chapters-list").select("li").array() {
 		let node = node.as_node().expect("Failed to get chapter node");
+		let name_node = node.select("a").first();
+		let date_node = name_node.select("span").first();
 
-		let raw_url = node.select("a").attr("href").read();
-		let id = node.attr("data-chapterno").read();
+		let url = format!("{}{}", BASE_URL, name_node.attr("href").read());
 
-		let manga_id = get_manga_id(&raw_url);
-		let url = get_chapter_url(&id, &manga_id);
+		let num_str = name_node.attr("title").read();
+		let num_str = String::from(num_str.split(" ").last().unwrap_or("0"));
+		let chapter = num_str.parse::<f32>().unwrap_or(-1.0);
 
-		let chapter = node
-			.attr("data-chapterno")
-			.read()
-			.parse::<f32>()
-			.unwrap_or(-1.0);
+		let lang = String::from("en");
 
-		let volume = node
-			.attr("data-volumeno")
-			.read()
-			.parse::<f32>()
-			.unwrap_or(-1.0);
-
-		let date_updated =
-			node.select(".chapter-update")
-				.attr("date")
-				.as_date("yyyy-MM-dd", Some("en-US"), None);
+		let date_updated = date_node.text().as_date("yyyy-MM-dd", Some("en-US"), None);
 
 		chapters.push(Chapter {
-			id,
+			id: manga_id.clone(),
+			lang,
 			chapter,
-			volume: if volume == 0.0 { -1.0 } else { volume },
 			date_updated,
 			url,
 			..Default::default()
