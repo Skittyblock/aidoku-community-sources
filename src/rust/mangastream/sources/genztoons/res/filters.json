@@ -53,6 +53,11 @@
 			},
 			{
 				"type": "check",
+				"name": "Dragon",
+				"id": "118"
+			},
+			{
+				"type": "check",
 				"name": "Drama",
 				"id": "5"
 			},
@@ -63,8 +68,18 @@
 			},
 			{
 				"type": "check",
+				"name": "Ecchi",
+				"id": "120"
+			},
+			{
+				"type": "check",
 				"name": "Fantasy",
 				"id": "34"
+			},
+			{
+				"type": "check",
+				"name": "Fighting",
+				"id": "111"
 			},
 			{
 				"type": "check",
@@ -88,6 +103,11 @@
 			},
 			{
 				"type": "check",
+				"name": "Harem",
+				"id": "121"
+			},
+			{
+				"type": "check",
 				"name": "Historical",
 				"id": "35"
 			},
@@ -100,6 +120,11 @@
 				"type": "check",
 				"name": "Law",
 				"id": "45"
+			},
+			{
+				"type": "check",
+				"name": "loli",
+				"id": "115"
 			},
 			{
 				"type": "check",
@@ -130,6 +155,11 @@
 				"type": "check",
 				"name": "Medieval",
 				"id": "84"
+			},
+			{
+				"type": "check",
+				"name": "Monster Girls",
+				"id": "122"
 			},
 			{
 				"type": "check",
@@ -243,6 +273,11 @@
 			},
 			{
 				"type": "check",
+				"name": "Violence",
+				"id": "113"
+			},
+			{
+				"type": "check",
 				"name": "Virtual Reality",
 				"id": "12"
 			},
@@ -271,7 +306,8 @@
 			"Manga",
 			"Manhwa",
 			"Manhua",
-			"Comic"
+			"Comic",
+			"Novel"
 		]
 	}
 ]

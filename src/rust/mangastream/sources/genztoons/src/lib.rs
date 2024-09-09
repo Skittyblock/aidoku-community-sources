@@ -8,7 +8,7 @@ use mangastream_template::template::MangaStreamSource;
 
 fn get_instance() -> MangaStreamSource {
 	MangaStreamSource {
-		base_url: String::from("https://suryatoon.com"),
+		base_url: String::from("https://genztoons.com"),
 		manga_details_author: ".imptdt:contains(Author) i",
 		manga_details_artist: ".imptdt:contains(Artist) i",
 		manga_details_type: ".imptdt:contains(Type) a",
