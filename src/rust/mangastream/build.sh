@@ -4,7 +4,7 @@
 if [ "$1" != "-a" ] && [ "$1" != "" ]; then
     # compile specified source
     cargo +nightly build --release
-    
+
     echo "packaging $1";
     mkdir -p target/wasm32-unknown-unknown/release/Payload
     cp res/* target/wasm32-unknown-unknown/release/Payload
@@ -30,6 +30,6 @@ else
         zip -r $dir.aix Payload >> /dev/null
         mv $dir.aix ../../../$dir.aix
         rm -rf Payload
-        cd ../../../   
+        cd ../../../
     done
 fi
