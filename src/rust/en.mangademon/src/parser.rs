@@ -143,8 +143,11 @@ pub fn parse_manga_details(html: Node, manga_url: String) -> Manga {
 		let mut rating = MangaContentRating::Safe;
 		for genre in categories.iter() {
 			match genre.to_lowercase().trim() {
-				"Ecchi" | "Harem" | "Mature" => rating = MangaContentRating::Suggestive,
-				"Smut" => rating = MangaContentRating::Nsfw,
+				"ecchi" | "harem" | "mature" => rating = MangaContentRating::Suggestive,
+				"smut" => {
+					rating = MangaContentRating::Nsfw;
+					break;
+				}
 				_ => {}
 			}
 		}
