@@ -244,10 +244,10 @@ fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 		let url = get_chapter_url(&id, &manga_id);
 
 		// Chapter's title if it exists
-		let title = node.select("h3:eq(0) > a > span").text().read();
+		let title = node.select("h3 > a > span").text().read();
 
 		let chapter = node
-			.select("h3:eq(0) > a")
+			.select("h3 > a")
 			.text()
 			.read()
 			.replace(&title, "")
@@ -257,7 +257,7 @@ fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 			.unwrap_or(-1.0);
 
 		let cleaned_date: StringRef = {
-			let mut date = node.select("h3:eq(1)").text().read();
+			let mut date = node.select("h3:not(:has(*))").text().read();
 
 			let mut parts = date.split_whitespace().collect::<Vec<&str>>();
 
@@ -303,7 +303,7 @@ fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 
 	let mut pages: Vec<Page> = Vec::new();
 
-	for node in html.select("div > img[alt=chapter page]").array() {
+	for node in html.select("div > img[alt^=chapter page]").array() {
 		let node = node.as_node()?;
 
 		let url = node.attr("abs:src").read();
