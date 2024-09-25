@@ -9,13 +9,13 @@
 	},
 	"listings": [
 		{
-			"name": "Recentes"
+			"name": "Latest"
 		},
 		{
-			"name": "Tendências"
+			"name": "Trending"
 		},
 		{
-			"name": "Populares"
+			"name": "Popular"
 		}
 	]
 }
