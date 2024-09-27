@@ -231,12 +231,14 @@ fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 	let mut chapters: Vec<Chapter> = Vec::new();
 
 	for node in html
-		.select("div.scrollbar-thumb-themecolor > div.group")
+		.select("div.pl-4.py-2")
 		.array()
 	{
 		let node = node.as_node()?;
 
-		let raw_url = node.select("a").attr("abs:href").read();
+		let raw_url = node.select("h3").select("a").attr("abs:href").read();
+
+		aidoku::prelude::println!("url: {}", raw_url);
 
 		let id = get_chapter_id(&raw_url)?;
 		let manga_id = get_manga_id(&raw_url)?;
@@ -244,10 +246,10 @@ fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 		let url = get_chapter_url(&id, &manga_id);
 
 		// Chapter's title if it exists
-		let title = node.select("h3:eq(0) > a > span").text().read();
+		let title = node.select("h3 > a > span").text().read();
 
 		let chapter = node
-			.select("h3:eq(0) > a")
+			.select("h3 > a")
 			.text()
 			.read()
 			.replace(&title, "")
@@ -257,7 +259,7 @@ fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 			.unwrap_or(-1.0);
 
 		let cleaned_date: StringRef = {
-			let mut date = node.select("h3:eq(1)").text().read();
+			let mut date = node.select("h3.text-xs").text().read();
 
 			let mut parts = date.split_whitespace().collect::<Vec<&str>>();
 
@@ -303,7 +305,7 @@ fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 
 	let mut pages: Vec<Page> = Vec::new();
 
-	for node in html.select("div > img[alt=chapter]").array() {
+	for node in html.select("div.w-full.mx-auto.center > img").array() {
 		let node = node.as_node()?;
 
 		let url = node.attr("src").read();
