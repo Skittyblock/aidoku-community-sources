@@ -171,7 +171,6 @@ pub fn parse_manga_details(html: Node, manga_url: String) -> Manga {
 		cover,
 		viewer,
 		url: manga_url,
-		..Default::default()
 	}
 }
 
