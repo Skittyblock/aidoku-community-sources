@@ -43,7 +43,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 	match listing.name.as_str() {
 		"無碼專區" => {
-			let index = Index { page };
+			let index = Index::from_page(page);
 
 			Url::Uncensored { index }
 				.get()
@@ -55,7 +55,7 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 		}
 
 		"最新" => {
-			let query = LastUpdatedQuery { page };
+			let query = LastUpdatedQuery::new(page);
 			let manga = Url::LastUpdated { query }
 				.get()
 				.json()?
@@ -229,10 +229,9 @@ fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 	Ok(chapters)
 }
 
-#[expect(clippy::needless_pass_by_value)]
 #[get_page_list]
 fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
-	let query = ChapterQuery { id: &chapter_id };
+	let query = ChapterQuery::new(chapter_id);
 	let pages = Url::Chapter { query }
 		.get()
 		.html()?
@@ -240,7 +239,11 @@ fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 		.array()
 		.enumerate()
 		.map(|(i, val)| {
-			#[expect(clippy::cast_possible_truncation, clippy::cast_possible_wrap)]
+			#[expect(
+				clippy::cast_possible_truncation,
+				clippy::cast_possible_wrap,
+				clippy::as_conversions
+			)]
 			let index = i as _;
 
 			let path = &val

@@ -4,7 +4,7 @@ use aidoku::{
 	std::{net::Request, String, Vec},
 	Filter, FilterType,
 };
-use alloc::string::ToString as _;
+use alloc::{borrow::ToOwned as _, string::ToString as _};
 use core::fmt::{Display, Formatter, Result as FmtResult};
 use strum_macros::{Display, FromRepr};
 
@@ -58,7 +58,7 @@ pub enum Url<'a> {
 	ChapterPage { id: &'a str },
 
 	#[strum(to_string = "/chapter_view_template?{query}")]
-	Chapter { query: ChapterQuery<'a> },
+	Chapter { query: ChapterQuery },
 }
 
 impl Url<'_> {
@@ -101,7 +101,8 @@ impl From<(Vec<Filter>, i32)> for Url<'_> {
 								.and_then(|i| {
 									#[expect(
 										clippy::cast_sign_loss,
-										clippy::cast_possible_truncation
+										clippy::cast_possible_truncation,
+										clippy::as_conversions
 									)]
 									$Filter::from_repr(i as _)
 								})
@@ -163,20 +164,31 @@ pub enum Charset {
 }
 
 pub struct Index {
-	pub page: i32,
+	page: i32,
+}
+
+impl Index {
+	pub const fn from_page(page: i32) -> Self {
+		Self { page }
+	}
 }
 
 impl Display for Index {
 	fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
-		#[expect(clippy::arithmetic_side_effects)]
-		let index = self.page - 1;
+		let index = self.page.checked_sub(1).unwrap_or(0);
 
 		write!(f, "{index}")
 	}
 }
 
 pub struct LastUpdatedQuery {
-	pub page: i32,
+	page: i32,
+}
+
+impl LastUpdatedQuery {
+	pub const fn new(page: i32) -> Self {
+		Self { page }
+	}
 }
 
 impl Display for LastUpdatedQuery {
@@ -185,22 +197,29 @@ impl Display for LastUpdatedQuery {
 
 		query.push_encoded("widx", Some("11"));
 
-		let page = self.page;
-		let index = Index { page }.to_string();
+		let index = Index::from_page(self.page).to_string();
 		query.push_encoded("page", Some(&index));
 
 		write!(f, "{query}")
 	}
 }
 
-pub struct ChapterQuery<'a> {
-	pub id: &'a str,
+pub struct ChapterQuery {
+	id: String,
 }
 
-impl Display for ChapterQuery<'_> {
+impl ChapterQuery {
+	pub fn new<S: AsRef<str>>(id: S) -> Self {
+		Self {
+			id: id.as_ref().to_owned(),
+		}
+	}
+}
+
+impl Display for ChapterQuery {
 	fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
 		let mut query = QueryParameters::new();
-		query.push_encoded("id", Some(self.id));
+		query.push_encoded("id", Some(&self.id));
 
 		write!(f, "{query}")
 	}

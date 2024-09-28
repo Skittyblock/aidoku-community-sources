@@ -125,9 +125,13 @@ impl MangaList for ArrayRef {
 					.get("image")
 					.as_string()
 					.map(|str_ref| {
-						let path = &str_ref.read();
+						let path = str_ref.read();
 
-						Url::Abs { path }.into()
+						if path.starts_with('/') {
+							return Url::Abs { path: &path }.into();
+						}
+
+						path
 					})
 					.unwrap_or_default();
 
