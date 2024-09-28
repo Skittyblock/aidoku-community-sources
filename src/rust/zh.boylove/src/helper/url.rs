@@ -101,7 +101,8 @@ impl From<(Vec<Filter>, i32)> for Url<'_> {
 								.and_then(|i| {
 									#[expect(
 										clippy::cast_sign_loss,
-										clippy::cast_possible_truncation
+										clippy::cast_possible_truncation,
+										clippy::as_conversions
 									)]
 									$Filter::from_repr(i as _)
 								})
@@ -168,8 +169,7 @@ pub struct Index {
 
 impl Display for Index {
 	fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
-		#[expect(clippy::arithmetic_side_effects)]
-		let index = self.page - 1;
+		let index = self.page.checked_sub(1).unwrap_or(0);
 
 		write!(f, "{index}")
 	}

@@ -240,7 +240,11 @@ fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 		.array()
 		.enumerate()
 		.map(|(i, val)| {
-			#[expect(clippy::cast_possible_truncation, clippy::cast_possible_wrap)]
+			#[expect(
+				clippy::cast_possible_truncation,
+				clippy::cast_possible_wrap,
+				clippy::as_conversions
+			)]
 			let index = i as _;
 
 			let path = &val
