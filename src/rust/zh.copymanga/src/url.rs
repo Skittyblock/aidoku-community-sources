@@ -2,13 +2,14 @@ use aidoku::{
 	error::Result,
 	helpers::uri::QueryParameters,
 	prelude::format,
-	std::{html::Node, net::Request, ValueRef, Vec},
+	std::{html::Node, net::Request, String, ValueRef, Vec},
 	Filter, FilterType,
 };
-use alloc::string::ToString;
-use core::fmt::Display;
-use strum_macros::Display;
+use alloc::{borrow::ToOwned as _, string::ToString};
+use core::fmt::{Display, Formatter, Result as FmtResult};
+use strum_macros::{Display, IntoStaticStr};
 
+#[expect(private_interfaces)]
 #[derive(Display)]
 #[strum(prefix = "https://copymanga.tv")]
 pub enum Url<'a> {
@@ -114,30 +115,11 @@ pub enum Url<'a> {
 	#[strum(to_string = "/comics?{query}")]
 	Filters { query: QueryParameters },
 
-	/// ## `offset`
-	///
-	/// `({page} - 1) * {limit}`
-	///
-	/// ## `platform`
-	///
-	/// `2`
-	///
-	/// ## `limit`
-	///
-	/// Manga per response
-	///
-	/// ## `q`
-	///
-	/// `search_str` ➡️ Should be percent-encoded
-	///
-	/// ## `q_type`
-	///
-	/// - ``: 全部
-	/// - `name`: 名稱
-	/// - `author`: 作者
-	/// - `local`: 漢化組
-	#[strum(to_string = "/api/kb/web/searchba/comics?{query}")]
-	Search { query: QueryParameters },
+	#[strum(to_string = "/search")]
+	SearchPage,
+
+	#[strum(to_string = "{search}")]
+	Search { search: Search },
 
 	#[strum(to_string = "/comic/{id}")]
 	Manga { id: &'a str },
@@ -197,6 +179,77 @@ enum Sort {
 	/// - `true`: 升冪
 	/// - `false`: 降冪
 	Popularity(bool),
+}
+
+#[expect(dead_code)]
+#[derive(Default, IntoStaticStr, Clone, Copy)]
+enum SearchType {
+	#[default]
+	#[strum(to_string = "")]
+	All,
+
+	#[strum(to_string = "name")]
+	Title,
+
+	#[strum(to_string = "author")]
+	Author,
+
+	#[strum(to_string = "local")]
+	Translator,
+}
+
+#[derive(Default)]
+struct Search {
+	page: i32,
+	keyword: String,
+	by: SearchType,
+}
+
+impl Search {
+	fn new<S: AsRef<str>>(page: i32, keyword: S) -> Self {
+		Self {
+			page,
+			keyword: keyword.as_ref().to_owned(),
+			..Default::default()
+		}
+	}
+}
+
+impl Display for Search {
+	fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
+		let path = Url::SearchPage
+			.get_html()
+			.ok()
+			.and_then(|page| {
+				let count_api = page
+					.html()
+					.read()
+					.lines()
+					.find(|line| line.contains("const countApi"))?
+					.split('"')
+					.nth(1)?
+					.to_owned();
+
+				Some(count_api)
+			})
+			.unwrap_or_else(|| "/api/kb/web/searchbc/comics".into());
+
+		let mut query = QueryParameters::new();
+
+		let offset = self.page.checked_sub(1).unwrap_or(0).saturating_mul(LIMIT);
+		query.push_encoded("offset", Some(&offset.to_string()));
+
+		query.push_encoded("platform", Some(&2.to_string()));
+
+		query.push_encoded("limit", Some(&LIMIT.to_string()));
+
+		query.push("q", Some(&self.keyword));
+
+		let search_by = (!matches!(self.by, SearchType::All)).then(|| self.by.into());
+		query.push_encoded("q_type", search_by);
+
+		write!(f, "{path}?{query}")
+	}
 }
 
 pub const MANGA_PATH: &str = "/comic/";
@@ -330,16 +383,13 @@ impl<'a> From<(Vec<Filter>, i32)> for Url<'a> {
 				}
 
 				FilterType::Title => {
-					let Ok(search_str_ref) = filter.value.as_string() else {
-						continue;
+					let keyword = match filter.value.as_string() {
+						Ok(str_ref) => str_ref.read(),
+						Err(_) => continue,
 					};
-					let search_str = search_str_ref.read();
+					let search = Search::new(page, keyword);
 
-					query.push_encoded("platform", Some(2.to_string().as_str()));
-					query.push("q", Some(&search_str));
-					query.push_encoded("q_type", None);
-
-					return Url::Search { query };
+					return Url::Search { search };
 				}
 
 				_ => continue,
@@ -372,7 +422,7 @@ impl_display!(Status);
 impl_display!(Region);
 
 impl Display for Sort {
-	fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+	fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
 		match self {
 			Self::DateUpdated(is_asc) => {
 				write!(f, "{}datetime_updated", if *is_asc { "" } else { "-" })
