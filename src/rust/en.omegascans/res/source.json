@@ -2,17 +2,20 @@
 	"info": {
 		"id": "en.omegascans",
 		"lang": "en",
-		"name": "Omegascans",
-		"version": 2,
+		"name": "Omega Scans",
+		"version": 3,
 		"url": "https://omegascans.org",
 		"nsfw": 2
 	},
 	"listings": [
 		{
-			"name": "Latest"
+			"name": "Latest Updates"
 		},
 		{
 			"name": "Popular"
+		},
+		{
+			"name": "Newest"
 		},
 		{
 			"name": "Alphabetical"

@@ -1,17 +1,18 @@
 use aidoku::{
 	error::Result,
 	helpers::uri::QueryParameters,
-	std::{html::Node, net::Request, ValueRef, Vec},
+	prelude::format,
+	std::{html::Node, net::Request, String, ValueRef, Vec},
 	Filter, FilterType,
 };
-use alloc::string::ToString;
-use core::fmt::Display;
+use alloc::{borrow::ToOwned as _, string::ToString};
+use core::fmt::{Display, Formatter, Result as FmtResult};
+use strum_macros::{Display, IntoStaticStr};
 
+#[expect(private_interfaces)]
+#[derive(Display)]
+#[strum(prefix = "https://copymanga.tv")]
 pub enum Url<'a> {
-	/// https://copymanga.site/comics?theme={}&status={}&region={}&ordering={}&offset={}&limit={}
-	///
-	/// ---
-	///
 	/// ## `theme`
 	///
 	/// - : 全部
@@ -111,44 +112,26 @@ pub enum Url<'a> {
 	/// ## `limit`
 	///
 	/// Manga per response
-	Filters(QueryParameters),
+	#[strum(to_string = "/comics?{query}")]
+	Filters { query: QueryParameters },
 
-	/// https://copymanga.site/api/kb/web/searcha/comics?offset={}&platform={}&limit={}&q={}&q_type={}
-	///
-	/// ---
-	///
-	/// ## `offset`
-	///
-	/// `({page} - 1) * {limit}`
-	///
-	/// ## `platform`
-	///
-	/// `2`
-	///
-	/// ## `limit`
-	///
-	/// Manga per response
-	///
-	/// ## `q`
-	///
-	/// `search_str` ➡️ Should be percent-encoded
-	///
-	/// ## `q_type`
-	///
-	/// - ``: 全部
-	/// - `name`: 名稱
-	/// - `author`: 作者
-	/// - `local`: 漢化組
-	Search(QueryParameters),
+	#[strum(to_string = "/search")]
+	SearchPage,
 
-	/// https://copymanga.site/comic/{manga_id}
-	Manga(&'a str),
+	#[strum(to_string = "{search}")]
+	Search { search: Search },
 
-	/// https://copymanga.site/comicdetail/{manga_id}/chapters
-	ChapterList(&'a str),
+	#[strum(to_string = "/comic/{id}")]
+	Manga { id: &'a str },
 
-	/// https://copymanga.site/comic/{manga_id}/chapter/{chapter_id}
-	Chapter(&'a str, &'a str),
+	#[strum(to_string = "/comicdetail/{id}/chapters")]
+	ChapterList { id: &'a str },
+
+	#[strum(to_string = "/comic/{manga_id}/chapter/{chapter_id}")]
+	Chapter {
+		manga_id: &'a str,
+		chapter_id: &'a str,
+	},
 }
 
 /// # 狀態
@@ -198,7 +181,77 @@ enum Sort {
 	Popularity(bool),
 }
 
-const DOMAIN: &str = "https://copymanga.site";
+#[expect(dead_code)]
+#[derive(Default, IntoStaticStr, Clone, Copy)]
+enum SearchType {
+	#[default]
+	#[strum(to_string = "")]
+	All,
+
+	#[strum(to_string = "name")]
+	Title,
+
+	#[strum(to_string = "author")]
+	Author,
+
+	#[strum(to_string = "local")]
+	Translator,
+}
+
+#[derive(Default)]
+struct Search {
+	page: i32,
+	keyword: String,
+	by: SearchType,
+}
+
+impl Search {
+	fn new<S: AsRef<str>>(page: i32, keyword: S) -> Self {
+		Self {
+			page,
+			keyword: keyword.as_ref().to_owned(),
+			..Default::default()
+		}
+	}
+}
+
+impl Display for Search {
+	fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
+		let path = Url::SearchPage
+			.get_html()
+			.ok()
+			.and_then(|page| {
+				let count_api = page
+					.html()
+					.read()
+					.lines()
+					.find(|line| line.contains("const countApi"))?
+					.split('"')
+					.nth(1)?
+					.to_owned();
+
+				Some(count_api)
+			})
+			.unwrap_or_else(|| "/api/kb/web/searchbc/comics".into());
+
+		let mut query = QueryParameters::new();
+
+		let offset = self.page.checked_sub(1).unwrap_or(0).saturating_mul(LIMIT);
+		query.push_encoded("offset", Some(&offset.to_string()));
+
+		query.push_encoded("platform", Some(&2.to_string()));
+
+		query.push_encoded("limit", Some(&LIMIT.to_string()));
+
+		query.push("q", Some(&self.keyword));
+
+		let search_by = (!matches!(self.by, SearchType::All)).then(|| self.by.into());
+		query.push_encoded("q_type", search_by);
+
+		write!(f, "{path}?{query}")
+	}
+}
+
 pub const MANGA_PATH: &str = "/comic/";
 pub const CHAPTER_PATH: &str = "/chapter/";
 
@@ -286,24 +339,6 @@ impl<'a> Url<'a> {
 	}
 }
 
-impl<'a> Display for Url<'a> {
-	fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-		match self {
-			Self::Filters(query) => write!(f, "{}/comics?{}", DOMAIN, query),
-			Self::Search(query) => write!(f, "{}/api/kb/web/searcha/comics?{}", DOMAIN, query),
-			Self::Manga(manga_id) => write!(f, "{}{}{}", DOMAIN, MANGA_PATH, manga_id),
-			Self::ChapterList(manga_id) => {
-				write!(f, "{}/comicdetail/{}/chapters", DOMAIN, manga_id)
-			}
-			Self::Chapter(manga_id, chapter_id) => write!(
-				f,
-				"{}{}{}{}{}",
-				DOMAIN, MANGA_PATH, manga_id, CHAPTER_PATH, chapter_id
-			),
-		}
-	}
-}
-
 impl<'a> From<(Vec<Filter>, i32)> for Url<'a> {
 	fn from((filters, page): (Vec<Filter>, i32)) -> Self {
 		let mut genre_index = 0;
@@ -348,16 +383,13 @@ impl<'a> From<(Vec<Filter>, i32)> for Url<'a> {
 				}
 
 				FilterType::Title => {
-					let Ok(search_str_ref) = filter.value.as_string() else {
-						continue;
+					let keyword = match filter.value.as_string() {
+						Ok(str_ref) => str_ref.read(),
+						Err(_) => continue,
 					};
-					let search_str = search_str_ref.read();
+					let search = Search::new(page, keyword);
 
-					query.push_encoded("platform", Some(2.to_string().as_str()));
-					query.push("q", Some(&search_str));
-					query.push_encoded("q_type", None);
-
-					return Url::Search(query);
+					return Url::Search { search };
 				}
 
 				_ => continue,
@@ -369,7 +401,7 @@ impl<'a> From<(Vec<Filter>, i32)> for Url<'a> {
 		query.push_encoded("region", Some(region.to_string().as_str()));
 		query.push_encoded("ordering", Some(sort_by.to_string().as_str()));
 
-		Url::Filters(query)
+		Url::Filters { query }
 	}
 }
 
@@ -390,7 +422,7 @@ impl_display!(Status);
 impl_display!(Region);
 
 impl Display for Sort {
-	fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+	fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
 		match self {
 			Self::DateUpdated(is_asc) => {
 				write!(f, "{}datetime_updated", if *is_asc { "" } else { "-" })

@@ -1,0 +1,15 @@
+{
+	"info": {
+		"id": "ru.mangalib",
+		"lang": "ru",
+		"name": "MangaLib",
+		"version": 1,
+		"url": "https://mangalib.me",
+		"nsfw": 1
+	},
+	"listings": [
+		{
+			"name": "Сейчас читают"
+		}
+	]
+}

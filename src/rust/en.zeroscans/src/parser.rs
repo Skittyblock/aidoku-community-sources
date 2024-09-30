@@ -1,435 +1,179 @@
 use aidoku::{
-	error::Result, prelude::format, std::net::HttpMethod, std::net::Request, std::String, std::Vec,
-	Chapter, Filter, FilterType, Listing, Manga, MangaContentRating, MangaPageResult, MangaStatus,
-	MangaViewer, Page,
+	error::{AidokuError, AidokuErrorKind, Result},
+	prelude::format,
+	std::{
+		net::{HttpMethod, Request},
+		String, Vec,
+	},
+	Chapter, DeepLink, Filter, FilterType, Manga, MangaPageResult, MangaStatus, Page,
 };
 
 use crate::helper::*;
+use crate::BASE_URL;
 
-pub fn parse_manga_list(
-	base_url: String,
-	filters: Vec<Filter>,
-	_page: i32,
-) -> Result<MangaPageResult> {
+pub fn parse_manga_list(filters: Vec<Filter>) -> Result<MangaPageResult> {
 	let mut search_query = String::new();
+	let mut include_genres = Vec::new();
+	let mut exclude_genres = Vec::new();
+	let mut status = "";
+
+	let manga = all_comics()?;
 
 	for filter in filters {
-		if filter.kind == FilterType::Title {
-			search_query = filter
-				.value
-				.as_string()
-				.expect("Failed to get search filter value")
-				.read()
-				.to_lowercase();
+		match filter.kind {
+			FilterType::Title => {
+				if let Ok(value) = filter.value.as_string() {
+					search_query = value.read().to_lowercase();
+				}
+			}
+			FilterType::Genre => {
+				if let Ok(name) = filter.object.get("name").as_string() {
+					match filter.value.as_int().unwrap_or(-1) {
+						0 => exclude_genres.push(name.read()),
+						1 => include_genres.push(name.read()),
+						_ => continue,
+					}
+				}
+			}
+			FilterType::Select => match filter.name.as_str() {
+				"Status" => match filter.value.as_int().unwrap_or(-1) {
+					0 => status = "All",
+					1 => status = "Completed",
+					2 => status = "Dropped",
+					3 => status = "Ongoing",
+					4 => status = "Hiatus",
+					_ => continue,
+				},
+				_ => continue,
+			},
+			_ => continue,
 		}
 	}
 
-	let url = format!("{}/swordflake/comics", base_url);
+	let mut filtered_manga = manga.clone();
 
-	let json = Request::new(url, HttpMethod::Get)
-		.json()
-		.expect("Failed to load JSON")
-		.as_object()
-		.expect("Failed to get JSON as object");
+	if !include_genres.is_empty() {
+		filtered_manga.retain(|manga| {
+			include_genres
+				.iter()
+				.any(|genre| manga.categories.contains(genre))
+		})
+	}
 
-	let data = json
-		.get("data")
-		.as_object()
-		.expect("Failed to get data as object");
+	if !exclude_genres.is_empty() {
+		filtered_manga.retain(|manga| {
+			!exclude_genres
+				.iter()
+				.any(|genre| manga.categories.contains(genre))
+		})
+	}
 
-	let comics = data
-		.get("comics")
-		.as_array()
-		.expect("Failed to get comics as array");
+	if !status.is_empty() {
+		filtered_manga.retain(|manga| match status {
+			"All" => true,
+			"Completed" => manga.status == MangaStatus::Completed,
+			"Dropped" => manga.status == MangaStatus::Cancelled,
+			"Ongoing" => manga.status == MangaStatus::Ongoing,
+			"Hiatus" => manga.status == MangaStatus::Hiatus,
+			_ => false,
+		})
+	}
 
-	let mut mangas: Vec<Manga> = Vec::new();
-
-	for manga in comics {
-		let manga = manga.as_object().expect("Failed to get manga as object");
-
-		// let id = manga
-		// 	.get("id")
-		// 	.as_int()
-		// 	.expect("Failed to get manga id as int");
-		// let id = format!("{}", id);
-
-		let title = manga
-			.get("name")
-			.as_string()
-			.expect("Failed to get manga name as str")
-			.read();
-
-		if !search_query.is_empty() && !title.to_lowercase().contains(&search_query) {
-			continue;
-		}
-
-		let cover = manga
-			.get("cover")
-			.as_object()
-			.expect("Failed to get manga cover as object")
-			.get("horizontal")
-			.as_string()
-			.expect("Failed to get manga cover as str")
-			.read();
-
-		let description = manga
-			.get("summary")
-			.as_string()
-			.expect("Failed to get manga summary as str")
-			.read();
-
-		let slug = manga
-			.get("slug")
-			.as_string()
-			.expect("Failed to get manga slug as str")
-			.read();
-
-		let url = format!("{}/comics/{}", base_url, slug);
-
-		let generes = manga
-			.get("genres")
-			.as_array()
-			.expect("Failed to get manga genres as array");
-
-		let mut categories: Vec<String> = Vec::new();
-
-		for genere in generes {
-			let genere = genere.as_object().expect("Failed to get genere as object");
-
-			let name = genere
-				.get("name")
-				.as_string()
-				.expect("Failed to get genere name as str")
-				.read();
-
-			categories.push(name);
-		}
-
-		let statuses = manga
-			.get("statuses")
-			.as_array()
-			.expect("Failed to get manga statuses as array");
-
-		let mut manga_status = MangaStatus::Unknown;
-
-		for status in statuses {
-			let status = status.as_object().expect("Failed to get status object");
-
-			let name = status
-				.get("name")
-				.as_string()
-				.expect("Failed to get genere name as str")
-				.read();
-
-			match name.as_str() {
-				"New" => {}
-				"Ongoing" => manga_status = MangaStatus::Ongoing,
-				"Completed" => manga_status = MangaStatus::Completed,
-				"Dropped" => manga_status = MangaStatus::Cancelled,
-				"Hiatus" => manga_status = MangaStatus::Hiatus,
-				_ => manga_status = MangaStatus::Unknown,
-			};
-		}
-
-		mangas.push(Manga {
-			id: slug,
-			cover,
-			title,
-			author: String::new(),
-			artist: String::new(),
-			description,
-			url,
-			categories,
-			status: manga_status,
-			nsfw: MangaContentRating::Safe,
-			viewer: MangaViewer::Scroll,
-		});
+	if !search_query.is_empty() {
+		filtered_manga.retain(|manga| manga.title.to_lowercase().contains(&search_query))
 	}
 
 	Ok(MangaPageResult {
-		manga: mangas,
+		manga: filtered_manga,
 		has_more: false,
 	})
 }
 
 // The only alternative listing Zero Scans has is new chapters
-pub fn parse_manga_listing(
-	base_url: String,
-	_listing: Listing,
-	_page: i32,
-) -> Result<MangaPageResult> {
-	let url = format!("{}/swordflake/new-chapters", base_url);
+pub fn parse_manga_listing() -> Result<MangaPageResult> {
+	let url = format!("{}/swordflake/new-chapters", BASE_URL);
 
-	let json = Request::new(url, HttpMethod::Get)
-		.json()
-		.expect("Failed to load JSON")
-		.as_object()
-		.expect("Failed to get JSON as object");
+	let json = Request::new(url, HttpMethod::Get).json()?.as_object()?;
+	let comics = json.get("all").as_array()?;
 
-	let comics = json
-		.get("all")
-		.as_array()
-		.expect("Failed to get manga as array");
+	let mut manga: Vec<Manga> = Vec::new();
 
-	let mut mangas: Vec<Manga> = Vec::new();
+	for comic in comics {
+		let comic = comic.as_object()?;
 
-	for manga in comics {
-		let manga = manga.as_object().expect("Failed to get manga as object");
-
-		// let id = manga
-		// 	.get("id")
-		// 	.as_int()
-		// 	.expect("Failed to get manga id as int");
-
-		let title = manga
-			.get("name")
-			.as_string()
-			.expect("Failed to get manga title as str")
-			.read();
-
-		let slug = manga
-			.get("slug")
-			.as_string()
-			.expect("Failed to get manga slug as str")
-			.read();
-
-		let url = format!("{}/comics/{}", base_url, slug);
-
-		let cover = manga
+		let title = comic.get("name").as_string()?.read();
+		let slug = comic.get("slug").as_string()?.read();
+		let id = comic.get("id").as_int()?;
+		let url = format!("{}/comics/{}", BASE_URL, slug);
+		let cover = comic
 			.get("cover")
-			.as_object()
-			.expect("Failed to get manga cover as object")
+			.as_object()?
 			.get("vertical")
-			.as_string()
-			.expect("Failed to get manga cover as str")
+			.as_string()?
 			.read();
 
-		mangas.push(Manga {
-			id: slug,
+		manga.push(Manga {
+			id: format!("[<{}>]{}", id, slug),
 			cover,
 			title,
-			author: String::new(),
-			artist: String::new(),
-			description: String::new(),
 			url,
-			categories: Vec::new(),
-			status: MangaStatus::Unknown,
-			nsfw: MangaContentRating::Safe,
-			viewer: MangaViewer::Scroll,
+			..Default::default()
 		})
 	}
 
 	Ok(MangaPageResult {
-		manga: mangas,
+		manga,
 		has_more: false,
 	})
 }
 
-pub fn parse_manga_details(base_url: String, manga_id: String) -> Result<Manga> {
-	let url = format!("{}/swordflake/comic/{}", base_url, manga_id);
+pub fn parse_manga_details(manga_id: String) -> Result<Manga> {
+	let manga = all_comics()?
+		.into_iter()
+		.find(|manga| manga.id == manga_id)
+		.ok_or(AidokuError {
+			reason: AidokuErrorKind::Unimplemented,
+		})?;
 
-	let json = Request::new(url, HttpMethod::Get)
-		.json()
-		.expect("Failed to load JSON")
-		.as_object()
-		.expect("Failed to get JSON as object");
-
-	let data = json
-		.get("data")
-		.as_object()
-		.expect("Failed to get data as object");
-
-	// let id = data
-	// 	.get("id")
-	// 	.as_int()
-	// 	.expect("Failed to get manga id as int");
-	// let id = format!("{}", id);
-
-	let cover = data
-		.get("cover")
-		.as_object()
-		.expect("Failed to get manga cover as object")
-		.get("full")
-		.as_string()
-		.expect("Failed to get manga cover as str")
-		.read();
-
-	let title = data
-		.get("name")
-		.as_string()
-		.expect("Failed to get manga name as str")
-		.read();
-
-	let description = data
-		.get("summary")
-		.as_string()
-		.expect("Failed to get manga summary as str")
-		.read();
-
-	let slug = data
-		.get("slug")
-		.as_string()
-		.expect("Failed to get manga slug as str")
-		.read();
-
-	let url = format!("{}/comics/{}", base_url, slug);
-
-	let generes = data
-		.get("genres")
-		.as_array()
-		.expect("Failed to get manga genres as array");
-
-	let mut categories: Vec<String> = Vec::new();
-
-	for genere in generes {
-		let genere = genere.as_object().expect("Failed to get genere as object");
-
-		let name = genere
-			.get("name")
-			.as_string()
-			.expect("Failed to get genere name as str")
-			.read();
-
-		categories.push(name);
-	}
-
-	let statuses = data
-		.get("statuses")
-		.as_array()
-		.expect("Failed to get manga statuses as array");
-
-	let mut manga_status = MangaStatus::Unknown;
-
-	for status in statuses {
-		let status = status.as_object().expect("Failed to get status as object");
-
-		let name = status
-			.get("name")
-			.as_string()
-			.expect("Failed to get genere name as str")
-			.read();
-
-		match name.as_str() {
-			"New" => {}
-			"Ongoing" => manga_status = MangaStatus::Ongoing,
-			"Completed" => manga_status = MangaStatus::Completed,
-			"Dropped" => manga_status = MangaStatus::Cancelled,
-			"Hiatus" => manga_status = MangaStatus::Hiatus,
-			_ => manga_status = MangaStatus::Unknown,
-		};
-	}
-
-	Ok(Manga {
-		id: slug,
-		cover,
-		title,
-		author: String::new(),
-		artist: String::new(),
-		description,
-		url,
-		categories,
-		status: manga_status,
-		nsfw: MangaContentRating::Safe,
-		viewer: MangaViewer::Scroll,
-	})
+	Ok(manga)
 }
 
-// TODO: Find a way to pass the manga int id to this function instead of making
-// another http request just to get the id, currently the manga_id is the slug
-// which is used everywhere else BUT here >:(
-pub fn parse_chapter_list(base_url: String, manga_id: String) -> Result<Vec<Chapter>> {
-	// Get manga id from slug
-	let manga_int_id = {
-		let url = format!("{}/swordflake/comic/{}", base_url, manga_id);
-
-		let json = Request::new(url, HttpMethod::Get)
-			.json()
-			.expect("Failed to load JSON")
-			.as_object()
-			.expect("Failed to get JSON as object");
-
-		let data = json
-			.get("data")
-			.as_object()
-			.expect("Failed to get data as object");
-
-		data.get("id")
-			.as_int()
-			.expect("Failed to get manga id as int")
-	};
-
-	if manga_int_id == 0 {
-		return Ok(Vec::new());
-	}
-
+pub fn parse_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 	let mut all_chapters: Vec<Chapter> = Vec::new();
 	let mut page = 1;
+
+	let (id, slug) = get_identifiers(&manga_id)?;
 
 	loop {
 		let url = format!(
 			"{}/swordflake/comic/{}/chapters?sort=desc&page={}",
-			base_url, manga_int_id, &page
+			BASE_URL, id, &page
 		);
 
-		let json = Request::new(url, HttpMethod::Get)
-			.json()
-			.expect("Failed to load JSON")
-			.as_object()
-			.expect("Failed to get JSON as object");
+		let json = Request::new(url, HttpMethod::Get).json()?.as_object()?;
+		let data = json.get("data").as_object()?;
 
-		let data = json
-			.get("data")
-			.as_object()
-			.expect("Failed to get data as object");
-
-		let chapters = data
-			.get("data")
-			.as_array()
-			.expect("Failed to get chapters as array");
-
-		let last_page = data
-			.get("last_page")
-			.as_int()
-			.expect("Failed to get last page as int");
+		let chapters = data.get("data").as_array()?;
+		let last_page = data.get("last_page").as_int()?;
 
 		if !chapters.is_empty() {
 			for chapter in chapters {
-				let chapter = chapter
-					.as_object()
-					.expect("Failed to get chapter as object");
+				let chapter = chapter.as_object()?;
 
-				let id = chapter
-					.get("id")
-					.as_int()
-					.expect("Failed to get chapter id as int");
-				let id = format!("{}", id);
-
-				let chapter_number = chapter
-					.get("name")
-					.as_float()
-					.expect("Failed to get chapter number as float") as f32;
-
-				let date_updated = chapter
-					.get("created_at")
-					.as_string()
-					.expect("Failed to get chapter date as str")
-					.read();
-
+				let id = chapter.get("id").as_int()?;
+				let chapter_number = chapter.get("name").as_float()? as f32;
+				let date_updated = chapter.get("created_at").as_string()?.read();
 				let date_updated = get_date(date_updated);
-
 				let scanlator = chapter.get("group").as_string().unwrap_or("".into()).read();
-
-				let chapter_url = format!("{}/comics/{}/chapters/{}", base_url, manga_id, id);
+				let chapter_url = format!("{}/comics/{}/{}", BASE_URL, slug, id);
 
 				all_chapters.push(Chapter {
-					id,
-					title: String::new(),
-					volume: -1.0,
+					id: format!("{}", id),
 					chapter: chapter_number,
 					date_updated,
 					scanlator,
 					url: chapter_url,
-					lang: String::from("en"),
+					..Default::default()
 				});
 			}
 		}
@@ -444,53 +188,61 @@ pub fn parse_chapter_list(base_url: String, manga_id: String) -> Result<Vec<Chap
 	Ok(all_chapters)
 }
 
-pub fn parse_page_list(
-	base_url: String,
-	manga_id: String,
-	chapter_id: String,
-) -> Result<Vec<Page>> {
+pub fn parse_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
+	let (_, slug) = get_identifiers(&manga_id)?;
+
 	let url = format!(
 		"{}/swordflake/comic/{}/chapters/{}",
-		base_url, manga_id, chapter_id
+		BASE_URL, slug, chapter_id
 	);
 
-	let json = Request::new(url, HttpMethod::Get)
-		.json()
-		.expect("Failed to load JSON")
-		.as_object()
-		.expect("Failed to get JSON object");
+	let json = Request::new(url, HttpMethod::Get).json()?.as_object()?;
+	let data = json.get("data").as_object()?;
 
-	let data = json
-		.get("data")
-		.as_object()
-		.expect("Failed to get data as object");
-
-	let chapter = data
-		.get("chapter")
-		.as_object()
-		.expect("Failed to get chapter as object");
-
-	let pages = chapter
-		.get("high_quality")
-		.as_array()
-		.expect("Failed to get pages as array");
+	let chapter = data.get("chapter").as_object()?;
+	let pages = chapter.get("high_quality").as_array()?;
 
 	let mut page_list: Vec<Page> = Vec::new();
 
 	for (index, page) in pages.enumerate() {
-		let page = page.as_string().expect("Failed to get page as str").read();
+		let page = page.as_string()?.read();
 
 		page_list.push(Page {
 			index: index as i32,
 			url: page,
-			text: String::new(),
-			base64: String::new(),
+			..Default::default()
 		});
 	}
 
 	Ok(page_list)
 }
 
-pub fn modify_image_request(base_url: String, request: Request) {
-	request.header("Referer", &base_url);
+pub fn modify_image_request(request: Request) {
+	request.header("Referer", BASE_URL);
+}
+
+pub fn handle_url(url: String) -> Result<DeepLink> {
+	if let Some((slug, chapter_id)) = parse_url(&url) {
+		let data = all_comics()?;
+		let comic = data.into_iter().find(|comic| comic.id.contains(&slug));
+
+		if let Some(chapter_id) = chapter_id {
+			Ok(DeepLink {
+				manga: comic,
+				chapter: Some(Chapter {
+					id: chapter_id,
+					..Default::default()
+				}),
+			})
+		} else {
+			Ok(DeepLink {
+				manga: comic,
+				..Default::default()
+			})
+		}
+	} else {
+		Err(AidokuError {
+			reason: AidokuErrorKind::Unimplemented,
+		})
+	}
 }

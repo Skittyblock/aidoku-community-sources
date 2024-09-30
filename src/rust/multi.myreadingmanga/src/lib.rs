@@ -45,8 +45,9 @@ enum Url<'a> {
 
 const DOMAIN: &str = "https://myreadingmanga.info";
 
-/// Safari on iOS 17.4
-const USER_AGENT: &str = "Mozilla/5.0 (iPhone; CPU iPhone OS 17_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.3.1 Mobile/15E148 Safari/604.1";
+/// Chrome 128 on iOS 17.6
+/// Apple iPhone
+const USER_AGENT: &str = "Mozilla/5.0 (iPhone; CPU iPhone OS 17_6_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/128.0.6613.98 Mobile/15E148 Safari/604.1";
 
 /// Sort by: \[More relevant, Newest, Oldest, Random\]
 const SORT: [&str; 4] = [
@@ -81,8 +82,8 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 		let manga_id = manga_url.replace(DOMAIN, "").replace('/', "");
 
 		let cover_url = manga_node
-			.select("noscript > img")
-			.attr("src")
+			.select("img")
+			.attr("data-src")
 			.read()
 			.replace("-180x260", "")
 			.percent_encode(false);
@@ -226,6 +227,13 @@ fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 		};
 		chapters.insert(0, chapter);
 	}
+	if let Some(last_chapter) = chapters.first_mut() {
+		last_chapter.date_updated =
+			manga_html
+				.select("time.entry-time")
+				.text()
+				.as_date("MMMM d, yyyy", None, None);
+	}
 
 	Ok(chapters)
 }
@@ -236,9 +244,9 @@ fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 	let chapter_html = request_get(&chapter_url).html()?;
 
 	let mut pages = Vec::<Page>::new();
-	let page_nodes = chapter_html.select("noscript > img.img-myreadingmanga");
+	let page_nodes = chapter_html.select("img.img-myreadingmanga");
 	for (page_index, page_value) in page_nodes.array().enumerate() {
-		let page_url = page_value.as_node()?.attr("src").read();
+		let page_url = page_value.as_node()?.attr("data-src").read();
 
 		pages.push(Page {
 			index: page_index as i32,

@@ -1,4 +1,7 @@
-use crate::url::Url;
+use crate::{
+	helper::{to_aidoku_error, Regex},
+	url::Url,
+};
 use aidoku::{
 	error::{AidokuError, Result},
 	prelude::format,
@@ -8,7 +11,6 @@ use aidoku::{
 use alloc::string::ToString;
 use chinese_number::{ChineseCountMethod, ChineseToNumber as _};
 use core::str::FromStr;
-use regex::Regex;
 use uuid::Uuid;
 
 pub trait MangaListResponse {
@@ -83,7 +85,7 @@ impl MangaArr for ArrayRef {
 				.collect::<Vec<_>>()
 				.join("、");
 
-			let manga_url = Url::Manga(&manga_id).to_string();
+			let manga_url = Url::Manga { id: &manga_id }.to_string();
 
 			let status_code = manga_obj.get("status").as_int().unwrap_or(-1);
 			let status = match status_code {
@@ -154,18 +156,18 @@ impl JsonObj for ObjectRef {
 }
 
 pub trait UuidString {
-	fn get_timestamp(&self) -> f64;
+	fn get_timestamp(&self) -> Result<f64>;
 }
 
 impl UuidString for String {
-	fn get_timestamp(&self) -> f64 {
+	fn get_timestamp(&self) -> Result<f64> {
 		let (integer_part, fractional_part) = Uuid::from_str(self)
-			.expect("Failed to parse String 'id' to UUID.")
+			.map_err(to_aidoku_error)?
 			.get_timestamp()
-			.expect("Failed to parse UUID to timestamp.")
+			.ok_or_else(|| to_aidoku_error("Failed to parse UUID to timestamp."))?
 			.to_unix();
 
-		(integer_part as f64) + (fractional_part as f64 * 10e-10)
+		Ok((integer_part as f64) + (fractional_part as f64 * 10e-10))
 	}
 }
 
@@ -200,9 +202,8 @@ impl FromStr for Part {
 		}
 
 		let re = Regex::new(
-				r"^(单行本：)?(第?(?<volume>[\d零一二三四五六七八九十百千]+(\.\d)?)[卷部季]完?)?((第|连载|CH)?(?<chapter>[\d零一二三四五六七八九十百千]+([\.-]\d+)?)[話话回]?(-?[(（]?(?<part>([前中后上下]|\d+))[)）]?篇?)?(试看)?)?(\s.*|$)",
-			)
-			.unwrap();
+			r"^(单行本：)?(第?(?<volume>[\d零一二三四五六七八九十百千]+(\.\d)?)[卷部季]完?)?((第|连载|CH)?(?<chapter>[\d零一二三四五六七八九十百千]+([\.-]\d+)?)[話话回]?(-?[(（]?(?<part>([前中后上下]|\d+))[)）]?篇?)?(试看)?)?(\s.*|$)",
+		)?;
 		let Some(caps) = re.captures(title) else {
 			return Ok(Self {
 				volume: -1.0,

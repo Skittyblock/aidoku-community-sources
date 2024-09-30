@@ -1,5 +1,4 @@
 #![no_std]
-#![feature(pattern)]
 
 use aidoku::{
 	error::Result, prelude::*, std::defaults::defaults_get, std::net::HttpMethod,
@@ -7,11 +6,8 @@ use aidoku::{
 	MangaPageResult, Page,
 };
 
-mod crypto;
-mod evpkdf;
 mod helper;
 mod parser;
-mod substring;
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {

@@ -17,6 +17,6 @@ lto = true
 
 [dependencies]
 aidoku = { git = "https://github.com/Aidoku/aidoku-rs", features = ["helpers"] }
-base64 = { version = "0.21.2", default-features = false, features = ["alloc"] }
 chinese-number = { version = "0.7.7", default-features = false, features = ["chinese-to-number"] }
 regex = { version = "1.10.2", default-features = false, features = ["unicode"] }
+strum_macros = "0.26.4"

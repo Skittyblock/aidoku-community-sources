@@ -1,0 +1,18 @@
+{
+	"info": {
+		"id": "en.theblank",
+		"lang": "en",
+		"name": "The Blank",
+		"version": 2,
+		"url": "https://theblank.net",
+		"nsfw": 2
+	},
+	"listings": [
+		{
+			"name": "Trending"
+		},
+		{
+			"name": "Popular"
+		}
+	]
+}

@@ -12,7 +12,7 @@ use wpcomics_template::{
 
 fn get_instance() -> WPComicsSource {
 	WPComicsSource {
-		base_url: String::from("https://xoxocomics.com"),
+		base_url: String::from("https://xoxocomic.com"),
 		listing_mapping: listing_map,
 
 		manga_details_title_transformer: trunc_trailing_comic,
@@ -43,7 +43,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 		}
 	}
 	get_instance().get_manga_list(get_search_url(
-		String::from("https://xoxocomics.com"),
+		String::from("https://xoxocomic.com"),
 		title,
 		genre,
 		page,
