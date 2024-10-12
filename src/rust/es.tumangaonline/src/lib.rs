@@ -14,8 +14,8 @@ use alloc::{borrow::ToOwned, string::ToString};
 mod parser;
 
 static USER_AGENT: &str = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36";
-static BASE_URL: &str = "https://lectortmo.com/";
-static BASE_IMAGE_REFERER: &str = "https://visortmo.com";
+static BASE_URL: &str = "https://zonatmo.com/";
+static BASE_IMAGE_REFERER: &str = "https://zonatmo.com";
 
 #[link(wasm_import_module = "net")]
 extern "C" {
@@ -172,11 +172,11 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 	match listing.name.as_str() {
 		"Latest" => {
-			let url = String::from("https://lectortmo.com/library?order_item=creation&order_dir=desc&filter_by=title&_pg=1&page=") + &page.to_string();
+			let url = String::from("https://zonatmo.com/library?order_item=creation&order_dir=desc&filter_by=title&_pg=1&page=") + &page.to_string();
 			parser::parse_manga_list(url)
 		}
 		"Popular" => {
-			let url = String::from("https://lectortmo.com/library?order_item=likes_count&order_dir=desc&filter_by=title&_pg=1&page=") + &page.to_string();
+			let url = String::from("https://zonatmo.com/library?order_item=likes_count&order_dir=desc&filter_by=title&_pg=1&page=") + &page.to_string();
 			parser::parse_manga_list(url)
 		}
 		_ => get_manga_list(Vec::new(), page),
