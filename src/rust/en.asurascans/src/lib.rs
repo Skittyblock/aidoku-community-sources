@@ -310,7 +310,13 @@ fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 		let index = {
 			let before = url.substring_after_last('/').unwrap_or("");
 			let after = before.substring_before('.').unwrap_or("");
-			after.parse::<i32>().unwrap_or(-1)
+
+			let cleaned_after = after
+				.chars()
+				.filter(|c| c.is_ascii_digit())
+				.collect::<String>();
+
+			cleaned_after.parse::<i32>().unwrap_or(-1)
 		};
 
 		pages.push(Page {
