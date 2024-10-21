@@ -3,7 +3,7 @@ mod dto;
 extern crate alloc;
 use aidoku::{
 	error::{AidokuError, AidokuErrorKind, Result},
-	helpers::uri::{encode_uri, encode_uri_component},
+	helpers::uri::encode_uri,
 	prelude::*,
 	std::{defaults::defaults_get, net::Request, String, StringRef, Vec},
 	Chapter, Filter, FilterType, Listing, Manga, MangaPageResult, Page,
@@ -69,18 +69,17 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 					let title = title.read();
 					if title.starts_with("regex:") {
 						url.push_str("&search_regex=");
-						url.push_str(&encode_uri_component(
-							title
+						url.push_str(title
 								.strip_prefix("regex:")
 								.map(|v| v.trim())
 								.unwrap_or_default(),
-						));
+						);
 						if !title.contains(",TITLE") && !title.contains(",TITLE_SORT") {
 							url.push_str(",TITLE");
 						}
 					} else {
 						url.push_str("&search=");
-						url.push_str(&encode_uri_component(title));
+						url.push_str(&title);
 					}
 				}
 			}
