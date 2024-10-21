@@ -36,8 +36,7 @@ impl Decoder {
 			String::new()
 		};
 
-		let suffix_vec = vec![
-			self.tr(c % self.a, 36),
+		let suffix_vec = [self.tr(c % self.a, 36),
 			String::from_utf8(vec![(c % self.a + 29) as u8]).unwrap_or_default(),
 		];
 		let suffix = suffix_vec[(c % self.a > 35) as usize].clone();
@@ -47,7 +46,7 @@ impl Decoder {
 
 	fn tr(&self, value: i32, num: i32) -> String {
 		let tmp = Self::itr(value, num);
-		if tmp.eq("") {
+		if tmp.is_empty() {
 			return String::from("0");
 		}
 		tmp
@@ -69,7 +68,7 @@ impl Decoder {
 		let mut d_value: Vec<String> = vec![];
 		while c > -1 {
 			let key = self.e(c);
-			let value_index = self.data[c as usize].eq("") as usize;
+			let value_index = self.data[c as usize].is_empty() as usize;
 			let value = vec![self.data[c as usize].clone(), self.e(c)][value_index].clone();
 
 			let index = d_key
