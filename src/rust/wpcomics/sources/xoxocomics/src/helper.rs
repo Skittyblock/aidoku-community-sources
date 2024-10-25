@@ -14,7 +14,7 @@ pub fn listing_map(listing: String) -> String {
 // MARK: Other utilities
 pub fn get_search_url(base_url: String, query: String, genre: String, page: i32) -> String {
 	if !query.is_empty() {
-		format!("{base_url}/search?keyword={query}&page={page}")
+		format!("{base_url}/search-comic?keyword={query}&page={page}")
 	} else if !genre.is_empty() {
 		format!("{base_url}/{genre}-comic?page={page}")
 	} else {
