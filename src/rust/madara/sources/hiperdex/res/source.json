@@ -1,12 +1,11 @@
 {
 	"info": {
-		"id": "en.hiperdex",
+		"id": "en.hipertoon",
 		"lang": "en",
-		"name": "Hiperdex",
+		"name": "Hipertoon",
 		"version": 3,
 		"urls": [
-			"https://hiperdex.com",
-			"https://1sthiperdex.com"
+			"https://hipertoon.com/"
 		],
 		"nsfw": 2
 	},
