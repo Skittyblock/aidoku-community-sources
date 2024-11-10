@@ -194,6 +194,10 @@ pub fn parse_chapter_list(html: Node) -> Vec<Chapter> {
 
 		let date_updated = date_node.text().as_date("yyyy-MM-dd", Some("en-US"), None);
 
+		if chapters.last().is_some_and(|c| c.chapter == chapter) {
+			continue;
+		}
+
 		chapters.push(Chapter {
 			id,
 			lang,
