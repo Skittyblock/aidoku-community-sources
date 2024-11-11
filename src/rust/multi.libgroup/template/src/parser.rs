@@ -111,16 +111,9 @@ pub fn parse_manga_details(
 	let description = detail.get("summary").as_string()?.read();
 
 	let url = format!(
-		"https://{}/{}",
+		"https://{}/ru/manga/{}",
 		domain,
-		detail
-			.get("slug_url")
-			.as_string()?
-			.read()
-			.split("--")
-			.collect::<Vec<&str>>()
-			.get(1)
-			.unwrap()
+		detail.get("slug_url").as_string()?.read()
 	);
 
 	let categories: Vec<String> = detail
