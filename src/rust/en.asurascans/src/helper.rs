@@ -57,7 +57,7 @@ pub fn get_chapter_id(url: &str) -> Result<String, AidokuError> {
 		if segment == "chapter" {
 			if let Some(chapter_segment) = segments.next() {
 				// We want to keep the chapter ID without trailing characters
-				if let Some(end_pos) = chapter_segment.find(|c: char| !c.is_numeric()) {
+				if let Some(end_pos) = chapter_segment.find(|c: char| !c.is_numeric() && c != '.') {
 					let chapter_id = &chapter_segment[0..end_pos];
 					return Ok(String::from(chapter_id));
 				} else {
