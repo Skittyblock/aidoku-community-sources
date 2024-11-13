@@ -190,7 +190,14 @@ pub fn parse_chapter_list(js: ObjectRef, id: &str, domain: &str) -> Result<Vec<C
 					String::new(),
 					chapter_object.get("number").as_string()?.read(),
 				)[0],
-				date_updated: -1.0,
+				date_updated: chapter_object
+					.get("branches")
+					.as_array()?
+					.get(0)
+					.as_object()?
+					.get("created_at")
+					.as_string()?
+					.as_date("yyyy-MM-dd'T'HH:mm:ss.SSS'Z", Some("en_US"), None),
 				scanlator: chapter_object
 					.get("branches")
 					.as_array()?
