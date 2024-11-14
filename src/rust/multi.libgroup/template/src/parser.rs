@@ -1,5 +1,5 @@
 use aidoku::error::Result;
-use aidoku::prelude::{format, println};
+use aidoku::prelude::format;
 use aidoku::std::defaults::defaults_get;
 use aidoku::std::String;
 use aidoku::{std::ObjectRef, Manga, MangaPageResult};
@@ -136,16 +136,6 @@ pub fn parse_manga_details(
 	);
 
 	let nsfw = *is_nsfw;
-
-	println!(
-		"{:?}",
-		detail
-			.get("type")
-			.as_object()?
-			.get("id")
-			.as_int()
-			.unwrap_or_default()
-	);
 
 	let viewer = if detail
 		.get("type")
