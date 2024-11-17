@@ -17,11 +17,11 @@ use aidoku::{
 use helper::*;
 use parser::*;
 
-const BASE_URL: &str = "https://mgdemon.org";
+const BASE_URL: &str = "https://ciorti.online";
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
-	let mut url = format!("{}/browse.php?list={}", BASE_URL, page);
+	let mut url = format!("{}/advanced.php?list={}", BASE_URL, page);
 
 	let mut searching = false;
 
@@ -32,6 +32,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 					searching = true;
 					let query = encode_uri_component(value.read());
 					url = format!("{}/search.php?manga={}", BASE_URL, query);
+					break;
 				}
 			}
 			FilterType::Genre => {
@@ -74,11 +75,11 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 
 #[get_manga_listing]
 fn get_manga_listing(_listing: Listing, page: i32) -> Result<MangaPageResult> {
-	let url = format!("{}/updates.php?list={}", BASE_URL, page);
+	let url = format!("{}/lastupdates.php?list={}", BASE_URL, page);
 
 	let html = Request::new(url, HttpMethod::Get).html()?;
 
-	Ok(parse_manga_list(html, false))
+	Ok(parse_latest_manga_list(html))
 }
 
 #[get_manga_details]
@@ -100,10 +101,10 @@ fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 }
 
 #[get_page_list]
-fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
-	let url = get_chapter_url(&chapter_id, &manga_id);
+fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
+	let chap_url = get_chapter_url(&chapter_id)?;
 
-	let html = Request::new(url, HttpMethod::Get).html()?;
+	let html = Request::new(chap_url, HttpMethod::Get).html()?;
 
 	Ok(parse_page_list(html))
 }
