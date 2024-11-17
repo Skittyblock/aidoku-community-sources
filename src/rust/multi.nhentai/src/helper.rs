@@ -59,6 +59,7 @@ pub fn get_file_type(filetype: String) -> String {
 	return match filetype.as_str() {
 		"j" => String::from("jpg"),
 		"p" => String::from("png"),
+		"w" => String::from("webp"),
 		"g" => String::from("gif"),
 		_ => String::new(),
 	};
