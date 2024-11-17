@@ -111,16 +111,9 @@ pub fn parse_manga_details(
 	let description = detail.get("summary").as_string()?.read();
 
 	let url = format!(
-		"https://{}/{}",
+		"https://{}/ru/manga/{}",
 		domain,
-		detail
-			.get("slug_url")
-			.as_string()?
-			.read()
-			.split("--")
-			.collect::<Vec<&str>>()
-			.get(1)
-			.unwrap()
+		detail.get("slug_url").as_string()?.read()
 	);
 
 	let categories: Vec<String> = detail
@@ -144,7 +137,18 @@ pub fn parse_manga_details(
 
 	let nsfw = *is_nsfw;
 
-	let viewer = MangaViewer::Rtl;
+	let viewer = if detail
+		.get("type")
+		.as_object()?
+		.get("id")
+		.as_int()
+		.unwrap_or_default()
+		== 5
+	{
+		MangaViewer::Scroll
+	} else {
+		MangaViewer::Rtl
+	};
 
 	Ok(Manga {
 		id,
@@ -197,7 +201,14 @@ pub fn parse_chapter_list(js: ObjectRef, id: &str, domain: &str) -> Result<Vec<C
 					String::new(),
 					chapter_object.get("number").as_string()?.read(),
 				)[0],
-				date_updated: -1.0,
+				date_updated: chapter_object
+					.get("branches")
+					.as_array()?
+					.get(0)
+					.as_object()?
+					.get("created_at")
+					.as_string()?
+					.as_date("yyyy-MM-dd'T'HH:mm:ss.SSS'Z", Some("en_US"), None),
 				scanlator: chapter_object
 					.get("branches")
 					.as_array()?
