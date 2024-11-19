@@ -244,7 +244,7 @@ fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 		let url = get_chapter_url(&id, &manga_id);
 
 		// Chapter's title if it exists
-		let title = node.select("h3 > a > span").text().read();
+		let title = String::from(node.select("h3 > a > span").text().read().trim());
 
 		let chapter = node
 			.select("h3 > a")
