@@ -309,14 +309,14 @@ fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 		if let Some(chap) = chap {
 			text_slice = &text_slice[chap..];
 			let end = text_slice.find("\"").unwrap_or(0);
-			let url = text_slice[..end].replace("\\", ""); 
-      println!("url: {}", url);
+			let url = text_slice[..end].replace("\\", "");
+			println!("url: {}", url);
 			let index = {
 				let index = url.substring_after_last("/").unwrap_or("");
 
 				let dash_index = index.substring_before("-").unwrap_or("").parse::<i32>();
 				let underscore_index = index.substring_before("_").unwrap_or("").parse::<i32>();
-        let dot_index = index.substring_before(".").unwrap_or("").parse::<i32>();
+				let dot_index = index.substring_before(".").unwrap_or("").parse::<i32>();
 
 				dash_index.or(underscore_index).or(dot_index).unwrap_or(-1)
 			};
