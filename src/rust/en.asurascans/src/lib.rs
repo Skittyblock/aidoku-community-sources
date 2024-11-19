@@ -325,7 +325,7 @@ fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
       if pages.iter().any(|page| page.index == index) {
         continue;
       }
-      println!("index: {}, url: {}", index, url);
+
       pages.push(Page {
         index,
         url,
