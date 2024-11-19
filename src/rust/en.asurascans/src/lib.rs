@@ -310,7 +310,6 @@ fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 			text_slice = &text_slice[chap..];
 			let end = text_slice.find("\"").unwrap_or(0);
 			let url = text_slice[..end].replace("\\", "");
-			println!("url: {}", url);
 			let index = {
 				let index = url.substring_after_last("/").unwrap_or("");
 
@@ -337,6 +336,8 @@ fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 			break;
 		}
 	}
+
+	pages.sort_by(|a, b| a.index.cmp(&b.index));
 
 	Ok(pages)
 }
