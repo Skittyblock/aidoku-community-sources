@@ -303,37 +303,37 @@ fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 
 	let mut pages: Vec<Page> = Vec::new();
 
-  let mut text_slice = html_text.as_str();
-  loop {
-    let chap = text_slice.find("https://gg.asuracomic.net/storage/media/");
-    if let Some(chap) = chap {
-      text_slice = &text_slice[chap..];
-      let end = text_slice.find(".webp").unwrap_or(0);
-      let url = String::from(&text_slice[..end+5]);
-      let index = {
-        let index = url.substring_after_last("/").unwrap_or("");
+	let mut text_slice = html_text.as_str();
+	loop {
+		let chap = text_slice.find("https://gg.asuracomic.net/storage/media/");
+		if let Some(chap) = chap {
+			text_slice = &text_slice[chap..];
+			let end = text_slice.find(".webp").unwrap_or(0);
+			let url = String::from(&text_slice[..end + 5]);
+			let index = {
+				let index = url.substring_after_last("/").unwrap_or("");
 
-        let dash_index = index.substring_before("-").unwrap_or("").parse::<i32>();
-        let underscore_index = index.substring_before("_").unwrap_or("").parse::<i32>();
-        
-        dash_index.or(underscore_index).unwrap_or(-1)
-      };
-      text_slice = &text_slice[1..];
-      if index == -1 {
-        continue;
-      }
-      if pages.iter().any(|page| page.index == index) {
-        continue;
-      }
+				let dash_index = index.substring_before("-").unwrap_or("").parse::<i32>();
+				let underscore_index = index.substring_before("_").unwrap_or("").parse::<i32>();
 
-      pages.push(Page {
-        index,
-        url,
-        ..Default::default()
-      });
-    } else {
-      break;
-    }     
+				dash_index.or(underscore_index).unwrap_or(-1)
+			};
+			text_slice = &text_slice[1..];
+			if index == -1 {
+				continue;
+			}
+			if pages.iter().any(|page| page.index == index) {
+				continue;
+			}
+
+			pages.push(Page {
+				index,
+				url,
+				..Default::default()
+			});
+		} else {
+			break;
+		}
 	}
 
 	Ok(pages)
