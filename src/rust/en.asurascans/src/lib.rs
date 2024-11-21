@@ -310,14 +310,14 @@ fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 			text_slice = &text_slice[chap..];
 			let end = text_slice.find("\"").unwrap_or(0);
 			let url = text_slice[..end].replace("\\", "");
+
+			// In a url https://gg.asuracomic.net/storage/media/252364/conversions/00-optimized.webp
+			// The index will be 252364
 			let index = {
-				let index = url.substring_after_last("/").unwrap_or("");
+				let index = url.substring_after_last("https://gg.asuracomic.net/storage/media/").unwrap_or("");
+				let index = index.substring_before("/").unwrap_or("");
 
-				let dash_index = index.substring_before("-").unwrap_or("").parse::<i32>();
-				let underscore_index = index.substring_before("_").unwrap_or("").parse::<i32>();
-				let dot_index = index.substring_before(".").unwrap_or("").parse::<i32>();
-
-				dash_index.or(underscore_index).or(dot_index).unwrap_or(-1)
+				index.parse::<i32>().unwrap_or(-1)
 			};
 			text_slice = &text_slice[1..];
 			if index == -1 {
@@ -338,6 +338,12 @@ fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 	}
 
 	pages.sort_by(|a, b| a.index.cmp(&b.index));
+
+	let mean= pages.iter().map(|page| page.index).sum::<i32>() / pages.len() as i32;
+
+	let pages = pages.into_iter().filter(|page| page.index > mean).collect();
+
+	println!("Pages: {:?}", pages);
 
 	Ok(pages)
 }
