@@ -343,8 +343,6 @@ fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 
 	let pages = pages.into_iter().filter(|page| page.index > mean).collect();
 
-	println!("Pages: {:?}", pages);
-
 	Ok(pages)
 }
 
