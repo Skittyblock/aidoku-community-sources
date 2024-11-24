@@ -43,23 +43,15 @@ pub fn parse_manga_list(
 					4 => status.push_str("Completed"),
 					_ => status.push_str("All"),
 				},
-				_ => continue,
-			},
-			FilterType::Sort => {
-				let value = match filter.value.as_object() {
-					Ok(value) => value,
-					Err(_) => continue,
-				};
-				let index = value.get("index").as_int().unwrap_or(-1);
-
-				match index {
+				"Order By" => match filter.value.as_int().unwrap_or(-1) {
 					0 => order_by.push_str("updated_at"),
 					1 => order_by.push_str("total_views"),
 					2 => order_by.push_str("title"),
 					3 => order_by.push_str("created_at"),
 					_ => order_by.push_str("updated_at"),
-				}
-			}
+				},
+				_ => continue,
+			},
 			_ => continue,
 		}
 	}

@@ -69,7 +69,7 @@
 		"default": 0
 	},
 	{
-		"type": "sort",
+		"type": "select",
 		"name": "Order By",
 		"options": [
 			"Last Updated",
