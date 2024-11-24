@@ -70,7 +70,7 @@ pub fn parse_manga_list(
 
 pub fn parse_manga_listing(
 	base_url: String,
-	listing: Listing,
+	_listing: Listing,
 	page: i32,
 ) -> Result<MangaPageResult> {
 	let url = format!("{}/query?page={}&perPage=20&series_type=Comic&query_string=&order=desc&orderBy=&adult=true&status=&tags_ids=[]", BASE_API_URL, page);
