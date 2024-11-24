@@ -8,38 +8,8 @@
 		"filters": [
 			{
 				"type": "genre",
-				"id": "8",
-				"name": "Drama",
-				"canExclude": false
-			},
-			{
-				"type": "genre",
-				"id": "7",
-				"name": "Horror",
-				"canExclude": false
-			},
-			{
-				"type": "genre",
-				"id": "6",
-				"name": "Comedy",
-				"canExclude": false
-			},
-			{
-				"type": "genre",
-				"id": "5",
-				"name": "Gaming",
-				"canExclude": false
-			},
-			{
-				"type": "genre",
-				"id": "4",
-				"name": "Martial Arts",
-				"canExclude": false
-			},
-			{
-				"type": "genre",
-				"id": "3",
-				"name": "Romance",
+				"id": "1",
+				"name": "Action",
 				"canExclude": false
 			},
 			{
@@ -50,8 +20,38 @@
 			},
 			{
 				"type": "genre",
-				"id": "1",
-				"name": "Action",
+				"id": "3",
+				"name": "Romance",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"id": "4",
+				"name": "Martial Arts",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"id": "5",
+				"name": "Gaming",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"id": "6",
+				"name": "Comedy",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"id": "7",
+				"name": "Horror",
+				"canExclude": false
+			},
+			{
+				"type": "genre",
+				"id": "8",
+				"name": "Drama",
 				"canExclude": false
 			}
 		]
