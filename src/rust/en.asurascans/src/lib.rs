@@ -244,7 +244,7 @@ fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 		let url = get_chapter_url(&id, &manga_id);
 
 		// Chapter's title if it exists
-		let title = node.select("h3 > a > span").text().read();
+		let title = String::from(node.select("h3 > a > span").text().read().trim());
 
 		let chapter = node
 			.select("h3 > a")
@@ -299,32 +299,49 @@ fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 	let url = get_chapter_url(&chapter_id, &manga_id);
 
-	let html = Request::new(url, HttpMethod::Get).html()?;
+	let html_text = Request::new(url.clone(), HttpMethod::Get).string()?;
 
 	let mut pages: Vec<Page> = Vec::new();
 
-	for node in html.select("div > img[alt^=chapter page]").array() {
-		let node = node.as_node()?;
+	let mut text_slice = html_text.as_str();
+	loop {
+		let chap = text_slice.find("https://gg.asuracomic.net/storage/media/");
+		if let Some(chap) = chap {
+			text_slice = &text_slice[chap..];
+			let end = text_slice.find("\"").unwrap_or(0);
+			let url = text_slice[..end].replace("\\", "");
 
-		let url = node.attr("abs:src").read();
-		let index = {
-			let before = url.substring_after_last('/').unwrap_or("");
-			let after = before.substring_before('.').unwrap_or("");
+			// In a url https://gg.asuracomic.net/storage/media/252364/conversions/00-optimized.webp
+			// The index will be 252364
+			let index = {
+				let index = url.substring_after_last("https://gg.asuracomic.net/storage/media/").unwrap_or("");
+				let index = index.substring_before("/").unwrap_or("");
 
-			let cleaned_after = after
-				.chars()
-				.filter(|c| c.is_ascii_digit())
-				.collect::<String>();
+				index.parse::<i32>().unwrap_or(-1)
+			};
+			text_slice = &text_slice[1..];
+			if index == -1 {
+				continue;
+			}
+			if pages.iter().any(|page| page.index == index) {
+				continue;
+			}
 
-			cleaned_after.parse::<i32>().unwrap_or(-1)
-		};
-
-		pages.push(Page {
-			index,
-			url,
-			..Default::default()
-		});
+			pages.push(Page {
+				index,
+				url,
+				..Default::default()
+			});
+		} else {
+			break;
+		}
 	}
+
+	pages.sort_by(|a, b| a.index.cmp(&b.index));
+
+	let mean= pages.iter().map(|page| page.index).sum::<i32>() / pages.len() as i32;
+
+	let pages = pages.into_iter().filter(|page| page.index > mean).collect();
 
 	Ok(pages)
 }
