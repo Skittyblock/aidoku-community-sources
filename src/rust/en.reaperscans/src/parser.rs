@@ -193,12 +193,19 @@ pub fn parse_page_list(
 
 	for (i, page) in obj.select(".container > .flex > img").array().enumerate() {
 		let obj = page.as_node().expect("node array");
-		let srcset = obj.attr("srcset").read();
-		let srcset1 = srcset.split(',').next().unwrap_or("").to_string();
-		let srcset2 = srcset1.split(" ").next().unwrap_or("").to_string();
-		let mut url = format!("{}{}", base_url, srcset2);
+		let srcset = obj
+			.attr("srcset")
+			.read()
+			.split(',')
+			.next()
+			.unwrap_or("")
+			.split(' ')
+			.next()
+			.unwrap_or("")
+			.to_string();
+		let mut url = format!("{}{}", base_url, srcset);
 
-		if srcset2.is_empty() {
+		if srcset.is_empty() {
 			url = obj.attr("src").read();
 		}
 
