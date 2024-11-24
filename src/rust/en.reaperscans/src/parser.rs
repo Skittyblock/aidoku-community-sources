@@ -86,7 +86,11 @@ pub fn parse_manga_details(base_url: &String, manga_id: String) -> Result<Manga>
 	let url = format!("{}/series/{}", BASE_API_URL, manga_id);
 	let data = Request::new(url, HttpMethod::Get).json()?.as_object()?;
 
-	let cover = data.get("thumbnail").as_string()?.read();
+	let mut cover = data.get("thumbnail").as_string()?.read();
+	if !cover.contains("https") {
+		cover = format!("https://reaperscans.com/_next/image?url=https%3A%2F%2Fmedia.reaperscans.com%2Ffile%2F4SRBHm%2F{}&w=384&q=75", cover)
+	}
+
 	let title = data.get("title").as_string()?.read();
 	let description = data.get("description").as_string()?.read();
 	let id = data.get("series_slug").as_string()?.read();
