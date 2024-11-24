@@ -73,7 +73,7 @@ fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 #[modify_image_request]
 fn modify_image_request(request: Request) {
 	template::modify_image_request(
-		String::from("https://xoxocomics.com"),
+		String::from("https://xoxocomic.com"),
 		String::from("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.54 Safari/537.36 Edg/101.0.1210.39"),
 		request,
 	)
