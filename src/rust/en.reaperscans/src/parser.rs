@@ -1,5 +1,11 @@
 use aidoku::{
-	error::Result, prelude::format, std::net::HttpMethod, std::net::Request, std::String, std::Vec,
+	error::Result,
+	helpers::uri::encode_uri_component,
+	prelude::format,
+	std::{
+		net::{HttpMethod, Request},
+		String, Vec,
+	},
 	Chapter, Filter, FilterType, Listing, Manga, MangaPageResult, MangaStatus, MangaViewer, Page,
 };
 
@@ -21,7 +27,7 @@ pub fn parse_manga_list(
 	for filter in filters {
 		match filter.kind {
 			FilterType::Title => {
-				search_query = filter.value.as_string()?.read();
+				search_query = encode_uri_component(filter.value.as_string()?.read());
 			}
 			FilterType::Genre => {
 				if let Ok(filter_id) = filter.object.get("id").as_string() {
@@ -60,7 +66,24 @@ pub fn parse_manga_list(
 		genres.pop();
 	}
 
-	let url = format!("{}/query?page={}&perPage=20&series_type=Comic&query_string={}&order=desc&orderBy={}&adult=true&status={}&tags_ids=[{}]", BASE_API_URL, page, search_query, order_by, status, genres);
+	let mut url = format!(
+		"{}/query?page={}&perPage=20&series_type=Comic&adult=true&order=desc",
+		BASE_API_URL, page
+	);
+
+	if !search_query.is_empty() {
+		url.push_str(&format!("&query_string={}", search_query));
+	}
+	if !order_by.is_empty() {
+		url.push_str(&format!("&orderBy={}", order_by));
+	}
+	if !status.is_empty() {
+		url.push_str(&format!("&status={}", status));
+	}
+	if !genres.is_empty() {
+		url.push_str(&format!("&tags_ids=[{}]", genres));
+	}
+
 	let json = Request::new(url, HttpMethod::Get);
 	let manga = parse_manga(&base_url, json)?;
 	let has_more = !manga.is_empty();
