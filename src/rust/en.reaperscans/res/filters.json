@@ -69,14 +69,18 @@
 		"default": 0
 	},
 	{
-		"type": "select",
+		"type": "sort",
 		"name": "Order By",
+		"canAscend": true,
 		"options": [
 			"Last Updated",
 			"Popular",
 			"Alphabetical",
 			"Oldest"
 		],
-		"default": 0
+		"default": {
+			"index": 0,
+			"ascending": false
+		}
 	}
 ]

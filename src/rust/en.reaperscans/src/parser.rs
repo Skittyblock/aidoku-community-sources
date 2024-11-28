@@ -23,6 +23,7 @@ pub fn parse_manga_list(
 	let mut genres = String::new();
 	let mut status = String::new();
 	let mut order_by = String::new();
+	let mut order = String::new();
 
 	for filter in filters {
 		match filter.kind {
@@ -40,6 +41,21 @@ pub fn parse_manga_list(
 					}
 				}
 			}
+			FilterType::Sort => {
+				if let Ok(value) = filter.value.as_object() {
+					let index = value.get("index").as_int().unwrap_or(0);
+					let asc = value.get("ascending").as_bool().unwrap_or(false);
+
+					order.push_str(if asc { "asc" } else { "desc" });
+					match index {
+						0 => order_by.push_str("updated_at"),
+						1 => order_by.push_str("total_views"),
+						2 => order_by.push_str("title"),
+						3 => order_by.push_str("created_at"),
+						_ => order_by.push_str("updated_at"),
+					}
+				}
+			}
 			FilterType::Select => match filter.name.as_str() {
 				"Status" => match filter.value.as_int().unwrap_or(-1) {
 					0 => status.push_str("All"),
@@ -48,13 +64,6 @@ pub fn parse_manga_list(
 					3 => status.push_str("Dropped"),
 					4 => status.push_str("Completed"),
 					_ => status.push_str("All"),
-				},
-				"Order By" => match filter.value.as_int().unwrap_or(-1) {
-					0 => order_by.push_str("updated_at"),
-					1 => order_by.push_str("total_views"),
-					2 => order_by.push_str("title"),
-					3 => order_by.push_str("created_at"),
-					_ => order_by.push_str("updated_at"),
 				},
 				_ => continue,
 			},
@@ -67,12 +76,15 @@ pub fn parse_manga_list(
 	}
 
 	let mut url = format!(
-		"{}/query?page={}&perPage=20&series_type=Comic&adult=true&order=desc",
+		"{}/query?page={}&perPage=20&series_type=Comic&adult=true",
 		BASE_API_URL, page
 	);
 
 	if !search_query.is_empty() {
 		url.push_str(&format!("&query_string={}", search_query));
+	}
+	if !order.is_empty() {
+		url.push_str(&format!("&order={}", order));
 	}
 	if !order_by.is_empty() {
 		url.push_str(&format!("&orderBy={}", order_by));
