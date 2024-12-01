@@ -3,14 +3,6 @@
 version = 3
 
 [[package]]
-name = "acescans"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "mangastream_template",
-]
-
-[[package]]
 name = "ahash"
 version = "0.8.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -25,7 +17,7 @@ dependencies = [
 [[package]]
 name = "aidoku"
 version = "0.2.0"
-source = "git+https://github.com/Aidoku/aidoku-rs#bae338b15a3840dc0428c7af64fe9fc92abfa2fb"
+source = "git+https://github.com/Aidoku/aidoku-rs/#bae338b15a3840dc0428c7af64fe9fc92abfa2fb"
 dependencies = [
  "aidoku_helpers",
  "aidoku_imports",
@@ -37,7 +29,7 @@ dependencies = [
 [[package]]
 name = "aidoku_helpers"
 version = "0.1.0"
-source = "git+https://github.com/Aidoku/aidoku-rs#bae338b15a3840dc0428c7af64fe9fc92abfa2fb"
+source = "git+https://github.com/Aidoku/aidoku-rs/#bae338b15a3840dc0428c7af64fe9fc92abfa2fb"
 dependencies = [
  "aidoku_imports",
 ]
@@ -45,29 +37,21 @@ dependencies = [
 [[package]]
 name = "aidoku_imports"
 version = "0.2.0"
-source = "git+https://github.com/Aidoku/aidoku-rs#bae338b15a3840dc0428c7af64fe9fc92abfa2fb"
+source = "git+https://github.com/Aidoku/aidoku-rs/#bae338b15a3840dc0428c7af64fe9fc92abfa2fb"
 
 [[package]]
 name = "aidoku_macros"
 version = "0.1.0"
-source = "git+https://github.com/Aidoku/aidoku-rs#bae338b15a3840dc0428c7af64fe9fc92abfa2fb"
+source = "git+https://github.com/Aidoku/aidoku-rs/#bae338b15a3840dc0428c7af64fe9fc92abfa2fb"
 
 [[package]]
 name = "aidoku_proc_macros"
 version = "0.2.0"
-source = "git+https://github.com/Aidoku/aidoku-rs#bae338b15a3840dc0428c7af64fe9fc92abfa2fb"
+source = "git+https://github.com/Aidoku/aidoku-rs/#bae338b15a3840dc0428c7af64fe9fc92abfa2fb"
 dependencies = [
  "proc-macro2",
  "quote",
  "syn 1.0.109",
-]
-
-[[package]]
-name = "alceascan"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "mangastream_template",
 ]
 
 [[package]]
@@ -93,21 +77,13 @@ dependencies = [
 ]
 
 [[package]]
-name = "blackarmy"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "mangastream_template",
-]
-
-[[package]]
 name = "cfg-if"
 version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
 
 [[package]]
-name = "cosmicscans"
+name = "demonsect"
 version = "0.1.0"
 dependencies = [
  "aidoku",
@@ -127,14 +103,6 @@ dependencies = [
 
 [[package]]
 name = "flamecomics"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "mangastream_template",
-]
-
-[[package]]
-name = "freakscans"
 version = "0.1.0"
 dependencies = [
  "aidoku",
@@ -200,42 +168,10 @@ dependencies = [
 ]
 
 [[package]]
-name = "kumascans"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "mangastream_template",
-]
-
-[[package]]
 name = "libc"
 version = "0.2.158"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d8adc4bb1803a324070e64a98ae98f38934d91957a99cfb3a43dcbc01bc56439"
-
-[[package]]
-name = "luminousscans"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "mangastream_template",
-]
-
-[[package]]
-name = "mangagenki"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "mangastream_template",
-]
-
-[[package]]
-name = "mangasol"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "mangastream_template",
-]
 
 [[package]]
 name = "mangastream_template"
@@ -278,14 +214,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "manhwafreakmanga"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "mangastream_template",
-]
-
-[[package]]
 name = "manhwalist"
 version = "0.1.0"
 dependencies = [
@@ -295,14 +223,6 @@ dependencies = [
 
 [[package]]
 name = "manhwax"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "mangastream_template",
-]
-
-[[package]]
-name = "nonbiri"
 version = "0.1.0"
 dependencies = [
  "aidoku",
@@ -358,23 +278,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "readkomik"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "mangastream_template",
-]
-
-[[package]]
 name = "realmscans"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "mangastream_template",
-]
-
-[[package]]
-name = "sekaikomik"
 version = "0.1.0"
 dependencies = [
  "aidoku",
