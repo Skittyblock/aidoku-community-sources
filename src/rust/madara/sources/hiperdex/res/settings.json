@@ -16,14 +16,12 @@
 				"key": "sourceURL",
 				"title": "Source",
 				"values": [
-					"https://hiperdex.com",
-					"https://1sthiperdex.com"
+					"https://hipertoon.com/"
 				],
 				"titles": [
-					"Hiperdex",
-					"1sthiperdex"
+					"Hipertoon"	
 				],
-				"default": "https://hiperdex.com"
+				"default": "https://hipertoon.com/"
 			}
 		]
 	}
