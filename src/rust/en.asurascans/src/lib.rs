@@ -312,7 +312,6 @@ fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 	let page_list_end = text_slice[page_list_start..].find(r#"}]"#).unwrap_or(0);
 
 	text_slice = &text_slice[page_list_start..page_list_start + page_list_end];
-	println!("Text slice: {}", text_slice);
 	let mut index = 0;
 	loop {
 		let chap = text_slice.find("https://gg.asuracomic.net/storage/media/");
