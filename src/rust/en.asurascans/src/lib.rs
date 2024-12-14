@@ -4,7 +4,6 @@ mod helper;
 
 use aidoku::{
 	error::Result,
-	helpers::substring::Substring,
 	helpers::uri::encode_uri_component,
 	prelude::*,
 	std::net::{HttpMethod, Request},
