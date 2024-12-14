@@ -301,29 +301,29 @@ fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 
 	let html_text = Request::new(url.clone(), HttpMethod::Get).string()?;
 
-  // Remove script tags from hydration that can cut up the page list
-  let html_text = html_text.replace(r#""])</script><script>self.__next_f.push([1,""#, "");
+	// Remove script tags from hydration that can cut up the page list
+	let html_text = html_text.replace(r#""])</script><script>self.__next_f.push([1,""#, "");
 
 	let mut pages: Vec<Page> = Vec::new();
 
 	let mut text_slice = html_text.as_str();
 
-  // Find bounds of the page list
-  let page_list_start = text_slice.find(r#"\"pages\":[{\"order\":1,\"url\":\"https://gg.asuracomic.net/storage/media"#).unwrap_or(0);
-  let page_list_end = text_slice[page_list_start..].find(r#"}]"#).unwrap_or(0);
+	// Find bounds of the page list
+	let page_list_start = text_slice.find(r#"\"pages\":[{\"order\":1,\"url\":\"https://gg.asuracomic.net/storage/media"#).unwrap_or(0);
+	let page_list_end = text_slice[page_list_start..].find(r#"}]"#).unwrap_or(0);
 
-  text_slice = &text_slice[page_list_start..page_list_start + page_list_end];
-  println!("Text slice: {}", text_slice);
-  let mut index = 0;
+	text_slice = &text_slice[page_list_start..page_list_start + page_list_end];
+	println!("Text slice: {}", text_slice);
+	let mut index = 0;
 	loop {
 		let chap = text_slice.find("https://gg.asuracomic.net/storage/media/");
 		if let Some(chap) = chap {
 			text_slice = &text_slice[chap..];
 			let end = text_slice.find("\"").unwrap_or(0);
 			let url = text_slice[..end].replace("\\", "");
-      text_slice = &text_slice[end..];
+			text_slice = &text_slice[end..];
 
-      index += 1;
+			index += 1;
 
 			if pages.iter().any(|page| page.index == index) {
 				continue;
