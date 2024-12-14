@@ -235,6 +235,12 @@ fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 	{
 		let node = node.as_node()?;
 
+		let chapter_unlocked =	node.select("h3 > span > svg").array().is_empty();
+
+		if !chapter_unlocked {
+			continue;
+		}
+
 		let raw_url = node.select("a").attr("abs:href").read();
 
 		let id = get_chapter_id(&raw_url)?;
