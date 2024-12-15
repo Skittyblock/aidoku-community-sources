@@ -197,6 +197,8 @@ impl Display for LastUpdatedQuery {
 
 		query.push_encoded("widx", Some("11"));
 
+		query.push_encoded("limit", Some("18"));
+
 		let index = Index::from_page(self.page).to_string();
 		query.push_encoded("page", Some(&index));
 
