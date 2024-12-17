@@ -175,7 +175,11 @@ impl Api {
 	}
 
 	pub fn get(&self) -> Request {
-		Request::get(self.to_string()).default_headers()
+		Request::get(self.to_string()).header(
+			"User-Agent",
+			"Mozilla/5.0 (iPad; CPU OS 18_2 like Mac OS X) \
+			 AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
+		)
 	}
 }
 
