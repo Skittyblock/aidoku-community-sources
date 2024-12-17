@@ -179,6 +179,10 @@ impl Api {
 		let now = current_date() as i64;
 		let token_parameter = format!("{now},1.1.0");
 
+		let token = format!("{now}18comicAPPContent");
+		let token_digest = md5::compute(token);
+		let token_hash = format!("{token_digest:x}");
+
 		Request::get(self.to_string())
 			.header(
 				"User-Agent",
@@ -186,6 +190,7 @@ impl Api {
 				 AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
 			)
 			.header("Tokenparam", &token_parameter)
+			.header("Token", &token_hash)
 	}
 }
 
