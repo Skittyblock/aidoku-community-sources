@@ -1,7 +1,7 @@
 use aidoku::{
 	helpers::uri::{encode_uri_component, QueryParameters},
 	prelude::format,
-	std::{net::Request, String, Vec},
+	std::{current_date, net::Request, String, Vec},
 	Filter, FilterType,
 };
 use alloc::string::ToString as _;
@@ -175,11 +175,17 @@ impl Api {
 	}
 
 	pub fn get(&self) -> Request {
-		Request::get(self.to_string()).header(
-			"User-Agent",
-			"Mozilla/5.0 (iPad; CPU OS 18_2 like Mac OS X) \
-			 AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
-		)
+		#[expect(clippy::cast_possible_truncation, clippy::as_conversions)]
+		let now = current_date() as i64;
+		let token_parameter = format!("{now},1.1.0");
+
+		Request::get(self.to_string())
+			.header(
+				"User-Agent",
+				"Mozilla/5.0 (iPad; CPU OS 18_2 like Mac OS X) \
+				 AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
+			)
+			.header("Tokenparam", &token_parameter)
 	}
 }
 
