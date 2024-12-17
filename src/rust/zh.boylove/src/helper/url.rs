@@ -236,6 +236,10 @@ impl Display for ChapterQuery {
 	fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
 		let mut query = QueryParameters::new();
 		query.push_encoded("id", Some(&self.id));
+		query.push_encoded("sw_page", Some("null"));
+		query.push_encoded("mode", Some("vertical"));
+		query.push_encoded("page", Some("0"));
+		query.push_encoded("app_img_shunt", Some("NaN"));
 
 		write!(f, "{query}")
 	}
