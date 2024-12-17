@@ -4,7 +4,7 @@ use aidoku::{
 	std::{net::Request, String, Vec},
 	Filter, FilterType,
 };
-use alloc::{borrow::ToOwned as _, string::ToString as _};
+use alloc::string::ToString as _;
 use core::fmt::{Display, Formatter, Result as FmtResult};
 use strum_macros::{Display, FromRepr};
 
@@ -56,9 +56,6 @@ pub enum Url<'a> {
 
 	#[strum(to_string = "/home/book/capter/id/{id}")]
 	ChapterPage { id: &'a str },
-
-	#[strum(to_string = "/chapter_view_template?{query}")]
-	Chapter { query: ChapterQuery },
 }
 
 impl Url<'_> {
@@ -163,6 +160,25 @@ pub enum Charset {
 	Traditional,
 }
 
+#[derive(Display)]
+#[strum(prefix = "https://xxblapingpong.cc")]
+pub enum Api {
+	#[strum(to_string = "/chapter_view_template?{0}")]
+	Chapter(ChapterQuery),
+}
+
+impl Api {
+	pub fn chapter(id: &str) -> Self {
+		let query = ChapterQuery::new(id);
+
+		Self::Chapter(query)
+	}
+
+	pub fn get(&self) -> Request {
+		Request::get(self.to_string()).default_headers()
+	}
+}
+
 pub struct Index {
 	page: i32,
 }
@@ -211,10 +227,8 @@ pub struct ChapterQuery {
 }
 
 impl ChapterQuery {
-	pub fn new<S: AsRef<str>>(id: S) -> Self {
-		Self {
-			id: id.as_ref().to_owned(),
-		}
+	pub fn new(id: &str) -> Self {
+		Self { id: id.into() }
 	}
 }
 
