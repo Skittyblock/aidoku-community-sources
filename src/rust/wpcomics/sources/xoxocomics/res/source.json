@@ -3,8 +3,8 @@
 		"id": "en.xoxocomics",
 		"lang": "en",
 		"name": "XOXO Comics",
-		"version": 2,
-		"url": "https://xoxocomic.com/",
+		"version": 3,
+		"url": "https://xoxocomic.com",
 		"nsfw": 1
 	},
 	"listings": [
