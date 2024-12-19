@@ -1,10 +1,10 @@
 use aidoku::{
 	helpers::uri::{encode_uri_component, QueryParameters},
 	prelude::format,
-	std::{net::Request, String, Vec},
+	std::{current_date, net::Request, String, Vec},
 	Filter, FilterType,
 };
-use alloc::{borrow::ToOwned as _, string::ToString as _};
+use alloc::string::ToString as _;
 use core::fmt::{Display, Formatter, Result as FmtResult};
 use strum_macros::{Display, FromRepr};
 
@@ -56,9 +56,6 @@ pub enum Url<'a> {
 
 	#[strum(to_string = "/home/book/capter/id/{id}")]
 	ChapterPage { id: &'a str },
-
-	#[strum(to_string = "/chapter_view_template?{query}")]
-	Chapter { query: ChapterQuery },
 }
 
 impl Url<'_> {
@@ -163,6 +160,40 @@ pub enum Charset {
 	Traditional,
 }
 
+#[derive(Display)]
+#[strum(prefix = "https://xxblapingpong.cc")]
+pub enum Api {
+	#[strum(to_string = "/chapter_view_template?{0}")]
+	Chapter(ChapterQuery),
+}
+
+impl Api {
+	pub fn chapter(id: &str) -> Self {
+		let query = ChapterQuery::new(id);
+
+		Self::Chapter(query)
+	}
+
+	pub fn get(&self) -> Request {
+		#[expect(clippy::cast_possible_truncation, clippy::as_conversions)]
+		let now = current_date() as i64;
+		let token_parameter = format!("{now},1.1.0");
+
+		let token = format!("{now}18comicAPPContent");
+		let token_digest = md5::compute(token);
+		let token_hash = format!("{token_digest:x}");
+
+		Request::get(self.to_string())
+			.header(
+				"User-Agent",
+				"Mozilla/5.0 (iPad; CPU OS 18_2 like Mac OS X) \
+				 AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
+			)
+			.header("Tokenparam", &token_parameter)
+			.header("Token", &token_hash)
+	}
+}
+
 pub struct Index {
 	page: i32,
 }
@@ -197,6 +228,8 @@ impl Display for LastUpdatedQuery {
 
 		query.push_encoded("widx", Some("11"));
 
+		query.push_encoded("limit", Some("18"));
+
 		let index = Index::from_page(self.page).to_string();
 		query.push_encoded("page", Some(&index));
 
@@ -209,10 +242,8 @@ pub struct ChapterQuery {
 }
 
 impl ChapterQuery {
-	pub fn new<S: AsRef<str>>(id: S) -> Self {
-		Self {
-			id: id.as_ref().to_owned(),
-		}
+	pub fn new(id: &str) -> Self {
+		Self { id: id.into() }
 	}
 }
 
@@ -220,6 +251,10 @@ impl Display for ChapterQuery {
 	fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
 		let mut query = QueryParameters::new();
 		query.push_encoded("id", Some(&self.id));
+		query.push_encoded("sw_page", Some("null"));
+		query.push_encoded("mode", Some("vertical"));
+		query.push_encoded("page", Some("0"));
+		query.push_encoded("app_img_shunt", Some("NaN"));
 
 		write!(f, "{query}")
 	}

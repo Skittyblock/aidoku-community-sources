@@ -18,7 +18,7 @@ use aidoku::{
 use alloc::{borrow::ToOwned as _, string::ToString as _};
 use helper::{
 	setting::change_charset,
-	url::{ChapterQuery, DefaultRequest as _, Index, LastUpdatedQuery, Url},
+	url::{Api, DefaultRequest as _, Index, LastUpdatedQuery, Url},
 	MangaList as _, MangaListRes as _, Part, Regex,
 };
 
@@ -229,10 +229,10 @@ fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 	Ok(chapters)
 }
 
+#[expect(clippy::needless_pass_by_value)]
 #[get_page_list]
 fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
-	let query = ChapterQuery::new(chapter_id);
-	let pages = Url::Chapter { query }
+	let pages = Api::chapter(&chapter_id)
 		.get()
 		.html()?
 		.select("img.lazy")
