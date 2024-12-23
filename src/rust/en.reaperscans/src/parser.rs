@@ -191,8 +191,25 @@ pub fn parse_chapter_list(base_url: String, manga_id: String) -> Result<Vec<Chap
 
 			let id = chapter.get("chapter_slug").as_string()?.read();
 
-			let index = id.split('-').collect::<Vec<&str>>();
-			let index = String::from(index[1]).parse::<f32>().unwrap_or(-1.0);
+			let title = if let Ok(title) = chapter.get("chapter_title").as_string() {
+				title.read()
+			} else {
+				String::from("")
+			};
+
+			let chapter_number = {
+				let chapter_number = chapter
+					.get("chapter_name")
+					.as_string()
+					.unwrap_or_default()
+					.read();
+
+				chapter_number
+					.replace("Chapter", "")
+					.trim()
+					.parse::<f32>()
+					.unwrap_or(-1.0)
+			};
 
 			let url = format!("{}/series/{}/{}", base_url, manga_id, id);
 
@@ -203,7 +220,8 @@ pub fn parse_chapter_list(base_url: String, manga_id: String) -> Result<Vec<Chap
 
 			all_chapters.push(Chapter {
 				id,
-				chapter: index,
+				title,
+				chapter: chapter_number,
 				date_updated,
 				url,
 				..Default::default()
