@@ -42,7 +42,7 @@ pub fn i32_to_string(mut integer: i32) -> String {
 }
 
 pub fn get_cover_url(id: String, filetype: String) -> String {
-	let mut string = String::from("https://t.nhentai.net/galleries/");
+	let mut string = String::from("https://t2.nhentai.net/galleries/");
 	string.push_str(&id);
 	string.push_str("/cover.");
 	string.push_str(&filetype);

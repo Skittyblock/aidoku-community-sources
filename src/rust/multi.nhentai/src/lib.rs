@@ -315,7 +315,7 @@ fn get_page_list(_: String, id: String) -> Result<Vec<Page>> {
 		let media_id = json.get("media_id").as_string()?.read();
 		let file_type = helper::get_file_type(page_obj.get("t").as_string()?.read());
 
-		let mut url = String::from("https://i.nhentai.net/galleries/");
+		let mut url = String::from("https://i2.nhentai.net/galleries/");
 		url.push_str(&media_id);
 		url.push('/');
 		url.push_str(&(i + 1).to_string());
