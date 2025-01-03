@@ -6,3 +6,6 @@ publish = false
 
 [dependencies]
 aidoku = { git = "https://github.com/Aidoku/aidoku-rs/", features = ["helpers"] }
+base64ct = { version = "1.6.0", features = ["alloc"] }
+rand = { version = "0.8.5", features = ["small_rng", "alloc"], default-features = false }
+sha2 = { version = "0.11.0-pre.4", default-features = false }
