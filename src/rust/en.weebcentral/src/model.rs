@@ -21,9 +21,9 @@ impl From<i32> for SortOptions {
 	}
 }
 
-impl Into<&str> for SortOptions {
-	fn into(self) -> &'static str {
-		match self {
+impl From<SortOptions> for &str {
+	fn from(val: SortOptions) -> Self {
+		match val {
 			SortOptions::BestMatch => "Best Match",
 			SortOptions::Alphabet => "Alphabet",
 			SortOptions::Popularity => "Popularity",
