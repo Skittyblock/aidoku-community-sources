@@ -144,6 +144,8 @@ fn get_manga_details(id: String) -> Result<Manga> {
 
 	let title = title_element.select("h1").first().text().read();
 
+	let cover = info_element.select("img").first().attr("abs:src").read();
+
 	let description = title_element
 		.select("li:has(strong:contains(Description)) > p")
 		.first()
@@ -202,6 +204,7 @@ fn get_manga_details(id: String) -> Result<Manga> {
 	Ok(Manga {
 		id,
 		title,
+		cover,
 		author,
 		description,
 		url,
