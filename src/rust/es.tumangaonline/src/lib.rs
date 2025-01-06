@@ -8,6 +8,8 @@ use aidoku::{
 	MangaViewer, Page,
 };
 
+use regex::Regex;
+
 extern crate alloc;
 use alloc::{borrow::ToOwned, string::ToString};
 
@@ -278,6 +280,78 @@ fn parse_chapter(element: Node) -> Chapter {
 	}
 }
 
+fn get_redirect_read_page(html: Node) -> Result<Node> {
+	let url = html.base_uri().to_string();
+	let script = html.select("script").to_string();
+
+	if script.contains("uniqid") {
+		let regex_params =
+			Regex::new(r"\{\s*uniqid\s*:\s*'(.+)'\s*,\s*cascade\s*:\s*(.+)\s*\}").unwrap();
+		let regex_action = Regex::new(r"form\.action\s*=\s*'(.+)'").unwrap();
+
+		if let (Some(params), Some(action)) = (
+			regex_params.captures(&script),
+			regex_action.captures(&script),
+		) {
+			let parameters = format!("uniqid={}&cascade={}", &params[1], &params[2]);
+			let request = Request::new(&action[1], HttpMethod::Post)
+				.header("User-Agent", USER_AGENT)
+				.header("Referer", &url)
+				.body(parameters)
+				.html()?;
+
+			return get_redirect_read_page(request);
+		}
+	}
+
+	if script.contains("window.location.replace") {
+		let regex_redirect = Regex::new(r#"window\.location\.replace\(['"](.+)['"]\)"#).unwrap();
+
+		if let Some(url) = regex_redirect.captures(&script) {
+			let request = Request::new(&url[1], HttpMethod::Get)
+				.header("User-Agent", USER_AGENT)
+				.html()?;
+
+			return get_redirect_read_page(request);
+		}
+	}
+
+	if script.contains("redirectUrl") {
+		let regex_redirect = Regex::new(r"redirectUrl\s*=\s*'(.+)'").unwrap();
+
+		if let Some(url) = regex_redirect.captures(&script) {
+			let request = Request::new(&url[1], HttpMethod::Get)
+				.header("User-Agent", USER_AGENT)
+				.html()?;
+
+			return get_redirect_read_page(request);
+		}
+	}
+
+	let input_redir = html.select("input#redir").text().read();
+	if !input_redir.is_empty() {
+		let request = Request::new(&input_redir, HttpMethod::Get)
+			.header("User-Agent", USER_AGENT)
+			.html()?;
+
+		return get_redirect_read_page(request);
+	}
+
+	if script.contains("window.opener") && script.contains("location.replace") {
+		let regex_redirect = Regex::new(r#";[^.]location\.replace\(['"](.+)['"]\)"#).unwrap();
+
+		if let Some(url) = regex_redirect.captures(&script) {
+			let request = Request::new(&url[1], HttpMethod::Get)
+				.header("User-Agent", USER_AGENT)
+				.html()?;
+
+			return get_redirect_read_page(request);
+		}
+	}
+
+	Ok(html)
+}
+
 #[get_chapter_list]
 fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 	let url = if id.starts_with("http") {
@@ -352,10 +426,13 @@ fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 	} else {
 		format!("{BASE_URL}{chapter_id}")
 	};
+
 	let mut html = Request::new(url, HttpMethod::Get)
 		.header("User-Agent", USER_AGENT)
 		.header("Referer", BASE_URL)
 		.html()?;
+
+	html = get_redirect_read_page(html)?;
 
 	let uri = html.base_uri().read();
 	if uri.contains("/paginated") {

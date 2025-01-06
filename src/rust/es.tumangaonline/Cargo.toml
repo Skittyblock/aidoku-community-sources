@@ -17,3 +17,4 @@ lto = true
 
 [dependencies]
 aidoku = { git = "https://github.com/Aidoku/aidoku-rs", features = ["helpers"] }
+regex = { version =  "1.11.1", default-features = false, features = ["unicode"] }
