@@ -326,7 +326,7 @@ const REGIONS: [Region; 4] = [Region::All, Region::Japan, Region::Korea, Region:
 /// The number of manga that a single response contains.
 const LIMIT: i32 = 20;
 
-impl<'a> Url<'a> {
+impl Url<'_> {
 	pub fn get_html(self) -> Result<Node> {
 		Request::get(self.to_string()).html()
 	}
@@ -336,7 +336,7 @@ impl<'a> Url<'a> {
 	}
 }
 
-impl<'a> From<(Vec<Filter>, i32)> for Url<'a> {
+impl From<(Vec<Filter>, i32)> for Url<'_> {
 	fn from((filters, page): (Vec<Filter>, i32)) -> Self {
 		let mut genre_index = 0;
 		let mut region = Region::All;
