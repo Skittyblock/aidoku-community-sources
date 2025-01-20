@@ -27,12 +27,15 @@ impl MangaListResponse for Node {
 			.map(|(index, str)| {
 				if index % 2 == 0 {
 					str.replace('\'', "\"")
+				} else if !str.contains('\'') {
+					format!(r"\{str}\")
 				} else {
 					str.to_string()
 				}
 			})
 			.collect::<Vec<_>>()
 			.join("\"")
+			.replace(r#""\"#, r#"\""#)
 			.json()?
 			.as_array()?
 			.get_manga_list()?;
