@@ -252,9 +252,6 @@ impl Display for Search {
 	}
 }
 
-pub const MANGA_PATH: &str = "/comic/";
-pub const CHAPTER_PATH: &str = "/chapter/";
-
 const GENRES: [&str; 61] = [
 	"",
 	"aiqing",
