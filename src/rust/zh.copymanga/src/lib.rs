@@ -7,7 +7,6 @@ mod url;
 
 use aidoku::{
 	error::Result,
-	helpers::substring::Substring,
 	prelude::{
 		format, get_chapter_list, get_manga_details, get_manga_list, get_page_list, handle_url,
 	},
@@ -17,7 +16,8 @@ use aidoku::{
 use alloc::string::ToString;
 use decryptor::EncryptedString;
 use parser::{Element, JsonObj, JsonString, MangaListResponse, NodeArrValue, Part, UuidString};
-use url::{Url, CHAPTER_PATH, MANGA_PATH};
+use url::Url;
+use uuid::Uuid;
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
@@ -205,33 +205,34 @@ fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 
 #[handle_url]
 fn handle_url(url: String) -> Result<DeepLink> {
-	let Some(path) = url.substring_after(MANGA_PATH) else {
+	let parts = url.split('/').skip(3).collect::<Vec<_>>();
+	let (manga_id, chapter_id) = match parts[..] {
+		["comic", manga_id] | ["h5", "details", "comic", manga_id] => (manga_id, None),
+
+		["comic", manga_id, "chapter", chapter_id]
+		| ["h5", "comicContent", manga_id, chapter_id] => (manga_id, Some(chapter_id)),
+
+		_ => return Ok(DeepLink::default()),
+	};
+
+	if !manga_id
+		.chars()
+		.all(|c| c.is_ascii_lowercase() || c.is_ascii_digit())
+	{
 		return Ok(DeepLink::default());
-	};
+	}
 
-	let Some(chapter_id) = path.substring_after(CHAPTER_PATH) else {
-		let manga = get_manga_details(path.to_string())?;
+	let manga = get_manga_details(manga_id.into())?;
 
-		return Ok(DeepLink {
-			manga: Some(manga),
-			chapter: None,
+	let chapter = chapter_id
+		.filter(|id| id.parse::<Uuid>().is_ok())
+		.map(|id| Chapter {
+			id: id.into(),
+			..Default::default()
 		});
-	};
-	let chapter = Chapter {
-		id: chapter_id.to_string(),
-		..Default::default()
-	};
-
-	let Some(manga_id) = path.substring_before(CHAPTER_PATH) else {
-		return Ok(DeepLink {
-			manga: None,
-			chapter: Some(chapter),
-		});
-	};
-	let manga = get_manga_details(manga_id.to_string())?;
 
 	Ok(DeepLink {
 		manga: Some(manga),
-		chapter: Some(chapter),
+		chapter,
 	})
 }
