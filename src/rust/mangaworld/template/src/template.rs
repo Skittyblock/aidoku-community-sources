@@ -1,3 +1,4 @@
+use alloc::string::ToString;
 use aidoku::{
 	error::Result,
 	helpers::substring::Substring,
@@ -61,6 +62,8 @@ pub fn parse_manga_listing(
 	listing_name: String,
 	page: i32,
 ) -> Result<MangaPageResult> {
+	let mut cookie_value = "MWCookie=";
+
 	let list_url = if !base_url.contains("archive") {
 		match listing_name.as_str() {
 			"Più letti" => format!("{base_url}/archive?sort=most_read&page={page}"),
@@ -72,7 +75,25 @@ pub fn parse_manga_listing(
 	};
 	let mut count = 0;
 	let mut mangas: Vec<Manga> = Vec::new();
-	let html = Request::new(list_url, HttpMethod::Get).html()?;
+	let url_for_second_call = list_url.clone();
+	let mut html = Request::new(list_url, HttpMethod::Get)
+		.header("Cookie", cookie_value)
+		.html()?;
+	let raw_html = html.outer_html().to_string();
+	if raw_html.contains("MWCookie") {
+		aidoku::prelude::println!("No cookie set, HTML received was:\n{}", raw_html);
+		if let Some(cookie_start) = raw_html.find("MWCookie=") {
+			let cookie_start_index = cookie_start + "MWCookie=".len();
+			if let Some(cookie_end) = raw_html[cookie_start_index..].find(";") {
+				let new_cookie_value = &raw_html[cookie_start_index..cookie_start_index + cookie_end];
+				aidoku::prelude::println!("Extracted cookie value: {}", new_cookie_value);
+				let new_cookie = &*(cookie_value.to_string() + new_cookie_value);
+				html = Request::new(url_for_second_call, HttpMethod::Get)
+					.header("Cookie", new_cookie)
+					.html()?;
+			}
+		}
+	}
 	for manga in html.select(".comics-grid .entry").array() {
 		let manga_node = manga.as_node().expect("Failed to get manga as node");
 		let title = manga_node.select(".manga-title").text().read();
@@ -100,7 +121,26 @@ pub fn parse_manga_listing(
 
 pub fn parse_manga_details(base_url: String, id: String) -> Result<Manga> {
 	let url = format!("{base_url}/manga/{id}");
-	let html = Request::new(&url, HttpMethod::Get).html()?;
+	let mut cookie_value = "MWCookie=";
+	let url_for_second_call = url.clone();
+	let mut html = Request::new(&url, HttpMethod::Get)
+		.header("Cookie", cookie_value)
+		.html()?;
+	let raw_html = html.outer_html().to_string();
+	if raw_html.contains("MWCookie") {
+		aidoku::prelude::println!("No cookie set, HTML received was:\n{}", raw_html);
+		if let Some(cookie_start) = raw_html.find("MWCookie=") {
+			let cookie_start_index = cookie_start + "MWCookie=".len();
+			if let Some(cookie_end) = raw_html[cookie_start_index..].find(";") {
+				let new_cookie_value = &raw_html[cookie_start_index..cookie_start_index + cookie_end];
+				aidoku::prelude::println!("Extracted cookie value: {}", new_cookie_value);
+				let new_cookie = &*(cookie_value.to_string() + new_cookie_value);
+				html = Request::new(url_for_second_call, HttpMethod::Get)
+					.header("Cookie", new_cookie)
+					.html()?;
+			}
+		}
+	}
 	let title = html.select("h1").text().read();
 	let cover = html.select(".single-comic .thumb img").attr("src").read();
 	let author = html
@@ -162,9 +202,29 @@ pub fn parse_manga_details(base_url: String, id: String) -> Result<Manga> {
 pub fn parse_chapter_list(base_url: String, id: String) -> Result<Vec<Chapter>> {
 	let url = format!("{base_url}/manga/{}", id);
 	let mut chapters: Vec<Chapter> = Vec::new();
-	let html = Request::new(&url, HttpMethod::Get)
+
+	let mut cookie_value = "MWCookie=";
+	let url_for_second_call = url.clone();
+	let mut html = Request::new(&url, HttpMethod::Get)
 		.header("referer", &url)
+		.header("Cookie", cookie_value)
 		.html()?;
+	let raw_html = html.outer_html().to_string();
+	if raw_html.contains("MWCookie") {
+		aidoku::prelude::println!("No cookie set, HTML received was:\n{}", raw_html);
+		if let Some(cookie_start) = raw_html.find("MWCookie=") {
+			let cookie_start_index = cookie_start + "MWCookie=".len();
+			if let Some(cookie_end) = raw_html[cookie_start_index..].find(";") {
+				let new_cookie_value = &raw_html[cookie_start_index..cookie_start_index + cookie_end];
+				aidoku::prelude::println!("Extracted cookie value: {}", new_cookie_value);
+				let new_cookie = &*(cookie_value.to_string() + new_cookie_value);
+				html = Request::new(url_for_second_call, HttpMethod::Get)
+					.header("Cookie", new_cookie)
+					.header("referer", &url)
+					.html()?;
+			}
+		}
+	}
 	for chapter in html.select(".chapters-wrapper .chap").array() {
 		let chapter_node = chapter.as_node().expect("Failed to get chapter as node");
 		let title = chapter_node.select("span").text().read();
@@ -203,7 +263,28 @@ pub fn parse_page_list(
 ) -> Result<Vec<Page>> {
 	let url = format!("{base_url}/manga/{manga_id}/read/{chapter_id}/?style=list");
 	let mut pages: Vec<Page> = Vec::new();
-	let html = Request::new(&url, HttpMethod::Get).html()?;
+	let mut cookie_value = "MWCookie=";
+	let url_for_second_call = url.clone();
+	let mut html = Request::new(&url, HttpMethod::Get)
+		.header("referer", &url)
+		.header("Cookie", cookie_value)
+		.html()?;
+	let raw_html = html.outer_html().to_string();
+	if raw_html.contains("MWCookie") {
+		aidoku::prelude::println!("No cookie set, HTML received was:\n{}", raw_html);
+		if let Some(cookie_start) = raw_html.find("MWCookie=") {
+			let cookie_start_index = cookie_start + "MWCookie=".len();
+			if let Some(cookie_end) = raw_html[cookie_start_index..].find(";") {
+				let new_cookie_value = &raw_html[cookie_start_index..cookie_start_index + cookie_end];
+				aidoku::prelude::println!("Extracted cookie value: {}", new_cookie_value);
+				let new_cookie = &*(cookie_value.to_string() + new_cookie_value);
+				html = Request::new(url_for_second_call, HttpMethod::Get)
+					.header("Cookie", new_cookie)
+					.header("referer", &url)
+					.html()?;
+			}
+		}
+	}
 	for (at, page) in html.select("#page img").array().enumerate() {
 		let page_node = page.as_node().expect("Failed to get page as node");
 		let page_url = page_node.attr("src").read();
