@@ -9,7 +9,10 @@ use aidoku::{
 	MangaViewer, Page,
 };
 
+mod helper;
 mod model;
+
+use helper::*;
 use model::SortOptions;
 
 const BASE_URL: &str = "https://weebcentral.com";
@@ -34,8 +37,9 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	for filter in filters {
 		match filter.kind {
 			FilterType::Title => {
-				let title = filter.value.as_string()?.read();
-				qs.push("text", Some(&title));
+				let title = remove_special_chars(filter.value.as_string()?.read());
+				let query = title.trim();
+				qs.push("text", Some(query));
 			}
 			FilterType::Sort => {
 				let value = match filter.value.as_object() {
@@ -226,16 +230,16 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 	} else {
 		manga_url
 	};
-
 	let html = Request::get(&url).html()?;
 
 	let mut chapters = Vec::new();
 
-	for element in html.select("a[x-data]").array() {
+	for element in html.select("div[x-data]").array() {
 		let element = element.as_node().expect("html array will always be nodes");
 
 		let mut title = element.select("span.flex > span").first().text().read();
-		let url = element.attr("abs:href").read();
+		let url = element.select("a").first().attr("abs:href").read();
+
 		let Some(chapter_id) = url.strip_prefix(BASE_URL).map(String::from) else {
 			continue;
 		};
