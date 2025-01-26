@@ -17,7 +17,7 @@ static mut STORED_COOKIE: Option<String> = None;
 
 fn get_html_with_cookie(url: String, referer: Option<&str>) -> Result<Node> {
 	let cookie = unsafe {
-		match *(&raw const STORED_COOKIE) {
+		match STORED_COOKIE {
 			Some(ref c) => c.clone(),
 			None => "MWCookie=".to_string()
 		}
