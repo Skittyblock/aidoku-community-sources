@@ -13,36 +13,45 @@ use aidoku::{
 };
 use crate::helper::{get_chapter_number, get_search_url, manga_status};
 
+static mut STORED_COOKIE: Option<String> = None;
+
 fn get_html_with_cookie(url: String, referer: Option<&str>) -> Result<Node> {
-	let base_request = Request::new(&url, HttpMethod::Get);
+	let cookie = unsafe {
+		match *(&raw const STORED_COOKIE) {
+			Some(ref c) => c.clone(),
+			None => "MWCookie=".to_string()
+		}
+	};
+	let request = Request::new(&url, HttpMethod::Get)
+		.header("Cookie", &cookie);
 
 	let request = if let Some(ref_url) = referer {
-		base_request.header("referer", ref_url)
+		request.header("referer", ref_url)
 	} else {
-		base_request
+		request
 	};
 
 	let html = request.html()?;
-	let raw_html = html.outer_html().to_string();
 
-	let cookie_start = raw_html.find("MWCookie=").map(|i| i + "MWCookie=".len());
-
-	if let (Some(start), Some(cookie_end)) = (
-		cookie_start,
-		raw_html[cookie_start.unwrap_or(0)..].find(";")
+	if let (Some(start), Some(end)) = (
+		html.outer_html().to_string().find("MWCookie=").map(|i| i + "MWCookie=".len()),
+		html.outer_html().to_string()[html.outer_html().to_string().find("MWCookie=").map_or(0, |i| i + "MWCookie=".len())..].find(";")
 	) {
-		let new_cookie = format!("MWCookie={}", &raw_html[start..start + cookie_end]);
+		let new_cookie = format!("MWCookie={}", &html.outer_html().to_string()[start..start + end]);
+		aidoku::prelude::println!("new cookie was found, using new cookie {}", &new_cookie);
+		unsafe { STORED_COOKIE = Some(new_cookie.clone()) };
+
 		let final_request = Request::new(&url, HttpMethod::Get)
 			.header("Cookie", &new_cookie);
 
-		if let Some(ref_url) = referer {
+		return if let Some(ref_url) = referer {
 			final_request.header("referer", ref_url).html()
 		} else {
 			final_request.html()
-		}
-	} else {
-		Ok(html)
+		};
 	}
+
+	Ok(html)
 }
 
 pub fn parse_manga_list(
