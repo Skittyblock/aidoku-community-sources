@@ -5,43 +5,44 @@ use aidoku::{
 	prelude::*,
 	std::{
 		net::{HttpMethod, Request},
+		html::Node,
 		String, Vec,
 	},
 	Chapter, DeepLink, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaViewer,
 	Page,
 };
-use aidoku::std::html::Node;
 use crate::helper::{get_chapter_number, get_search_url, manga_status};
 
 fn get_html_with_cookie(url: String, referer: Option<&str>) -> Result<Node> {
-	let cookie_value = "MWCookie=";
-	let mut html = Request::new(&url, HttpMethod::Get)
-		.header("Cookie", cookie_value);
+	let base_request = Request::new(&url, HttpMethod::Get);
 
-	if let Some(ref_url) = referer {
-		html = html.header("referer", ref_url);
-	}
+	let request = if let Some(ref_url) = referer {
+		base_request.header("referer", ref_url)
+	} else {
+		base_request
+	};
 
-	let html = html.html()?;
+	let html = request.html()?;
 	let raw_html = html.outer_html().to_string();
 
-	if raw_html.contains("MWCookie") {
-		if let Some(cookie_start) = raw_html.find("MWCookie=") {
-			let cookie_start_index = cookie_start + "MWCookie=".len();
-			if let Some(cookie_end) = raw_html[cookie_start_index..].find(";") {
-				let new_cookie_value = &raw_html[cookie_start_index..cookie_start_index + cookie_end];
-				let new_cookie = &*(cookie_value.to_string() + new_cookie_value);
-				let mut req = Request::new(&url, HttpMethod::Get)
-					.header("Cookie", new_cookie);
-				if let Some(ref_url) = referer {
-					req = req.header("referer", ref_url);
-				}
-				return req.html();
-			}
-		}
-	}
+	let cookie_start = raw_html.find("MWCookie=").map(|i| i + "MWCookie=".len());
 
-	Ok(html)
+	if let (Some(start), Some(cookie_end)) = (
+		cookie_start,
+		raw_html[cookie_start.unwrap_or(0)..].find(";")
+	) {
+		let new_cookie = format!("MWCookie={}", &raw_html[start..start + cookie_end]);
+		let final_request = Request::new(&url, HttpMethod::Get)
+			.header("Cookie", &new_cookie);
+
+		if let Some(ref_url) = referer {
+			final_request.header("referer", ref_url).html()
+		} else {
+			final_request.html()
+		}
+	} else {
+		Ok(html)
+	}
 }
 
 pub fn parse_manga_list(
