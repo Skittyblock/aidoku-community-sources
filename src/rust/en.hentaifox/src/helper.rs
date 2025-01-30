@@ -111,15 +111,12 @@ pub fn build_search_url(
 				path = format!("/tag/{}/pag/{}", tag, page);
 			}
 		} else {
+			path.push_str("/language/english");
 			if sort_type == "popular" {
 				path.push_str("/popular");
 			}
 			if page > 1 {
-				if page > 2 {
-					path.push_str(format!("/pag/{}", page).as_str());
-				} else {
-					path.push_str(format!("/page/{}", page).as_str());
-				}
+				path.push_str(format!("/pag/{}", page).as_str());
 			}
 		}
 		format!("{BASE_URL}{path}")
