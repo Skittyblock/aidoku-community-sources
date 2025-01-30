@@ -9,12 +9,10 @@ use aidoku::{
 };
 use core::ptr;
 
-use crate::template::MangaStreamSource;
+use crate::template::{MangaStreamSource, USER_AGENT};
 
 extern crate hashbrown;
 use hashbrown::HashMap;
-
-pub const USER_AGENT: &str = "Mozilla/5.0 (iPhone; CPU iPhone OS 16_1_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1";
 
 // generate url for listing page
 pub fn get_listing_url(
