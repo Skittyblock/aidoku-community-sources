@@ -1,19 +1,22 @@
 #![no_std]
 use aidoku::{
-	error::Result, prelude::*, std::net::Request, std::defaults::defaults_get, std::String, std::Vec, Chapter,
-	DeepLink, Filter, Listing, Manga, MangaPageResult, Page,
+	error::Result, prelude::*, std::defaults::defaults_get, std::net::Request, std::String,
+	std::Vec, Chapter, DeepLink, Filter, Listing, Manga, MangaPageResult, Page,
 };
 
 use madara_template::template;
 
+const USER_AGENT: &str = "Mozilla/5.0 (iPhone; CPU iPhone OS 17_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) GSA/300.0.598994205 Mobile/15E148 Safari/604";
+
 fn get_data() -> template::MadaraSiteData {
-	let url = defaults_get("sourceURL")
+	let base_url = defaults_get("sourceURL")
 		.expect("missing sourceURL")
 		.as_string()
 		.expect("missing sourceURL")
 		.read();
 	let data: template::MadaraSiteData = template::MadaraSiteData {
-		base_url: url,
+		base_url,
+		user_agent: Some(USER_AGENT.into()),
 		alt_ajax: true,
 		..Default::default()
 	};
@@ -47,7 +50,10 @@ fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 
 #[modify_image_request]
 fn modify_image_request(request: Request) {
-	template::modify_image_request(String::from("https://hiperdex.com"), request);
+	template::modify_image_request(
+		String::from("https://hiperdex.com"),
+		request.header("User-Agent", USER_AGENT),
+	);
 }
 
 #[handle_url]

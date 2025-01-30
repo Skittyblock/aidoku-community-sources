@@ -2,12 +2,9 @@
 	"info": {
 		"id": "en.hiperdex",
 		"lang": "en",
-		"name": "Hiperdex",
-		"version": 3,
-		"urls": [
-			"https://hiperdex.com",
-			"https://1sthiperdex.com"
-		],
+		"name": "HiperDEX",
+		"version": 4,
+		"urls": ["https://hiperdex.com", "https://1sthiperdex.com"],
 		"nsfw": 2
 	},
 	"listings": [
