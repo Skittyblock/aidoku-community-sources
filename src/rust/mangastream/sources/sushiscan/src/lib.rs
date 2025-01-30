@@ -4,15 +4,20 @@ use aidoku::{
 	Listing, Manga, MangaPageResult, Page,
 };
 
-use mangastream_template::template::MangaStreamSource;
+use mangastream_template::template::{MangaStreamSource, USER_AGENT};
+
+const BASE_URL: &str = "https://sushiscan.net";
 
 fn get_instance() -> MangaStreamSource {
 	MangaStreamSource {
-		base_url: String::from("https://sushiscan.net"),
+		base_url: String::from(BASE_URL),
 		traverse_pathname: "catalogue",
 		listing: ["Dernières", "Populaire", "Nouveau"],
-		status_options: ["En Cours", "Terminé", "", "", ""],
-		manga_details_author: ".imptdt:contains(Auteur) i, .fmed b:contains(Auteur)+span",
+		status_options: ["En Cours", "Terminé", "En Pause", "Abandonné", ""],
+		manga_details_categories: ".seriestugenre a",
+		manga_details_author: ".infotable tr:contains(Auteur) td:last-child",
+		manga_details_status: ".infotable tr:contains(Statut) td:last-child",
+		manga_details_type: ".infotable tr:contains(Type) td:last-child",
 		language: "fr",
 		locale: "fr-FR",
 		..Default::default()
@@ -41,15 +46,57 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 
 #[get_page_list]
 fn get_page_list(_manga_id: String, id: String) -> Result<Vec<Page>> {
-	let pages = get_instance().parse_page_list(id)?;
-	// fix http -> https
-	let mut new_pages = Vec::new();
-	for page in pages {
-		let mut new_page = page;
-		new_page.url = new_page.url.replace("http://", "https://");
-		new_pages.push(new_page);
-	}
-	Ok(new_pages)
+	let html = Request::get(format!("{BASE_URL}/{id}"))
+		.header("Referer", BASE_URL)
+		.header("User-Agent", USER_AGENT)
+		.html()?;
+
+	let content = html.select(".readercontent").html().read(); // contains the script tag we're targeting
+
+	let start_pattern = r#"ts_reader.run("#;
+	let end_pattern = r#");"#;
+
+	let json = if let Some(start_index) = content.find(start_pattern) {
+		let start_index = start_index + start_pattern.len();
+		if let Some(end_index) = content[start_index..].find(end_pattern) {
+			let end_index = start_index + end_index;
+			Some(&content[start_index..end_index])
+		} else {
+			None
+		}
+	} else {
+		None
+	};
+
+	let Some(json) = json else {
+		return Err(aidoku::error::AidokuError {
+			reason: aidoku::error::AidokuErrorKind::Unimplemented,
+		});
+	};
+
+	let json = aidoku::std::json::parse(json)?.as_object()?;
+
+	let mut sources = json.get("sources").as_array()?;
+
+	let pages = sources
+		.next()
+		.ok_or(aidoku::error::AidokuError {
+			reason: aidoku::error::AidokuErrorKind::Unimplemented,
+		})?
+		.as_object()?
+		.get("images")
+		.as_array()?
+		.enumerate()
+		.filter_map(|(idx, url)| {
+			Some(Page {
+				index: idx as i32,
+				url: url.as_string().ok()?.read().replace("http://", "https://"),
+				..Default::default()
+			})
+		})
+		.collect();
+
+	Ok(pages)
 }
 
 #[modify_image_request]
