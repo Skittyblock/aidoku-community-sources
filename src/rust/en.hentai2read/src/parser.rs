@@ -1,5 +1,5 @@
 use aidoku::error::Result;
-use aidoku::prelude::{format, println};
+use aidoku::prelude::format;
 use aidoku::std::json;
 use aidoku::{std::html::Node, Manga};
 use aidoku::{Chapter, MangaContentRating, MangaStatus, MangaViewer, Page};
@@ -49,7 +49,6 @@ pub fn parse_manga(id: String, html: Node) -> Result<Manga> {
 	let cover = html.select(".img-container a img").attr("src").to_string();
 
 	let url = format!("{BASE_URL}/{id}/");
-	println!("url: {}", url);
 
 	for item in html
 		.select(".list.list-simple-mini li.text-primary")
