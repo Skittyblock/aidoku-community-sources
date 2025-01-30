@@ -1,0 +1,18 @@
+{
+	"info": {
+		"id": "en.mangatx",
+		"lang": "en",
+		"name": "MangaTX",
+		"version": 9,
+		"url": "https://mangatx.cc",
+		"nsfw": 2
+	},
+	"listings": [
+		{
+			"name": "Trending"
+		},
+		{
+			"name": "Popular"
+		}
+	]
+}
