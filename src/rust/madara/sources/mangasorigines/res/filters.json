@@ -3,28 +3,6 @@
 		"type": "title"
 	},
 	{
-		"type": "group",
-		"name": "Status",
-		"filters": [
-			{
-				"type": "check",
-				"name": "En cours"
-			},
-			{
-				"type": "check",
-				"name": "En pause"
-			},
-			{
-				"type": "check",
-				"name": "Annulé"
-			},
-			{
-				"type": "check",
-				"name": "Terminé"
-			}
-		]
-	},
-	{
 		"type": "select",
 		"name": "Genre Condition",
 		"options": [

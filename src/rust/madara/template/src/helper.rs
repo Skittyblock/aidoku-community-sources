@@ -203,6 +203,15 @@ pub fn get_int_manga_id(
 	req = add_user_agent_header(req, &user_agent);
 
 	if let Ok(html) = req.html() {
+		let data_id = html
+			.select("div[id^=manga-chapters-holder]")
+			.first()
+			.attr("data-id")
+			.read();
+		if !data_id.is_empty() {
+			return data_id;
+		}
+
 		let id_html = html.select("script#wp-manga-js-extra").html().read();
 		let id = &id_html[id_html.find("manga_id").expect("Could not find manga_id") + 11
 			..id_html.find("\"}").expect("Could not find end of manga_id")];
