@@ -179,13 +179,10 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 
 	Ok(Vec::from([Chapter {
 		id,
-		title: String::from("Chapter 1"),
-		volume: -1.0,
 		chapter: 1.0,
 		url,
-		date_updated: 0.0,
-		scanlator: String::new(),
 		lang: String::from("en"),
+		..Default::default()
 	}]))
 }
 
@@ -204,12 +201,11 @@ fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 
 	let total = helper::numbers_only_from_string(total_pages);
 	for i in 1..=total {
-		let img_url = format!("https://i2.hentaifox.com/{img_dir}/{g_id}/{i}.jpg");
+		let img_url = format!("https://i2.hentaifox.com/{img_dir}/{g_id}/{i}.webp");
 		pages.push(Page {
 			index: i,
 			url: img_url,
-			base64: String::new(),
-			text: String::new(),
+			..Default::default()
 		})
 	}
 
