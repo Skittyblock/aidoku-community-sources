@@ -38,7 +38,7 @@ pub fn create_advanced_search_body(
 }
 
 pub fn genre_id_from_filter(str: &str) -> i64 {
-	let genre_id = str.split('_').last().unwrap_or_default();
+	let genre_id = str.split('_').next_back().unwrap_or_default();
 	genre_id.parse::<i64>().unwrap_or_default()
 }
 

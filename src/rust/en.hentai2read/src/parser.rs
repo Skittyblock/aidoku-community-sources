@@ -12,16 +12,9 @@ use crate::helper::{
 
 pub fn parse_search(html: &Node) -> Vec<Manga> {
 	let mut manga_arr: Vec<Manga> = Vec::new();
-	for result in html
-		.select(".block-content.row .book-grid-item-container")
-		.array()
-	{
+	for result in html.select(".book-grid-item").array() {
 		let result_node = result.as_node().expect("Failed to get result node");
-		let cover_url = result_node
-			.select("picture img")
-			.first()
-			.attr("data-src")
-			.to_string();
+		let cover_url = result_node.select("img").first().attr("abs:src").read();
 		let cover = clean_cover_url(&cover_url);
 
 		let manga_url_node = result_node.select("a");
