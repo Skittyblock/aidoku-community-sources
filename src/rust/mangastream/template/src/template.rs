@@ -445,7 +445,10 @@ impl MangaStreamSource {
 
 			let trimmed_json = {
 				let mut trimmed_json = &raw_text[raw_text.find(r#":[{"s"#).unwrap_or(0) + 2
-					..raw_text.rfind("}],").unwrap_or(0) + 1];
+					..raw_text
+						.rfind("}]});")
+						.unwrap_or(raw_text.rfind("}],").unwrap_or(0))
+						+ 1];
 
 				if trimmed_json.contains("Default 2") {
 					trimmed_json = &trimmed_json[..trimmed_json.rfind(r#",{"s"#).unwrap_or(0)];
