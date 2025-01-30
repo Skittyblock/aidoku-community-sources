@@ -8,8 +8,9 @@ use madara_template::template;
 
 fn get_data() -> template::MadaraSiteData {
 	let data: template::MadaraSiteData = template::MadaraSiteData {
-		base_url: String::from("https://rspro.xyz"),
-		description_selector: String::from("div.description-summary"),
+		base_url: "https://reset-scans.co".into(),
+		description_selector: "div.description-summary".into(),
+		chapter_selector: "li.wp-manga-chapter > div:not(:has(a[href*=#]))".into(), // filter out locked chapters
 		alt_ajax: true,
 		..Default::default()
 	};
