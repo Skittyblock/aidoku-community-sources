@@ -26,6 +26,7 @@ pub struct MangaStreamSource {
 	pub listing: [&'static str; 3],
 	pub base_url: String,
 	pub traverse_pathname: &'static str,
+	pub directory_pathname: Option<&'static str>,
 	pub next_page: &'static str,
 	pub next_page_2: &'static str,
 	pub manga_selector: &'static str,
@@ -79,6 +80,7 @@ impl Default for MangaStreamSource {
 			listing: ["Latest", "Popular", "New"],
 			base_url: String::new(),
 			traverse_pathname: "manga",
+			directory_pathname: None,
 			next_page: ".hpage a.r",
 			next_page_2: ".hpage a.r",
 			manga_selector: ".listupd .bsx",
@@ -185,7 +187,7 @@ impl MangaStreamSource {
 			get_listing_url(
 				self.listing,
 				base_url,
-				String::from(self.traverse_pathname),
+				String::from(self.directory_pathname.unwrap_or(self.traverse_pathname)),
 				listing_name,
 				page,
 			)

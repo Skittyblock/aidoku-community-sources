@@ -198,6 +198,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "mangatx"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "mangastream_template",
+]
+
+[[package]]
 name = "mangkomik"
 version = "0.1.0"
 dependencies = [
