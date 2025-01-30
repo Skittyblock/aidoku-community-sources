@@ -318,7 +318,7 @@ pub fn get_permanet_url(original_url: String) -> String {
 	// only exists to stop scrapers
 	let garbage = original_url
 		.split('/')
-		.last()
+		.next_back()
 		.expect("Failed to split url by /")
 		.split('-')
 		.next()
@@ -362,7 +362,10 @@ pub fn get_id_from_url(url: String) -> String {
 	// will return the-world-after-the-fall
 	// example https://flamescans.org/the-world-after-the-fall-chapter-55
 	// will return the-world-after-the-fall-chapter-55
-	let id = url.split('/').last().expect("Failed to parse id from url");
+	let id = url
+		.split('/')
+		.next_back()
+		.expect("Failed to parse id from url");
 
 	String::from(id)
 }
