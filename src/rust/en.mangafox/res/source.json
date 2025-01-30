@@ -3,11 +3,8 @@
 		"id": "en.mangafox",
 		"lang": "en",
 		"name": "MangaFox",
-		"version": 3,
-		"urls": [
-			"https://fanfox.net",
-			"https://m.fanfox.net"
-		],
+		"version": 4,
+		"urls": ["https://fanfox.net", "https://m.fanfox.net"],
 		"nsfw": 1
 	},
 	"listings": [
