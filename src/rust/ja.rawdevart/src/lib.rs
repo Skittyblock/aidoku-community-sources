@@ -16,6 +16,7 @@ use alloc::string::ToString;
 mod parser;
 
 const BASE_URL: &str = "https://rawdevart.art";
+const PAGE_URL: &str = "https://s1.rawuwu.com";
 
 // generate genre filters:
 // names: copy([...$0.querySelectorAll("#m-genres option")].map((e) => `"${e.textContent}"`).join(", "))
@@ -157,7 +158,7 @@ fn parse_manga_list(url: String) -> Result<MangaPageResult> {
 		.as_object()
 		.and_then(|obj| obj.get("button").as_object())
 		.and_then(|obj| obj.get("next").as_int())
-		.map_or(false, |n| n != 0);
+		.is_ok_and(|n| n != 0);
 
 	Ok(MangaPageResult { manga, has_more })
 }
@@ -179,10 +180,13 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 #[get_page_list]
 fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 	let url = format!("{BASE_URL}/spa/manga/{manga_id}/{chapter_id}");
-	let json = Request::new(url.clone(), HttpMethod::Get)
-		.json()?
-		.as_object()?;
+	let json = Request::new(url, HttpMethod::Get).json()?.as_object()?;
 	parser::parse_pages(&json)
+}
+
+#[modify_image_request]
+fn modify_image_request(request: Request) {
+	request.header("Referer", &format!("{BASE_URL}/"));
 }
 
 #[handle_url]
