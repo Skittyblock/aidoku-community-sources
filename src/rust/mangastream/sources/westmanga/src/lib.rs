@@ -8,13 +8,14 @@ use mangastream_template::template::MangaStreamSource;
 
 fn get_instance() -> MangaStreamSource {
 	MangaStreamSource {
-		base_url: String::from("https://westmanga.info"),
+		base_url: String::from("https://westmanga.fun"),
 		manga_title_trim: ["Bahasa Indonesia".into()].to_vec(),
 		chapter_date_format: "MMMM d, yyyy",
 		manga_details_author: "td:contains(Author)+td",
 		manga_details_artist: "td:contains(Artist)+td",
 		manga_details_type: "td:contains(Type)+td",
 		manga_details_categories: ".seriestugenre a",
+		manga_details_status: "td:contains(Status)+td",
 		locale: "en_US",
 		alt_pages: true,
 		..Default::default()
