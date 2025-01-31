@@ -44,6 +44,21 @@ enum Url<'a> {
 	Chapter(&'a str, &'a str),
 }
 
+impl Url<'_> {
+	fn search(keyword: String, page: i32) -> Self {
+		let mut query = QueryParameters::new();
+
+		let encoded_keyword = keyword.percent_encode(true);
+		query.push_encoded("wpsolr_q", Some(&encoded_keyword));
+
+		query.push_encoded("wpsolr_sort", Some(SORT[0]));
+
+		query.push_encoded("wpsolr_page", Some(&page.to_string()));
+
+		Self::Search(query)
+	}
+}
+
 const DOMAIN: &str = "https://myreadingmanga.info";
 
 /// Chrome 128 on iOS 17.6
@@ -120,6 +135,15 @@ fn get_manga_details(manga_id: String) -> Result<Manga> {
 
 	let manga_title = manga_html.select("h1.entry-title").text().read();
 
+	let search_title_url = Url::search(manga_title.clone(), 1).to_string();
+	let manga_selector = format!("div.results-by-facets > div:has(a[href*={manga_id}]) img");
+	let cover = request_get(&search_title_url)
+		.html()?
+		.select(manga_selector)
+		.attr("data-src")
+		.read()
+		.replace("-200x280", "");
+
 	let artists_str = get_artists(&manga_title);
 
 	let description = manga_html
@@ -183,6 +207,7 @@ fn get_manga_details(manga_id: String) -> Result<Manga> {
 
 	Ok(Manga {
 		id: manga_id,
+		cover,
 		title: manga_title,
 		author: artists_str.clone(),
 		artist: artists_str,
@@ -319,12 +344,9 @@ fn get_filtered_url(filters: Vec<Filter>, page: i32) -> Result<String> {
 			}
 
 			FilterType::Title => {
-				let encoded_search_str = filter.value.as_string()?.read().percent_encode(true);
-				query.push_encoded("wpsolr_q", Some(&encoded_search_str));
+				let search_str = filter.value.as_string()?.read();
 
-				query.push_encoded("wpsolr_sort", Some(SORT[0]));
-
-				return Ok(Url::Search(query).to_string());
+				return Ok(Url::search(search_str, page).to_string());
 			}
 
 			_ => continue,
