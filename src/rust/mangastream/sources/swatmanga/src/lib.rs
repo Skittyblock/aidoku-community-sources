@@ -9,19 +9,22 @@ use mangastream_template::template::MangaStreamSource;
 
 fn get_instance() -> MangaStreamSource {
 	MangaStreamSource {
-		has_random_chapter_prefix: true,
+		has_random_chapter_prefix: false,
 		listing: ["الرائج", "آخر", "جَديد"],
-		base_url: String::from("https://swatop.club"),
+		base_url: String::from("https://swatscans.com"),
 		manga_details_title: ".infox h1",
 		manga_details_author: "span:contains(المؤلف)",
-		manga_details_categories: ".spe a",
+		manga_details_categories: "span:contains(Category) a, span:contains(التصنيف) a",
 		manga_details_cover: ".ime noscript img",
-		manga_details_type: "span:contains(النوع) a",
+		manga_details_type: "span:contains(Type) a, span:contains(النوع) a",
+		manga_details_status: "span:contains(Status) a, span:contains(الحالة) a",
+		status_options: ["ongoing", "completed", "hiatus", "", ""],
 		last_page_text: "التالي",
 		chapter_selector: ".bxcl ul li",
 		chapter_title: "span.lchx",
-		chapter_date_format: "yyyy-MM-dd",
 		alt_pages: true,
+		language: "ar",
+		locale: "ar_SA",
 		..Default::default()
 	}
 }
@@ -47,8 +50,8 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 }
 
 #[get_page_list]
-fn get_page_list(_manga_id: String, id: String) -> Result<Vec<Page>> {
-	get_instance().parse_page_list(id)
+fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
+	get_instance().parse_page_list(format!("manga/{manga_id}/{chapter_id}"))
 }
 
 #[modify_image_request]
