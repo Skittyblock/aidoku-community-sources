@@ -1,5 +1,5 @@
 use crate::alloc::string::ToString;
-use crate::BASE_URL;
+use crate::{BASE_URL, PAGE_URL};
 use aidoku::{
 	error::Result,
 	helpers::substring::Substring,
@@ -148,22 +148,29 @@ pub fn parse_chapters(manga_object: &ObjectRef) -> Result<Vec<Chapter>> {
 }
 
 pub fn parse_pages(chapter_object: &ObjectRef) -> Result<Vec<Page>> {
-	let content = chapter_object
-		.get("chapter_detail")
-		.as_object()?
-		.get("chapter_content")
-		.as_string()?
-		.read();
-	let node = Node::new_fragment_with_uri(content, BASE_URL)?;
+	let detail = chapter_object.get("chapter_detail").as_object()?;
+	let server = detail
+		.get("server")
+		.as_string()
+		.map(|s| s.read())
+		.unwrap_or(format!("{PAGE_URL}/"));
+	let content = detail.get("chapter_content").as_string()?.read();
+	let node = Node::new_fragment_with_uri(content, PAGE_URL)?;
 	Ok(node
 		.select("div.chapter-img canvas")
 		.array()
 		.enumerate()
 		.map(|(index, node)| {
 			let node = node.as_node().expect("array items should always be nodes");
+			let src = node.attr("data-srcset").read();
+			let url = if src.starts_with("http") {
+				src
+			} else {
+				format!("{server}{src}")
+			};
 			Page {
 				index: index as i32,
-				url: node.attr("data-srcset").to_string(),
+				url,
 				..Default::default()
 			}
 		})
