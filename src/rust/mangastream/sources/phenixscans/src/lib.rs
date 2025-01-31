@@ -10,11 +10,16 @@ fn get_instance() -> MangaStreamSource {
 	MangaStreamSource {
 		use_manga_postids: true,
 		use_chapter_postids: true,
-		base_url: String::from("https://phenixscans.fr/"),
+		base_url: String::from("https://phenixscans.fr"),
 		listing: ["Dernières", "Populaire", "Nouveau"],
+		status_options: ["En Cours", "Terminé", "En Pause", "Abandonné", ""],
 		manga_details_author: ".imptdt:contains(Auteur) i, .fmed b:contains(Auteur)+span",
+		manga_details_status: ".imptdt:contains(Statut) i",
+		chapter_date_format: "dd MMM yyyy",
 		traverse_pathname: "manga",
 		alt_pages: true,
+		language: "fr",
+		locale: "fr_FR",
 		..Default::default()
 	}
 }
