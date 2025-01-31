@@ -10,7 +10,7 @@ use aidoku::{
 	Chapter, DeepLink, Filter, FilterType, Listing, Manga, MangaPageResult, MangaStatus, Page,
 };
 
-use crate::helper::{category_parser, text_with_newlines, urlencode};
+use crate::helper::*;
 
 pub static mut CACHED_MANGA_URL: Option<String> = None;
 pub static mut CACHED_MANGA: Option<Vec<u8>> = None;
@@ -30,6 +30,7 @@ pub struct MangaChanSource {
 	pub base_url: &'static str,
 	pub vol_chap_parser: fn(String, String) -> (f32, f32),
 	pub author_selector: &'static str,
+	pub custom_new_path: Option<&'static str>,
 }
 
 impl MangaChanSource {
@@ -42,7 +43,7 @@ impl MangaChanSource {
 				let manga_node = elem.as_node().expect("node array");
 				let title = manga_node.select("div.manga_row1 h2 a").text().read();
 				let url = manga_node.select("div.manga_row1 h2 a").attr("href").read();
-				let id = url.replace(self.base_url, "");
+				let id = strip_base_url(&url).into();
 				let cover = manga_node
 					.select("div.manga_images img")
 					.attr("src")
@@ -144,8 +145,9 @@ impl MangaChanSource {
 
 		let url = if title.is_empty() && tags.is_empty() {
 			format!(
-				"{url}/manga/new?offset={offset}{sort}",
+				"{url}/{new}?offset={offset}{sort}",
 				url = self.base_url,
+				new = self.custom_new_path.unwrap_or("manga/new"),
 				offset = (page - 1) * 20,
 				sort = sort,
 			)
@@ -343,7 +345,7 @@ impl MangaChanSource {
 		let split = url.split('/').collect::<Vec<_>>();
 		if split[3] == "manga" {
 			Ok(DeepLink {
-				manga: Some(self.get_manga_details(url.replace(self.base_url, ""))?),
+				manga: Some(self.get_manga_details(strip_base_url(&url).into())?),
 				chapter: None,
 			})
 		} else if split[3] == "online" {
@@ -363,7 +365,7 @@ impl MangaChanSource {
 			let manga_id = if let Ok(id) = metaobj.get("content_id").as_string() {
 				id.read()
 			} else if let Ok(url) = metaobj.get("url").as_string() {
-				url.read().replace(self.base_url, "")
+				strip_base_url(&url.read()).into()
 			} else {
 				return Err(AidokuError {
 					reason: aidoku::error::AidokuErrorKind::Unimplemented,
