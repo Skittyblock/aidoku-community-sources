@@ -49,7 +49,7 @@ fn get_page_list(_manga_id: String, id: String) -> Result<Vec<Page>> {
 
 	let mut pages: Vec<Page> = Vec::new();
 	let html = Request::get(url)
-		.header("Referer", &BASE_URL)
+		.header("Referer", BASE_URL)
 		.header("User-Agent", USER_AGENT)
 		.html()?;
 
