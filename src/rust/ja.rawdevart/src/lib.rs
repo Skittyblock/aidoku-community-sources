@@ -158,7 +158,7 @@ fn parse_manga_list(url: String) -> Result<MangaPageResult> {
 		.as_object()
 		.and_then(|obj| obj.get("button").as_object())
 		.and_then(|obj| obj.get("next").as_int())
-		.map_or(false, |n| n != 0);
+		.is_ok_and(|n| n != 0);
 
 	Ok(MangaPageResult { manga, has_more })
 }
