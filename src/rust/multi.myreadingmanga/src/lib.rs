@@ -207,10 +207,13 @@ fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 		.join(", ");
 
 	let mut chapters = Vec::<Chapter>::new();
-	let mut pages = manga_html.select(".post-page-numbers").array().len();
-	if pages == 0 {
-		pages = 1;
-	}
+	let pages = manga_html
+		.select(".page-numbers:not(.next)")
+		.last()
+		.text()
+		.read()
+		.parse()
+		.unwrap_or(1);
 	for chapter_index in 1..=pages {
 		let chapter_id = chapter_index.to_string();
 
