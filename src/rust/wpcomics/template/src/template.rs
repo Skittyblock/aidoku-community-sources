@@ -46,6 +46,8 @@ pub struct WPComicsSource {
 	pub page_url_transformer: fn(String) -> String,
 
 	pub vinahost_protection: bool,
+
+	pub user_agent: Option<&'static str>,
 }
 
 static mut CACHED_MANGA_ID: Option<String> = None;
@@ -61,7 +63,11 @@ fn cache_manga_page(data: &WPComicsSource, url: &str) {
 		if data.vinahost_protection {
 			CACHED_MANGA = Some(data.request_vinahost(url).data());
 		} else {
-			CACHED_MANGA = Some(Request::new(url, HttpMethod::Get).data());
+			let mut req = Request::new(url, HttpMethod::Get);
+			if let Some(user_agent) = data.user_agent {
+				req = req.header("User-Agent", user_agent);
+			}
+			CACHED_MANGA = Some(req.data());
 		}
 		CACHED_MANGA_ID = Some(String::from(url));
 	};
@@ -70,12 +76,20 @@ fn cache_manga_page(data: &WPComicsSource, url: &str) {
 impl WPComicsSource {
 	fn request_vinahost(&self, url: &str) -> Request {
 		if unsafe { VINAHOST_COOKIE.is_some() } {
-			Request::new(url, HttpMethod::Get).header(
+			let mut req = Request::new(url, HttpMethod::Get).header(
 				"Cookie",
 				unsafe { VINAHOST_COOKIE.clone().unwrap() }.as_str(),
-			)
+			);
+			if let Some(user_agent) = self.user_agent {
+				req = req.header("User-Agent", user_agent);
+			}
+			req
 		} else if self.vinahost_protection {
-			if let Ok(blocked_html) = Request::new(url, HttpMethod::Get).html() {
+			let mut req = Request::new(url, HttpMethod::Get);
+			if let Some(user_agent) = self.user_agent {
+				req = req.header("User-Agent", user_agent);
+			}
+			if let Ok(blocked_html) = req.html() {
 				let script = blocked_html.select("script").html().read();
 				let cookie = script
 					.replace("document.cookie=\"", "")
@@ -84,15 +98,27 @@ impl WPComicsSource {
 				unsafe {
 					VINAHOST_COOKIE = Some(cookie);
 				};
-				Request::new(url, HttpMethod::Get).header(
+				let mut req = Request::new(url, HttpMethod::Get).header(
 					"Cookie",
 					unsafe { VINAHOST_COOKIE.clone().unwrap() }.as_str(),
-				)
+				);
+				if let Some(user_agent) = self.user_agent {
+					req = req.header("User-Agent", user_agent);
+				}
+				req
 			} else {
-				Request::new(url, HttpMethod::Get)
+				let mut req = Request::new(url, HttpMethod::Get);
+				if let Some(user_agent) = self.user_agent {
+					req = req.header("User-Agent", user_agent);
+				}
+				req
 			}
 		} else {
-			Request::new(url, HttpMethod::Get)
+			let mut req = Request::new(url, HttpMethod::Get);
+			if let Some(user_agent) = self.user_agent {
+				req = req.header("User-Agent", user_agent);
+			}
+			req
 		}
 	}
 
@@ -146,7 +172,11 @@ impl WPComicsSource {
 				.attr("href")
 				.read();
 			if !id.contains("http://") && !id.contains("https://") {
-				id = String::from(&self.base_url) + "/" + &id;
+				id = format!(
+					"{}{}{id}",
+					self.base_url,
+					if id.starts_with("/") { "" } else { "/" }
+				);
 			}
 			let cover = if !self.manga_cell_image.is_empty() {
 				append_protocol(
@@ -254,7 +284,16 @@ impl WPComicsSource {
 				.attr("href")
 				.read();
 			if !chapter_url.contains("http://") && !chapter_url.contains("https://") {
-				chapter_url = format!("{}/{}", self.base_url, chapter_url);
+				chapter_url = format!(
+					"{}{}{}",
+					self.base_url,
+					if chapter_url.starts_with("/") {
+						""
+					} else {
+						"/"
+					},
+					chapter_url
+				);
 			}
 			let chapter_id = chapter_url.clone();
 			let mut chapter_title = chapter_node
@@ -296,9 +335,9 @@ impl WPComicsSource {
 				volume,
 				chapter,
 				date_updated,
-				scanlator: String::new(),
 				url: chapter_url,
 				lang: String::from("en"),
+				..Default::default()
 			});
 		}
 		Ok(chapters)
@@ -338,19 +377,19 @@ impl WPComicsSource {
 				.attr("href")
 				.read();
 			if !manga_id.contains("http://") && !manga_id.contains("https://") {
-				manga_id = format!("{}/{}", self.base_url, manga_id);
+				manga_id = format!(
+					"{}{}{}",
+					self.base_url,
+					if manga_id.starts_with("/") { "" } else { "/" },
+					manga_id
+				);
 			}
 			Ok(DeepLink {
 				manga: Some(self.get_manga_details(manga_id)?),
 				chapter: Some(Chapter {
 					id: url.clone(),
-					title: String::new(),
-					volume: -1.0,
-					chapter: -1.0,
-					date_updated: -1.0,
-					scanlator: String::new(),
 					url,
-					lang: String::new(),
+					..Default::default()
 				}),
 			})
 		} else {
@@ -361,8 +400,11 @@ impl WPComicsSource {
 		}
 	}
 
-	pub fn modify_image_request(&self, request: Request) {
-		request.header("Referer", format!("{}/", self.base_url).as_str());
+	pub fn modify_image_request(&self, mut request: Request) {
+		if let Some(user_agent) = self.user_agent {
+			request = request.header("User-Agent", user_agent);
+		}
+		request.header("Referer", &format!("{}/", self.base_url));
 	}
 }
 
@@ -418,6 +460,8 @@ impl Default for WPComicsSource {
 			page_url_transformer: |url| url,
 
 			vinahost_protection: false,
+
+			user_agent: None,
 		}
 	}
 }
