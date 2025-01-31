@@ -9,7 +9,8 @@ use aidoku::{
 	},
 	prelude::*,
 	std::{net::Request, String, ValueRef, Vec},
-	Chapter, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus, Page,
+	Chapter, DeepLink, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
+	Page,
 };
 use alloc::string::ToString;
 use core::fmt::Display;
@@ -266,6 +267,31 @@ fn modify_image_request(request: Request) {
 	request
 		.header("Referer", DOMAIN)
 		.header("User-Agent", USER_AGENT);
+}
+
+#[expect(clippy::needless_pass_by_value)]
+#[handle_url]
+fn handle_url(url: String) -> Result<DeepLink> {
+	let mut parts = url.split('/').skip(3);
+
+	let Some(manga_id) = parts.next() else {
+		return Ok(DeepLink::default());
+	};
+
+	let manga = get_manga_details(manga_id.into())?;
+
+	let chapter = parts
+		.next()
+		.filter(|path| path.chars().all(|c| c.is_ascii_digit()))
+		.map(|id| Chapter {
+			id: id.into(),
+			..Default::default()
+		});
+
+	Ok(DeepLink {
+		manga: Some(manga),
+		chapter,
+	})
 }
 
 fn get_filtered_url(filters: Vec<Filter>, page: i32) -> Result<String> {
