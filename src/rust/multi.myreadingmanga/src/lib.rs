@@ -86,7 +86,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 			.select("img")
 			.attr("data-src")
 			.read()
-			.replace("-180x260", "")
+			.replace("-200x280", "")
 			.percent_encode(false);
 
 		let artists_str = get_artists(&manga_title);
