@@ -286,7 +286,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "realmscans"
+name = "rizzfables"
 version = "0.1.0"
 dependencies = [
  "aidoku",

@@ -282,6 +282,7 @@ impl MangaStreamSource {
 
 		let mut author = String::from(
 			html.select(self.manga_details_author)
+				.first()
 				.text()
 				.read()
 				.replace("[Add, ]", "")
