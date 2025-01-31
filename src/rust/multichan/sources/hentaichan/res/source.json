@@ -3,11 +3,8 @@
 		"id": "ru.hentai-chan",
 		"lang": "ru",
 		"name": "Hentai-chan",
-		"version": 3,
-		"urls": [
-			"https://xxxx.henchan.pro",
-			"http://exhentai-dono.me"
-		],
+		"version": 4,
+		"urls": ["https://hentaichan.live", "http://x1.henchan.pro"],
 		"nsfw": 2
 	},
 	"listings": [

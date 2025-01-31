@@ -10,9 +10,10 @@ use alloc::vec;
 use manga_chan_template::template::{cache_manga_page, MangaChanSource, CACHED_MANGA};
 
 static INSTANCE: MangaChanSource = MangaChanSource {
-	base_url: "https://xxxx.henchan.pro",
+	base_url: "https://hentaichan.live",
 	vol_chap_parser: |_, _| (-1.0, -1.0),
 	author_selector: "div.row:contains(Автор) div.item2 a",
+	custom_new_path: Some("manga"),
 };
 
 #[get_manga_list]
