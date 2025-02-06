@@ -7,8 +7,8 @@ use aidoku::{
 };
 
 use crate::helper::{i32_to_string, lang_encoder, urlencode};
+use chapter_recognition::{parse_chapter_number, parse_volume_number};
 extern crate alloc;
-use alloc::string::ToString;
 
 pub fn parse_listing(html: &Node, result: &mut Vec<Manga>) {
 	for page in html.select(".col.item").array() {
@@ -158,38 +158,17 @@ pub fn get_chapter_list(obj: Node) -> Result<Vec<Chapter>> {
 			.read()
 			.replace("/chapter/", "");
 		// Title
-		let mut title = chapter_node
+		let title = chapter_node
 			.select(".chapt span")
 			.text()
 			.read()
 			.replace(": ", "");
 
 		let name = chapter_node.select(".chapt b").text().read();
-		let ch_num_pfxs = ["Chapter", "Episode"];
 
 		// Volume & Chapter
-		let title_spl = ch_num_pfxs.iter().find(|s| name.contains(*s));
-		if title_spl.is_none() && title.is_empty() {
-			title = name.to_string();
-		}
-		let vol_and_chap = name
-			.split(*title_spl.unwrap_or(&"Chapter"))
-			.collect::<Vec<&str>>();
-		let chapter = match vol_and_chap.get(1) {
-			Some(chap_str) => chap_str
-				.trim()
-				.split(' ')
-				.next()
-				.unwrap_or("-1.0")
-				.parse::<f32>()
-				.unwrap_or(-1.0),
-			None => -1.0,
-		};
-		let volume = vol_and_chap[0]
-			.replace("Volume", "")
-			.trim()
-			.parse::<f32>()
-			.unwrap_or(-1.0);
+		let chapter = parse_chapter_number(&title, &name);
+		let volume = parse_volume_number(&title, &name);
 
 		let time_str = chapter_node.select(".extra i.ps-3").text().read();
 		// Date_updated
