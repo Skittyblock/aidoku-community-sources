@@ -165,19 +165,16 @@ pub fn get_chapter_list(obj: Node) -> Result<Vec<Chapter>> {
 			.replace(": ", "");
 
 		let name = chapter_node.select(".chapt b").text().read();
-		if !name.contains("Chapter") && !name.contains("Episode") && title.is_empty() {
-			title = name.to_string();
-		}
+		let ch_num_pfxs = ["Chapter", "Episode"];
 
 		// Volume & Chapter
-		let title_spl = {
-			if name.contains("Episode") {
-				"Episode"
-			} else {
-				"Chapter"
-			}
-		};
-		let vol_and_chap = name.split(title_spl).collect::<Vec<&str>>();
+		let title_spl = ch_num_pfxs.iter().find(|s| name.contains(*s));
+		if title_spl.is_none() && title.is_empty() {
+			title = name.to_string();
+		}
+		let vol_and_chap = name
+			.split(*title_spl.unwrap_or(&"Chapter"))
+			.collect::<Vec<&str>>();
 		let chapter = match vol_and_chap.get(1) {
 			Some(chap_str) => chap_str
 				.trim()
