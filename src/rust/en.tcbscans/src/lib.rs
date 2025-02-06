@@ -7,7 +7,7 @@ use aidoku::{
 	MangaViewer, Page,
 };
 
-const BASE_URL: &str = "https://tcbscans.me";
+const BASE_URL: &str = "https://tcbonepiecechapters.com";
 
 #[get_manga_list]
 fn get_manga_list(_filters: Vec<Filter>, _page: i32) -> Result<MangaPageResult> {
