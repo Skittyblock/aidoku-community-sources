@@ -147,7 +147,7 @@ pub fn parse_manga(obj: Node, id: String) -> Result<Manga> {
 	})
 }
 
-pub fn get_chaper_list(obj: Node) -> Result<Vec<Chapter>> {
+pub fn get_chapter_list(obj: Node) -> Result<Vec<Chapter>> {
 	let mut chapters: Vec<Chapter> = Vec::new();
 	for item in obj.select(".item").array() {
 		let chapter_node = item.as_node().expect("node array");
@@ -165,12 +165,19 @@ pub fn get_chaper_list(obj: Node) -> Result<Vec<Chapter>> {
 			.replace(": ", "");
 
 		let name = chapter_node.select(".chapt b").text().read();
-		if !name.contains("Chapter") && title.is_empty() {
+		if !name.contains("Chapter") && !name.contains("Episode") && title.is_empty() {
 			title = name.to_string();
 		}
 
 		// Volume & Chapter
-		let vol_and_chap = name.split("Chapter").collect::<Vec<&str>>();
+		let title_spl = {
+			if name.contains("Episode") {
+				"Episode"
+			} else {
+				"Chapter"
+			}
+		};
+		let vol_and_chap = name.split(title_spl).collect::<Vec<&str>>();
 		let chapter = match vol_and_chap.get(1) {
 			Some(chap_str) => chap_str
 				.trim()
