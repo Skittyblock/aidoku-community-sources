@@ -116,9 +116,16 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 
 		let cover = element.select("img").first().attr("abs:src").read();
 
-		let title_element = element.select("div > a").first();
-		let title = title_element.text().read();
+		let title_element = element.select("a").first();
+		let mut title = title_element.text().read();
+
+		const OFFICIAL_PREFIX: &str = "Official ";
+		if title.starts_with(OFFICIAL_PREFIX) {
+			title = title[OFFICIAL_PREFIX.len()..].trim().into();
+		}
+
 		let url = title_element.attr("abs:href").read();
+
 		let Some(id) = url.strip_prefix(BASE_URL).map(String::from) else {
 			continue;
 		};
