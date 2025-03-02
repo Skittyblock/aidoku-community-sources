@@ -167,23 +167,14 @@ pub fn parse_chapter_list(base_url: String, manga_id: String) -> Result<Vec<Chap
 	let data = Request::new(url, HttpMethod::Get).json()?.as_object()?;
 	let manga_id = data.get("id").as_int()?.to_string();
 
-	let url = format!(
-		"{}/chapter/query?page=1&perPage=30&series_id={}",
-		BASE_API_URL, manga_id
-	);
-	let data = Request::new(url, HttpMethod::Get).json()?.as_object()?;
+	let url = format!("{BASE_API_URL}/chapters/{manga_id}?page=1&perPage=1000",);
+	let mut data = Request::get(url).json()?.as_object()?;
 	let mut page = data.get("meta").as_object()?.get("first_page").as_int()?;
 	let last_page = data.get("meta").as_object()?.get("last_page").as_int()?;
 
 	let mut all_chapters: Vec<Chapter> = Vec::new();
 
 	while page <= last_page {
-		let url = format!(
-			"{}/chapter/query?page={}&perPage=30&series_id={}",
-			BASE_API_URL, page, manga_id
-		);
-		let data = Request::new(url, HttpMethod::Get).json()?.as_object()?;
-
 		let chapters = data.get("data").as_array()?;
 
 		for chapter in chapters {
@@ -228,6 +219,11 @@ pub fn parse_chapter_list(base_url: String, manga_id: String) -> Result<Vec<Chap
 			});
 		}
 		page += 1;
+
+		if page <= last_page {
+			let url = format!("{BASE_API_URL}/chapters/{manga_id}?page={page}&perPage=1000");
+			data = Request::get(url).json()?.as_object()?;
+		}
 	}
 
 	Ok(all_chapters)
