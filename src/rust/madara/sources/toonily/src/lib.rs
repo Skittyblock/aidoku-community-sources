@@ -9,7 +9,7 @@ use madara_template::template;
 fn get_data() -> template::MadaraSiteData {
 	let data: template::MadaraSiteData = template::MadaraSiteData {
 		base_url: String::from("https://toonily.com"),
-		source_path: String::from("webtoon"),
+		source_path: String::from("serie"),
 		search_path: String::from("search/x/page"),
 		search_cookies: String::from("toonily-mature=1"),
 		post_type: String::from(""),
