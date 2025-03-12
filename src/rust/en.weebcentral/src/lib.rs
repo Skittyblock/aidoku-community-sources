@@ -315,6 +315,11 @@ fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 	Ok(pages)
 }
 
+#[modify_image_request]
+fn modify_image_request(request: Request) {
+	request.header("Referer", "https://weebcentral.com/");
+}
+
 // i don't care enough to implement this rn
 // #[handle_url]
 // fn handle_url(url: String) -> Result<DeepLink> {
