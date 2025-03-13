@@ -22,5 +22,30 @@
 				"title": "Название на англ."
 			}
 		]
+	},
+	{
+		"type": "group",
+		"title": "SocialLib аккаунт",
+		"footer": "Авторизация в аккаунт SocialLib может быть вам необходима только для получения доступа к содержимому манги с тегом 18+",
+		"items": [
+			{
+				"type": "text",
+				"key": "login_field",
+				"placeholder": "Логин",
+				"autocapitalizationType": 0
+			},
+			{
+				"type": "text",
+				"key": "password_field",
+				"placeholder": "Пароль",
+				"autocapitalizationType": 0,
+				"autocorrectionType": 0
+			},
+			{
+				"type": "button",
+				"action": "pressedOnLogin",
+				"title": "Войти в аккаунт"
+			}
+		]
 	}
 ]
