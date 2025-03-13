@@ -1,0 +1,10 @@
+{
+	"info": {
+		"id": "en.mangaforest",
+		"lang": "en",
+		"name": "MangaForest",
+		"version": 1,
+		"url": "https://mangaforest.me",
+		"nsfw": 2
+	}
+}
