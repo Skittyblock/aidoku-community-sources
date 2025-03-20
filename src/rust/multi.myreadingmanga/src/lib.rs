@@ -9,7 +9,8 @@ use aidoku::{
 	},
 	prelude::*,
 	std::{net::Request, String, ValueRef, Vec},
-	Chapter, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus, Page,
+	Chapter, DeepLink, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
+	Page,
 };
 use alloc::string::ToString;
 use core::fmt::Display;
@@ -41,6 +42,21 @@ enum Url<'a> {
 
 	/// https://myreadingmanga.info/{manga_id}/{chapter_id}/
 	Chapter(&'a str, &'a str),
+}
+
+impl Url<'_> {
+	fn search(keyword: String, page: i32) -> Self {
+		let mut query = QueryParameters::new();
+
+		let encoded_keyword = keyword.percent_encode(true);
+		query.push_encoded("wpsolr_q", Some(&encoded_keyword));
+
+		query.push_encoded("wpsolr_sort", Some(SORT[0]));
+
+		query.push_encoded("wpsolr_page", Some(&page.to_string()));
+
+		Self::Search(query)
+	}
 }
 
 const DOMAIN: &str = "https://myreadingmanga.info";
@@ -83,9 +99,9 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 
 		let cover_url = manga_node
 			.select("img")
-			.attr("data-src")
+			.attr("src")
 			.read()
-			.replace("-180x260", "")
+			.replace("-200x280", "")
 			.percent_encode(false);
 
 		let artists_str = get_artists(&manga_title);
@@ -118,6 +134,15 @@ fn get_manga_details(manga_id: String) -> Result<Manga> {
 	let manga_html = request_get(&manga_url).html()?;
 
 	let manga_title = manga_html.select("h1.entry-title").text().read();
+
+	let search_title_url = Url::search(manga_title.clone(), 1).to_string();
+	let manga_selector = format!("div.results-by-facets > div:has(a[href*={manga_id}]) img");
+	let cover = request_get(&search_title_url)
+		.html()?
+		.select(manga_selector)
+		.attr("src")
+		.read()
+		.replace("-200x280", "");
 
 	let artists_str = get_artists(&manga_title);
 
@@ -182,6 +207,7 @@ fn get_manga_details(manga_id: String) -> Result<Manga> {
 
 	Ok(Manga {
 		id: manga_id,
+		cover,
 		title: manga_title,
 		author: artists_str.clone(),
 		artist: artists_str,
@@ -207,10 +233,13 @@ fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 		.join(", ");
 
 	let mut chapters = Vec::<Chapter>::new();
-	let mut pages = manga_html.select(".post-page-numbers").array().len();
-	if pages == 0 {
-		pages = 1;
-	}
+	let pages = manga_html
+		.select(".page-numbers:not(.next)")
+		.last()
+		.text()
+		.read()
+		.parse()
+		.unwrap_or(1);
 	for chapter_index in 1..=pages {
 		let chapter_id = chapter_index.to_string();
 
@@ -246,7 +275,7 @@ fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 	let mut pages = Vec::<Page>::new();
 	let page_nodes = chapter_html.select("img.img-myreadingmanga");
 	for (page_index, page_value) in page_nodes.array().enumerate() {
-		let page_url = page_value.as_node()?.attr("data-src").read();
+		let page_url = page_value.as_node()?.attr("src").read();
 
 		pages.push(Page {
 			index: page_index as i32,
@@ -263,6 +292,31 @@ fn modify_image_request(request: Request) {
 	request
 		.header("Referer", DOMAIN)
 		.header("User-Agent", USER_AGENT);
+}
+
+#[expect(clippy::needless_pass_by_value)]
+#[handle_url]
+fn handle_url(url: String) -> Result<DeepLink> {
+	let mut parts = url.split('/').skip(3);
+
+	let Some(manga_id) = parts.next() else {
+		return Ok(DeepLink::default());
+	};
+
+	let manga = get_manga_details(manga_id.into())?;
+
+	let chapter = parts
+		.next()
+		.filter(|path| path.chars().all(|c| c.is_ascii_digit()))
+		.map(|id| Chapter {
+			id: id.into(),
+			..Default::default()
+		});
+
+	Ok(DeepLink {
+		manga: Some(manga),
+		chapter,
+	})
 }
 
 fn get_filtered_url(filters: Vec<Filter>, page: i32) -> Result<String> {
@@ -290,12 +344,9 @@ fn get_filtered_url(filters: Vec<Filter>, page: i32) -> Result<String> {
 			}
 
 			FilterType::Title => {
-				let encoded_search_str = filter.value.as_string()?.read().percent_encode(true);
-				query.push_encoded("wpsolr_q", Some(&encoded_search_str));
+				let search_str = filter.value.as_string()?.read();
 
-				query.push_encoded("wpsolr_sort", Some(SORT[0]));
-
-				return Ok(Url::Search(query).to_string());
+				return Ok(Url::search(search_str, page).to_string());
 			}
 
 			_ => continue,

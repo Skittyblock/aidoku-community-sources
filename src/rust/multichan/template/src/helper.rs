@@ -79,3 +79,13 @@ pub fn category_parser(categories: &Vec<String>) -> (MangaContentRating, MangaVi
 	}
 	(nsfw, viewer)
 }
+
+// removes the base url (https://example.com) from a url
+pub fn strip_base_url(url: &str) -> &str {
+	if let Some(pos) = url.find("://") {
+		if let Some(pos2) = url[pos + 3..].find('/') {
+			return &url[pos + 3 + pos2..];
+		}
+	}
+	url
+}

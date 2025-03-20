@@ -6,7 +6,7 @@ use aidoku::{
 
 use mangaworld_template::template;
 
-const BASE_URL: &str = "https://www.mangaworld.so";
+const BASE_URL: &str = "https://www.mangaworld.ac";
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {

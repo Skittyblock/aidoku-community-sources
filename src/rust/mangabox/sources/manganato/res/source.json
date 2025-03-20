@@ -3,19 +3,13 @@
 		"id": "en.manganato",
 		"lang": "en",
 		"name": "MangaNato",
-		"version": 1,
+		"version": 2,
 		"nsfw": 1,
-		"urls": [
-			"https://manganato.com",
-			"https://readmanganato.com"
-		]
+		"url": "https://www.natomanga.com"
 	},
 	"listings": [
 		{
 			"name": "Latest Updates"
-		},
-		{
-			"name": "New Manga"
 		},
 		{
 			"name": "Top Manga"

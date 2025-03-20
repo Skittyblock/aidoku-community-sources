@@ -212,8 +212,7 @@ pub fn get_manga_list(
 }
 
 pub fn get_search_result(data: MadaraSiteData, url: String) -> Result<MangaPageResult> {
-	let mut req =
-		Request::new(url.as_str(), HttpMethod::Get).header("Cookie", &data.search_cookies);
+	let mut req = Request::get(&url).header("Cookie", &data.search_cookies);
 
 	req = add_user_agent_header(req, &data.user_agent);
 
@@ -228,8 +227,8 @@ pub fn get_search_result(data: MadaraSiteData, url: String) -> Result<MangaPageR
 			.select("a")
 			.attr("href")
 			.read()
-			.replace(&data.base_url.clone(), "")
-			.replace(&data.source_path.clone(), "")
+			.replace(&data.base_url, "")
+			.replace(&data.source_path, "")
 			.replace('/', "");
 		let title = obj.select("a").attr("title").read();
 
@@ -244,14 +243,7 @@ pub fn get_search_result(data: MadaraSiteData, url: String) -> Result<MangaPageR
 			id,
 			cover,
 			title,
-			author: String::new(),
-			artist: String::new(),
-			description: String::new(),
-			url: String::new(),
-			categories: Vec::new(),
-			status: MangaStatus::Unknown,
-			nsfw: MangaContentRating::Safe,
-			viewer: MangaViewer::Scroll,
+			..Default::default()
 		});
 		has_more = true;
 	}
@@ -300,15 +292,13 @@ pub fn get_series_page(data: MadaraSiteData, listing: &str, page: i32) -> Result
 		}
 
 		let base_id = obj.select(&data.base_id_selector).attr("href").read();
-		let final_path = base_id
-			.strip_prefix(&data.base_url)
-			.unwrap_or(&base_id)
-			.strip_prefix('/')
-			.unwrap_or(&base_id)
-			.strip_prefix(&data.source_path)
-			.unwrap_or(&base_id)
-			.strip_prefix('/')
-			.unwrap_or(&base_id);
+		let final_path = strip_prefix(
+			strip_prefix(
+				strip_prefix(&base_id, &data.base_url),
+				&format!("/{}", data.source_path),
+			),
+			"/",
+		);
 		let id = final_path
 			.strip_suffix('/')
 			.unwrap_or(final_path)
@@ -328,14 +318,7 @@ pub fn get_series_page(data: MadaraSiteData, listing: &str, page: i32) -> Result
 			id,
 			cover,
 			title,
-			author: String::new(),
-			artist: String::new(),
-			description: String::new(),
-			url: String::new(),
-			categories: Vec::new(),
-			status: MangaStatus::Unknown,
-			nsfw: MangaContentRating::Safe,
-			viewer: MangaViewer::Scroll,
+			..Default::default()
 		});
 		has_more = true;
 	}
@@ -358,9 +341,13 @@ pub fn get_manga_listing(
 }
 
 pub fn get_manga_details(manga_id: String, data: MadaraSiteData) -> Result<Manga> {
-	let url = data.base_url.clone() + "/" + data.source_path.as_str() + "/" + manga_id.as_str();
+	let url = if manga_id.starts_with("http") {
+		manga_id.clone()
+	} else {
+		format!("{}/{}/{manga_id}", data.base_url, data.source_path)
+	};
 
-	let mut req = Request::new(url.as_str(), HttpMethod::Get);
+	let mut req = Request::get(&url);
 
 	req = add_user_agent_header(req, &data.user_agent);
 
@@ -534,8 +521,7 @@ pub fn get_page_list(chapter_id: String, data: MadaraSiteData) -> Result<Vec<Pag
 		pages.push(Page {
 			index: index as i32,
 			url: get_image_url(item.as_node().expect("node array")),
-			base64: String::new(),
-			text: String::new(),
+			..Default::default()
 		});
 	}
 	Ok(pages)

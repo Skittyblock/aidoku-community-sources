@@ -10,6 +10,8 @@ use aidoku::{
 extern crate alloc;
 use alloc::string::ToString;
 
+use crate::BASE_URL;
+
 pub fn parse_directory(html: Node) -> Result<MangaPageResult> {
 	let mut result: Vec<Manga> = Vec::new();
 	let has_more: bool = !is_last_page(html.clone());
@@ -51,7 +53,7 @@ pub fn parse_manga(obj: Node, id: String) -> Result<Manga> {
 	let author = obj.select("p.detail-info-right-say a").text().read();
 	let description = obj.select("p.fullcontent").text().read();
 
-	let url = format!("https://www.fanfox.net/manga/{}", &id);
+	let url = format!("{BASE_URL}/manga/{}", &id);
 
 	let mut viewer = MangaViewer::Rtl;
 	let mut nsfw: MangaContentRating = MangaContentRating::Safe;
@@ -116,7 +118,7 @@ pub fn parse_chapters(obj: Node) -> Result<Vec<Chapter>> {
 			.replace("/manga/", "")
 			.replace("/1.html", "");
 
-		let url = format!("https://www.fanfox.net/manga/{}", &id);
+		let url = format!("{BASE_URL}/manga/{}", &id);
 
 		// parse title
 		let mut title = String::new();
@@ -204,7 +206,7 @@ pub fn get_page_list(html: Node) -> Result<Vec<Page>> {
 pub fn get_filtered_url(filters: Vec<Filter>, page: i32) -> String {
 	let mut is_searching = false;
 	let mut search_query = String::new();
-	let mut url = String::from("https://fanfox.net");
+	let mut url = String::from(BASE_URL);
 
 	let mut genres = String::new();
 	let mut nogenres = String::new();
@@ -213,8 +215,8 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32) -> String {
 		match filter.kind {
 			FilterType::Title => {
 				if let Ok(filter_value) = filter.value.as_string() {
-					search_query.push_str("&name=");
-					search_query.push_str(encode_uri(filter_value.read().to_lowercase()).as_str());
+					search_query.push_str("&title=");
+					search_query.push_str(&filter_value.read().to_lowercase());
 					is_searching = true;
 				}
 			}
@@ -268,16 +270,13 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32) -> String {
 	if is_searching {
 		let search_string = if page == 1 {
 			format!(
-                "/search?title=&stype=1&author_method=cw&author=&artist_method=cw&artist={}&released_method=eq&released=&genres={}&nogenres={}",
-                &search_query,
+                "/search?title=&stype=1&author_method=cw&author=&artist_method=cw&released_method=eq&released=&genres={}&nogenres={}{search_query}",
                 &genres.trim_end_matches(','),
                 &nogenres.trim_end_matches(','),
             )
 		} else {
 			format!(
-                "/search?page={}&author_method=cw&author=&artist_method=cw&artist={}&genres={}&nogenres={}&released_method=eq&released=&stype=1",
-                &page.to_string(),
-                &search_query,
+                "/search?page={page}&author_method=cw&author=&artist_method=cw&genres={}&nogenres={}&released_method=eq&released=&stype=1{search_query}",
                 &genres.trim_end_matches(','),
                 &nogenres.trim_end_matches(','),
             )
@@ -288,6 +287,7 @@ pub fn get_filtered_url(filters: Vec<Filter>, page: i32) -> String {
 		let list_string = format!("/directory?page={}.html?rating", &page.to_string());
 		url.push_str(list_string.as_str());
 	}
+
 	encode_uri(url)
 }
 

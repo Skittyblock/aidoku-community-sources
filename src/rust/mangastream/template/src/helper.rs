@@ -9,12 +9,10 @@ use aidoku::{
 };
 use core::ptr;
 
-use crate::template::MangaStreamSource;
+use crate::template::{MangaStreamSource, USER_AGENT};
 
 extern crate hashbrown;
 use hashbrown::HashMap;
-
-pub const USER_AGENT: &str = "Mozilla/5.0 (iPhone; CPU iPhone OS 16_1_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1";
 
 // generate url for listing page
 pub fn get_listing_url(
@@ -318,7 +316,7 @@ pub fn get_permanet_url(original_url: String) -> String {
 	// only exists to stop scrapers
 	let garbage = original_url
 		.split('/')
-		.last()
+		.next_back()
 		.expect("Failed to split url by /")
 		.split('-')
 		.next()
@@ -362,7 +360,10 @@ pub fn get_id_from_url(url: String) -> String {
 	// will return the-world-after-the-fall
 	// example https://flamescans.org/the-world-after-the-fall-chapter-55
 	// will return the-world-after-the-fall-chapter-55
-	let id = url.split('/').last().expect("Failed to parse id from url");
+	let id = url
+		.split('/')
+		.next_back()
+		.expect("Failed to parse id from url");
 
 	String::from(id)
 }

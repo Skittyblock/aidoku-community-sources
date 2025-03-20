@@ -3,16 +3,13 @@
 		"id": "en.mangabat",
 		"lang": "en",
 		"name": "MangaBat",
-		"version": 2,
+		"version": 3,
 		"nsfw": 1,
-		"url": "https://readmangabat.com"
+		"url": "https://www.mangabats.com"
 	},
 	"listings": [
 		{
 			"name": "Latest Updates"
-		},
-		{
-			"name": "New Manga"
 		},
 		{
 			"name": "Top Manga"

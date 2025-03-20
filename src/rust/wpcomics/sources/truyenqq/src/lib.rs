@@ -8,9 +8,12 @@ use aidoku::{
 };
 use wpcomics_template::{helper::urlencode, template::WPComicsSource};
 
+const BASE_URL: &str = "https://truyenqqto.com";
+const USER_AGENT: &str = "Mozilla/5.0 (iPhone; CPU iPhone OS 17_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) GSA/300.0.598994205 Mobile/15E148 Safari/604";
+
 fn get_instance() -> WPComicsSource {
 	WPComicsSource {
-		base_url: String::from("https://truyenqqviet.com"),
+		base_url: String::from(BASE_URL),
 		viewer: MangaViewer::Rtl,
 		listing_mapping: |listing| {
 			String::from(match listing.as_str() {
@@ -31,12 +34,12 @@ fn get_instance() -> WPComicsSource {
 				.unwrap_or(-1.0)
 		},
 
-		next_page: "div.page_redirect span[aria-hidden=true]:contains(›)",
-		manga_cell: "ul.list_grid li",
-		manga_cell_title: "div.book_info > div.book_name > h3 > a",
-		manga_cell_url: "div.book_info > div.book_name > h3 > a",
-		manga_cell_image: "div.book_avatar img",
-		manga_cell_image_attr: "src",
+		next_page: ".page_redirect > a:nth-last-child(2) > p:not(.active)",
+		manga_cell: "ul.grid li",
+		manga_cell_title: ".book_info .qtip a",
+		manga_cell_url: ".book_info .qtip a",
+		manga_cell_image: ".book_avatar img",
+		manga_cell_image_attr: "abs:src",
 
 		manga_listing_pagination: "/trang-",
 		manga_listing_extension: ".html",
@@ -68,6 +71,7 @@ fn get_instance() -> WPComicsSource {
 			}
 		},
 		vinahost_protection: true,
+		user_agent: Some(USER_AGENT),
 		..Default::default()
 	}
 }
@@ -89,9 +93,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 							.read(),
 					);
 					if !title.is_empty() {
-						return format!(
-							"https://truyenqqviet.com/tim-kiem/trang-{page}.html?q={title}"
-						);
+						return format!("{BASE_URL}/tim-kiem/trang-{page}.html?q={title}");
 					}
 				}
 				FilterType::Genre => {
@@ -152,7 +154,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 			}
 		}
 		format!(
-			"https://truyenqqviet.com/tim-kiem-nang-cao.html?category={}&notcategory={}{}",
+			"{BASE_URL}/tim-kiem-nang-cao.html?category={}&notcategory={}{}",
 			included_tags.join(","),
 			excluded_tags.join(","),
 			query

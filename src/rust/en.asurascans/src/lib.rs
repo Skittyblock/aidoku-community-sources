@@ -4,7 +4,6 @@ mod helper;
 
 use aidoku::{
 	error::Result,
-	helpers::substring::Substring,
 	helpers::uri::encode_uri_component,
 	prelude::*,
 	std::net::{HttpMethod, Request},
@@ -236,6 +235,12 @@ fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 	{
 		let node = node.as_node()?;
 
+		let chapter_unlocked =	node.select("h3 > span > svg").array().is_empty();
+
+		if !chapter_unlocked {
+			continue;
+		}
+
 		let raw_url = node.select("a").attr("abs:href").read();
 
 		let id = get_chapter_id(&raw_url)?;
@@ -244,10 +249,10 @@ fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 		let url = get_chapter_url(&id, &manga_id);
 
 		// Chapter's title if it exists
-		let title = node.select("h3 > a > span").text().read();
+		let title = String::from(node.select("h3 > span").text().read().trim());
 
 		let chapter = node
-			.select("h3 > a")
+			.select("h3.text-sm")
 			.text()
 			.read()
 			.replace(&title, "")
@@ -299,32 +304,46 @@ fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 	let url = get_chapter_url(&chapter_id, &manga_id);
 
-	let html = Request::new(url, HttpMethod::Get).html()?;
+	let html_text = Request::new(url.clone(), HttpMethod::Get).string()?;
+
+	// Remove script tags from hydration that can cut up the page list
+	let html_text = html_text.replace(r#""])</script><script>self.__next_f.push([1,""#, "");
 
 	let mut pages: Vec<Page> = Vec::new();
 
-	for node in html.select("div > img[alt^=chapter page]").array() {
-		let node = node.as_node()?;
+	let mut text_slice = html_text.as_str();
 
-		let url = node.attr("abs:src").read();
-		let index = {
-			let before = url.substring_after_last('/').unwrap_or("");
-			let after = before.substring_before('.').unwrap_or("");
+	// Find bounds of the page list
+	let page_list_start = text_slice.find(r#"\"pages\":[{\"order\":1,\"url\":\"https://gg.asuracomic.net/storage/media"#).unwrap_or(0);
+	let page_list_end = text_slice[page_list_start..].find(r#"}]"#).unwrap_or(0);
 
-			let cleaned_after = after
-				.chars()
-				.filter(|c| c.is_ascii_digit())
-				.collect::<String>();
+	text_slice = &text_slice[page_list_start..page_list_start + page_list_end];
+	let mut index = 0;
+	loop {
+		let chap = text_slice.find("https://gg.asuracomic.net/storage/media/");
+		if let Some(chap) = chap {
+			text_slice = &text_slice[chap..];
+			let end = text_slice.find("\"").unwrap_or(0);
+			let url = text_slice[..end].replace("\\", "");
+			text_slice = &text_slice[end..];
 
-			cleaned_after.parse::<i32>().unwrap_or(-1)
-		};
+			index += 1;
 
-		pages.push(Page {
-			index,
-			url,
-			..Default::default()
-		});
+			if pages.iter().any(|page| page.index == index) {
+				continue;
+			}
+
+			pages.push(Page {
+				index,
+				url,
+				..Default::default()
+			});
+		} else {
+			break;
+		}
 	}
+
+	pages.sort_by(|a, b| a.index.cmp(&b.index));
 
 	Ok(pages)
 }

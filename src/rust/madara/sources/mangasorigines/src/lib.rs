@@ -1,7 +1,7 @@
 #![no_std]
 use aidoku::{
 	error::Result, prelude::*, std::net::Request, std::String, std::Vec, Chapter, DeepLink, Filter,
-	Listing, Manga, MangaPageResult, MangaStatus, Page,
+	Listing, Manga, MangaPageResult, Page,
 };
 use madara_template::template;
 
@@ -9,29 +9,11 @@ fn get_data() -> template::MadaraSiteData {
 	let data: template::MadaraSiteData = template::MadaraSiteData {
 		base_url: String::from("https://mangas-origines.fr"),
 		lang: String::from("fr"),
-		description_selector: String::from("div.manga-excerpt p"),
-		status_filter_ongoing: String::from("En cours"),
-		status_filter_completed: String::from("Terminé"),
-		status_filter_cancelled: String::from("Annulé"),
-		status_filter_on_hold: String::from("En pause"),
+		source_path: "oeuvre".into(),
+		description_selector: "div.summary__content > p".into(),
+		author_selector: "div.manga-authors > a".into(),
 		popular: String::from("Populaire"),
 		trending: String::from("Tendance"),
-		status: |html| {
-			let status_str = html
-				.select("div.post-content_item:contains(Statut) div.summary-content")
-				.text()
-				.read()
-				.to_lowercase();
-			let mut status_str = status_str.chars();
-			status_str.next();
-			match status_str.as_str() {
-				"en cours" => MangaStatus::Ongoing,
-				"complété" => MangaStatus::Completed,
-				"annulé" => MangaStatus::Cancelled,
-				"en pause" => MangaStatus::Hiatus,
-				_ => MangaStatus::Unknown,
-			}
-		},
 		alt_ajax: true,
 		..Default::default()
 	};

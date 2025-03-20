@@ -10,7 +10,7 @@ use aidoku::{
 
 use crate::helper::*;
 
-pub const USER_AGENT: &str = "Mozilla/5.0 (iPhone; CPU iPhone OS 16_1_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1";
+pub const USER_AGENT: &str = "Mozilla/5.0 (iPhone; CPU iPhone OS 17_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) GSA/300.0.598994205 Mobile/15E148 Safari/604";
 
 pub struct MangaStreamSource {
 	/// Use static post ids instead of dynamic ids parsed from urls \
@@ -26,6 +26,7 @@ pub struct MangaStreamSource {
 	pub listing: [&'static str; 3],
 	pub base_url: String,
 	pub traverse_pathname: &'static str,
+	pub directory_pathname: Option<&'static str>,
 	pub next_page: &'static str,
 	pub next_page_2: &'static str,
 	pub manga_selector: &'static str,
@@ -79,6 +80,7 @@ impl Default for MangaStreamSource {
 			listing: ["Latest", "Popular", "New"],
 			base_url: String::new(),
 			traverse_pathname: "manga",
+			directory_pathname: None,
 			next_page: ".hpage a.r",
 			next_page_2: ".hpage a.r",
 			manga_selector: ".listupd .bsx",
@@ -185,7 +187,7 @@ impl MangaStreamSource {
 			get_listing_url(
 				self.listing,
 				base_url,
-				String::from(self.traverse_pathname),
+				String::from(self.directory_pathname.unwrap_or(self.traverse_pathname)),
 				listing_name,
 				page,
 			)
@@ -280,6 +282,7 @@ impl MangaStreamSource {
 
 		let mut author = String::from(
 			html.select(self.manga_details_author)
+				.first()
 				.text()
 				.read()
 				.replace("[Add, ]", "")
@@ -443,7 +446,10 @@ impl MangaStreamSource {
 
 			let trimmed_json = {
 				let mut trimmed_json = &raw_text[raw_text.find(r#":[{"s"#).unwrap_or(0) + 2
-					..raw_text.rfind("}],").unwrap_or(0) + 1];
+					..raw_text
+						.rfind("}]});")
+						.unwrap_or(raw_text.rfind("}],").unwrap_or(0))
+						+ 1];
 
 				if trimmed_json.contains("Default 2") {
 					trimmed_json = &trimmed_json[..trimmed_json.rfind(r#",{"s"#).unwrap_or(0)];

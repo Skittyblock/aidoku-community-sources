@@ -8,8 +8,7 @@ use madara_template::template;
 
 fn get_data() -> template::MadaraSiteData {
 	let data: template::MadaraSiteData = template::MadaraSiteData {
-		base_url: String::from("https://harimanga.com"),
-		description_selector: String::from("div.manga-excerpt p"),
+		base_url: String::from("https://harimanga.me"),
 		alt_ajax: true,
 		..Default::default()
 	};

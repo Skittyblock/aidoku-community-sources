@@ -8,9 +8,10 @@ use mangastream_template::template::MangaStreamSource;
 
 fn get_instance() -> MangaStreamSource {
 	MangaStreamSource {
-		base_url: String::from("https://tenshi.pw"),
+		base_url: String::from("https://tenshi01.id"),
 		chapter_date_format: "MMMM d, yyyy",
 		traverse_pathname: "komik",
+		manga_details_author: ".infotable tr:contains(Author) td:last-child",
 		alt_pages: true,
 		locale: "id",
 		..Default::default()

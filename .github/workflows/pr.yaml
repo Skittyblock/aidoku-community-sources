@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     -
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     -
       name: Get changed files
       id: files
@@ -40,7 +40,7 @@ jobs:
       uses: google/wireit@setup-github-actions-caching/v1
       if: ${{ env.SETUP_AS == 'true' }}
     - 
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       if: ${{ env.SETUP_AS == 'true' }}
       with:
         node-version: 16
@@ -48,7 +48,7 @@ jobs:
         cache-dependency-path: '**/package-lock.json'
     -
       name: Cache rust stuff
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       if: ${{ env.SETUP_RUST == 'true' }}
       with:
         path: |
@@ -61,7 +61,7 @@ jobs:
         restore-keys: ${{ runner.os }}-cargo3-
     -
       name: sccache
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ~/.cache/sccache
         key: ${{ runner.os }}-sccache-${{ github.sha }}
@@ -133,7 +133,7 @@ jobs:
       if: always()
       run: aidoku build ./**/*.aix
     - 
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: packages

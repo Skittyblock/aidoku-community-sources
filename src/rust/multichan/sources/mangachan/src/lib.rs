@@ -21,6 +21,7 @@ static INSTANCE: MangaChanSource = MangaChanSource {
 		}
 	},
 	author_selector: "table.mangatitle tr:contains(Автор) span.translation a",
+	custom_new_path: None,
 };
 
 #[get_manga_list]

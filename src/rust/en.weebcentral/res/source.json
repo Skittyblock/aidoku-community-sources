@@ -1,0 +1,10 @@
+{
+	"info": {
+		"id": "en.weebcentral",
+		"lang": "en",
+		"name": "Weeb Central",
+		"version": 4,
+		"url": "https://weebcentral.com",
+		"nsfw": 1
+	}
+}

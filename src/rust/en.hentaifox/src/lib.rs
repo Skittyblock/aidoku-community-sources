@@ -3,6 +3,7 @@
 mod helper;
 
 extern crate alloc;
+use alloc::string::ToString;
 
 use aidoku::{
 	error::Result,
@@ -17,7 +18,6 @@ use helper::USER_AGENT;
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	let mut manga_arr: Vec<Manga> = Vec::new();
-	let mut total: i32 = 1;
 
 	let mut query: Option<String> = None;
 	let mut sort: String = String::new();
@@ -80,48 +80,11 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 		})
 	}
 
-	for paging_res in html.select(".pagination .page-item a").array() {
-		let paging = paging_res.as_node().expect("Failed to get node");
-		let href = paging.attr("href").read();
-		if href == "#" {
-			continue;
-		}
-		let href_parts = href.split('/').collect::<Vec<&str>>();
-
-		// get second last part in href
-		let last_str = String::from(href_parts[href_parts.len() - 1]);
-
-		if last_str.starts_with("?q=") {
-			if !last_str.contains("&page=") {
-				continue;
-			}
-			let last_str_parts = last_str.split('&').collect::<Vec<&str>>();
-
-			let page_str = String::from(last_str_parts[1]);
-
-			let page_str_parts = page_str.split('=').collect::<Vec<&str>>();
-			let page_num_str = String::from(page_str_parts[1]);
-			let page_num = helper::numbers_only_from_string(page_num_str);
-
-			if page_num > total {
-				total = page_num;
-			}
-
-			continue;
-		}
-
-		let num_str = String::from(href_parts[href_parts.len() - 2]);
-
-		let num = helper::numbers_only_from_string(num_str);
-
-		if num > total {
-			total = num;
-		}
-	}
+	let has_more = !manga_arr.is_empty();
 
 	Ok(MangaPageResult {
 		manga: manga_arr,
-		has_more: page < total,
+		has_more,
 	})
 }
 
@@ -179,13 +142,10 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 
 	Ok(Vec::from([Chapter {
 		id,
-		title: String::from("Chapter 1"),
-		volume: -1.0,
 		chapter: 1.0,
 		url,
-		date_updated: 0.0,
-		scanlator: String::new(),
 		lang: String::from("en"),
+		..Default::default()
 	}]))
 }
 
@@ -196,6 +156,27 @@ fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 		.header("User-Agent", USER_AGENT)
 		.html()?;
 
+	let content = html.select("body > script").first().data().read();
+
+	let start_pattern = r#"parseJSON('"#;
+	let end_pattern = r#"');"#;
+
+	let json = if let Some(start_index) = content.find(start_pattern) {
+		let start_index = start_index + start_pattern.len();
+		if let Some(end_index) = content[start_index..].find(end_pattern) {
+			let end_index = start_index + end_index;
+			Some(&content[start_index..end_index])
+		} else {
+			None
+		}
+	} else {
+		None
+	};
+
+	let json = json
+		.and_then(|json| aidoku::std::json::parse(json).ok())
+		.and_then(|json| json.as_object().ok());
+
 	let g_id = html.select("#load_id").attr("value").read();
 	let img_dir = html.select("#load_dir").attr("value").read();
 	let total_pages = html.select("#load_pages").attr("value").read();
@@ -204,12 +185,26 @@ fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 
 	let total = helper::numbers_only_from_string(total_pages);
 	for i in 1..=total {
-		let img_url = format!("https://i2.hentaifox.com/{img_dir}/{g_id}/{i}.jpg");
+		let ext = if let Some(page_str) = json
+			.as_ref()
+			.and_then(|json| json.get(&i.to_string()).as_string().ok())
+			.map(|s| s.read())
+		{
+			match page_str.chars().next().unwrap_or('j') {
+				'p' => "png",
+				'b' => "bmp",
+				'g' => "gif",
+				'w' => "webp",
+				_ => "jpg",
+			}
+		} else {
+			"jpg"
+		};
+		let url = format!("https://i2.hentaifox.com/{img_dir}/{g_id}/{i}.{ext}");
 		pages.push(Page {
 			index: i,
-			url: img_url,
-			base64: String::new(),
-			text: String::new(),
+			url,
+			..Default::default()
 		})
 	}
 

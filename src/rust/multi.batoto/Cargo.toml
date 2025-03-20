@@ -25,3 +25,4 @@ cbc = { version = "0.1.2", features = ["block-padding", "alloc"] }
 evpkdf = { git = "https://github.com/EnoughTea/evpkdf", branch = "to_digest_0.10" }
 md-5 = { version = "0.10.1", default-features = false }
 digest = { version = "0.10.3", features = ["alloc"] }
+chapter-recognition = { git = "https://github.com/beer-psi/chapter-recognition" }
