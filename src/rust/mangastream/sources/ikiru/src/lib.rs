@@ -8,17 +8,8 @@ use mangastream_template::template::MangaStreamSource;
 
 fn get_instance() -> MangaStreamSource {
 	MangaStreamSource {
-		base_url: String::from("https://mangasusuku.xyz"),
-		traverse_pathname: "komik",
-		is_nsfw: true,
-		manga_details_author: "td:contains(Author)+td",
-		manga_details_artist: "td:contains(Artist)+td",
-		manga_details_type: "td:contains(Type)+td",
-		manga_details_categories: ".seriestugenre a",
-		chapter_date_format: "MMMM d, yyyy",
-		manga_details_status: "td:contains(Status)+td",
-		locale: "en",
-		alt_pages: true,
+		base_url: String::from("https://ikiru.world"),
+		manga_title_trim: [" Bahasa Indonesia".into()].to_vec(),
 		..Default::default()
 	}
 }

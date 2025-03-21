@@ -1,11 +1,10 @@
 {
 	"info": {
-		"id": "id.kanzenin",
+		"id": "id.komiksin",
 		"lang": "id",
-		"name": "Kanzenin",
-		"version": 5,
-		"url": "https://kanzenin.info",
-		"nsfw": 2
+		"name": "Komiksin",
+		"version": 1,
+		"url": "https://komiksin.id"
 	},
 	"listings": [
 		{

@@ -1,11 +1,10 @@
 {
 	"info": {
-		"id": "id.kanzenin",
+		"id": "id.ikiru",
 		"lang": "id",
-		"name": "Kanzenin",
-		"version": 5,
-		"url": "https://kanzenin.info",
-		"nsfw": 2
+		"name": "Ikiru",
+		"version": 1,
+		"url": "https://ikiru.world"
 	},
 	"listings": [
 		{

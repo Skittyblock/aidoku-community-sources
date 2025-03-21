@@ -10,6 +10,11 @@ fn get_instance() -> MangaStreamSource {
 	MangaStreamSource {
 		base_url: String::from("https://kanzenin.info"),
 		is_nsfw: true,
+		manga_details_status: "td:contains(Status)+td",
+		manga_details_author: "td:contains(Author)+td",
+		manga_details_artist: "td:contains(Artist)+td",
+		manga_details_type: "td:contains(Type)+td",
+		manga_details_categories: ".seriestugenre a",
 		chapter_date_format: "MMMM d, yyyy",
 		locale: "id",
 		alt_pages: true,
