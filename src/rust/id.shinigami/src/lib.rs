@@ -5,19 +5,9 @@ use alloc::string::ToString;
 use aidoku::{
     error::Result,
     prelude::*,
-    std::net::{Request, HttpMethod},
-    std::String,
-    std::Vec,
-    std::ObjectRef,
-    Chapter,
-    Filter,
-    FilterType,
-    Manga,
-    MangaPageResult,
-    Page,
-    MangaStatus,
-    MangaContentRating,
-    MangaViewer,
+    std::{net::{Request, HttpMethod}, String, Vec, ObjectRef},
+    Chapter, Filter, FilterType, Manga, MangaPageResult, Page,
+    MangaStatus, MangaContentRating, MangaViewer,
 };
 
 const API_URL: &str = "https://api.shngm.io";
@@ -84,6 +74,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
             }
         }
 
+        // Fix in get_manga_list function
         mangas.push(Manga {
             id: manga_obj.get("manga_id").as_string()?.read(),
             title,
@@ -99,8 +90,8 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
                 _ => MangaStatus::Unknown,
             },
             nsfw: MangaContentRating::Safe,
-            viewer: MangaViewer::Rtl,
-            ..Default::default()
+            viewer: MangaViewer::Rtl
+            // Remove ..Default::default() here
         });
     }
 
@@ -209,6 +200,7 @@ fn get_manga_details(id: String) -> Result<Manga> {
         }
     }
 
+    // Fix in get_manga_details function
     Ok(Manga {
         id: manga_obj.get("manga_id").as_string()?.read(),
         title,
@@ -224,8 +216,8 @@ fn get_manga_details(id: String) -> Result<Manga> {
             _ => MangaStatus::Unknown,
         },
         nsfw: MangaContentRating::Safe,
-        viewer: MangaViewer::Rtl,
-        ..Default::default()
+        viewer: MangaViewer::Rtl
+        // Remove ..Default::default() here
     })
 }
 
