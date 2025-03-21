@@ -7,5 +7,14 @@ publish = false
 [lib]
 crate-type = ["cdylib"]
 
+[profile.dev]
+panic = "abort"
+
+[profile.release]
+panic = "abort"
+opt-level = "s"
+strip = true
+lto = true
+
 [dependencies]
 aidoku = { git = "https://github.com/Aidoku/aidoku-rs/" }
