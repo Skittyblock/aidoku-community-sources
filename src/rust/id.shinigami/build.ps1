@@ -20,4 +20,4 @@ function Package-Source {
 		Set-Location ../../..
 	}
 }
-Package-Source zeroscans -Build
+Package-Source shinigami -Build
