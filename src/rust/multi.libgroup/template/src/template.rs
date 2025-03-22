@@ -119,7 +119,7 @@ impl SocialLibSource {
 		parser::parse_page_list(json, self.cdn)
 	}
 
-	pub fn modify_request_to_cdn(&self, request: Request) {
+	pub fn modify_image_request(&self, request: Request) {
 	request.header("Referer", &format!(
 				"https://{}",
 				self.domain));
