@@ -122,6 +122,6 @@ impl SocialLibSource {
 	pub fn modify_request_to_cdn(&self, request: Request) {
 	request.header("Referer", &format!(
 				"https://{}",
-				self.));
+				self.domain));
 	}
 }
