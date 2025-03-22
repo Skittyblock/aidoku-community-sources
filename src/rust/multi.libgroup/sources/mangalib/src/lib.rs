@@ -3,7 +3,7 @@
 use aidoku::{
 	error::Result,
 	prelude::*,
-	std::{String, Vec},
+	std::{String, Vec, net::Request},
 	Chapter, Filter, Listing, Manga, MangaPageResult, Page,
 };
 use mangalib_template::template::{SocialLibSource, CDN};
@@ -42,4 +42,9 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 #[get_page_list]
 fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 	INSTANCE.get_page_list(manga_id, chapter_id)
+}
+
+#[modify_image_request]
+fn modify_image_request(request: Request) {
+	INSTANCE.modify_request_to_cdn(request);
 }
