@@ -15,7 +15,6 @@ fn get_instance() -> MangaStreamSource {
 		manga_details_artist: "td:contains(Artist)+td",
 		manga_details_type: "td:contains(Type)+td",
 		manga_details_categories: ".seriestugenre a",
-		manga_details_status: "td:contains(Status)+td",
 		locale: "id",
 		..Default::default()
 	}

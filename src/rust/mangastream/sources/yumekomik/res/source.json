@@ -1,11 +1,10 @@
 {
 	"info": {
-		"id": "id.komikucom",
+		"id": "id.yumekomik",
 		"lang": "id",
-		"name": "Komiku.com",
-		"version": 3,
-		"nfsw": 1,
-		"url": "https://komiku.com/"
+		"name": "YumeKomik",
+		"version": 2,
+		"url": "https://yumekomik.com"
 	},
 	"listings": [
 		{

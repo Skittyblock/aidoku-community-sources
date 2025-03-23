@@ -1,11 +1,11 @@
 {
 	"info": {
-		"id": "id.komikucom",
+		"id": "id.mangkomik",
 		"lang": "id",
-		"name": "Komiku.com",
+		"name": "MangKomik",
 		"version": 3,
 		"nfsw": 1,
-		"url": "https://komiku.com/"
+		"url": "https://mangkomik.com/"
 	},
 	"listings": [
 		{

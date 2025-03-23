@@ -16,7 +16,6 @@ fn get_instance() -> MangaStreamSource {
 		manga_details_type: "td:contains(Type)+td",
 		manga_details_categories: ".seriestugenre a",
 		chapter_date_format: "MMMM d, yyyy",
-		manga_details_status: "td:contains(Status)+td",
 		locale: "en",
 		alt_pages: true,
 		..Default::default()
