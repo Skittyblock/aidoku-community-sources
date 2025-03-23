@@ -3,7 +3,7 @@
 use aidoku::{
 	error::Result,
 	prelude::*,
-	std::{String, Vec, net::Request},
+	std::{net::Request, String, Vec},
 	Chapter, Filter, Listing, Manga, MangaPageResult, Page,
 };
 use mangalib_template::template::{SocialLibSource, CDN};

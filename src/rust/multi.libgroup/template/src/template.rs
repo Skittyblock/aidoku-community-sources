@@ -120,8 +120,6 @@ impl SocialLibSource {
 	}
 
 	pub fn modify_image_request(&self, request: Request) {
-	request.header("Referer", &format!(
-				"https://{}",
-				self.domain));
+		request.header("Referer", &format!("https://{}", self.domain));
 	}
 }
