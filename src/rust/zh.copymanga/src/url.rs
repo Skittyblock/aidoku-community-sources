@@ -11,7 +11,7 @@ use strum_macros::{Display, IntoStaticStr};
 
 #[expect(private_interfaces)]
 #[derive(Display)]
-#[strum(prefix = "https://copymanga.tv")]
+#[strum(prefix = "https://mangacopy.com")]
 pub enum Url<'a> {
 	/// ## `theme`
 	///
