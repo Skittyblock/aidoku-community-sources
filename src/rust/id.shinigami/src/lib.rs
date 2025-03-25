@@ -60,7 +60,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
             id: id.clone(),
             title: manga_obj.get("title").as_string()?.read(),
             cover: manga_obj.get("cover_image_url").as_string()?.read(),
-            url: id,
+            url: format!("{}/manga/{}", BASE_URL, id), 
             ..Default::default()
         });
     }
@@ -161,7 +161,7 @@ fn get_manga_details(id: String) -> Result<Manga> {
         author: helpers::get_taxonomy_names(&taxonomy, "Author"),
         artist: helpers::get_taxonomy_names(&taxonomy, "Artist"),
         description: manga_obj.get("description").as_string()?.read(),
-        url: manga_id,
+        url: format!("{}/manga/{}", BASE_URL, manga_id),
         cover,
         categories: genres,
         status: helpers::get_status(manga_obj.get("status").as_int()?),
