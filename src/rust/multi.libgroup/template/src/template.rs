@@ -27,7 +27,7 @@ pub struct CDN {
 }
 
 static USER_AGENT: &str = "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1";
-static DOMAIN_API: &str = "https://api.mangalib.me/api/";
+static DOMAIN_API: &str = "https://api2.mangalib.me/api/";
 
 impl SocialLibSource {
 	pub fn get_manga_list(&self, filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
@@ -117,5 +117,9 @@ impl SocialLibSource {
 		let json = request.json()?.as_object()?;
 
 		parser::parse_page_list(json, self.cdn)
+	}
+
+	pub fn modify_image_request(&self, request: Request) {
+		request.header("Referer", &format!("https://{}", self.domain));
 	}
 }
