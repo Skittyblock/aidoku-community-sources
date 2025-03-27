@@ -12,9 +12,10 @@ use madara_template::template;
 
 fn get_data() -> template::MadaraSiteData {
 	let data: template::MadaraSiteData = template::MadaraSiteData {
-		base_url: String::from("https://hentaicb.top"),
+		base_url: String::from("https://hentaicb.bar"),
 		lang: String::from("vi"),
-		image_selector: String::from("div.doc-truyen > img"),
+		source_path: String::from("read"),
+		image_selector: String::from(".reading-content .doc-truyen > img"),
 		alt_ajax: true,
 		viewer: |_, categories| {
 			for category in categories {
@@ -74,7 +75,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 
 #[modify_image_request]
 fn modify_image_request(request: Request) {
-	request.header("Referer", "https://hentaicb.top/");
+	request.header("Referer", "https://hentaicb.bar/");
 }
 
 #[get_page_list]
