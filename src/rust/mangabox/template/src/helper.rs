@@ -143,7 +143,7 @@ pub fn get_search_url(
 	} else {
 		let mut title = None;
 		let mut url_filter = 0;
-		let mut genre = String::new();
+		let mut genre = String::from("all");
 
 		for filter in filters {
 			match filter.kind {
@@ -263,7 +263,7 @@ pub fn stupidencode(string: String) -> String {
 	for c in string.chars() {
 		if c.is_alphanumeric() {
 			result.push(c.to_ascii_lowercase());
-		} else if c == ' ' {
+		} else if [' ', '-', '_', '\'', '’'].contains(&c) {
 			result.push('_');
 		}
 	}

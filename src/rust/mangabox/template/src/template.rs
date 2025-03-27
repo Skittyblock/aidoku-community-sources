@@ -1,10 +1,9 @@
+use crate::helper::*;
 use aidoku::{
 	error::Result, prelude::*, std::net::Request, std::ObjectRef, std::String, std::Vec, Chapter,
 	DeepLink, Filter, FilterType, Listing, Manga, MangaContentRating, MangaPageResult, MangaViewer,
 	Page,
 };
-
-use crate::helper::*;
 
 pub fn get_manga_list(
 	base_url: &str,
@@ -57,18 +56,22 @@ pub fn parse_manga_list(
 		});
 	}
 
-	let last_page_string = html.select("a.page-last").text().read();
-	let mut last_page = 1;
-	if !last_page_string.is_empty() {
-		last_page = String::from(&last_page_string[5..last_page_string.len() - 1])
-			.parse::<i32>()
-			.unwrap_or(1);
-	}
+	// last page link text in the format "Last(NUM)"
+	let has_more = {
+		let last_page_string = html.select("a.page_last").text().read();
+		let last_page = if !last_page_string.is_empty() {
+			last_page_string[5..last_page_string.len() - 1]
+				.parse::<i32>()
+				.ok()
+		} else {
+			None
+		};
+		last_page
+			.map(|last| page < last)
+			.unwrap_or_else(|| !manga.is_empty())
+	};
 
-	Ok(MangaPageResult {
-		manga,
-		has_more: page < last_page,
-	})
+	Ok(MangaPageResult { manga, has_more })
 }
 
 pub fn get_manga_listing(
