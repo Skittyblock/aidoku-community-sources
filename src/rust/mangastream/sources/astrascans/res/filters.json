@@ -1,0 +1,15 @@
+[
+	{
+		"type": "title"
+	},
+	{
+		"type": "select",
+		"name": "Status",
+		"options": ["All", "Ongoing", "Completed", "Hiatus"]
+	},
+	{
+		"type": "select",
+		"name": "Type",
+		"options": ["All", "Manga", "Manhwa", "Manhua", "Comic"]
+	}
+]
