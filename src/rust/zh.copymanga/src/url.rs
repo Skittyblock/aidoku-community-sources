@@ -328,11 +328,19 @@ const LIMIT: i32 = 20;
 
 impl Url<'_> {
 	pub fn get_html(self) -> Result<Node> {
-		Request::get(self.to_string()).html()
+		self.get().html()
 	}
 
 	pub fn get_json(self) -> Result<ValueRef> {
-		Request::get(self.to_string()).json()
+		self.get().json()
+	}
+
+	fn get(self) -> Request {
+		Request::get(self.to_string()).header(
+			"User-Agent",
+			"Mozilla/5.0 (Macintosh; Intel Mac OS X 14_7_4) \
+			 AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Safari/605.1.15",
+		)
 	}
 }
 
