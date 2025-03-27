@@ -7,7 +7,7 @@ use aidoku::{
 };
 use mangabox_template::template;
 
-const BASE_URL: &str = "https://www.natomanga.com";
+const BASE_URL: &str = "https://www.manganato.gg";
 const ITEM_SELECTOR: &str = ".panel_story_list .story_item, .list-truyen-item-wrap";
 const GENRES: [&str; 41] = [
 	"all",
