@@ -1,17 +1,14 @@
 #![no_std]
 use aidoku::{
-	error::Result, prelude::*, std::String, std::Vec, std::net::Request, Chapter, DeepLink, Filter, Listing, Manga,
-	MangaPageResult, Page,
+	error::Result, prelude::*, std::net::Request, std::String, std::Vec, Chapter, DeepLink, Filter,
+	Listing, Manga, MangaPageResult, Page,
 };
 
 use madara_template::template;
 
-const USER_AGENT: &str = "Mozilla/5.0 (iPhone; CPU iPhone OS 17_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) GSA/300.0.598994205 Mobile/15E148 Safari/604";
-
 fn get_data() -> template::MadaraSiteData {
 	let data: template::MadaraSiteData = template::MadaraSiteData {
 		base_url: String::from("https://theblank.net"),
-		user_agent: Some(String::from(USER_AGENT)),
 		alt_ajax: true,
 		..Default::default()
 	};
@@ -50,8 +47,5 @@ pub fn handle_url(url: String) -> Result<DeepLink> {
 
 #[modify_image_request]
 fn modify_image_request(request: Request) {
-	template::modify_image_request(
-		String::from("https://www.theblank.net/"),
-		request.header("User-Agent", USER_AGENT),
-	);
+	template::modify_image_request(String::from("https://theblank.net/"), request);
 }
