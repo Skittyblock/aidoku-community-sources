@@ -14,6 +14,7 @@ mod helpers;
 
 // Todo: Search, Tags, Filters
 
+const DOMAIN: &str = "https://id.shinigami.asia";
 const API_URL: &str = "https://api.shngm.io";
 const CDN_URL: &str = "https://storage.shngm.id";
 const BASE_URL: &str = "https://app.shinigami.asia";
@@ -60,7 +61,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
             id: id.clone(),
             title: manga_obj.get("title").as_string()?.read(),
             cover: manga_obj.get("cover_image_url").as_string()?.read(),
-            url: format!("{}/manga/{}", BASE_URL, id), 
+            url: format!("{}/series/{}", DOMAIN, id), 
             ..Default::default()
         });
     }
@@ -161,7 +162,7 @@ fn get_manga_details(id: String) -> Result<Manga> {
         author: helpers::get_taxonomy_names(&taxonomy, "Author"),
         artist: helpers::get_taxonomy_names(&taxonomy, "Artist"),
         description: manga_obj.get("description").as_string()?.read(),
-        url: format!("{}/manga/{}", BASE_URL, manga_id),
+        url: format!("{}/series/{}", DOMAIN, manga_id),
         cover,
         categories: genres,
         status: helpers::get_status(manga_obj.get("status").as_int()?),

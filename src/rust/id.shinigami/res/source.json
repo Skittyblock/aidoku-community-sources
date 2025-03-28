@@ -1,18 +1,18 @@
 {
-    "info": {
-        "id": "id.shinigami",
-        "lang": "id",
-        "name": "Shinigami",
-        "version": 6,
-        "url": "https://app.shinigami.asia",
-        "nsfw": 0
-    },
-    "listings": [
-        {
-            "name": "Popular"
-        },
-        {
-            "name": "Latest"
-        }
-    ]
+	"info": {
+		"id": "id.shinigami",
+		"lang": "id",
+		"name": "Shinigami",
+		"version": 6,
+		"url": "https://app.shinigami.asia",
+		"nsfw": 0
+	},
+	"listings": [
+		{
+			"name": "Popular"
+		},
+		{
+			"name": "Latest"
+		}
+	]
 }
