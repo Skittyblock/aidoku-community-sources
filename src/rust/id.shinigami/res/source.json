@@ -3,16 +3,16 @@
 		"id": "id.shinigami",
 		"lang": "id",
 		"name": "Shinigami",
-		"version": 5,
-		"url": "https://shinigami.sh",
+		"version": 6,
+		"url": "https://app.shinigami.asia",
 		"nsfw": 0
 	},
 	"listings": [
 		{
-			"name": "Trending"
+			"name": "Popular"
 		},
 		{
-			"name": "Popular"
+			"name": "Latest"
 		}
 	]
 }
