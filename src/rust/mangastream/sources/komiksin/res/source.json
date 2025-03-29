@@ -1,10 +1,10 @@
 {
 	"info": {
-		"id": "id.komikindo",
+		"id": "id.komiksin",
 		"lang": "id",
-		"name": "KomikIndo",
-		"version": 2,
-		"url": "https://komikindo.co"
+		"name": "Komiksin",
+		"version": 1,
+		"url": "https://komiksin.id"
 	},
 	"listings": [
 		{

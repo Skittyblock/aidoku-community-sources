@@ -8,13 +8,15 @@ use mangastream_template::template::MangaStreamSource;
 
 fn get_instance() -> MangaStreamSource {
 	MangaStreamSource {
-		base_url: String::from("https://komiku.com/"),
+		base_url: String::from("https://komiku.one"),
 		manga_title_trim: ["Komik ".into()].to_vec(),
 		chapter_date_format: "MMMM d, yyyy",
 		manga_details_author: "td:contains(Author)+td",
 		manga_details_artist: "td:contains(Artist)+td",
 		manga_details_type: "td:contains(Type)+td",
 		manga_details_categories: ".seriestugenre a",
+		manga_details_status: "td:contains(Status)+td",
+		manga_details_cover: ".thumb img.wp-post-image, .infomanga > div[itemprop=image] img, .thumb img",
 		alt_pages: true,
 		locale: "id",
 		..Default::default()
