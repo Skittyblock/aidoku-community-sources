@@ -12,6 +12,7 @@ fn get_instance() -> MangaStreamSource {
 		chapter_date_format: "MMMM d, yyyy",
 		traverse_pathname: "komik",
 		manga_details_author: ".infotable tr:contains(Author) td:last-child",
+		manga_details_status: "td:contains(Status)+td",
 		alt_pages: true,
 		locale: "id",
 		..Default::default()
