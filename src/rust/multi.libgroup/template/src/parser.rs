@@ -6,7 +6,7 @@ use aidoku::{std::ObjectRef, Manga, MangaPageResult};
 use aidoku::{Chapter, MangaContentRating, MangaViewer, Page};
 use alloc::string::ToString;
 use alloc::vec::Vec;
-
+use aidoku::std::html::Node;
 use crate::helpers::{display_title, extract_f32_from_string, id_to_status};
 use crate::template::CDN;
 extern crate alloc;
@@ -268,4 +268,12 @@ pub fn parse_page_list(js: ObjectRef, cdn: &CDN) -> Result<Vec<Page>> {
 		.collect::<Vec<Page>>();
 
 	Ok(chapters)
+}
+
+pub fn get_token_by_login_page(html: Node) -> String {
+	html.select("body div div.auth-container__content div.auth-container__body div.auth-form form div.auth-form.auth-form_unset-top input").attr("value").read()
+}
+
+pub fn get_auth_token_for_authorize(html: Node) -> String {
+	html.select("body div div div.auth-container__body div.auth-form form input[type=hidden]:nth-child(4)").attr("value").read()
 }
