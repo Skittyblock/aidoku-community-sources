@@ -22,5 +22,30 @@
 				"title": "Название на англ."
 			}
 		]
-	}
+	},
+	{
+			"type": "group",
+			"title": "SocialLib аккаунт",
+			"footer": "Авторизация в аккаунт SocialLib может быть вам необходима для получения доступа к манге с тегом 18+.",
+			"items": [
+				{
+					"type": "text",
+					"key": "json_field",
+					"placeholder": "JSON",
+					"autocapitalizationType": 0,
+					"autocorrectionType": 0,
+					"spellCheckingType": 0
+				},
+				{
+					"type": "button",
+					"action": "pressedOnLogin",
+					"title": "Войти в аккаунт"
+				},
+				{
+				  "type": "link",
+					"title": "Гайд по авторизации",
+					"url": "https://gist.github.com/vlapskii/02b9a4ba8fcefe62106764ce52b2e612"
+				}
+			]
+		}
 ]
