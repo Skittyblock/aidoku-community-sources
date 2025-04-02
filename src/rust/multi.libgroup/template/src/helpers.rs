@@ -1,6 +1,6 @@
 use aidoku::{
 	helpers::uri::QueryParameters,
-	std::{defaults::defaults_get, String},
+	std::{current_date, defaults::defaults_get, ObjectRef, String},
 	Filter, FilterType, MangaStatus,
 };
 use alloc::{borrow::ToOwned, string::ToString, vec::Vec};
@@ -118,4 +118,23 @@ pub fn display_title() -> String {
 	} else {
 		"rus_name".to_owned()
 	}
+}
+
+pub fn get_access_token() -> Option<String>{
+    if (defaults_get("access_token").unwrap().is_some()) {
+        let auth_date = defaults_get("timestamp").unwrap().as_int().unwrap();
+        let now = current_date() as i64;
+        let expires_in = defaults_get("expires_in").unwrap().as_int().unwrap();
+        if (auth_date - now >= expires_in) {
+            todo!()
+        }
+
+        return Some(defaults_get("access_token").unwrap().as_string().unwrap().to_string())
+    }
+
+    None
+}
+
+pub fn parse_auth_json(js: ObjectRef) {
+    todo!()
 }
