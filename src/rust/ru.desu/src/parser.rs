@@ -13,7 +13,7 @@ use aidoku::std::ArrayRef;
 
 macro_rules! debug {
 	($($arg:tt)*) => {{
-		println!("ru.desu:: {}:{}: {}", file!(), line!(), format!($($arg)*))
+		/*println!("ru.desu:: {}:{}: {}", file!(), line!(), format!($($arg)*))*/
 	}};
 }
 pub(crate) use debug;
