@@ -6,7 +6,7 @@ mod helper;
 mod parser;
 
 use crate::helper::{create_manga_page_result, fetch_json, get_chapter_url, get_search_url};
-use crate::parser::{debug, parse_chapters, parse_incoming_url, parse_manga_array, parse_manga_item, parse_pages_list};
+use crate::parser::{parse_chapters, parse_incoming_url, parse_manga_array, parse_manga_item, parse_pages_list};
 use aidoku::{
 	error::Result,
 	prelude::*,
@@ -31,7 +31,7 @@ pub unsafe extern "C" fn initialize() {
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	let url = get_search_url(filters, page);
-	let mangas_array = fetch_json(url, "manga list")?
+	let mangas_array = fetch_json(url)?
 		.as_array()?;
 
 	let mangas = parse_manga_array(mangas_array, true)?;
@@ -48,7 +48,7 @@ fn get_manga_listing(_listing: Listing, page: i32) -> Result<MangaPageResult> {
 #[get_manga_details]
 fn get_manga_details(id: String) -> Result<Manga> {
 	let url = get_manga_url(id.as_str());
-	let data = fetch_json(url, "manga detail")?
+	let data = fetch_json(url)?
 		.as_object()?;
 
 	parse_manga_item(data, false)
@@ -57,7 +57,7 @@ fn get_manga_details(id: String) -> Result<Manga> {
 #[get_chapter_list]
 fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 	let url = get_manga_url(id.as_str());
-	let data = fetch_json(url, "manga detail")?
+	let data = fetch_json(url)?
 		.as_object()?;
 
 	parse_chapters(data)
@@ -66,7 +66,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 #[get_page_list]
 fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 	let url = get_chapter_url(manga_id.as_str(), chapter_id.as_str());
-	let data = fetch_json(url, "chapter pages")?
+	let data = fetch_json(url)?
 		.as_object()?;
 
 	parse_pages_list(data)
@@ -80,6 +80,5 @@ fn modify_image_request(request: Request) {
 
 #[handle_url]
 fn handle_url(url: String) -> Result<DeepLink> {
-	debug!("Parsing url {}", url);
 	parse_incoming_url(url.as_str())
 }

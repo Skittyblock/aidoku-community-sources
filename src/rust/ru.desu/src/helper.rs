@@ -1,5 +1,4 @@
 use crate::constants;
-use crate::parser::debug;
 use aidoku::helpers::uri::QueryParameters;
 use aidoku::std::ValueRef;
 use aidoku::{
@@ -19,10 +18,8 @@ pub fn get_chapter_url(manga_id: &str, chapter_id: &str) -> String {
 	format!("{}/chapter/{}", get_manga_url(manga_id), encode_uri(chapter_id))
 }
 
-pub fn fetch_json<T: AsRef<str>>(url: T, _fetch_for: &str) -> Result<ValueRef>
+pub fn fetch_json<T: AsRef<str>>(url: T) -> Result<ValueRef>
 {
-	debug!("Fetching for {}, fetching url {}", _fetch_for, url.as_ref());
-
 	let request = Request::get(url)
 		.header("User-Agent", constants::USER_AGENT)
 		.header("Referer", constants::BASE_URL);
@@ -34,8 +31,6 @@ pub fn fetch_json<T: AsRef<str>>(url: T, _fetch_for: &str) -> Result<ValueRef>
 
 pub fn get_search_url(filters: Vec<Filter>, page: i32) -> String
 {
-	debug!("Generating search");
-
 	let mut query = QueryParameters::new();
 	let mut genres: Vec<String> = Vec::new();
 	let mut kinds: Vec<String> = Vec::new();
@@ -48,7 +43,6 @@ pub fn get_search_url(filters: Vec<Filter>, page: i32) -> String
 	query.push("limit", Some(constants::PAGE_LIMIT.to_string().as_str()));
 
 	for filter in filters {
-		debug!("Filter: {}", filter.name);
 		match filter.kind {
 			FilterType::Title => {
 				if let Ok(filter_value) = filter.value.as_string() {

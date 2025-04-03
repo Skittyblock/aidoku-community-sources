@@ -11,12 +11,12 @@ use crate::get_manga_details;
 use alloc::string::ToString;
 use aidoku::std::ArrayRef;
 
-macro_rules! debug {
+/*macro_rules! debug {
 	($($arg:tt)*) => {{
-		/*println!("ru.desu:: {}:{}: {}", file!(), line!(), format!($($arg)*))*/
+		println!("ru.desu:: {}:{}: {}", file!(), line!(), format!($($arg)*))
 	}};
 }
-pub(crate) use debug;
+pub(crate) use debug;*/
 
 pub fn parse_manga_item(manga_obj: ObjectRef, skip_authors: bool) -> Result<Manga> {
 	let eng_title = defaults_get("eng_title")
@@ -49,22 +49,16 @@ pub fn parse_manga_item(manga_obj: ObjectRef, skip_authors: bool) -> Result<Mang
 
 	let mut authors = Vec::new();
 	if !skip_authors {
-		match manga_obj.get("authors").as_array() {
-			Ok(author_obj_list) => {
-				for author_obj in author_obj_list {
-					debug!("Parsing manga prop 'authors[n].people_name'...");
-					let author_name = author_obj.as_object()?
-						.get("people_name")
-						.as_string()
-						.unwrap_or(StringRef::default())
-						.read();
-					if !author_name.is_empty() {
-						authors.push(author_name);
-					}
+		if let Ok(author_obj_list) = manga_obj.get("authors").as_array() {
+			for author_obj in author_obj_list {
+				let author_name = author_obj.as_object()?
+					.get("people_name")
+					.as_string()
+					.unwrap_or(StringRef::default())
+					.read();
+				if !author_name.is_empty() {
+					authors.push(author_name);
 				}
-			}
-			Err(_) => {
-				debug!("Parsing manga prop 'authors' failed.");
 			}
 		}
 	}
@@ -106,13 +100,7 @@ pub fn parse_manga_item(manga_obj: ObjectRef, skip_authors: bool) -> Result<Mang
 pub fn parse_manga_array(array_obj: ArrayRef, skip_authors: bool) -> Result<Vec<Manga>> {
 	let mut mangas = Vec::new();
 	for item in array_obj {
-		match parse_manga_item(item.as_object()?, skip_authors) {
-			Ok(manga) => { mangas.push(manga) },
-			Err(err) => {
-				debug!("Failed to parse manga item!");
-				return Err(err);
-			}
-		}
+		mangas.push(parse_manga_item(item.as_object()?, skip_authors)?);
 	}
 
 	Ok(mangas)
