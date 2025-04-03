@@ -73,7 +73,6 @@ pub fn parse_manga_item(manga_obj: ObjectRef, skip_authors: bool) -> Result<Mang
 		id,
 		title,
 		author: authors.join(", "),
-		artist: String::new(),
 		cover,
 		description,
 		url,
@@ -99,7 +98,8 @@ pub fn parse_manga_item(manga_obj: ObjectRef, skip_authors: bool) -> Result<Mang
 				"top-to-bottom" => MangaViewer::Scroll,
 				_ => MangaViewer::Rtl
 			}
-		}
+		},
+		..Default::default()
 	})
 }
 
@@ -137,9 +137,9 @@ fn parse_chapter(url: String, chapter_obj: ObjectRef) -> Result<Chapter> {
 		chapter: ch,
 		volume: vol,
 		date_updated,
-		scanlator: String::new(),
 		url: format!("{}/vol{}/ch{}/rus", url, vol, ch),
-		lang: String::from("ru")
+		lang: String::from("ru"),
+		..Default::default()
 	})
 }
 
@@ -165,18 +165,15 @@ fn parse_page(idx: i32, page_obj: ObjectRef) -> Result<Page> {
 	Ok(Page {
 		index,
 		url,
-		base64: String::new(),
-		text: String::new(),
+		..Default::default()
 	})
 }
 
 pub fn parse_pages_list(manga_obj: ObjectRef) -> Result<Vec<Page>> {
 	let pages_raw = manga_obj.get("pages")
-		.as_object()
-		.expect("Failed to find pages data")
+		.as_object()?
 		.get("list")
-		.as_array()
-		.expect("Failed to find pages list")
+		.as_array()?
 		.enumerate();
 
 	let mut pages = Vec::new();

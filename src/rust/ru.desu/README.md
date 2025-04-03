@@ -75,5 +75,5 @@ let filtersObj = [
     }
 ];
 
-copy(JSON.stringify(filtersObj, null, 4));
+copy(JSON.stringify(filtersObj, null, 4) + '\n');
 ```
