@@ -1,0 +1,10 @@
+{
+	"info": {
+		"id": "ru.desu",
+		"lang": "ru",
+		"name": "Desu",
+		"version": 1,
+		"url": "https://desu.store",
+		"nsfw": 2
+	}
+}
