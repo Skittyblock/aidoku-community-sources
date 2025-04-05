@@ -3,6 +3,8 @@ use aidoku::{
 	helpers::uri::QueryParameters,
 	prelude::format,
 	std::{
+		current_date,
+		defaults::defaults_get,
 		net::{HttpMethod, Request},
 		String, Vec,
 	},
@@ -11,7 +13,10 @@ use aidoku::{
 use alloc::string::ToString;
 extern crate alloc;
 
-use crate::parser;
+use crate::{
+	helpers::{get_token, is_logged, save_token},
+	parser,
+};
 
 pub struct SocialLibSource {
 	pub site_id: &'static str,
@@ -30,6 +35,56 @@ static USER_AGENT: &str = "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X
 static DOMAIN_API: &str = "https://api2.mangalib.me/api/";
 
 impl SocialLibSource {
+	pub fn refresh_token(&self) -> () {
+		if is_logged() {
+			let timestamp = defaults_get("timestamp").unwrap().as_int().unwrap() / 1000;
+			let access_token = defaults_get("access_token")
+				.unwrap()
+				.as_string()
+				.unwrap()
+				.read();
+			let refresh_token = defaults_get("refresh_token")
+				.unwrap()
+				.as_string()
+				.unwrap()
+				.read();
+			let now = current_date() as i64;
+			let expires_in = defaults_get("expires_in").unwrap().as_int().unwrap();
+			if (now - timestamp) >= expires_in {
+				let url = format!("{}auth/oauth/token", DOMAIN_API);
+				let auth = format!("Bearer {}", access_token);
+				let domain = format!("https://{}/", self.domain);
+				let body = format!(
+					r#"{{"grant_type":"refresh_token","client_id":"{}","refresh_token":"{}","scope":""}}"#,
+					self.site_id, refresh_token
+				);
+
+				let request = Request::new(url, HttpMethod::Post)
+					.header("User-Agent", USER_AGENT)
+					.header("Site-Id", self.site_id)
+					.header("Content-Type", "application/json")
+					.header("Authorization", auth.as_str())
+					.header("Referer", domain.as_str())
+					.body(body);
+				let json = request.json().unwrap().as_object().unwrap();
+
+				save_token(json);
+			}
+		}
+	}
+
+	fn request_get(&self, url: &str) -> Request {
+		if is_logged() {
+			return Request::new(url, HttpMethod::Get)
+				.header("Site-Id", self.site_id)
+				.header("User-Agent", USER_AGENT)
+				.header("authorization", get_token().as_str());
+		}
+		Request::new(url, HttpMethod::Get)
+			.header("Site-Id", self.site_id)
+			.header("User-Agent", USER_AGENT)
+	}
+
 	pub fn get_manga_list(&self, filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 		let mut qs = QueryParameters::new();
 		qs.push("site_id[]", Some(self.site_id));
@@ -42,9 +97,8 @@ impl SocialLibSource {
 		}
 
 		let url = format!("{}manga?{}", DOMAIN_API, query);
-		let request = Request::new(url, HttpMethod::Get)
-			.header("Site-Id", self.site_id)
-			.header("User-Agent", USER_AGENT);
+		let request = self.request_get(&url);
+
 		let json = request.json()?.as_object()?;
 
 		parser::parse_manga_list(json, &self.domain.to_string(), self.nsfw)
@@ -59,9 +113,7 @@ impl SocialLibSource {
 			let query = qs.to_string();
 
 			let url = format!("{}media/top-views?{}", DOMAIN_API, query);
-			let request = Request::new(url, HttpMethod::Get)
-				.header("Site-Id", self.site_id)
-				.header("User-Agent", USER_AGENT);
+			let request = self.request_get(&url);
 			let json = request.json()?.as_object()?;
 
 			parser::parse_manga_list(json, &self.domain.to_string(), self.nsfw)
@@ -82,9 +134,7 @@ impl SocialLibSource {
 		query.push("fields[]", Some("status_id"));
 		query.push("fields[]", Some("artists"));
 		let url = format!("{}manga/{}?{}", DOMAIN_API, id, query.to_string());
-		let request = Request::new(url, HttpMethod::Get)
-			.header("Site-Id", self.site_id)
-			.header("User-Agent", USER_AGENT);
+		let request = self.request_get(&url);
 		let json = request.json()?.as_object()?;
 
 		parser::parse_manga_details(json, self.domain, self.nsfw)
@@ -93,9 +143,7 @@ impl SocialLibSource {
 	pub fn get_chapter_list(&self, id: String) -> Result<Vec<Chapter>> {
 		let url = format!("{}manga/{}/chapters", DOMAIN_API, id);
 
-		let request = Request::new(url, HttpMethod::Get)
-			.header("Site-Id", self.site_id)
-			.header("User-Agent", USER_AGENT);
+		let request = self.request_get(&url);
 		let json = request.json()?.as_object()?;
 
 		parser::parse_chapter_list(json, &id, self.domain)
@@ -111,9 +159,7 @@ impl SocialLibSource {
 			numbers.first().unwrap(),
 			numbers.get(1).unwrap()
 		);
-		let request = Request::new(url, HttpMethod::Get)
-			.header("Site-Id", self.site_id)
-			.header("User-Agent", USER_AGENT);
+		let request = self.request_get(&url);
 		let json = request.json()?.as_object()?;
 
 		parser::parse_page_list(json, self.cdn)

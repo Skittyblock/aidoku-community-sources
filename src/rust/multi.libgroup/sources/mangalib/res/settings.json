@@ -30,16 +30,35 @@
 			"items": [
 				{
 					"type": "text",
-					"key": "json_field",
-					"placeholder": "JSON",
+					"key": "access_token",
+					"placeholder": "access_token",
 					"autocapitalizationType": 0,
 					"autocorrectionType": 0,
 					"spellCheckingType": 0
 				},
 				{
-					"type": "button",
-					"action": "pressedOnLogin",
-					"title": "Войти в аккаунт"
+					"type": "text",
+					"key": "refresh_token",
+					"placeholder": "refresh_token",
+					"autocapitalizationType": 0,
+					"autocorrectionType": 0,
+					"spellCheckingType": 0
+				},
+				{
+					"type": "text",
+					"key": "timestamp",
+					"placeholder": "timestamp",
+					"autocapitalizationType": 0,
+					"autocorrectionType": 0,
+					"spellCheckingType": 0
+				},
+				{
+					"type": "text",
+					"key": "expires_in",
+					"placeholder": "expires_in",
+					"autocapitalizationType": 0,
+					"autocorrectionType": 0,
+					"spellCheckingType": 0
 				},
 				{
 				  "type": "link",

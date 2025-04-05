@@ -19,6 +19,11 @@ static INSTANCE: SocialLibSource = SocialLibSource {
 	},
 };
 
+#[initialize]
+fn initialize() {
+	INSTANCE.refresh_token();
+}
+
 #[get_manga_list]
 fn get_manga_list(filter: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	INSTANCE.get_manga_list(filter, page)
