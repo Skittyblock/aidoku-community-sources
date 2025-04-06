@@ -1,0 +1,27 @@
+{
+	"info": {
+		"id": "en.comichubfree",
+		"lang": "en",
+		"name": "Comic Hub Free",
+		"version": 1,
+		"url": "https://comichubfree.com",
+		"nsfw": 1
+	},
+	"listings": [
+		{
+			"name": "Hot"
+		},
+		{
+			"name": "Popular"
+		},
+		{
+			"name": "New"
+		},
+		{
+			"name": "Completed"
+		},
+		{
+			"name": "Ongoing"
+		}
+	]
+}

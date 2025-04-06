@@ -40,6 +40,9 @@ pub struct WPComicsSource {
 	pub chapter_skip_first: bool,
 	pub chapter_date_selector: &'static str,
 	pub chapter_anchor_selector: &'static str,
+  pub chapter_title_transformer: fn(title: String, chapter_title: String, volume: f32, chapter: f32) -> String,
+  // (volume, chapter)
+  pub chapter_raw_title_to_vol_chap: fn(title: String, chapter_title: String) -> (f32, f32),
 
 	pub manga_viewer_page: &'static str,
 	pub manga_viewer_page_url_suffix: &'static str,
@@ -296,33 +299,12 @@ impl WPComicsSource {
 				);
 			}
 			let chapter_id = chapter_url.clone();
-			let mut chapter_title = chapter_node
+			let chapter_title = chapter_node
 				.select(self.chapter_anchor_selector)
 				.text()
 				.read();
-			let numbers =
-				extract_f32_from_string(String::from(title), String::from(&chapter_title));
-			let (volume, chapter) =
-				if numbers.len() > 1 && chapter_title.to_ascii_lowercase().contains("vol") {
-					(numbers[0], numbers[1])
-				} else if !numbers.is_empty() {
-					(-1.0, numbers[0])
-				} else {
-					(-1.0, -1.0)
-				};
-			if chapter >= 0.0 {
-				let splitter = format!(" {}", chapter);
-				let splitter2 = format!("#{}", chapter);
-				if chapter_title.contains(&splitter) {
-					let split = chapter_title.splitn(2, &splitter).collect::<Vec<&str>>();
-					chapter_title =
-						String::from(split[1]).replacen(|char| char == ':' || char == '-', "", 1);
-				} else if chapter_title.contains(&splitter2) {
-					let split = chapter_title.splitn(2, &splitter2).collect::<Vec<&str>>();
-					chapter_title =
-						String::from(split[1]).replacen(|char| char == ':' || char == '-', "", 1);
-				}
-			}
+			let (volume, chapter) = (self.chapter_raw_title_to_vol_chap)(title.into(), chapter_title.clone());
+      let chapter_title = (self.chapter_title_transformer)(title.into(), chapter_title.clone(), volume, chapter);
 			let date_updated = (self.time_converter)(
 				chapter_node
 					.select(self.chapter_date_selector)
@@ -454,6 +436,32 @@ impl Default for WPComicsSource {
 			chapter_skip_first: false,
 			chapter_anchor_selector: "div.chapter > a",
 			chapter_date_selector: "div.col-xs-4",
+      chapter_title_transformer: |_title, mut chapter_title, _volume, chapter| -> String{
+        if chapter >= 0.0 {
+          let splitter = format!(" {}", chapter);
+          let splitter2 = format!("#{}", chapter);
+          if chapter_title.contains(&splitter) {
+            let split = chapter_title.splitn(2, &splitter).collect::<Vec<&str>>();
+            chapter_title =
+              String::from(split[1]).replacen(|char| char == ':' || char == '-', "", 1);
+          } else if chapter_title.contains(&splitter2) {
+            let split = chapter_title.splitn(2, &splitter2).collect::<Vec<&str>>();
+            chapter_title =
+              String::from(split[1]).replacen(|char| char == ':' || char == '-', "", 1);
+          }
+        }
+        chapter_title
+      },
+      chapter_raw_title_to_vol_chap: |title, chapter_title| -> (f32, f32) {
+        let numbers = extract_f32_from_string(title, chapter_title.clone());
+				if numbers.len() > 1 && chapter_title.to_ascii_lowercase().contains("vol") {
+					(numbers[0], numbers[1])
+				} else if !numbers.is_empty() {
+					(-1.0, numbers[0])
+				} else {
+					(-1.0, -1.0)
+				}
+      },
 
 			manga_viewer_page: "div.page-chapter > img",
 			manga_viewer_page_url_suffix: "",
