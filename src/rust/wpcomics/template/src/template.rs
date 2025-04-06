@@ -200,7 +200,7 @@ impl WPComicsSource {
 			});
 		}
 		if !self.next_page.is_empty() {
-			has_next_page = html.select(self.next_page).array().is_empty();
+			has_next_page = !html.select(self.next_page).array().is_empty();
 		}
 		Ok(MangaPageResult {
 			manga: mangas,
