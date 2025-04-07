@@ -45,6 +45,9 @@ pub struct WPComicsSource {
   // (volume, chapter)
   pub chapter_raw_title_to_vol_chap: fn(title: String, chapter_title: String) -> (f32, f32),
 
+  pub paginated_chapter_list: bool,
+  pub chapter_listing_pagination: &'static str,
+  pub next_chapter_page: &'static str,
 	pub manga_viewer_page: &'static str,
 	pub manga_viewer_page_url_suffix: &'static str,
 	pub page_url_transformer: fn(String) -> String,
@@ -268,11 +271,38 @@ impl WPComicsSource {
 		})
 	}
 
-	pub fn get_chapter_list(&self, id: String) -> Result<Vec<Chapter>> {
+  pub fn get_chapter_list(&self, id: String) -> Result<Vec<Chapter>> {
+    if !self.paginated_chapter_list {
+      let (chapters, _) = self.get_single_chapter_list(id)?;
+      return Ok(chapters);
+    }
+
+    let mut page = 1;
+    let mut chapters = Vec::new();
+    loop {
+      let url = format!("{}/{}{}",id,self.chapter_listing_pagination,page);
+      let (new_chapters, has_next_page) = self.get_single_chapter_list(url)?;
+      chapters.extend(new_chapters);
+      if !has_next_page {
+        break;
+      }
+      page += 1;
+    }
+    Ok(chapters)
+  }
+
+  // Bool for whether there is another chapter page or not
+	pub fn get_single_chapter_list(&self, id: String) -> Result<(Vec<Chapter>, bool)> {
 		let mut skipped_first = false;
 		let mut chapters: Vec<Chapter> = Vec::new();
 		cache_manga_page(self, id.as_str());
 		let html = unsafe { Node::new(&CACHED_MANGA.clone().unwrap())? };
+
+    let has_next_page = match self.paginated_chapter_list {
+      true => !html.select(self.next_chapter_page).array().is_empty(),
+      false => false,
+    };
+
 		let title_untrimmed = (self.manga_details_title_transformer)(
 			html.select(self.manga_details_title).text().read(),
 		);
@@ -323,7 +353,7 @@ impl WPComicsSource {
 				..Default::default()
 			});
 		}
-		Ok(chapters)
+		Ok((chapters, has_next_page))
 	}
 
 	pub fn get_page_list(&self, chapter_id: String) -> Result<Vec<Page>> {
@@ -464,6 +494,10 @@ impl Default for WPComicsSource {
 					(-1.0, -1.0)
 				}
       },
+
+      paginated_chapter_list: false,
+      chapter_listing_pagination: "?page=",
+      next_chapter_page: "li > a[rel=next]",
 
 			manga_viewer_page: "div.page-chapter > img",
 			manga_viewer_page_url_suffix: "",
