@@ -48,6 +48,7 @@ pub struct WPComicsSource {
   pub paginated_chapter_list: bool,
   pub chapter_listing_pagination: &'static str,
   pub next_chapter_page: &'static str,
+
 	pub manga_viewer_page: &'static str,
 	pub manga_viewer_page_url_suffix: &'static str,
 	pub page_url_transformer: fn(String) -> String,
@@ -57,9 +58,9 @@ pub struct WPComicsSource {
 	pub user_agent: Option<&'static str>,
 }
 
-static mut CACHED_MANGA_ID: Option<String> = None;
-static mut CACHED_MANGA: Option<Vec<u8>> = None;
-static mut VINAHOST_COOKIE: Option<String> = None;
+pub static mut CACHED_MANGA_ID: Option<String> = None;
+pub static mut CACHED_MANGA: Option<Vec<u8>> = None;
+pub static mut VINAHOST_COOKIE: Option<String> = None;
 
 fn cache_manga_page(data: &WPComicsSource, url: &str) {
 	if unsafe { CACHED_MANGA_ID.is_some() } && unsafe { CACHED_MANGA_ID.clone().unwrap() } == url {
@@ -129,7 +130,7 @@ impl WPComicsSource {
 		}
 	}
 
-	fn category_parser(&self, categories: &Vec<String>) -> (MangaContentRating, MangaViewer) {
+	pub fn category_parser(&self, categories: &Vec<String>) -> (MangaContentRating, MangaViewer) {
 		#[allow(clippy::needless_match)]
 		let mut nsfw = match self.nsfw {
 			MangaContentRating::Safe => MangaContentRating::Safe,
