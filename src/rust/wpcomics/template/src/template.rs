@@ -28,6 +28,7 @@ pub struct WPComicsSource {
 	pub manga_details_title: &'static str,
 	pub manga_details_title_transformer: fn(String) -> String,
 	pub manga_details_cover: &'static str,
+  pub manga_details_cover_image_attr: &'static str,
 	pub manga_details_author: &'static str,
 	pub manga_details_author_transformer: fn(String) -> String,
 	pub manga_details_description: &'static str,
@@ -223,7 +224,7 @@ impl WPComicsSource {
 		cache_manga_page(self, id.as_str());
 		let details = unsafe { Node::new(&CACHED_MANGA.clone().unwrap())? };
 		let title = details.select(self.manga_details_title).text().read();
-		let cover = append_protocol(details.select(self.manga_details_cover).attr("src").read());
+		let cover = append_protocol(details.select(self.manga_details_cover).attr(self.manga_details_cover_image_attr).read());
 		let author = (self.manga_details_author_transformer)(
 			details.select(self.manga_details_author).text().read(),
 		);
@@ -424,6 +425,7 @@ impl Default for WPComicsSource {
 			manga_details_title: "h1.title-detail",
 			manga_details_title_transformer: |title| title,
 			manga_details_cover: "div.col-image > img",
+      manga_details_cover_image_attr: "data-src",
 			manga_details_author: "ul.list-info > li.author > p.col-xs-8",
 			manga_details_author_transformer: |title| title,
 			manga_details_description: "div.detail-content > p",
