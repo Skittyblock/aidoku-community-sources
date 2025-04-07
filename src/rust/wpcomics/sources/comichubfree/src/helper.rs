@@ -38,7 +38,3 @@ pub fn chapter_title_transformer(
 ) -> String {
 	chapter_title.replace(&title, "").replace("_", " ").into()
 }
-
-pub fn chapter_to_vol_chap(_title: String, _chapter_title: String) -> (f32, f32) {
-	(-1.0, -1.0)
-}

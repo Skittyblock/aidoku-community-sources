@@ -44,7 +44,6 @@ fn get_instance() -> WPComicsSource {
 		chapter_anchor_selector: "td:nth-of-type(1) > a",
 		chapter_date_selector: "td:nth-of-type(2)",
 		chapter_title_transformer,
-		chapter_raw_title_to_vol_chap: chapter_to_vol_chap,
 
 		paginated_chapter_list: true,
 		next_chapter_page: "li > a[rel=next]",
