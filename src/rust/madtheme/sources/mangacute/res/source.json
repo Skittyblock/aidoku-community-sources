@@ -1,0 +1,10 @@
+{
+	"info": {
+		"id": "en.mangacute",
+		"lang": "en",
+		"name": "MangaCute",
+		"version": 1,
+		"url": "https://mangacute.com",
+		"nsfw": 2
+	}
+}
