@@ -19,7 +19,7 @@ pub fn get_search_url(base_url: &str, query: &str, genre: &str, page: i32) -> St
 	} else if !genre.is_empty() {
 		format!("{base_url}/{genre}-comic?page={page}")
 	} else {
-    format!("{base_url}/popular-comic")
+		format!("{base_url}/popular-comic")
 	}
 }
 
@@ -30,10 +30,15 @@ pub fn title_transformer(title: String) -> String {
 		.into()
 }
 
-pub fn chapter_title_transformer(title: String, chapter_title: String, _volume: f32, _chapter: f32) -> String {
-  chapter_title.replace(&title, "").replace("_", " ").into()
+pub fn chapter_title_transformer(
+	title: String,
+	chapter_title: String,
+	_volume: f32,
+	_chapter: f32,
+) -> String {
+	chapter_title.replace(&title, "").replace("_", " ").into()
 }
 
 pub fn chapter_to_vol_chap(_title: String, _chapter_title: String) -> (f32, f32) {
-  (-1.0, -1.0)
+	(-1.0, -1.0)
 }

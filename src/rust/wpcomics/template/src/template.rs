@@ -28,7 +28,7 @@ pub struct WPComicsSource {
 	pub manga_details_title: &'static str,
 	pub manga_details_title_transformer: fn(String) -> String,
 	pub manga_details_cover: &'static str,
-  pub manga_details_cover_image_attr: &'static str,
+	pub manga_details_cover_image_attr: &'static str,
 	pub manga_details_author: &'static str,
 	pub manga_details_author_transformer: fn(String) -> String,
 	pub manga_details_description: &'static str,
@@ -41,17 +41,18 @@ pub struct WPComicsSource {
 	pub chapter_skip_first: bool,
 	pub chapter_date_selector: &'static str,
 	pub chapter_anchor_selector: &'static str,
-  pub chapter_title_transformer: fn(title: String, chapter_title: String, volume: f32, chapter: f32) -> String,
-  // (volume, chapter)
-  pub chapter_raw_title_to_vol_chap: fn(title: String, chapter_title: String) -> (f32, f32),
+	pub chapter_title_transformer:
+		fn(title: String, chapter_title: String, volume: f32, chapter: f32) -> String,
+	// (volume, chapter)
+	pub chapter_raw_title_to_vol_chap: fn(title: String, chapter_title: String) -> (f32, f32),
 
-  pub paginated_chapter_list: bool,
-  pub chapter_listing_pagination: &'static str,
-  pub next_chapter_page: &'static str,
+	pub paginated_chapter_list: bool,
+	pub chapter_listing_pagination: &'static str,
+	pub next_chapter_page: &'static str,
 
 	pub manga_viewer_page: &'static str,
 	pub manga_viewer_page_url_suffix: &'static str,
-  pub manga_viewer_page_image_attr: &'static str,
+	pub manga_viewer_page_image_attr: &'static str,
 	pub page_url_transformer: fn(String) -> String,
 
 	pub vinahost_protection: bool,
@@ -229,7 +230,12 @@ impl WPComicsSource {
 		cache_manga_page(self, id.as_str());
 		let details = unsafe { Node::new(&CACHED_MANGA.clone().unwrap())? };
 		let title = details.select(self.manga_details_title).text().read();
-		let cover = append_protocol(details.select(self.manga_details_cover).attr(self.manga_details_cover_image_attr).read());
+		let cover = append_protocol(
+			details
+				.select(self.manga_details_cover)
+				.attr(self.manga_details_cover_image_attr)
+				.read(),
+		);
 		let author = (self.manga_details_author_transformer)(
 			details.select(self.manga_details_author).text().read(),
 		);
@@ -273,37 +279,37 @@ impl WPComicsSource {
 		})
 	}
 
-  pub fn get_chapter_list(&self, id: String) -> Result<Vec<Chapter>> {
-    if !self.paginated_chapter_list {
-      let (chapters, _) = self.get_single_chapter_list(id)?;
-      return Ok(chapters);
-    }
+	pub fn get_chapter_list(&self, id: String) -> Result<Vec<Chapter>> {
+		if !self.paginated_chapter_list {
+			let (chapters, _) = self.get_single_chapter_list(id)?;
+			return Ok(chapters);
+		}
 
-    let mut page = 1;
-    let mut chapters = Vec::new();
-    loop {
-      let url = format!("{}/{}{}",id,self.chapter_listing_pagination,page);
-      let (new_chapters, has_next_page) = self.get_single_chapter_list(url)?;
-      chapters.extend(new_chapters);
-      if !has_next_page {
-        break;
-      }
-      page += 1;
-    }
-    Ok(chapters)
-  }
+		let mut page = 1;
+		let mut chapters = Vec::new();
+		loop {
+			let url = format!("{}/{}{}", id, self.chapter_listing_pagination, page);
+			let (new_chapters, has_next_page) = self.get_single_chapter_list(url)?;
+			chapters.extend(new_chapters);
+			if !has_next_page {
+				break;
+			}
+			page += 1;
+		}
+		Ok(chapters)
+	}
 
-  // Bool for whether there is another chapter page or not
+	// Bool for whether there is another chapter page or not
 	pub fn get_single_chapter_list(&self, id: String) -> Result<(Vec<Chapter>, bool)> {
 		let mut skipped_first = false;
 		let mut chapters: Vec<Chapter> = Vec::new();
 		cache_manga_page(self, id.as_str());
 		let html = unsafe { Node::new(&CACHED_MANGA.clone().unwrap())? };
 
-    let has_next_page = match self.paginated_chapter_list {
-      true => !html.select(self.next_chapter_page).array().is_empty(),
-      false => false,
-    };
+		let has_next_page = match self.paginated_chapter_list {
+			true => !html.select(self.next_chapter_page).array().is_empty(),
+			false => false,
+		};
 
 		let title_untrimmed = (self.manga_details_title_transformer)(
 			html.select(self.manga_details_title).text().read(),
@@ -336,8 +342,14 @@ impl WPComicsSource {
 				.select(self.chapter_anchor_selector)
 				.text()
 				.read();
-			let (volume, chapter) = (self.chapter_raw_title_to_vol_chap)(title.into(), chapter_title.clone());
-      let chapter_title = (self.chapter_title_transformer)(title.into(), chapter_title.clone(), volume, chapter);
+			let (volume, chapter) =
+				(self.chapter_raw_title_to_vol_chap)(title.into(), chapter_title.clone());
+			let chapter_title = (self.chapter_title_transformer)(
+				title.into(),
+				chapter_title.clone(),
+				volume,
+				chapter,
+			);
 			let date_updated = (self.time_converter)(
 				chapter_node
 					.select(self.chapter_date_selector)
@@ -457,7 +469,7 @@ impl Default for WPComicsSource {
 			manga_details_title: "h1.title-detail",
 			manga_details_title_transformer: |title| title,
 			manga_details_cover: "div.col-image > img",
-      manga_details_cover_image_attr: "data-src",
+			manga_details_cover_image_attr: "data-src",
 			manga_details_author: "ul.list-info > li.author > p.col-xs-8",
 			manga_details_author_transformer: |title| title,
 			manga_details_description: "div.detail-content > p",
@@ -470,24 +482,30 @@ impl Default for WPComicsSource {
 			chapter_skip_first: false,
 			chapter_anchor_selector: "div.chapter > a",
 			chapter_date_selector: "div.col-xs-4",
-      chapter_title_transformer: |_title, mut chapter_title, _volume, chapter| -> String{
-        if chapter >= 0.0 {
-          let splitter = format!(" {}", chapter);
-          let splitter2 = format!("#{}", chapter);
-          if chapter_title.contains(&splitter) {
-            let split = chapter_title.splitn(2, &splitter).collect::<Vec<&str>>();
-            chapter_title =
-              String::from(split[1]).replacen(|char| char == ':' || char == '-', "", 1);
-          } else if chapter_title.contains(&splitter2) {
-            let split = chapter_title.splitn(2, &splitter2).collect::<Vec<&str>>();
-            chapter_title =
-              String::from(split[1]).replacen(|char| char == ':' || char == '-', "", 1);
-          }
-        }
-        chapter_title
-      },
-      chapter_raw_title_to_vol_chap: |title, chapter_title| -> (f32, f32) {
-        let numbers = extract_f32_from_string(title, chapter_title.clone());
+			chapter_title_transformer: |_title, mut chapter_title, _volume, chapter| -> String {
+				if chapter >= 0.0 {
+					let splitter = format!(" {}", chapter);
+					let splitter2 = format!("#{}", chapter);
+					if chapter_title.contains(&splitter) {
+						let split = chapter_title.splitn(2, &splitter).collect::<Vec<&str>>();
+						chapter_title = String::from(split[1]).replacen(
+							|char| char == ':' || char == '-',
+							"",
+							1,
+						);
+					} else if chapter_title.contains(&splitter2) {
+						let split = chapter_title.splitn(2, &splitter2).collect::<Vec<&str>>();
+						chapter_title = String::from(split[1]).replacen(
+							|char| char == ':' || char == '-',
+							"",
+							1,
+						);
+					}
+				}
+				chapter_title
+			},
+			chapter_raw_title_to_vol_chap: |title, chapter_title| -> (f32, f32) {
+				let numbers = extract_f32_from_string(title, chapter_title.clone());
 				if numbers.len() > 1 && chapter_title.to_ascii_lowercase().contains("vol") {
 					(numbers[0], numbers[1])
 				} else if !numbers.is_empty() {
@@ -495,15 +513,15 @@ impl Default for WPComicsSource {
 				} else {
 					(-1.0, -1.0)
 				}
-      },
+			},
 
-      paginated_chapter_list: false,
-      chapter_listing_pagination: "?page=",
-      next_chapter_page: "li > a[rel=next]",
+			paginated_chapter_list: false,
+			chapter_listing_pagination: "?page=",
+			next_chapter_page: "li > a[rel=next]",
 
 			manga_viewer_page: "div.page-chapter > img",
 			manga_viewer_page_url_suffix: "",
-      manga_viewer_page_image_attr: "data-original",
+			manga_viewer_page_image_attr: "data-original",
 			page_url_transformer: |url| url,
 
 			vinahost_protection: false,
