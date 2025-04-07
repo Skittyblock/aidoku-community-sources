@@ -489,7 +489,7 @@ impl Default for WPComicsSource {
 					if chapter_title.contains(&splitter) {
 						let split = chapter_title.splitn(2, &splitter).collect::<Vec<&str>>();
 						chapter_title = String::from(split[1]).replacen(
-							|char| char == ':' || char == '-',
+							|char| [':', '-'].contains(&char),
 							"",
 							1,
 						);
