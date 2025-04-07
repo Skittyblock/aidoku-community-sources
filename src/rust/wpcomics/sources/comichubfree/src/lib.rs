@@ -93,7 +93,7 @@ fn get_manga_details(id: String) -> Result<Manga> {
 		{
 			Node::new(CACHED_MANGA.as_ref().unwrap())?
 		} else {
-			Request::new(&id, HttpMethod::Get).html()?
+			Request::get(&id).html()?
 		}
 	};
 
