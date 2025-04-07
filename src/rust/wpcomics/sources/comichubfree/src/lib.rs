@@ -49,6 +49,7 @@ fn get_instance() -> WPComicsSource {
 
 		manga_viewer_page: "div.page-chapter > img",
 		manga_viewer_page_url_suffix: "/all",
+    manga_viewer_page_image_attr: "data-src",
 		page_url_transformer: |url| url,
 
 		..Default::default()
