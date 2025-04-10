@@ -126,7 +126,7 @@ fn get_manga_details(manga_id: String) -> Result<Manga> {
 
 	let html = Request::new(&url, HttpMethod::Get).html()?;
 
-	let wrapper = html.select("div.relative.grid");
+	let wrapper = html.select("div.grid.grid-cols-12");
 
 	let cover = wrapper.select("img[alt=poster]").attr("abs:src").read();
 	let title = wrapper.select("span.text-xl.font-bold").text().read();
@@ -235,7 +235,7 @@ fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 	{
 		let node = node.as_node()?;
 
-		let chapter_unlocked =	node.select("h3 > span > svg").array().is_empty();
+		let chapter_unlocked = node.select("h3 > span > svg").array().is_empty();
 
 		if !chapter_unlocked {
 			continue;
@@ -314,7 +314,9 @@ fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 	let mut text_slice = html_text.as_str();
 
 	// Find bounds of the page list
-	let page_list_start = text_slice.find(r#"\"pages\":[{\"order\":1,\"url\":\"https://gg.asuracomic.net/storage/media"#).unwrap_or(0);
+	let page_list_start = text_slice
+		.find(r#"\"pages\":[{\"order\":1,\"url\":\"https://gg.asuracomic.net/storage/media"#)
+		.unwrap_or(0);
 	let page_list_end = text_slice[page_list_start..].find(r#"}]"#).unwrap_or(0);
 
 	text_slice = &text_slice[page_list_start..page_list_start + page_list_end];
