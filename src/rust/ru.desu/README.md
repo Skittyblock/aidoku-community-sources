@@ -1,4 +1,4 @@
-### To update filters use following JS code in browser at [this page](https://desu.store/manga/):  
+### To update filters use following JS code in browser at [this page](https://desu.work/manga/):  
 #### Note: this code will automatically copy a new filters JSON  
 
 ```js
