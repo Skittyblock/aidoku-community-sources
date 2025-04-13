@@ -230,6 +230,37 @@ pub fn parse_chapter_list(js: ObjectRef, id: &str, domain: &str) -> Result<Vec<C
 	Ok(chapters)
 }
 
+pub fn parse_image_servers_list(js: ObjectRef, site_id: i64) -> Result<CDN> {
+	let (mut main, mut second, mut compress) = (String::new(), String::new(), String::new());
+	let image_servers_list = js.get("data").as_object()?.get("imageServers").as_array()?;
+
+	for image_server in image_servers_list {
+		let image_server_obj = image_server.as_object()?;
+
+		if image_server_obj
+			.get("site_ids")
+			.as_array()?
+			.any(|i| i.as_int().unwrap() == site_id)
+		{
+			let url = image_server_obj.get("url").as_string()?.read();
+			let id = image_server_obj.get("id").as_string()?.read();
+
+			match id.as_str() {
+				"main" => main = url.clone(),
+				"secondary" => second = url.clone(),
+				"compress" => compress = url.clone(),
+				_ => {}
+			}
+		}
+	}
+
+	Ok(CDN {
+		main,
+		second,
+		compress,
+	})
+}
+
 pub fn parse_page_list(js: ObjectRef, cdn: &CDN) -> Result<Vec<Page>> {
 	let chapters: Vec<Page> = js
 		.get("data")
