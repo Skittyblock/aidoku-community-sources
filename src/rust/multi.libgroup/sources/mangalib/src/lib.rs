@@ -1,14 +1,12 @@
 #![no_std]
 
-use core::str::FromStr;
-
 use aidoku::{
 	error::Result,
 	prelude::*,
 	std::{net::Request, String, Vec},
 	Chapter, Filter, Listing, Manga, MangaPageResult, Page,
 };
-use mangalib_template::template::{SocialLibSource, CDN};
+use mangalib_template::template::SocialLibSource;
 
 fn get_instance() -> SocialLibSource {
 	SocialLibSource {
