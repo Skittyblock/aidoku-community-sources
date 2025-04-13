@@ -17,13 +17,12 @@ pub struct SocialLibSource {
 	pub site_id: &'static str,
 	pub domain: &'static str,
 	pub nsfw: &'static MangaContentRating,
-	pub cdn: &'static CDN,
 }
 
 pub struct CDN {
-	pub main: &'static str,
-	pub second: &'static str,
-	pub compress: &'static str,
+	pub main: String,
+	pub second: String,
+	pub compress: String,
 }
 
 static USER_AGENT: &str = "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1";
@@ -115,11 +114,23 @@ impl SocialLibSource {
 			.header("Site-Id", self.site_id)
 			.header("User-Agent", USER_AGENT);
 		let json = request.json()?.as_object()?;
+		let cdn = self.get_cdn_domains()?;
 
-		parser::parse_page_list(json, self.cdn)
+		parser::parse_page_list(json, &cdn)
 	}
 
 	pub fn modify_image_request(&self, request: Request) {
 		request.header("Referer", &format!("https://{}", self.domain));
+	}
+
+	pub fn get_cdn_domains(&self) -> Result<CDN> {
+		let url = format!("{}constants?fields[]=imageServers", DOMAIN_API);
+		let request = Request::new(url, HttpMethod::Get)
+			.header("Site-Id", self.site_id)
+			.header("User-Agent", USER_AGENT);
+		let json = request.json()?.as_object()?;
+
+		let site_id = self.site_id.parse::<i64>().unwrap();
+		parser::parse_image_servers_list(json, site_id)
 	}
 }
