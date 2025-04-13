@@ -1,6 +1,11 @@
 use aidoku::{
 	helpers::uri::QueryParameters,
-	std::{defaults::defaults_get, String},
+	prelude::format,
+	std::{
+		current_date,
+		defaults::{defaults_get, defaults_set},
+		ObjectRef, String,
+	},
 	Filter, FilterType, MangaStatus,
 };
 use alloc::{borrow::ToOwned, string::ToString, vec::Vec};
@@ -118,4 +123,29 @@ pub fn display_title() -> String {
 	} else {
 		"rus_name".to_owned()
 	}
+}
+
+pub fn is_logged() -> bool {
+	defaults_get("access_token").is_ok()
+}
+
+pub fn get_token() -> String {
+	format!(
+		"Bearer {}",
+		defaults_get("access_token")
+			.unwrap()
+			.as_string()
+			.unwrap()
+			.read()
+	)
+}
+
+pub fn save_token(js: ObjectRef) {
+	let access_token = js.get("access_token").as_string().unwrap();
+	let refresh_token = js.get("refresh_token").as_string().unwrap();
+	let expires_in = js.get("expires_in").as_int().unwrap().into();
+	defaults_set("access_token", access_token.0);
+	defaults_set("refresh_token", refresh_token.0);
+	defaults_set("expires_in", expires_in);
+	defaults_set("timestamp", (current_date() as i64).into());
 }
