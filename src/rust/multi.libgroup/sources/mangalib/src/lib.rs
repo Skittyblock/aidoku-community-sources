@@ -19,7 +19,6 @@ fn get_instance() -> SocialLibSource {
 #[get_manga_list]
 fn get_manga_list(filter: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 	get_instance().get_manga_list(filter, page)
-	
 }
 
 #[get_manga_listing]
