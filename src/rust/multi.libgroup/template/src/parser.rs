@@ -1,7 +1,7 @@
 use aidoku::error::Result;
-use aidoku::prelude::{format, println};
+use aidoku::prelude::format;
 use aidoku::std::defaults::defaults_get;
-use aidoku::std::{print, String};
+use aidoku::std::String;
 use aidoku::{std::ObjectRef, Manga, MangaPageResult};
 use aidoku::{Chapter, MangaContentRating, MangaViewer, Page};
 use alloc::string::ToString;
@@ -231,11 +231,8 @@ pub fn parse_chapter_list(js: ObjectRef, id: &str, domain: &str) -> Result<Vec<C
 }
 
 pub fn parse_image_servers_list(js: ObjectRef, site_id: i64) -> Result<CDN> {
-	println!("puk");
 	let (mut main, mut second, mut compress) = (String::new(), String::new(), String::new());
-	println!("puk1");
 	let image_servers_list = js.get("data").as_object()?.get("imageServers").as_array()?;
-	println!("puk2");
 
 	for image_server in image_servers_list {
 		let image_server_obj = image_server.as_object()?;
@@ -248,7 +245,6 @@ pub fn parse_image_servers_list(js: ObjectRef, site_id: i64) -> Result<CDN> {
 			let url = image_server_obj.get("url").as_string()?.read();
 			let id = image_server_obj.get("id").as_string()?.read();
 
-			println!("id: {}, url: {}", id.as_str(), url.as_str());
 			match id.as_str() {
 				"main" => main = url.clone(),
 				"secondary" => second = url.clone(),
