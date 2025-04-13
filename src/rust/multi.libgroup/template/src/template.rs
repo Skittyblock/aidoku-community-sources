@@ -5,7 +5,7 @@ use aidoku::{
 	std::{
 		current_date,
 		defaults::defaults_get,
-		net::{HttpMethod, Request},
+		net::Request,
 		String, Vec,
 	},
 	Chapter, Filter, Listing, Manga, MangaContentRating, MangaPageResult, Page,
