@@ -34,7 +34,7 @@ static USER_AGENT: &str = "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X
 static DOMAIN_API: &str = "https://api2.mangalib.me/api/";
 
 impl SocialLibSource {
-	pub fn refresh_token(&self) -> () {
+	pub fn refresh_token(&self) {
 		if is_logged() {
 			let timestamp = defaults_get("timestamp").unwrap().as_int().unwrap() / 1000;
 			let access_token = defaults_get("access_token")
