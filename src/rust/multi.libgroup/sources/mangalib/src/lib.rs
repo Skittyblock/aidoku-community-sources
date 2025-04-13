@@ -6,7 +6,7 @@ use aidoku::{
 	std::{net::Request, String, Vec},
 	Chapter, Filter, Listing, Manga, MangaPageResult, Page,
 };
-use mangalib_template::template::SocialLibSource;
+use mangalib_template::{helpers::is_logged, template::SocialLibSource};
 
 static INSTANCE: SocialLibSource = SocialLibSource {
 	site_id: "1",
@@ -16,7 +16,9 @@ static INSTANCE: SocialLibSource = SocialLibSource {
 
 #[initialize]
 fn initialize() {
-	INSTANCE.refresh_token();
+	if is_logged() {
+		let _ = INSTANCE.refresh_token();
+	}
 }
 
 #[get_manga_list]

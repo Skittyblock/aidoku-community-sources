@@ -1,5 +1,5 @@
 use aidoku::{
-	error::{AidokuError, Result},
+	error::{AidokuError, AidokuErrorKind, Result},
 	helpers::uri::QueryParameters,
 	prelude::format,
 	std::{
@@ -34,54 +34,45 @@ static USER_AGENT: &str = "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X
 static DOMAIN_API: &str = "https://api2.mangalib.me/api/";
 
 impl SocialLibSource {
-	pub fn refresh_token(&self) {
-		if is_logged() {
-			let timestamp = defaults_get("timestamp").unwrap().as_int().unwrap() / 1000;
-			let access_token = defaults_get("access_token")
-				.unwrap()
-				.as_string()
-				.unwrap()
-				.read();
-			let refresh_token = defaults_get("refresh_token")
-				.unwrap()
-				.as_string()
-				.unwrap()
-				.read();
-			let now = current_date() as i64;
-			let expires_in = defaults_get("expires_in").unwrap().as_int().unwrap();
-			if (now - timestamp) >= expires_in {
-				let url = format!("{}auth/oauth/token", DOMAIN_API);
-				let auth = format!("Bearer {}", access_token);
-				let domain = format!("https://{}/", self.domain);
-				let body = format!(
-					r#"{{"grant_type":"refresh_token","client_id":"{}","refresh_token":"{}","scope":""}}"#,
-					self.site_id, refresh_token
-				);
+	pub fn refresh_token(&self) -> Result<()> {
+		let timestamp = defaults_get("timestamp")?.as_int()? / 1000;
+		let access_token = defaults_get("access_token")?.as_string()?.read();
+		let refresh_token = defaults_get("refresh_token")?.as_string()?.read();
+		let now = current_date() as i64;
+		let expires_in = defaults_get("expires_in")?.as_int()?;
+		if (now - timestamp) >= expires_in {
+			let url = format!("{}auth/oauth/token", DOMAIN_API);
+			let auth = format!("Bearer {}", access_token);
+			let domain = format!("https://{}/", self.domain);
+			let body = format!(
+				r#"{{"grant_type":"refresh_token","client_id":"{}","refresh_token":"{}","scope":""}}"#,
+				self.site_id, refresh_token
+			);
 
-				let request = Request::new(url, HttpMethod::Post)
-					.header("User-Agent", USER_AGENT)
-					.header("Site-Id", self.site_id)
-					.header("Content-Type", "application/json")
-					.header("Authorization", auth.as_str())
-					.header("Referer", domain.as_str())
-					.body(body);
-				let json = request.json().unwrap().as_object().unwrap();
+			let request = Request::new(url, HttpMethod::Post)
+				.header("User-Agent", USER_AGENT)
+				.header("Site-Id", self.site_id)
+				.header("Content-Type", "application/json")
+				.header("Authorization", auth.as_str())
+				.header("Referer", domain.as_str())
+				.body(body);
+			let json = request.json()?.as_object()?;
 
-				save_token(json);
-			}
+			save_token(json);
+			return Ok(());
 		}
+		Ok(())
 	}
 
 	fn request_get(&self, url: &str) -> Request {
-		if is_logged() {
-			return Request::new(url, HttpMethod::Get)
-				.header("Site-Id", self.site_id)
-				.header("User-Agent", USER_AGENT)
-				.header("authorization", get_token().as_str());
-		}
-		Request::new(url, HttpMethod::Get)
+		let req = Request::get(url)
 			.header("Site-Id", self.site_id)
-			.header("User-Agent", USER_AGENT)
+			.header("User-Agent", USER_AGENT);
+		if is_logged() {
+			req.header("authorization", get_token().as_str())
+		} else {
+			req
+		}
 	}
 
 	pub fn get_manga_list(&self, filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
@@ -171,12 +162,14 @@ impl SocialLibSource {
 
 	pub fn get_cdn_domains(&self) -> Result<CDN> {
 		let url = format!("{}constants?fields[]=imageServers", DOMAIN_API);
-		let request = Request::new(url, HttpMethod::Get)
+		let request = Request::get(url)
 			.header("Site-Id", self.site_id)
 			.header("User-Agent", USER_AGENT);
 		let json = request.json()?.as_object()?;
 
-		let site_id = self.site_id.parse::<i64>().unwrap();
+		let site_id = self.site_id.parse::<i64>().map_err(|_| AidokuError {
+			reason: AidokuErrorKind::ValueCast(aidoku::error::ValueCastError::NotInt),
+		})?;
 		parser::parse_image_servers_list(json, site_id)
 	}
 }
