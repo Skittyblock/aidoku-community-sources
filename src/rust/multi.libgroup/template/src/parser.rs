@@ -234,11 +234,7 @@ pub fn parse_image_servers_list(js: ObjectRef, site_id: i64) -> Result<CDN> {
 	println!("puk");
 	let (mut main, mut second, mut compress) = (String::new(), String::new(), String::new());
 	println!("puk1");
-	let image_servers_list = js
-		.get("data")
-		.as_object()?
-		.get("imageServers")
-		.as_array()?;
+	let image_servers_list = js.get("data").as_object()?.get("imageServers").as_array()?;
 	println!("puk2");
 
 	for image_server in image_servers_list {
@@ -247,27 +243,26 @@ pub fn parse_image_servers_list(js: ObjectRef, site_id: i64) -> Result<CDN> {
 		if image_server_obj
 			.get("site_ids")
 			.as_array()?
-			.any(|i| i.as_int().unwrap() == site_id) {
-				let url = image_server_obj
-									.get("url")
-									.as_string()?
-									.read();
-				let id = image_server_obj
-									.get("id")
-									.as_string()?
-									.read();
+			.any(|i| i.as_int().unwrap() == site_id)
+		{
+			let url = image_server_obj.get("url").as_string()?.read();
+			let id = image_server_obj.get("id").as_string()?.read();
 
-				println!("id: {}, url: {}", id.as_str(), url.as_str());
-				match id.as_str() {
-					"main" => main = url.clone(),
-					"secondary" => second = url.clone(),
-					"compress" => compress = url.clone(),
-					_ => {}
-				}
+			println!("id: {}, url: {}", id.as_str(), url.as_str());
+			match id.as_str() {
+				"main" => main = url.clone(),
+				"secondary" => second = url.clone(),
+				"compress" => compress = url.clone(),
+				_ => {}
 			}
+		}
 	}
 
-	Ok(CDN { main, second, compress })
+	Ok(CDN {
+		main,
+		second,
+		compress,
+	})
 }
 
 pub fn parse_page_list(js: ObjectRef, cdn: &CDN) -> Result<Vec<Page>> {
