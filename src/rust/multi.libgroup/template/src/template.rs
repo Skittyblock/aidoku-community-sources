@@ -49,7 +49,7 @@ impl SocialLibSource {
 				self.site_id, refresh_token
 			);
 
-			let request = Request::new(url, HttpMethod::Post)
+			let request = Request::post(url)
 				.header("User-Agent", USER_AGENT)
 				.header("Site-Id", self.site_id)
 				.header("Content-Type", "application/json")
