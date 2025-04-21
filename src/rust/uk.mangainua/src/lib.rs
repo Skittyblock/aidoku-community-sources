@@ -5,11 +5,35 @@ mod helper;
 use aidoku::{
 	error::Result,
 	prelude::*,
+	std::html::Node,
 	std::net::Request,
 	std::{net::HttpMethod, String, Vec},
 	Chapter, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
 	MangaViewer, Page,
 };
+use core::cmp::Ordering;
+
+fn parse_user_hash_and_query(document: Node) -> (String, String) {
+	let mut script_data = String::new();
+	for script in document.select("script").array() {
+		let node = script.as_node().expect("Script not a node");
+		let text = node.outer_html().read();
+		if text.contains("site_login_hash") {
+			script_data = text;
+			break;
+		}
+	}
+
+	let user_hash = script_data
+		.split("site_login_hash = '")
+		.nth(1)
+		.and_then(|s| s.split('\'').next())
+		.expect("Failed to parse user hash");
+
+	let hash_query = "user_hash";
+
+	(String::from(hash_query), String::from(user_hash))
+}
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
@@ -263,11 +287,11 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 			let paging = paging_res.as_node().expect("");
 			let st = paging.text().read();
 
-			// first page  -> 	<a>1</1a> ... <a>99</a> <span>Попередня</span> <a>Наступна</a>
-			// other pages ->	<a>1</1a> ... <a>99</a> <a>Попередня</a> <a>Наступна</a>
-			// on first page "Попередня" (previous) is span, so the latest page number is
-			// before "Наступна" (Next) on other pages "Попередня" and "Наступна" are a
-			// elements, so latest page number is before "Попередня"
+			// first page  -> 	<a>1</1a> ... <a>99</a> <span>Попередня</span>
+			// <a>Наступна</a> other pages ->	<a>1</1a> ... <a>99</a> <a>Попередня</a>
+			// <a>Наступна</a> on first page "Попередня" (previous) is span, so the
+			// latest page number is before "Наступна" (Next) on other pages "Попередня"
+			// and "Наступна" are a elements, so latest page number is before "Попередня"
 			if st != "Наступна" && st != "Попередня" {
 				last_page = st.clone();
 			}
@@ -354,54 +378,70 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 		.html()
 		.expect("chapter html array not an array of nodes");
 
-	let mut chapter: f32 = -1.0;
+	let linkstocomics = html.select("#linkstocomics");
+	let news_id = linkstocomics.attr("data-news_id").read();
+	let news_category = linkstocomics.attr("data-news_category").read();
+	let this_link = linkstocomics.attr("data-this_link").read();
+	let (hash_query, user_hash) = parse_user_hash_and_query(html);
+
+	let body = format!(
+		"action=show&news_id={}&news_category={}&this_link={}&{}={}",
+		news_id, news_category, this_link, hash_query, user_hash
+	);
+
+	let ajax_url = "https://manga.in.ua/engine/ajax/controller.php?mod=load_chapters";
+	let response = Request::new(ajax_url, HttpMethod::Post)
+		.header("Content-Type", "application/x-www-form-urlencoded")
+		.body(body.as_bytes())
+		.html()
+		.expect("Failed to load chapters from AJAX");
 
 	let mut res: Vec<Chapter> = Vec::new();
-	for result in html.select(".linkstocomicsblockhidden .ltcitems").array() {
-		let res_node = result.as_node().expect("");
-		let href = res_node.select("a").attr("href").read();
-		let mut title = res_node.select("a").text().read();
 
-		let date = res_node
-			.select(".ltcright")
-			.first()
-			.text()
-			.0
-			.as_date("dd.MM.yyyy", None, None)
-			.unwrap_or(-1.0);
+	let mut chapter_num: f32 = -1.0;
 
-		let scanlator = res_node
+	for chapter in response.select(".ltcitems").array() {
+		let node = chapter.as_node().expect("Chapter node expected");
+		let a = node.select("a");
+		let href = a.attr("href").read();
+		let title_raw = a.text().read();
+
+		let mut title = title_raw;
+		let date_str = node.select(".ltcright").first().text().0;
+		let date = date_str.as_date("dd.MM.yyyy", None, None).unwrap_or(-1.0);
+		let scanlator = node
 			.select(".ltcright .tooltip .tooltiptext")
 			.text()
-			.read();
+			.read()
+			.replace("Переклад: ", "");
 
 		// Alternative translation don't have chapter number. use previous parsed
 		if title.contains("Альтернативний переклад") {
 			title = String::from("↑") + &title;
 		} else {
-			// parse volume and chapter.
 			let volume_chapter = title.clone();
 			let replaced = volume_chapter.replace("НОВЕ ", "");
 			let arr: Vec<_> = replaced.split_whitespace().collect();
 
 			match arr[3].parse::<f32>() {
-				Ok(n) => chapter = n,
+				Ok(n) => chapter_num = n,
 				_ => continue,
 			};
 		}
 
-		let chapter = Chapter {
+		res.push(Chapter {
 			id: href.clone(),
 			title,
 			volume: -1.0,
-			chapter,
-			url: href.clone(),
+			chapter: chapter_num,
+			url: href,
 			date_updated: date,
 			scanlator,
 			lang: String::from("uk"),
-		};
-		res.push(chapter);
+		});
 	}
+
+	res.sort_by(|a, b| b.chapter.partial_cmp(&a.chapter).unwrap_or(Ordering::Equal));
 
 	Ok(res)
 }
@@ -412,8 +452,23 @@ fn get_page_list(_manga_id: String, _chapter_id: String) -> Result<Vec<Page>> {
 		.html()
 		.expect("get page list html array not an array of nodes");
 
+	let base_url = "https://manga.in.ua";
+	let endpoint = "engine/ajax/controller.php?mod=load_chapters_image";
+	let (hash_query, user_hash) = parse_user_hash_and_query(html.clone());
+	let news_id = html.select("#comics").first().attr("data-news_id").read();
+
+	let ajax_url = format!(
+		"{}/{}&news_id={}&action=show&{}={}",
+		base_url, endpoint, news_id, hash_query, user_hash
+	);
+
+	let response = Request::new(ajax_url, HttpMethod::Get)
+		.header("Referer", base_url)
+		.html()
+		.expect("Failed to load chapters from AJAX");
+
 	let mut pages: Vec<Page> = Vec::new();
-	for (index, result) in html.select(".loadcomicsimages img").array().enumerate() {
+	for (index, result) in response.select("img").array().enumerate() {
 		let res_node = result.as_node().expect("");
 		let image = res_node.attr("abs:data-src").read();
 		pages.push(Page {
@@ -422,5 +477,6 @@ fn get_page_list(_manga_id: String, _chapter_id: String) -> Result<Vec<Page>> {
 			..Default::default()
 		});
 	}
+
 	Ok(pages)
 }
