@@ -3,7 +3,7 @@
 mod helper;
 
 use aidoku::{
-	error::Result,
+	error::{AidokuError, AidokuErrorKind, Result},
 	prelude::*,
 	std::html::Node,
 	std::net::Request,
@@ -13,7 +13,7 @@ use aidoku::{
 };
 use core::cmp::Ordering;
 
-fn parse_user_hash_and_query(document: Node) -> (String, String) {
+fn parse_user_hash_and_query(document: Node) -> Result<(String, String)> {
 	let mut script_data = String::new();
 	for script in document.select("script").array() {
 		let node = script.as_node().expect("Script not a node");
@@ -28,11 +28,13 @@ fn parse_user_hash_and_query(document: Node) -> (String, String) {
 		.split("site_login_hash = '")
 		.nth(1)
 		.and_then(|s| s.split('\'').next())
-		.expect("Failed to parse user hash");
+		.ok_or(AidokuError {
+			reason: AidokuErrorKind::NodeError(aidoku::error::NodeError::ParseError),
+		})?;
 
 	let hash_query = "user_hash";
 
-	(String::from(hash_query), String::from(user_hash))
+	Ok((String::from(hash_query), String::from(user_hash)))
 }
 
 #[get_manga_list]
@@ -382,7 +384,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 	let news_id = linkstocomics.attr("data-news_id").read();
 	let news_category = linkstocomics.attr("data-news_category").read();
 	let this_link = linkstocomics.attr("data-this_link").read();
-	let (hash_query, user_hash) = parse_user_hash_and_query(html);
+	let (hash_query, user_hash) = parse_user_hash_and_query(html)?;
 
 	let body = format!(
 		"action=show&news_id={}&news_category={}&this_link={}&{}={}",
@@ -390,11 +392,10 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 	);
 
 	let ajax_url = "https://manga.in.ua/engine/ajax/controller.php?mod=load_chapters";
-	let response = Request::new(ajax_url, HttpMethod::Post)
+	let response = Request::post(ajax_url)
 		.header("Content-Type", "application/x-www-form-urlencoded")
 		.body(body.as_bytes())
-		.html()
-		.expect("Failed to load chapters from AJAX");
+		.html()?;
 
 	let mut res: Vec<Chapter> = Vec::new();
 
@@ -454,7 +455,7 @@ fn get_page_list(_manga_id: String, _chapter_id: String) -> Result<Vec<Page>> {
 
 	let base_url = "https://manga.in.ua";
 	let endpoint = "engine/ajax/controller.php?mod=load_chapters_image";
-	let (hash_query, user_hash) = parse_user_hash_and_query(html.clone());
+	let (hash_query, user_hash) = parse_user_hash_and_query(html.clone())?;
 	let news_id = html.select("#comics").first().attr("data-news_id").read();
 
 	let ajax_url = format!(
@@ -462,10 +463,7 @@ fn get_page_list(_manga_id: String, _chapter_id: String) -> Result<Vec<Page>> {
 		base_url, endpoint, news_id, hash_query, user_hash
 	);
 
-	let response = Request::new(ajax_url, HttpMethod::Get)
-		.header("Referer", base_url)
-		.html()
-		.expect("Failed to load chapters from AJAX");
+	let response = Request::get(ajax_url).header("Referer", base_url).html()?;
 
 	let mut pages: Vec<Page> = Vec::new();
 	for (index, result) in response.select("img").array().enumerate() {
