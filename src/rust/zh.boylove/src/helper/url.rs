@@ -110,7 +110,7 @@ impl From<(Vec<Filter>, i32)> for Url<'_> {
 						"連載情形" => status = get_filter!(Status),
 						"內容分級" => content_rating = get_filter!(ContentRating),
 						"閱覽權限" => viewing_permission = get_filter!(ViewingPermission),
-						_ => continue,
+						_ => (),
 					}
 				}
 
@@ -133,7 +133,7 @@ impl From<(Vec<Filter>, i32)> for Url<'_> {
 					tags.push(filter.name);
 				}
 
-				_ => continue,
+				_ => (),
 			}
 		}
 
