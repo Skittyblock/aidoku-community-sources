@@ -51,7 +51,7 @@ pub enum Url<'a> {
 	#[strum(to_string = "/home/Api/getCnxh.html")]
 	Random,
 
-	#[strum(to_string = "/home/api/chapter_list/tp/{id}-0-0-10")]
+	#[strum(to_string = "/home/api/chapter_list/tp/{id}")]
 	ChapterList { id: &'a str },
 
 	#[strum(to_string = "/home/book/capter/id/{id}")]
