@@ -61,7 +61,7 @@ impl FromStr for Part {
 			let chapter = 1.0;
 
 			return Ok(Self { volume, chapter });
-		};
+		}
 
 		let pat = r"^(第?(?<volume>[\d零一二三四五六七八九十百千]+(\.\d+)?)[卷部季] ?)?(第?(?<chapter>[\d零一二三四五六七八九十百千]+(\.\d+)?)(-(\d+(\.\d+)?))?[话話回]?([(（].*[)）]|完结|END)?)?([ +]|$)";
 		let Some(caps) = Regex::new(pat)?.captures(title) else {

@@ -224,6 +224,7 @@ fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
 				..Default::default()
 			})
 		})
+		.rev()
 		.collect::<Result<_>>()?;
 
 	Ok(chapters)
