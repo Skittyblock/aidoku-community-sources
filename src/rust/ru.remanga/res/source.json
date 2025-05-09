@@ -1,0 +1,10 @@
+{
+	"info": {
+		"id": "ru.remanga",
+		"lang": "ru",
+		"name": "ReManga",
+		"version": 1,
+		"url": "https://remanga.org",
+		"nsfw": 2
+	}
+}
