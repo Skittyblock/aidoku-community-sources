@@ -89,7 +89,7 @@ fn handle_url(url: String) -> Result<DeepLink> {
 		.ok_or(AidokuError {
 			reason: AidokuErrorKind::Unimplemented,
 		})
-		.and_then(|dir| get_manga_details(alloc::format!(":{}", dir)))?;
+		.and_then(|dir| get_manga_details(alloc::format!(":{dir}")))?;
 
 	Ok(DeepLink {
 		manga: Some(manga),

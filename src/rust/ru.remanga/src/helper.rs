@@ -31,11 +31,11 @@ pub fn get_manga_title(item: &BaseMangaItem) -> String {
 }
 
 pub fn build_url_to_title(dir: &String) -> String {
-	format!("{}/manga/{}/", BASE_URL, dir)
+	format!("{BASE_URL}/manga/{dir}/")
 }
 
 pub fn build_url_to_chapter(id: &String, dir: &String) -> String {
-	format!("{}/manga/{}/{}", BASE_URL, dir, id)
+	format!("{BASE_URL}/manga/{dir}/{id}")
 }
 
 pub fn build_url_to_cover(url: String) -> String {
@@ -43,7 +43,7 @@ pub fn build_url_to_cover(url: String) -> String {
 }
 
 pub fn build_api_title_url(dir: String) -> String {
-	build_url(String::from(BASE_API_URL), format!("/titles/{}/", dir))
+	build_url(String::from(BASE_API_URL), format!("/titles/{dir}/"))
 }
 
 fn build_api_search_url(search_query: String, page: i32) -> Result<String> {
@@ -88,7 +88,7 @@ pub fn build_api_filter_url(filters: Vec<Filter>, page: i32) -> Result<String> {
 						_ => continue,
 					};
 					match filter.value.as_int().unwrap_or(-1) {
-						0 => query.push(format!("exclude_{}", q_key), Some(String::from(id))),
+						0 => query.push(format!("exclude_{q_key}"), Some(String::from(id))),
 						1 => query.push(q_key, Some(id)),
 						_ => continue,
 					}
@@ -166,7 +166,7 @@ pub fn build_api_chapters_url(branch_id: String, page: i32) -> String {
 }
 
 pub fn build_api_chapter_pages_url(chapter_id: String) -> String {
-	format!("{}/titles/chapters/{}/", BASE_API_URL, chapter_id)
+	format!("{BASE_API_URL}/titles/chapters/{chapter_id}/")
 }
 
 fn build_url(base_url: String, url: String) -> String {
@@ -174,7 +174,7 @@ fn build_url(base_url: String, url: String) -> String {
 		return url;
 	}
 
-	format!("{}{}", base_url, url)
+	format!("{base_url}{url}")
 }
 
 fn build_url_with_query(base_url: String, url: String, query: QueryParameters) -> String {
@@ -182,14 +182,14 @@ fn build_url_with_query(base_url: String, url: String, query: QueryParameters) -
 		return url;
 	}
 
-	format!("{}{}?{}", base_url, url, query)
+	format!("{base_url}{url}?{query}")
 }
 
 pub fn fetch_manga_info(dir: String) -> Result<FetchMangaInfo> {
 	fetch_json(build_api_title_url(dir.clone()))
 		.and_then(|obj| obj.get("branches").as_array())
 		.and_then(parse_branches)
-		.and_then(|branches| parse_manga_fetch_info(format!("{}:{}", branches, dir)))
+		.and_then(|branches| parse_manga_fetch_info(format!("{branches}:{dir}")))
 }
 
 pub fn fetch_all_chapters(id: String) -> Result<Vec<Chapter>> {
@@ -238,7 +238,7 @@ pub fn fetch_json<T: AsRef<str>>(url: T) -> Result<ObjectRef> {
 			if x.is_empty() {
 				x
 			} else {
-				format!("Bearer {}", x)
+				format!("Bearer {x}")
 			}
 		})
 		.unwrap_or_default();
