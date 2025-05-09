@@ -263,7 +263,16 @@ pub fn parse_chapters(dir: String, results: ArrayRef) -> Result<Vec<ChapterConta
 
 		let is_published = obj.get("is_published").as_bool().unwrap_or(true);
 		if !is_published {
-			continue; // skip paid chapters that is not available to fetch rn
+			continue; // skip unpublished chapters
+		}
+
+		let is_paid = obj.get("is_paid").as_bool().unwrap_or(false);
+		if is_paid {
+			let is_bought = obj.get("is_bought").as_bool().unwrap_or(false);
+			let is_free_today = obj.get("is_free_today").as_bool().unwrap_or(false);
+			if !is_bought && !is_free_today {
+				continue; // skip paid chapters that is not available to fetch rn
+			}
 		}
 
 		let chapter = parse_chapter(&dir, obj)?;
