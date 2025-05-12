@@ -51,7 +51,7 @@ pub enum Url<'a> {
 	#[strum(to_string = "/home/Api/getCnxh.html")]
 	Random,
 
-	#[strum(to_string = "/home/api/chapter_list/tp/{id}-0-0-10")]
+	#[strum(to_string = "/home/api/chapter_list/tp/{id}")]
 	ChapterList { id: &'a str },
 
 	#[strum(to_string = "/home/book/capter/id/{id}")]
@@ -110,7 +110,7 @@ impl From<(Vec<Filter>, i32)> for Url<'_> {
 						"連載情形" => status = get_filter!(Status),
 						"內容分級" => content_rating = get_filter!(ContentRating),
 						"閱覽權限" => viewing_permission = get_filter!(ViewingPermission),
-						_ => continue,
+						_ => (),
 					}
 				}
 
@@ -133,7 +133,7 @@ impl From<(Vec<Filter>, i32)> for Url<'_> {
 					tags.push(filter.name);
 				}
 
-				_ => continue,
+				_ => (),
 			}
 		}
 
