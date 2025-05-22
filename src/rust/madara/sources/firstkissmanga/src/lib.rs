@@ -8,7 +8,7 @@ use madara_template::template;
 
 fn get_data() -> template::MadaraSiteData {
 	let data: template::MadaraSiteData = template::MadaraSiteData {
-		base_url: String::from("https://1st-kissmanga.net"),
+		base_url: String::from("https://1stkissmanga.org"),
 		alt_ajax: true,
 		..Default::default()
 	};
