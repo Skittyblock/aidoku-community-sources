@@ -9,6 +9,7 @@ use aidoku::{
 	std::net::HttpMethod,
 	std::net::Request,
 	std::{String, Vec},
+	helpers::uri::encode_uri,
 	Chapter, Filter, FilterType, Manga, MangaPageResult, Page, DeepLink, MangaStatus, MangaViewer,
 	MangaContentRating, Listing,
 };
@@ -26,7 +27,7 @@ fn get_manga_list(filters: Vec<Filter>, _page: i32) -> Result<MangaPageResult> {
 			match filter.kind {
 				FilterType::Title => {
 					if let Ok(query) = filter.value.as_string() {
-						url = format!("{}/search/{}", API_BASE_URL, urlencode(&query.read()));
+						url = format!("{}/search/{}", API_BASE_URL, encode_uri(&query.read()));
 					}
 				}
 				FilterType::Select => {
@@ -180,37 +181,6 @@ fn get_manga_listing(listing: Listing, _page: i32) -> Result<MangaPageResult> {
 			manga: Vec::new(),
 			has_more: false,
 		}),
-	}
-}
-
-fn urlencode(string: &str) -> String {
-	let mut result = String::with_capacity(string.len() * 3);
-	for b in string.bytes() {
-		match b {
-			// Alphanumeric characters and - . _ ~ stay the same
-			b'A'..=b'Z' | b'a'..=b'z' | b'0'..=b'9' | b'-' | b'.' | b'_' | b'~' => result.push(b as char),
-			// Space becomes %20
-			b' ' => {
-				result.push('%');
-				result.push('2');
-				result.push('0');
-			},
-			// Everything else gets percent encoded
-			_ => {
-				result.push('%');
-				result.push(hex(b >> 4));
-				result.push(hex(b & 15));
-			}
-		}
-	}
-	result
-}
-
-fn hex(n: u8) -> char {
-	if n < 10 {
-		(n + b'0') as char
-	} else {
-		(n - 10 + b'A') as char
 	}
 }
 
@@ -388,6 +358,89 @@ fn modify_image_request(request: Request) {
 }
 
 #[handle_url]
-pub fn handle_url(_url: String) -> Result<DeepLink> {
-	todo!()
+pub fn handle_url(url: String) -> Result<DeepLink> {
+	// Remove base URL and split the path
+	if !url.starts_with(BASE_URL) {
+		return Ok(DeepLink::default());
+	}
+	
+	let path = url.replace(BASE_URL, "");
+	let parts: Vec<&str> = path.split('/').collect();
+	
+	if parts.len() < 3 {
+		return Ok(DeepLink::default());
+	}
+
+	// Handle manga detail URLs: /comics/{manga_id}
+	if parts[1] == "comics" {
+		// Get the full manga ID by joining all remaining parts with '/'
+		let manga_id = parts[2..].join("/");
+		
+		let manga = Manga {
+			id: manga_id.clone(),
+			title: String::new(),
+			author: String::new(),
+			artist: String::new(),
+			description: String::new(),
+			url: url.clone(),  // Use the full URL as the manga URL
+			cover: String::new(),
+			categories: Vec::new(),
+			status: MangaStatus::Unknown,
+			nsfw: MangaContentRating::Safe,
+			viewer: MangaViewer::Rtl,
+		};
+		
+		return Ok(DeepLink {
+			manga: Some(manga),
+			chapter: None,
+		});
+	}
+
+	// Handle chapter URLs: /read/{manga_id}/fr/ch/{chapter_number}(/sub/{subchapter})
+	if parts[1] == "read" && parts.len() >= 6 {
+		let manga_id = String::from(parts[2]);
+		let chapter_num = parts[5].parse::<f32>().unwrap_or_default();
+
+		// Check if there's a subchapter
+		let chapter_number = if parts.len() >= 8 && parts[6] == "sub" {
+			let sub = parts[7].parse::<f32>().unwrap_or_default();
+			chapter_num + (sub / 10.0)
+		} else {
+			chapter_num
+		};
+
+		// Create the Chapter object
+		let chapter = Chapter {
+			id: format!("{}-{}", manga_id, chapter_number),
+			title: String::new(),
+			volume: -1.0,
+			chapter: chapter_number,
+			date_updated: 0.0,
+			scanlator: String::new(),
+			url: url.clone(),  // Use the full URL as the chapter URL
+			lang: String::from("fr"),
+		};
+
+		// Create a basic Manga object
+		let manga = Manga {
+			id: manga_id.clone(),
+			title: String::new(),
+			author: String::new(),
+			artist: String::new(),
+			description: String::new(),
+			url: format!("{}/comics/{}", BASE_URL, manga_id),  // Construct proper manga URL
+			cover: String::new(),
+			categories: Vec::new(),
+			status: MangaStatus::Unknown,
+			nsfw: MangaContentRating::Safe,
+			viewer: MangaViewer::Rtl,
+		};
+
+		return Ok(DeepLink {
+			manga: Some(manga),
+			chapter: Some(chapter),
+		});
+	}
+
+	Ok(DeepLink::default())
 }
