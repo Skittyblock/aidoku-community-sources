@@ -18,22 +18,73 @@ const API_BASE_URL: &str = "https://bluesolo.org/api";
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, _page: i32) -> Result<MangaPageResult> {
-	let mut search_query = String::new();
+	let mut url = String::new();
 	
+	// In order: search -> target -> genre
 	for filter in filters {
-		match filter.kind {
-			FilterType::Title => {
-				search_query = urlencode(&filter.value.as_string()?.read());
+		if url.is_empty() {
+			match filter.kind {
+				FilterType::Title => {
+					if let Ok(query) = filter.value.as_string() {
+						url = format!("{}/search/{}", API_BASE_URL, urlencode(&query.read()));
+					}
+				}
+				FilterType::Select => {
+					let index = filter.value.as_int().unwrap_or(0);
+					if index > 0 { // Skip "Tous" option (index 0)
+						match filter.name.as_str() {
+							"Public" => {
+								let target = match index {
+									1 => "shonen",
+									2 => "seinen",
+									_ => continue,
+								};
+								url = format!("{}/targets/{}", API_BASE_URL, target);
+							}
+							"Genres" => {
+								let genre = match index {
+									1 => "action",
+									2 => "aliens",
+									3 => "aventure",
+									4 => "comedy",
+									5 => "crime",
+									6 => "dark-fantasy",
+									7 => "drama",
+									8 => "ecole",
+									9 => "fantasy",
+									10 => "fantome",
+									11 => "gore",
+									12 => "horreur",
+									13 => "mafia",
+									14 => "magie",
+									15 => "mature",
+									16 => "one-shot",
+									17 => "psychologique",
+									18 => "romance",
+									19 => "sci-fi",
+									20 => "sport",
+									21 => "surnaturel",
+									22 => "survival",
+									23 => "thriller",
+									24 => "tranche-de-vie",
+									25 => "western",
+									_ => continue,
+								};
+								url = format!("{}/genres/{}", API_BASE_URL, genre);
+							}
+							_ => continue,
+						}
+					}
+				}
+				_ => continue,
 			}
-			_ => continue,
 		}
 	}
 	
-	let url = if !search_query.is_empty() {
-		format!("{}/search/{}", API_BASE_URL, search_query)
-	} else {
-		format!("{}/comics", API_BASE_URL)
-	};
+	// If no filter was selected, use default comics endpoint
+	if url.is_empty() {
+		url = format!("{}/comics", API_BASE_URL);
+	}
 	
 	let json = Request::new(&url, HttpMethod::Get).json()?;
 
