@@ -6,5 +6,10 @@
 		"version": 1,
 		"url": "https://bluesolo.org",
 		"nsfw": 0
-	}
+	},
+	"listings": [
+		{
+			"name": "Recommandé"
+		}
+	]
 }

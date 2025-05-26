@@ -1,3 +1,7 @@
+//
+// source made by apix <@apix0n>
+// 
+
 #![no_std]
 use aidoku::{
 	error::Result,
@@ -6,7 +10,7 @@ use aidoku::{
 	std::net::Request,
 	std::{String, Vec},
 	Chapter, Filter, FilterType, Manga, MangaPageResult, Page, DeepLink, MangaStatus, MangaViewer,
-	MangaContentRating,
+	MangaContentRating, Listing,
 };
 
 const BASE_URL: &str = "https://bluesolo.org";
@@ -72,6 +76,60 @@ fn get_manga_list(filters: Vec<Filter>, _page: i32) -> Result<MangaPageResult> {
 		manga,
 		has_more: false,
 	})
+}
+
+#[get_manga_listing]
+fn get_manga_listing(listing: Listing, _page: i32) -> Result<MangaPageResult> {
+	match listing.name.as_str() {
+		"Recommandé" => {
+			let url = format!("{}/recommended", API_BASE_URL);
+			let json = Request::new(&url, HttpMethod::Get).json()?;
+
+			let comics = json.as_object()?
+				.get("comics")
+				.as_array()
+				.unwrap_or_default();
+
+			let mut manga = Vec::new();
+			for comic in comics {
+				let obj = comic.as_object()?;
+				if let Ok(id) = obj.get("slug").as_string().map(|s| s.read()) {
+					if let (Ok(title), Ok(cover)) = (
+						obj.get("title").as_string().map(|s| s.read()),
+						obj.get("thumbnail").as_string().map(|s| s.read())
+					) {
+						let nsfw = obj.get("adult")
+							.as_int()
+							.map(|a| if a == 1 { MangaContentRating::Nsfw } else { MangaContentRating::Safe })
+							.unwrap_or(MangaContentRating::Safe);
+
+						manga.push(Manga {
+							id,
+							title,
+							cover,
+							author: String::new(),
+							artist: String::new(),
+							description: String::new(),
+							url: String::new(),
+							categories: Vec::new(),
+							status: MangaStatus::Unknown,
+							nsfw,
+							viewer: MangaViewer::Rtl,
+						});
+					}
+				}
+			}
+
+			Ok(MangaPageResult {
+				manga,
+				has_more: false,
+			})
+		}
+		_ => Ok(MangaPageResult {
+			manga: Vec::new(),
+			has_more: false,
+		}),
+	}
 }
 
 fn urlencode(string: &str) -> String {
