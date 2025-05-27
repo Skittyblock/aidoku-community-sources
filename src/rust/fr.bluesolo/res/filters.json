@@ -1,0 +1,46 @@
+[
+	{
+		"type": "title"
+	},
+	{
+		"type": "select",
+		"name": "Public",
+		"options": [
+			"Tous",
+			"Shonen",
+			"Seinen"
+		]
+	},
+	{
+		"type": "select",
+		"name": "Genres",
+		"options": [
+			"Tous",
+			"Action",
+			"Aliens",
+			"Aventure",
+			"Comédie",
+			"Crime",
+			"Dark Fantasy",
+			"Drame",
+			"École",
+			"Fantaisie",
+			"Fantômes",
+			"Gore",
+			"Horreur",
+			"Mafia",
+			"Magie",
+			"Mature",
+			"One-shot",
+			"Psychologique",
+			"Romance",
+			"Science-fiction",
+			"Sport",
+			"Surnaturel",
+			"Survival",
+			"Thriller",
+			"Tranche de vie",
+			"Western"
+		]
+	}
+]
