@@ -29,7 +29,7 @@ pub fn extract_f32_from_string(title: String, text: String) -> Vec<f32> {
 }
 
 pub fn append_protocol(url: String) -> String {
-	if !url.starts_with("http") {
+	if !url.starts_with("http") && !url.starts_with("data:image") {
 		format!("{}{}", "https:", url)
 	} else {
 		url
