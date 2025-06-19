@@ -1,9 +1,7 @@
 use aidoku::{
 	error::Result,
-	prelude::format,
-	std::defaults::defaults_get,
-	std::net::Request,
-	std::{String, Vec},
+	prelude::*,
+	std::{defaults::defaults_get, net::Request, String, Vec},
 	Chapter, DeepLink, Filter, Listing, Manga, MangaPageResult, MangaStatus, MangaViewer, Page,
 };
 
@@ -26,28 +24,19 @@ pub fn parse_manga_list(base_url: String, filters: Vec<Filter>) -> Result<MangaP
 		}
 	};
 
-	let html = request(&url, false).html().expect("Failed to get html");
+	let html = request(&url, false).html()?;
 
 	let mut mangas: Vec<Manga> = Vec::new();
 
-	// Canvas series are series uploaded by individual artists,
-	// aka unlicensed series
-	let canvas_series = defaults_get("canvasSeries")?.as_bool().unwrap_or(true);
-
-	let selector = {
-		if canvas_series {
-			"#content > div.card_wrap ul > li > a"
-		} else {
-			"#content > div.card_wrap ul.card_lst li > a"
-		}
-	};
-
-	for manga in html.select(selector).array() {
+	for manga in html
+		.select("#content > div.webtoon_list_wrap ul > li > a")
+		.array()
+	{
 		let manga_node = manga.as_node().expect("Failed to get manga node");
-		let id = get_manga_id(manga_node.attr("href").read());
-		let cover = manga_node.select("img").attr("src").read();
-		let title = manga_node.select(".subj").text().read();
 		let url = manga_node.attr("href").read();
+		let id = get_manga_id(&url);
+		let cover = manga_node.select("img").attr("src").read();
+		let title = manga_node.select(".title").text().read();
 
 		mangas.push(Manga {
 			id,
@@ -78,7 +67,7 @@ pub fn parse_canvas_list(url: String, page: i32) -> Result<MangaPageResult> {
 
 	let url = format!("{}&page={}", url, page);
 
-	let html = request(&url, false).html().expect("Failed to get html");
+	let html = request(&url, false).html()?;
 
 	let mut mangas: Vec<Manga> = Vec::new();
 
@@ -87,10 +76,10 @@ pub fn parse_canvas_list(url: String, page: i32) -> Result<MangaPageResult> {
 		.array()
 	{
 		let manga_node = manga.as_node().expect("Failed to get manga node");
-		let id = get_manga_id(manga_node.attr("href").read());
+		let url = manga_node.attr("href").read();
+		let id = get_manga_id(&url);
 		let cover = manga_node.select("img").attr("src").read();
 		let title = manga_node.select(".subj").text().read();
-		let url = manga_node.attr("href").read();
 
 		mangas.push(Manga {
 			id,
@@ -102,10 +91,10 @@ pub fn parse_canvas_list(url: String, page: i32) -> Result<MangaPageResult> {
 		});
 	}
 
-	let has_more = html
-		.select("#content > div.cont_box > div.challenge_cont_area > div.paginate > a.pg_next")
-		.text()
-		.read() != "";
+	let has_more =
+		html.select("#content > div.cont_box > div.challenge_cont_area > div.paginate > a.pg_next")
+			.text()
+			.read() != "";
 
 	Ok(MangaPageResult {
 		manga: mangas,
@@ -121,7 +110,7 @@ pub fn parse_manga_listing(
 	let url = {
 		match listing.name.as_str() {
 			"Latest" => format!("{}/genre?sortOrder=UPDATE", base_url),
-			"Popular" => format!("{}/genre?sortOrder=READ_COUNT", base_url),
+			"Popular" => format!("{}/genre?sortOrder=MANA", base_url),
 			"Top" => format!("{}/genre?sortOrder=LIKEIT", base_url),
 			"Canvas Latest" => format!("{}/canvas/list?genreTab=ALL&sortOrder=UPDATE", base_url),
 			"Canvas Popular" => {
@@ -140,29 +129,15 @@ pub fn parse_manga_listing(
 }
 
 pub fn parse_manga_details(base_url: String, manga_id: String) -> Result<Manga> {
-	let url = get_manga_url(manga_id.clone(), base_url);
+	let url = get_manga_url(&manga_id, base_url);
 
-	let html = request(&url, false).html().expect("Failed to get html");
+	let html = request(&url, false).html()?;
 
-	let cover = {
-		// Canvas series have different cover images
-		if url.contains("challenge") {
-			html.select("#content > div.cont_box > div.detail_header.challenge > span.thmb > img")
-				.attr("src")
-				.read()
-		} else {
-			// Cover is set as background image using inline css
-			// Example: background:#fff url(https://webtoon-phinf.pstatic.net/20211111_3/1636569655006lMyqV_JPEG/6UltraAlternateCharacter_desktop_thumbnail.jpg?type=a306) no-repeat 100% 100%;background-size:306px
-			// This parses the styles and gets the image url
-			let style_attr = html
-				.select("#content > div.cont_box > div.detail_body.banner")
-				.attr("style")
-				.read();
-
-			let split_styles = style_attr.split(['(', ')']).collect::<Vec<&str>>();
-			String::from(split_styles[1])
-		}
-	};
+	let cover = html
+		.select("head meta[property=\"og:image\"]")
+		.first()
+		.attr("content")
+		.read();
 
 	let title = html
 		.select("#content > div.cont_box > div.detail_header > div.info > .subj")
@@ -176,7 +151,11 @@ pub fn parse_manga_details(base_url: String, manga_id: String) -> Result<Manga> 
 		.replace("author info", "");
 	let author_artist = author_artist.split(',').collect::<Vec<&str>>();
 
-	let author = String::from(author_artist[0].trim());
+	let author = author_artist
+		.first()
+		.map(|s| s.trim())
+		.map(String::from)
+		.unwrap_or_default();
 	let mut artist = String::new();
 
 	if author_artist.len() > 1 {
@@ -221,6 +200,8 @@ pub fn parse_manga_details(base_url: String, manga_id: String) -> Result<Manga> 
 		categories.push(category);
 	}
 
+	let url = html.base_uri().read();
+
 	Ok(Manga {
 		id: manga_id,
 		cover,
@@ -236,20 +217,51 @@ pub fn parse_manga_details(base_url: String, manga_id: String) -> Result<Manga> 
 	})
 }
 
-pub fn parse_chapter_list(base_url: String, manga_id: String) -> Result<Vec<Chapter>> {
-	let url = get_manga_url(manga_id, base_url);
+pub fn parse_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
+	let base_url = get_base_url_no_lang(true);
+	let api_url = if let Some(canvas_id) = manga_id.strip_suffix("-canvas") {
+		format!(
+			"{}/api/v1/canvas/{}/episodes?pageSize=100000",
+			base_url, canvas_id
+		)
+	} else {
+		format!(
+			"{}/api/v1/webtoon/{}/episodes?pageSize=100000",
+			base_url, manga_id
+		)
+	};
 
-	let html = request(&url, true).html().expect("Failed to get html");
+	let json = request(&api_url, true).json()?;
+	let episode_list = json
+		.as_object()?
+		.get("result")
+		.as_object()?
+		.get("episodeList")
+		.as_array()?;
+
+	let lang = get_lang_code().unwrap_or(String::from("en"));
 
 	let mut chapters: Vec<Chapter> = Vec::new();
 
-	for chapter in html.select("._episodeItem").array() {
-		let chapter_node = chapter.as_node().expect("Failed to get chapter node");
+	for episode in episode_list.rev() {
+		let Ok(object) = episode.as_object() else {
+			continue;
+		};
+		let url = format!(
+			"{}{}",
+			base_url,
+			object.get("viewerLink").as_string()?.read()
+		);
+		let id = get_chapter_id(&url);
 
 		let mut volume = -1.0;
 
 		let title = {
-			let raw_title = chapter_node.select(".sub_title > .ellipsis").text().read();
+			let raw_title = object
+				.get("episodeTitle")
+				.as_string()
+				.map(|s| s.read())
+				.unwrap_or_default();
 			let mut title = raw_title.split_whitespace().collect::<Vec<&str>>();
 
 			// Remove leading volume text and set volume accordingly
@@ -297,8 +309,10 @@ pub fn parse_chapter_list(base_url: String, manga_id: String) -> Result<Vec<Chap
 			if title.len() >= 2
 				&& (title[0] == "Chapter"
 					|| title[0] == "Episode"
-					|| title[0] == "Ch." || title[0] == "CH."
-					|| title[0] == "Ep." || title[0] == "EP"
+					|| title[0] == "Ch."
+					|| title[0] == "CH."
+					|| title[0] == "Ep."
+					|| title[0] == "EP"
 					|| title[0] == "EP.")
 				&& title[1].replace(':', "").parse::<f64>().is_ok()
 			{
@@ -314,41 +328,21 @@ pub fn parse_chapter_list(base_url: String, manga_id: String) -> Result<Vec<Chap
 			title.join(" ")
 		};
 
-		let chapter_number = {
-			let raw_chapter_number = chapter_node.attr("data-episode-no").read();
-			raw_chapter_number
-				.parse::<f32>()
-				.expect("Failed to parse chapter number")
-		};
-
-		let chapter_id = get_chapter_id(chapter_node.select("a").attr("href").read());
-		let chapter_url = chapter_node.select("a").attr("href").read();
-
-		let lang = get_lang_code().unwrap_or(String::from("en"));
-
-		let date_updated = {
-			let date = chapter_node.select(".sub_info > .date");
-
-			match lang.as_str() {
-				"en" => date.text().as_date("MMM dd, yyyy", Some("en-US"), None),
-				"zh-hant" => date.text().as_date("yyyy/mm/dd", Some("zh-Hant"), None),
-				"th" => date.text().as_date("dd MMM YYYY", Some("th-TH"), None),
-				"id" => date.text().as_date("yyyy MMM dd", Some("id-ID"), None),
-				"es" => date.text().as_date("dd-MMM-yyyy", Some("es-ES"), None),
-				"fr" => date.text().as_date("dd MMM yyyy", Some("fr-FR"), None),
-				"de" => date.text().as_date("dd.mm.yyyy", Some("de-DE"), None),
-				_ => date.text().as_date("MMM dd, yyyy", None, None),
-			}
-		};
+		let chapter = object.get("episodeNo").as_float().unwrap_or(-1.0) as f32;
+		let date_updated = object
+			.get("exposureDateMillis")
+			.as_float()
+			.map(|f| f / 1000.0)
+			.unwrap_or(-1.0);
 
 		chapters.push(Chapter {
-			id: chapter_id,
+			id,
 			title,
 			volume,
-			chapter: chapter_number,
+			chapter,
 			date_updated,
-			url: chapter_url,
-			lang,
+			url,
+			lang: lang.clone(),
 			..Default::default()
 		});
 	}
@@ -363,7 +357,7 @@ pub fn parse_page_list(
 ) -> Result<Vec<Page>> {
 	let url = get_chapter_url(chapter_id, manga_id, base_url);
 
-	let html = request(&url, false).html().expect("Failed to get html");
+	let html = request(&url, false).html()?;
 
 	let mut pages: Vec<Page> = Vec::new();
 
@@ -395,7 +389,7 @@ pub fn modify_image_request(base_url: String, request: Request) {
 }
 
 pub fn handle_url(base_url: String, url: String) -> Result<DeepLink> {
-	let manga_id = get_manga_id(url);
+	let manga_id = get_manga_id(&url);
 	let parsed = parse_manga_details(base_url, manga_id);
 
 	Ok(DeepLink {

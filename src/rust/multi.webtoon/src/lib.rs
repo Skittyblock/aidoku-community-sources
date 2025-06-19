@@ -29,8 +29,7 @@ fn get_manga_details(manga_id: String) -> Result<Manga> {
 
 #[get_chapter_list]
 fn get_chapter_list(manga_id: String) -> Result<Vec<Chapter>> {
-	// Using the mobile site here as it returns all chapters in one request
-	parser::parse_chapter_list(get_base_url(true), manga_id)
+	parser::parse_chapter_list(manga_id)
 }
 
 #[get_page_list]
