@@ -32,7 +32,9 @@ pub fn parse_manga_list(
 	selector: &str,
 	page: i32,
 ) -> Result<MangaPageResult> {
-	let html = Request::get(url).html()?;
+	let html = Request::get(url)
+		.header("Referer", &format!("{base_url}/"))
+		.html()?;
 
 	let mut manga: Vec<Manga> = Vec::new();
 
@@ -122,7 +124,9 @@ pub fn get_manga_details(
 	} else {
 		format!("{base_url}{id}")
 	};
-	let html = Request::get(&url).html()?;
+	let html = Request::get(&url)
+		.header("Referer", &format!("{base_url}/"))
+		.html()?;
 
 	let details = html.select("div.manga-info-top, div.panel-story-info");
 	let title = details.select("h1").text().read();
@@ -192,7 +196,9 @@ pub fn get_chapter_list(
 	} else {
 		format!("{base_url}{manga_id}")
 	};
-	let html = Request::get(&url).html()?;
+	let html = Request::get(&url)
+		.header("Referer", &format!("{base_url}/"))
+		.html()?;
 
 	let mut chapters: Vec<Chapter> = Vec::new();
 
@@ -235,7 +241,9 @@ pub fn get_page_list(chapter_id: String, base_url: &str) -> Result<Vec<Page>> {
 		format!("{base_url}{chapter_id}")
 	};
 
-	let html = Request::get(url).html()?;
+	let html = Request::get(url)
+		.header("Referer", &format!("{base_url}/"))
+		.html()?;
 
 	Ok(html
 		.select("div.container-chapter-reader > img")
