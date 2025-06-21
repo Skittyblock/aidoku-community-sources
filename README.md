@@ -2,7 +2,11 @@
 This repository hosts the public sources that are installable directly through the Aidoku application.
 
 ## Usage
-[Add this source list](https://aidoku.app/add-source-list/?url=https://raw.githubusercontent.com/Skittyblock/aidoku-community-sources/gh-pages/) to the Aidoku app.
+On a device with Aidoku installed, you can open [this link](https://aidoku.app/add-source-list/?url=https://raw.githubusercontent.com/Skittyblock/aidoku-community-sources/gh-pages/index.min.json) to add the source list directly to the app.
+
+Otherwise, navigate to the settings tab, and under the source lists page add `https://raw.githubusercontent.com/Skittyblock/aidoku-community-sources/gh-pages/index.min.json`.
+
+If a source is not working, or you want to request a source that isn't available in this source list, feel free to [create a new issue](https://github.com/Skittyblock/aidoku-community-sources/issues).
 
 ## Contributing
 Contributions are welcome!
