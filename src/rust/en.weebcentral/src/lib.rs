@@ -299,7 +299,7 @@ fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 	let mut pages = Vec::new();
 
 	for (idx, element) in html
-		.select("section[x-data~=scroll] > img")
+		.select("section[x-data*=scroll] > img")
 		.array()
 		.enumerate()
 	{
