@@ -1,0 +1,10 @@
+{
+	"info": {
+		"id": "en.truemanga",
+		"lang": "en",
+		"name": "TrueManga",
+		"version": 1,
+		"url": "https://truemanga.com",
+		"nsfw": 2
+	}
+}
