@@ -1,5 +1,8 @@
 # Aidoku Sources
-This repository hosts the public sources that are installable directly through the Aidoku application.
+This repository hosts unofficial, community-made sources that are installable through the Aidoku application.
+
+> [!WARNING]
+> This repo is no longer actively maintained. A continuation of this project with updated sources (for Aidoku 0.7+) can be found [here](https://github.com/Aidoku-Community/sources).
 
 ## Usage
 On a device with Aidoku installed, you can open [this link](https://aidoku.app/add-source-list/?url=https://raw.githubusercontent.com/Skittyblock/aidoku-community-sources/gh-pages/) to add the source list directly to the app.
