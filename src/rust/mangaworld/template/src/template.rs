@@ -170,7 +170,7 @@ pub fn parse_manga_details(base_url: String, id: String) -> Result<Manga> {
 			.text()
 			.read(),
 	);
-	let nsfw = if base_url == "https://www.mangaworldadult.com"
+	let nsfw = if base_url == "https://www.mangaworldadult.net"
 		|| categories
 			.iter()
 			.any(|v| *v == "Ecchi" || *v == "Hentai" || *v == "Maturo")
