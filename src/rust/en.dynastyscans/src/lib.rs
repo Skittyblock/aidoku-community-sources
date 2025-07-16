@@ -2,7 +2,7 @@
 use aidoku::{
 	error::Result, prelude::*, std::defaults::defaults_get, std::net::HttpMethod,
 	std::net::Request, std::ArrayRef, std::String, std::Vec, Chapter, DeepLink, Filter, FilterType,
-	Listing, Manga, MangaContentRating, MangaPageResult, MangaStatus, MangaViewer, Page,
+	Listing, Manga, MangaContentRating, MangaPageResult, MangaStatus, Page,
 };
 
 mod helper;
@@ -244,6 +244,10 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 				.parse::<f32>()
 				.unwrap_or(-1.0);
 			continue;
+		} else if chapter_obj.get("header").is_some() {
+			// if getting the header as string failed but header exists just keep the old value
+			// because the header is set to null in json response
+			continue;
 		}
 
 		let chapter_id = chapter_obj.get("permalink").as_string()?.read();
@@ -298,7 +302,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 }
 
 #[get_page_list]
-fn get_page_list(manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
+fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 	let url = format!("https://dynasty-scans.com/chapters/{}.json", &chapter_id);
 	let json = Request::new(url.as_str(), HttpMethod::Get)
 		.json()?
