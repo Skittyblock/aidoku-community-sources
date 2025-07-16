@@ -244,7 +244,7 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 				.parse::<f32>()
 				.unwrap_or(-1.0);
 			continue;
-		} else if chapter_obj.len() == 1 && chapter_obj.get("header").0 != -1 {
+		} else if chapter_obj.get("header").is_some() {
 			// if getting the header as string failed but header exists just keep the old value
 			// because the header is set to null in json response
 			continue;
