@@ -1,32 +1,33 @@
 #![no_std]
-#![feature(let_chains)]
 extern crate alloc;
 mod helper;
 mod parser;
 use aidoku::{
+	Chapter, DeepLink, Filter, FilterType, Listing, Manga, MangaPageResult, Page,
 	error::*,
 	prelude::*,
 	std::{
+		ArrayRef, ObjectRef, String, StringRef, Vec,
 		defaults::{defaults_get, defaults_set},
 		net::{HttpMethod, Request},
-		ArrayRef, ObjectRef, String, StringRef, Vec,
 	},
-	Chapter, DeepLink, Filter, FilterType, Listing, Manga, MangaPageResult, Page,
 };
 use alloc::borrow::ToOwned;
 use helper::*;
 
 #[link(wasm_import_module = "net")]
-extern "C" {
+unsafe extern "C" {
 	fn set_rate_limit(rate_limit: i32);
 	fn set_rate_limit_period(period: i32);
 }
 
-#[no_mangle]
+#[unsafe(no_mangle)]
 #[allow(clippy::missing_safety_doc)]
 pub unsafe extern "C" fn initialize() {
-	set_rate_limit(3);
-	set_rate_limit_period(1);
+	unsafe {
+		set_rate_limit(3);
+		set_rate_limit_period(1);
+	};
 
 	for key in ["blockedGroups", "blockedUploaders"] {
 		let arrkey = key.to_owned() + "Array";
@@ -237,13 +238,14 @@ fn get_manga_listing(listing: Listing, page: i32) -> Result<MangaPageResult> {
 					if let Ok(relationships) = obj.get("relationships").as_array() {
 						for relationship in relationships {
 							if let Ok(relationship) = relationship.as_object()
-								   && let Ok(relation_type) = relationship.get("type").as_string()
-								   && relation_type.read() == "manga"
-								   && let Ok(id) = relationship.get("id").as_string() {
-									let mut ret = String::from("&ids[]=");
-									ret.push_str(&id.read());
-									return Some(ret);
-								}
+								&& let Ok(relation_type) = relationship.get("type").as_string()
+								&& relation_type.read() == "manga"
+								&& let Ok(id) = relationship.get("id").as_string()
+							{
+								let mut ret = String::from("&ids[]=");
+								ret.push_str(&id.read());
+								return Some(ret);
+							}
 						}
 						None
 					} else {
@@ -462,7 +464,7 @@ pub fn handle_url(url: String) -> Result<DeepLink> {
 				return Ok(DeepLink {
 					manga: get_manga_details(manga_id.read()).ok(),
 					chapter: parser::parse_chapter(chapter_obj).ok(),
-				})
+				});
 			}
 		}
 	}

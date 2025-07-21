@@ -1,4 +1,4 @@
-use aidoku::std::{net::Request, String, ValueRef, Vec};
+use aidoku::std::{String, ValueRef, Vec, net::Request};
 
 pub fn urlencode(string: String) -> String {
 	let mut result: Vec<u8> = Vec::with_capacity(string.len() * 3);
@@ -21,7 +21,7 @@ pub fn urlencode(string: String) -> String {
 }
 
 #[link(wasm_import_module = "net")]
-extern "C" {
+unsafe extern "C" {
 	#[link_name = "send"]
 	fn request_send(rd: i32);
 	#[link_name = "json"]
@@ -36,7 +36,7 @@ extern "C" {
 }
 
 #[link(wasm_import_module = "std")]
-extern "C" {
+unsafe extern "C" {
 	fn destroy(rid: i32);
 	fn create_date(value: f64) -> i32;
 	fn read_date(ctx: i32) -> f64;
