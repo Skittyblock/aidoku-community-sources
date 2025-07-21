@@ -1,0 +1,11 @@
+[
+	{
+		"type": "select",
+		"name": "Visualizzazione",
+		"options": [
+			"Tutti i fumetti",
+			"Ultime uscite",
+			"Consigliati"
+		]
+	}
+]
