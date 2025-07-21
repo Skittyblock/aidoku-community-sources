@@ -1,0 +1,1 @@
+C:\Users\rober\Desktop\Github\aidoku\it.lupiteam\target\wasm32-unknown-unknown\release\liblupiteam_template.rlib: C:\Users\rober\Desktop\Github\aidoku\it.lupiteam\template\src\helper.rs C:\Users\rober\Desktop\Github\aidoku\it.lupiteam\template\src\lib.rs C:\Users\rober\Desktop\Github\aidoku\it.lupiteam\template\src\template.rs
