@@ -1,15 +1,16 @@
+#![allow(static_mut_refs)]
 use aidoku::{
+	Chapter, DeepLink, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
+	MangaViewer, Page,
 	error::{AidokuError, Result},
 	helpers::{cfemail::decode_cfemail, substring::Substring, uri::encode_uri_component},
 	prelude::format,
 	std::{
+		ObjectRef, String, Vec,
 		html::Node,
 		json,
 		net::{HttpMethod, Request},
-		ObjectRef, String, Vec,
 	},
-	Chapter, DeepLink, Filter, FilterType, Manga, MangaContentRating, MangaPageResult, MangaStatus,
-	MangaViewer, Page,
 };
 
 use crate::helper::{append_protocol, extract_f32_from_string};
@@ -141,14 +142,13 @@ impl<'a> MMRCMSSource<'a> {
 			.array()
 			.filter_map(|elem| {
 				if let Ok(node) = elem.as_node()
-				   && let Ok(title) = elem.as_node().map(|v| v.text().read())
-				   && title.to_lowercase().contains(query) {
+					&& let Ok(title) = elem.as_node().map(|v| v.text().read())
+					&& title.to_lowercase().contains(query)
+				{
 					let url = node.attr("abs:href").read();
-					let id = url
-						.split('/')
-						.last()
-						.map(String::from)
-						.unwrap_or_else(|| url.replace(&format!("{}/{}", self.base_url, self.manga_path), ""));
+					let id = url.split('/').last().map(String::from).unwrap_or_else(|| {
+						url.replace(&format!("{}/{}", self.base_url, self.manga_path), "")
+					});
 					let cover = self.guess_cover("", &id);
 					Some(Manga {
 						id,
@@ -228,12 +228,14 @@ impl<'a> MMRCMSSource<'a> {
 			if self.use_search_engine && unsafe { INTERNAL_USE_SEARCH_ENGINE } {
 				let url = format!("{}/search?query={}", self.base_url, title);
 				if let Ok(obj) = Request::new(&url, HttpMethod::Get).json()
-				   && let Ok(json) = obj.as_object()
-				   && let Ok(suggestions) = json.get("suggestions").as_array() {
+					&& let Ok(json) = obj.as_object()
+					&& let Ok(suggestions) = json.get("suggestions").as_array()
+				{
 					let mut manga = Vec::with_capacity(suggestions.len());
 					for suggestion in suggestions {
 						if let Ok(suggestion) = suggestion.as_object()
-						   && let Ok(obj) = MMRCMSSearchResult::try_from(suggestion) {
+							&& let Ok(obj) = MMRCMSSearchResult::try_from(suggestion)
+						{
 							manga.push(Manga {
 								cover: self.guess_cover("", &obj.data),
 								url: format!("{}/{}/{}", self.base_url, self.manga_path, obj.data),
@@ -321,14 +323,15 @@ impl<'a> MMRCMSSource<'a> {
 
 		for elem in html.select(".row .dl-horizontal dt").array() {
 			if let Ok(node) = elem.as_node()
-			   && let Some(next_node) = node.next() {
+				&& let Some(next_node) = node.next()
+			{
 				let text = node.text().read().to_lowercase();
 				#[rustfmt::skip]
 				match text.substring_before(':').unwrap_or(&text) {
 					"author(s)" | "autor(es)" | "auteur(s)" | "著作" | "yazar(lar)" | "mangaka(lar)" | "pengarang/penulis" | "pengarang" | "penulis" | "autor" | "المؤلف" | "перевод" | "autor/autorzy" | "автор" => {
 						manga.author = next_node.text().read();
 					}
-					"artist(s)" | "artiste(s)" | "sanatçi(lar)" | "artista(s)" | "artist(s)/ilustrator" | "الرسام" | "seniman" | "rysownik/rysownicy" => { 
+					"artist(s)" | "artiste(s)" | "sanatçi(lar)" | "artista(s)" | "artist(s)/ilustrator" | "الرسام" | "seniman" | "rysownik/rysownicy" => {
 						manga.artist = next_node.text().read()
 					}
 					"categories" | "categorías" | "catégories" | "ジャンル" | "kategoriler" | "categorias" | "kategorie" | "التصنيفات" | "жанр" | "kategori" | "tagi" | "tags" => {
@@ -433,10 +436,14 @@ impl<'a> MMRCMSSource<'a> {
 
 		for (idx, page) in array.enumerate() {
 			if let Ok(pageobj) = page.as_object()
-			   && let Ok(page_image) = pageobj.get("page_image").as_string() {
+				&& let Ok(page_image) = pageobj.get("page_image").as_string()
+			{
 				let page_image = page_image.read();
 				let url = if pageobj.get("external").as_int().unwrap_or(-1) == 0 {
-					format!("{}/uploads/manga/{}/chapters/{}/{}", self.base_url, manga_id, id, page_image)
+					format!(
+						"{}/uploads/manga/{}/chapters/{}/{}",
+						self.base_url, manga_id, id, page_image
+					)
 				} else {
 					page_image
 				};

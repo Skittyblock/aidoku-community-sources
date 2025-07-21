@@ -1,5 +1,4 @@
 #![no_std]
-#![feature(let_chains)]
 use aidoku::{
 	error::Result,
 	prelude::*,
@@ -43,7 +42,8 @@ fn get_chapter_list(id: String) -> Result<Vec<Chapter>> {
 #[get_page_list]
 fn get_page_list(manga_id: String, id: String) -> Result<Vec<Page>> {
 	let cdn = if let Ok(default) = defaults_get("useCDN")
-				 && let Ok(cdn) = default.as_string().map(|v| v.read()) {
+		&& let Ok(cdn) = default.as_string().map(|v| v.read())
+	{
 		cdn
 	} else {
 		String::from("?cdn=off")
