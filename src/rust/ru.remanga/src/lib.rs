@@ -6,7 +6,7 @@ mod dto;
 mod helper;
 mod parser;
 
-use crate::constants::{BASE_URL, RATE_LIMIT, RATE_LIMIT_PERIOD, USER_AGENT};
+use crate::constants::{RATE_LIMIT, RATE_LIMIT_PERIOD, REFERER_URL, USER_AGENT};
 use crate::helper::{
 	build_api_chapter_pages_url, build_api_filter_url, build_api_title_url, fetch_all_chapters,
 	fetch_json, fetch_manga_info,
@@ -77,7 +77,7 @@ fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 fn modify_image_request(request: Request) {
 	request
 		.header("User-Agent", USER_AGENT)
-		.header("Referer", BASE_URL);
+		.header("Referer", REFERER_URL);
 }
 
 #[handle_url]
