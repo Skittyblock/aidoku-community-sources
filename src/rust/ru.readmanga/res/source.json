@@ -3,8 +3,8 @@
 		"id": "ru.readmanga",
 		"lang": "ru",
 		"name": "ReadManga",
-		"version": 2,
-		"url": "https://readmanga.live",
+		"version": 3,
+		"url": "https://t.readmanga.io",
 		"nsfw": 1
 	},
 	"listings": [
