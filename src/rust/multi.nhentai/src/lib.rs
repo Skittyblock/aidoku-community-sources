@@ -116,7 +116,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 
 		manga.push(Manga {
 			id,
-			cover,
+			cover: format!("https:{}", cover),
 			title,
 			nsfw: MangaContentRating::Nsfw,
 			..Default::default()
