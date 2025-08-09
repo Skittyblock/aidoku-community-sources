@@ -1,0 +1,17 @@
+{
+	"info": {
+		"id": "it.lupiteam",
+		"lang": "it",
+		"name": "LupiTeam",
+		"version": 4,
+		"url": "https://lupiteam.net/"
+	},
+	"listings": [
+		{
+			"name": "Ultime uscite"
+		},
+		{
+			"name": "Consigliati"
+		}
+	]
+}
