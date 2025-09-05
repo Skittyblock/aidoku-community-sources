@@ -203,7 +203,7 @@ pub fn parse_manga_listing(
 	})
 }
 
-pub fn parse_manga_details(api_url: String, id: String) -> Result<Manga> {
+pub fn parse_manga_details(api_url: String, base_url: String, id: String) -> Result<Manga> {
 	let url = format!(
 		"{}/comic/{}?tachiyomi=true",
 		api_url,
@@ -255,7 +255,8 @@ pub fn parse_manga_details(api_url: String, id: String) -> Result<Manga> {
 		artist,
 		description,
 		url: format!(
-			"https://comick.app/comic/{}",
+			"{}/comic/{}",
+			base_url,
 			id.split('|').next().unwrap_or("")
 		),
 		categories,
@@ -354,7 +355,7 @@ pub fn modify_image_request(base_url: String, request: Request) {
 
 pub fn handle_url(base_url: String, url: String) -> Result<DeepLink> {
 	Ok(DeepLink {
-		manga: Some(parse_manga_details(base_url, url)?),
+		manga: Some(parse_manga_details(base_url.clone(), base_url, url)?),
 		chapter: None,
 	})
 }
