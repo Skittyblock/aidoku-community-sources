@@ -6,38 +6,31 @@ use aidoku::{
 	prelude::*,
 	std::net::Request,
 	std::String,
-	std::{defaults::defaults_get, Vec},
+	std::{Vec},
 	Chapter, DeepLink, Filter, FilterType, Listing, Manga, MangaPageResult, MangaViewer, Page,
 };
 use wpcomics_template::{helper::urlencode, template, template::WPComicsSource};
 
+const BASE_URL: &str = "https://nettruyenvia.com";
+
 fn get_instance() -> WPComicsSource {
 	WPComicsSource {
-		base_url: String::from("https://www.nettruyenvv.com"),
+		base_url: String::from(BASE_URL),
 		next_page: "li.active + li > a[title*=\"kết quả\"]",
 		viewer: MangaViewer::Rtl,
 		listing_mapping: |listing| {
 			String::from(match listing.as_str() {
-				"Truyện con gái" => "truyen-con-gai",
-				"Truyện con trai" => "truyen-con-trai",
-				"Hot" => "hot",
+				"Truyện con gái" => "truyen-tranh-con-gai",
+				"Truyện con trai" => "truyen-tranh-con-trai",
+				"Hot" => "truyen-tranh-hot",
 				_ => "",
 			})
 		},
 		status_mapping: status_map,
 		time_converter: convert_time,
+		manga_viewer_page_attr: "data-src",
 		page_url_transformer: |url| {
-			let mut server_two = String::from("https://images2-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&gadget=a&no_expand=1&resize_h=0&rewriteMime=image%2F*&url=");
-			if let Ok(server_selection) = defaults_get("serverSelection") {
-				if let Ok(2) = server_selection.as_int() {
-					server_two.push_str(&urlencode(url));
-					server_two
-				} else {
-					url
-				}
-			} else {
-				url
-			}
+			url
 		},
 		..Default::default()
 	}
@@ -45,23 +38,18 @@ fn get_instance() -> WPComicsSource {
 
 #[get_manga_list]
 fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
-	let mut included_tags: Vec<String> = Vec::new();
-	let mut excluded_tags: Vec<String> = Vec::new();
+	let mut category: Option<String> = None;
 	let mut title: String = String::new();
 	let mut sort_by: i32 = 0;
-	let mut gender: i32 = -1;
 	let mut completed: i32 = -1;
-	let mut chapter_count: i32 = 0;
 	for filter in filters {
 		match filter.kind {
 			FilterType::Title => {
 				title = urlencode(filter.value.as_string()?.read());
 			}
-			FilterType::Genre => match filter.value.as_int().unwrap_or(-1) {
-				0 => excluded_tags.push(get_tag_id(String::from(&filter.name))),
-				1 => included_tags.push(get_tag_id(String::from(&filter.name))),
-				_ => continue,
-			},
+			FilterType::Genre => {
+				category = Some(filter.value.as_string()?.read());
+			}				
 			_ => {
 				match filter.name.as_str() {
 					"Tình trạng" => {
@@ -69,18 +57,6 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 						if completed == 0 {
 							completed = -1;
 						}
-					}
-					"Số lượng chapter" => {
-						chapter_count = match filter.value.as_int().unwrap_or(0) {
-							0 => 1,
-							1 => 50,
-							2 => 100,
-							3 => 200,
-							4 => 300,
-							5 => 400,
-							6 => 500,
-							_ => 1,
-						};
 					}
 					"Sắp xếp theo" => {
 						sort_by = match filter.value.as_int().unwrap_or(0) {
@@ -97,12 +73,6 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 							_ => 0,
 						};
 					}
-					"Dành cho" => {
-						gender = filter.value.as_int().unwrap_or(-1) as i32;
-						if gender == 0 {
-							gender = -1;
-						}
-					}
 					_ => continue,
 				}
 			}
@@ -113,12 +83,9 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 		instance.base_url.clone(),
 		title,
 		page,
-		included_tags,
-		excluded_tags,
+		category,
 		sort_by,
-		gender,
 		completed,
-		chapter_count,
 	))
 }
 
@@ -145,7 +112,7 @@ fn get_page_list(_manga_id: String, chapter_id: String) -> Result<Vec<Page>> {
 #[modify_image_request]
 fn modify_image_request(request: Request) {
 	template::modify_image_request(
-		String::from("https://www.nettruyenvv.com"),
+		String::from(BASE_URL),
 		String::from("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.54 Safari/537.36 Edg/101.0.1210.39"),
 		request,
 	)

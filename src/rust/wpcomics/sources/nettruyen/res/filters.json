@@ -1,343 +1,75 @@
 [
-	{
-		"type": "title"
-	},
-	{
-		"type": "select",
-		"name": "Số lượng chapter",
-		"options": [
-			"> 0 chapter",
-			">= 50 chapters",
-			">= 100 chapters",
-			">= 200 chapters",
-			">= 300 chapters",
-			">= 400 chapters",
-			">= 500 chapters"
-		]
-	},
-	{
-		"type": "select",
-		"name": "Tình trạng",
-		"options": [
-			"Tất cả",
-			"Đang tiến hành",
-			"Đã hoàn thành"
-		]
-	},
-	{
-		"type": "select",
-		"name": "Dành cho",
-		"options": [
-			"Tất cả",
-			"Con gái",
-			"Con trai"
-		]
-	},
-	{
-		"type": "select",
-		"name": "Sắp xếp theo",
-		"options": [
-			"Chapter mới",
-			"Truyện mới",
-			"Xem nhiều nhất",
-			"Xem nhiều nhất tháng",
-			"Xem nhiều nhất tuần",
-			"Xem nhiều nhất hôm nay",
-			"Theo dõi nhiều nhất",
-			"Bình luận nhiều nhất",
-			"Số chapter nhiều nhất",
-			"Theo ABC"
-		]
-	},
-	{
-		"type": "group",
-		"name": "Thể loại",
-		"filters": [
-			{
-				"type": "genre",
-				"name": "Action",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Adult",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Adventure",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Anime",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Chuyển Sinh",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Comedy",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Comic",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Cooking",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Cổ Đại",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Doujinshi",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Drama",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Đam Mỹ",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Ecchi",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Fantasy",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Gender Bender",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Harem",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Lịch sử",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Horror",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Josei",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Live action",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Manga",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Manhua",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Manhwa",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Martial Arts",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Mature",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Mecha",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Mystery",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Ngôn Tình",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "One shot",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Psychological",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Romance",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "School Life",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Sci-fi",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Seinen",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Shoujo",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Shoujo Ai",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Shounen",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Shounen Ai",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Slice of Life",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Smut",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Soft Yaoi",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Soft Yuri",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Sports",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Supernatural",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Tạp chí truyện tranh",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Thiếu Nhi",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Tragedy",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Trinh Thám",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Truyện Màu",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Truyện scan",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Việt Nam",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Webtoon",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Xuyên Không",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Yaoi",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "Yuri",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "16+",
-				"canExclude": true
-			},
-			{
-				"type": "genre",
-				"name": "18+",
-				"canExclude": true
-			}
-		]
-	}
+  {
+    "type": "title"
+  },
+  {
+    "type": "select",
+    "name": "Tình trạng",
+    "options": ["Tất cả", "Đang tiến hành", "Đã hoàn thành"]
+  },
+  {
+    "type": "select",
+    "name": "Sắp xếp theo",
+    "options": [
+      "Chapter mới",
+      "Truyện mới",
+      "Xem nhiều nhất",
+      "Xem nhiều nhất tháng",
+      "Xem nhiều nhất tuần",
+      "Xem nhiều nhất hôm nay",
+      "Theo dõi nhiều nhất",
+      "Bình luận nhiều nhất",
+      "Số chapter nhiều nhất",
+      "Theo ABC"
+    ]
+  },
+  {
+    "type": "group",
+    "name": "Thể loại",
+    "filters": [
+      { "type": "tim-truyen", "name": "Tất cả" },
+      { "type": "action-95", "name": "Action" },
+      { "type": "adventure", "name": "Adventure" },
+      { "type": "anime", "name": "Anime" },
+      { "type": "chuyen-sinh-2130", "name": "Chuyển Sinh" },
+      { "type": "comedy-99", "name": "Comedy" },
+      { "type": "comic", "name": "Comic" },
+      { "type": "cooking", "name": "Cooking" },
+      { "type": "co-dai-207", "name": "Cổ Đại" },
+      { "type": "doujinshi", "name": "Doujinshi" },
+      { "type": "drama-103", "name": "Drama" },
+      { "type": "dam-my", "name": "Đam Mỹ" },
+      { "type": "fantasy-105", "name": "Fantasy" },
+      { "type": "gender-bender", "name": "Gender Bender" },
+      { "type": "historical", "name": "Historical" },
+      { "type": "horror", "name": "Horror" },
+      { "type": "live-action", "name": "Live action" },
+      { "type": "manga-112", "name": "Manga" },
+      { "type": "manhua", "name": "Manhua" },
+      { "type": "manhwa-11400", "name": "Manhwa" },
+      { "type": "martial-arts", "name": "Martial Arts" },
+      { "type": "mecha-117", "name": "Mecha" },
+      { "type": "mystery", "name": "Mystery" },
+      { "type": "ngon-tinh", "name": "Ngôn Tình" },
+      { "type": "psychological", "name": "Psychological" },
+      { "type": "romance-121", "name": "Romance" },
+      { "type": "school-life", "name": "School Life" },
+      { "type": "sci-fi", "name": "Sci-fi" },
+      { "type": "shoujo", "name": "Shoujo" },
+      { "type": "shoujo-ai-126", "name": "Shoujo Ai" },
+      { "type": "shounen-127", "name": "Shounen" },
+      { "type": "shounen-ai", "name": "Shounen Ai" },
+      { "type": "slice-of-life", "name": "Slice of Life" },
+      { "type": "sports", "name": "Sports" },
+      { "type": "supernatural", "name": "Supernatural" },
+      { "type": "thieu-nhi", "name": "Thiếu Nhi" },
+      { "type": "tragedy-136", "name": "Tragedy" },
+      { "type": "trinh-tham", "name": "Trinh Thám" },
+      { "type": "truyen-scan", "name": "Truyện scan" },
+      { "type": "truyen-mau", "name": "Truyện Màu" },
+      { "type": "webtoon", "name": "Webtoon" },
+      { "type": "xuyen-khong-205", "name": "Xuyên Không" },
+      { "type": "tu-tien", "name": "Tu Tiên" }
+    ]
+  }
 ]

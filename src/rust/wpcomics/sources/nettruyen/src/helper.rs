@@ -5,70 +5,6 @@ use aidoku::{
 	MangaStatus,
 };
 
-// MARK: Mappings
-pub fn get_tag_id(genre: String) -> String {
-	String::from(match genre.as_str() {
-		"Action" => "1",
-		"Adult" => "2",
-		"Adventure" => "3",
-		"Anime" => "4",
-		"Chuyển Sinh" => "5",
-		"Comedy" => "6",
-		"Comic" => "7",
-		"Cooking" => "8",
-		"Cổ Đại" => "9",
-		"Doujinshi" => "10",
-		"Drama" => "11",
-		"Đam Mỹ" => "12",
-		"Ecchi" => "13",
-		"Fantasy" => "14",
-		"Gender Bender" => "15",
-		"Harem" => "16",
-		"Lịch sử" => "17",
-		"Horror" => "18",
-		"Josei" => "20",
-		"Live action" => "21",
-		"Manga" => "23",
-		"Manhua" => "24",
-		"Manhwa" => "25",
-		"Martial Arts" => "26",
-		"Mature" => "27",
-		"Mecha" => "28",
-		"Mystery" => "30",
-		"Ngôn Tình" => "32",
-		"One shot" => "33",
-		"Psychological" => "34",
-		"Romance" => "35",
-		"School Life" => "36",
-		"Sci-fi" => "37",
-		"Seinen" => "38",
-		"Shoujo" => "39",
-		"Shoujo Ai" => "40",
-		"Shounen" => "41",
-		"Shounen Ai" => "42",
-		"Slice of Life" => "43",
-		"Smut" => "44",
-		"Soft Yaoi" => "45",
-		"Soft Yuri" => "46",
-		"Sports" => "47",
-		"Supernatural" => "48",
-		"Tạp chí truyện tranh" => "49",
-		"Thiếu Nhi" => "50",
-		"Tragedy" => "51",
-		"Trinh Thám" => "52",
-		"Truyện Màu" => "53",
-		"Truyện scan" => "54",
-		"Việt Nam" => "55",
-		"Webtoon" => "56",
-		"Xuyên Không" => "57",
-		"Yaoi" => "58",
-		"Yuri" => "59",
-		"16+" => "60",
-		"18+" => "61",
-		_ => "",
-	})
-}
-
 pub fn status_map(arg1: String) -> MangaStatus {
 	return match arg1.as_str() {
 		"Đang tiến hành" => MangaStatus::Ongoing,
@@ -83,20 +19,16 @@ pub fn get_search_url(
 	base_url: String,
 	query: String,
 	page: i32,
-	include: Vec<String>,
-	exclude: Vec<String>,
+	category: Option<String>,
 	sort_by: i32,
-	gender: i32,
 	completed: i32,
-	chapter_count: i32,
 ) -> String {
 	if !query.is_empty() {
 		format!("{base_url}/tim-truyen?page={page}&keyword={query}")
 	} else {
 		format!(
-			"{base_url}/tim-truyen-nang-cao?genres={}&notgenres={}&gender={gender}&status={completed}&minchapter={chapter_count}&sort={sort_by}&page={page}",
-			include.join(","),
-			exclude.join(",")
+			"{base_url}/tim-truyen/{}&status={completed}&sort={sort_by}&page={page}",
+		if let Some(val) = category { &val.clone() } else { "" }
 		)
 	}
 }

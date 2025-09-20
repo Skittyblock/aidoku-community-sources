@@ -42,6 +42,7 @@ pub struct WPComicsSource {
 	pub chapter_anchor_selector: &'static str,
 
 	pub manga_viewer_page: &'static str,
+	pub manga_viewer_page_attr: &'static str,
 	pub manga_viewer_page_url_suffix: &'static str,
 	pub page_url_transformer: fn(String) -> String,
 
@@ -349,7 +350,7 @@ impl WPComicsSource {
 		let html = self.request_vinahost(&url).html()?;
 		for (at, page) in html.select(self.manga_viewer_page).array().enumerate() {
 			let page_node = page.as_node().expect("node array");
-			let mut page_url = page_node.attr("data-original").read();
+			let mut page_url = page_node.attr(self.manga_viewer_page_attr).read();
 			if !page_url.starts_with("http") {
 				page_url = String::from("https:") + &page_url;
 			}
@@ -456,6 +457,7 @@ impl Default for WPComicsSource {
 			chapter_date_selector: "div.col-xs-4",
 
 			manga_viewer_page: "div.page-chapter > img",
+			manga_viewer_page_attr: "data-original",
 			manga_viewer_page_url_suffix: "",
 			page_url_transformer: |url| url,
 
