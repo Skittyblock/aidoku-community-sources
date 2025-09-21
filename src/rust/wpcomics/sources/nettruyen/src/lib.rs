@@ -2,12 +2,8 @@
 pub mod helper;
 use crate::helper::*;
 use aidoku::{
-	error::Result,
-	prelude::*,
-	std::net::Request,
-	std::String,
-	std::{Vec},
-	Chapter, DeepLink, Filter, FilterType, Listing, Manga, MangaPageResult, MangaViewer, Page,
+	error::Result, prelude::*, std::net::Request, std::String, std::Vec, Chapter, DeepLink, Filter,
+	FilterType, Listing, Manga, MangaPageResult, MangaViewer, Page,
 };
 use wpcomics_template::{helper::urlencode, template, template::WPComicsSource};
 
@@ -46,7 +42,7 @@ fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult> {
 			}
 			FilterType::Genre => {
 				category = Some(filter.value.as_string()?.read());
-			}				
+			}
 			_ => {
 				match filter.name.as_str() {
 					"Tình trạng" => {
