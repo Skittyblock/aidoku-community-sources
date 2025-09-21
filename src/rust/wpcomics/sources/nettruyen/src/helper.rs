@@ -1,5 +1,3 @@
-use core::str::FromStr;
-
 use aidoku::{
 	prelude::format,
 	std::Vec,
