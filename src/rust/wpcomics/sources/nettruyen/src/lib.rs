@@ -29,9 +29,6 @@ fn get_instance() -> WPComicsSource {
 		status_mapping: status_map,
 		time_converter: convert_time,
 		manga_viewer_page_attr: "data-src",
-		page_url_transformer: |url| {
-			url
-		},
 		..Default::default()
 	}
 }
