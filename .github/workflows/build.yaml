@@ -1,5 +1,6 @@
 name: Build sources
 on:
+  workflow_dispatch:
   push:
     branches:
     - main
