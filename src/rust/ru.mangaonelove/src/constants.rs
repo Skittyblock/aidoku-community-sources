@@ -1,7 +1,7 @@
 use aidoku::error::{AidokuError, AidokuErrorKind, NodeError};
 use const_format::formatcp;
 
-pub const SITE: &str = "mangaonelove.site";
+pub const SITE: &str = "mangaonelove.website";
 pub const BASE_URL: &str = formatcp!("https://{SITE}");
 pub const MANGA_DIR: &str = "manga";
 pub const MANGA_BASE_URL: &str = formatcp!("{}/{}", BASE_URL, MANGA_DIR);
