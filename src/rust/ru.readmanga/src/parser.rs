@@ -60,12 +60,7 @@ pub fn parse_search_results(html: &WNode) -> Result<Vec<Manga>> {
 			let url = helpers::get_manga_url(&id);
 
 			let mut categories: Vec<String> = Vec::new();
-			categories.extend(
-				div_tile_info_node
-					.select("a.badge")
-					.iter()
-					.map(WNode::text),
-			);
+			categories.extend(div_tile_info_node.select("a.badge").iter().map(WNode::text));
 			categories.extend(
 				div_html_popover_holder_node
 					.select("span.elem_genre")
@@ -138,7 +133,13 @@ pub fn parse_manga(html: &WNode, id: String) -> Result<Manga> {
 				.or_else(|| img_node.attr("data-thumb"))
 				.or_else(|| img_node.attr("src"))
 		})
-		.map(|url| if url.contains("://") { url } else { format!("https:{url}") })
+		.map(|url| {
+			if url.contains("://") {
+				url
+			} else {
+				format!("https:{url}")
+			}
+		})
 		.unwrap_or_default();
 
 	let names_node = main_node.select("h1.names").pop().ok_or(parsing_error)?;
@@ -220,12 +221,7 @@ pub fn parse_manga(html: &WNode, id: String) -> Result<Manga> {
 			.map(WNode::text),
 	);
 	// Tags
-	categories.extend(
-		main_info_node
-			.select("a.elem_tag")
-			.iter()
-			.map(WNode::text),
-	);
+	categories.extend(main_info_node.select("a.elem_tag").iter().map(WNode::text));
 	categories.extend(
 		main_info_node
 			.select("span.elem_tag")
@@ -239,18 +235,20 @@ pub fn parse_manga(html: &WNode, id: String) -> Result<Manga> {
 		.map(WNode::text)
 		.map(|s| s.to_lowercase())
 		.collect();
-	let status = if badge_texts.iter().any(|t|
+	let status = if badge_texts.iter().any(|t| {
 		t.contains("выпуск завершён") || t.contains("завершён") || t.contains("переведено")
-	) {
+	}) {
 		MangaStatus::Completed
 	} else if badge_texts
 		.iter()
 		.any(|t| t.contains("выпуск продолжается") || t.contains("переводится"))
 	{
 		MangaStatus::Ongoing
-	} else if badge_texts.iter().any(|t|
-		t.contains("перевод приостановлен") || t.contains("выпуск остановлен") || t.contains("заморожен")
-	) {
+	} else if badge_texts.iter().any(|t| {
+		t.contains("перевод приостановлен")
+			|| t.contains("выпуск остановлен")
+			|| t.contains("заморожен")
+	}) {
 		MangaStatus::Hiatus
 	} else {
 		MangaStatus::Unknown
@@ -419,48 +417,48 @@ pub fn get_page_list(html: &WNode) -> Result<Vec<Page>> {
 }
 
 pub fn get_filter_url(filters: &[Filter], sorting: &Sorting, page: i32) -> Result<String> {
-    let mut params: Vec<String> = Vec::new();
+	let mut params: Vec<String> = Vec::new();
 
-    params.push(format!("offset={}", (page - 1) * SEARCH_OFFSET_STEP));
-    params.push(format!("sortType={}", sorting));
+	params.push(format!("offset={}", (page - 1) * SEARCH_OFFSET_STEP));
+	params.push(format!("sortType={}", sorting));
 
-    for filter in filters {
-        match filter.kind {
-            FilterType::Title => {
-                if let Ok(title_ref) = filter.value.clone().as_string() {
-                    params.push(format!("q={}", encode_uri(title_ref.read())));
-                }
-            }
-            FilterType::Genre => {
-                if let Ok(id_ref) = filter.object.get("id").as_string() {
-                    let id = id_ref.read();
-                    match filter.value.as_int().unwrap_or(-1) {
-                        0 => params.push(format!("{}=out", id)), // excluded
-                        1 => params.push(format!("{}=in", id)),  // included
-                        _ => {}
-                    }
-                }
-            }
-            FilterType::Check => {
-                if let Ok(id_ref) = filter.object.get("id").as_string() {
-                    let id = id_ref.read();
-                    // Any checked option => add `=in`
-                    if filter.value.as_int().unwrap_or(0) != 0 {
-                        params.push(format!("{}=in", id));
-                    }
-                }
-            }
-            _ => {}
-        }
-    }
+	for filter in filters {
+		match filter.kind {
+			FilterType::Title => {
+				if let Ok(title_ref) = filter.value.clone().as_string() {
+					params.push(format!("q={}", encode_uri(title_ref.read())));
+				}
+			}
+			FilterType::Genre => {
+				if let Ok(id_ref) = filter.object.get("id").as_string() {
+					let id = id_ref.read();
+					match filter.value.as_int().unwrap_or(-1) {
+						0 => params.push(format!("{}=out", id)), // excluded
+						1 => params.push(format!("{}=in", id)),  // included
+						_ => {}
+					}
+				}
+			}
+			FilterType::Check => {
+				if let Ok(id_ref) = filter.object.get("id").as_string() {
+					let id = id_ref.read();
+					// Any checked option => add `=in`
+					if filter.value.as_int().unwrap_or(0) != 0 {
+						params.push(format!("{}=in", id));
+					}
+				}
+			}
+			_ => {}
+		}
+	}
 
-    params.sort_by(|a, b| {
-        let a_is_q = a.starts_with("q=");
-        let b_is_q = b.starts_with("q=");
-        b_is_q.cmp(&a_is_q)
-    });
+	params.sort_by(|a, b| {
+		let a_is_q = a.starts_with("q=");
+		let b_is_q = b.starts_with("q=");
+		b_is_q.cmp(&a_is_q)
+	});
 
-    Ok(format!("{}{}", BASE_SEARCH_URL, params.join("&")))
+	Ok(format!("{}{}", BASE_SEARCH_URL, params.join("&")))
 }
 
 pub fn parse_incoming_url(url: &str) -> Result<DeepLink> {

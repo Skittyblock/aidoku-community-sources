@@ -1,21 +1,21 @@
 {
-  "info": {
-    "id": "ru.readmanga",
-    "lang": "ru",
-    "name": "ReadManga",
-    "version": 4,
-    "url": "https://readmanga.ru",
-    "nsfw": 1
-  },
-  "listings": [
-    {
-      "name": "Рейтинг"
-    },
-    {
-      "name": "Популярное"
-    },
-    {
-      "name": "Обновлено недавно"
-    }
-  ]
+	"info": {
+		"id": "ru.readmanga",
+		"lang": "ru",
+		"name": "ReadManga",
+		"version": 4,
+		"url": "https://readmanga.ru",
+		"nsfw": 1
+	},
+	"listings": [
+		{
+			"name": "Рейтинг"
+		},
+		{
+			"name": "Популярное"
+		},
+		{
+			"name": "Обновлено недавно"
+		}
+	]
 }

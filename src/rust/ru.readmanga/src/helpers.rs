@@ -13,7 +13,7 @@ use crate::{
 
 pub fn get_html(url: &str) -> Result<WNode> {
 	Request::new(url, HttpMethod::Get)
-  	.header("Referer", "https://www.google.com/")
+		.header("Referer", "https://www.google.com/")
 		.html()
 		.map(WNode::from_node)
 }
