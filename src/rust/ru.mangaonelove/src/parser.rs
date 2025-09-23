@@ -9,8 +9,8 @@ extern crate alloc;
 use alloc::string::ToString;
 
 use crate::{
-	constants::{BASE_URL, PAGE_DIR},
-	helpers::{get_manga_id, get_manga_url, parse_status},
+	constants::PAGE_DIR,
+	helpers::{get_base_url, get_manga_id, get_manga_url, parse_status, show_nsfw, show_only_nsfw},
 	wrappers::{post, WNode},
 };
 
@@ -23,6 +23,20 @@ pub fn parse_lising(html: &WNode, listing: Listing) -> Option<Vec<Manga>> {
 
 	let sidebar_node = html.select_one(&format!("div.c-sidebar.{sidebar_class}"))?;
 
+	let allow_manga = |rating: &MangaContentRating| -> bool {
+		if show_only_nsfw() {
+			if show_nsfw() {
+				*rating == MangaContentRating::Nsfw
+			} else {
+				*rating != MangaContentRating::Nsfw
+			}
+		} else if show_nsfw() {
+			true
+		} else {
+			*rating != MangaContentRating::Nsfw
+		}
+	};
+
 	let mangas = sidebar_node
 		.select("div.slider__item")
 		.iter()
@@ -34,7 +48,11 @@ pub fn parse_lising(html: &WNode, listing: Listing) -> Option<Vec<Manga>> {
 			let url = thumb_link_node.attr("href")?;
 			let id = get_manga_id(&url)?;
 
-			let cover = thumb_link_node.select_one("img")?.attr("src")?;
+			let img_node = thumb_link_node.select_one("img")?;
+			let cover = match img_node.attr("data-src").or_else(|| img_node.attr("src")) {
+				Some(c) => c,
+				None => return None,
+			};
 
 			let title = desc_node.select_one("div.post-title")?.text();
 
@@ -58,6 +76,7 @@ pub fn parse_lising(html: &WNode, listing: Listing) -> Option<Vec<Manga>> {
 				..Default::default()
 			})
 		})
+		.filter(|m| allow_manga(&m.nsfw))
 		.collect();
 
 	Some(mangas)
@@ -67,14 +86,28 @@ pub fn parse_search_results(html: &WNode) -> Option<Vec<Manga>> {
 	let list_node = html
 		.select_one("div.c-page-content div.main-col-inner div.tab-content-wrap div.c-tabs-item")?;
 
+	let allow_manga = |rating: &MangaContentRating| -> bool {
+		if show_only_nsfw() {
+			if show_nsfw() {
+				*rating == MangaContentRating::Nsfw
+			} else {
+				*rating != MangaContentRating::Nsfw
+			}
+		} else if show_nsfw() {
+			true
+		} else {
+			*rating != MangaContentRating::Nsfw
+		}
+	};
+
 	let mangas = list_node
-		.select("div.row.c-tabs-item__content")
+		.select("div.c-tabs-item__content")
 		.into_iter()
 		.filter_map(|manga_node| {
 			let thumb_node = manga_node.select_one("div.tab-thumb")?;
 			let summary_node = manga_node.select_one("div.tab-summary")?;
 
-			let title_node = summary_node.select_one("div.post-title a")?;
+			let title_node = summary_node.select_one("div.post-title")?;
 			let content_node = summary_node.select_one("div.post-content")?;
 
 			let extract_from_content = |class_name| {
@@ -84,10 +117,15 @@ pub fn parse_search_results(html: &WNode) -> Option<Vec<Manga>> {
 					.map(|n| n.text())
 			};
 
-			let url = title_node.attr("href")?;
+			let title_link_node = title_node.select_one("a")?;
+			let url = title_link_node.attr("href")?;
 			let id = get_manga_id(&url)?;
-			let cover = thumb_node.select_one("img")?.attr("src")?;
-			let title = title_node.text();
+			let img_node = thumb_node.select_one("img")?;
+			let cover = match img_node.attr("data-src").or_else(|| img_node.attr("src")) {
+				Some(c) => c,
+				None => return None,
+			};
+			let title = title_link_node.text();
 			let author = extract_from_content("mg_author").unwrap_or_default();
 			let artist = extract_from_content("mg_artists").unwrap_or_default();
 			let categories: Vec<String> = content_node
@@ -96,12 +134,16 @@ pub fn parse_search_results(html: &WNode) -> Option<Vec<Manga>> {
 				.map(WNode::text)
 				.collect();
 			let status = parse_status(&extract_from_content("mg_status")?);
-			let nsfw = match categories.iter().find(|c| c.contains("18+")) {
-				Some(_) => MangaContentRating::Nsfw,
-				None => MangaContentRating::Suggestive,
+			let nsfw = if categories
+				.iter()
+				.any(|c| c.contains("18+") || c.contains("Взрослая"))
+			{
+				MangaContentRating::Nsfw
+			} else {
+				MangaContentRating::Suggestive
 			};
 
-			Some(Manga {
+			let manga = Manga {
 				id,
 				cover,
 				title,
@@ -112,7 +154,13 @@ pub fn parse_search_results(html: &WNode) -> Option<Vec<Manga>> {
 				status,
 				nsfw,
 				..Default::default()
-			})
+			};
+
+			if allow_manga(&manga.nsfw) {
+				Some(manga)
+			} else {
+				None
+			}
 		})
 		.collect();
 
@@ -161,14 +209,21 @@ pub fn parse_manga(html: &WNode, id: String) -> Option<Manga> {
 
 	let cover = summary_node
 		.select_one("div.summary_image img")?
-		.attr("src")?;
+		.attr("data-src")
+		.or_else(|| {
+			summary_node
+				.select_one("div.summary_image img")?
+				.attr("src")
+		})?;
 	let url = get_manga_url(&id);
 	let title = main_node.select_one("div.post-title > h1")?.text();
 	let author = extract_optional_content("authors").join(", ");
 	let artist = extract_optional_content("artist").join(", ");
 
 	let categories = extract_optional_content("genres");
-	let nsfw = if categories.iter().any(|c| c.contains("18+")) {
+	let nsfw = if categories.iter().any(|c| c.contains("18+"))
+		|| categories.iter().any(|c| c.contains("Взрослая"))
+	{
 		MangaContentRating::Nsfw
 	} else {
 		MangaContentRating::Suggestive
@@ -201,22 +256,27 @@ pub fn parse_manga(html: &WNode, id: String) -> Option<Manga> {
 }
 
 pub fn parse_chapters(html: &WNode, manga_id: &str) -> Option<Vec<Chapter>> {
-	let manga_chapters_holder_node =
-		html.select_one("div.c-page-content div#manga-chapters-holder")?;
-
-	let data_id = manga_chapters_holder_node.attr("data-id")?;
-
-	let real_manga_chapters_holder_node = post(
-		&format!("{BASE_URL}/wp-admin/admin-ajax.php"),
-		&format!("action=manga_get_chapters&manga={data_id}"),
-		&[
-			("X-Requested-With", "XMLHttpRequest"),
-			("Referer", &format!("{}", get_manga_url(manga_id))),
-		],
-	)
-	.ok()?;
-
-	let chapter_nodes = real_manga_chapters_holder_node.select("ul > li.wp-manga-chapter");
+	// Prefer inline chapter list if present (as on example.manga.html),
+	// otherwise fallback to AJAX-loaded chapters
+	let chapter_nodes =
+		match html.select_one("div.page-content-listing.single-page ul.main.version-chap") {
+			Some(list) => list.select("li.wp-manga-chapter"),
+			None => {
+				let manga_chapters_holder_node =
+					html.select_one("div.c-page-content div#manga-chapters-holder")?;
+				let data_id = manga_chapters_holder_node.attr("data-id")?;
+				let real_manga_chapters_holder_node = post(
+					&format!("{}/wp-admin/admin-ajax.php", get_base_url()),
+					&format!("action=manga_get_chapters&manga={data_id}"),
+					&[
+						("X-Requested-With", "XMLHttpRequest"),
+						("Referer", &format!("{}", get_manga_url(manga_id))),
+					],
+				)
+				.ok()?;
+				real_manga_chapters_holder_node.select("ul > li.wp-manga-chapter")
+			}
+		};
 
 	let abs = |l, r| {
 		if l > r {
@@ -275,7 +335,13 @@ pub fn parse_chapters(html: &WNode, manga_id: &str) -> Option<Vec<Chapter>> {
 			let date_updated = {
 				let release_date_node = chapter_node.select_one("span.chapter-release-date")?;
 				let normal_release_date = release_date_node.select_one("i").map(|i_node| {
-					StringRef::from(&i_node.text()).as_date("dd-MM-yyyy", None, None)
+					let txt = i_node.text();
+					let parsed1 = StringRef::from(&txt).as_date("dd.MM.yyyy", None, None);
+					if parsed1 > 0f64 {
+						parsed1
+					} else {
+						StringRef::from(&txt).as_date("dd-MM-yyyy", None, None)
+					}
 				});
 
 				let ago_extractor = || {
@@ -358,7 +424,8 @@ pub fn get_filter_url(filters: &[Filter], page: i32) -> Option<String> {
 	};
 
 	Some(format!(
-		"{BASE_URL}/{PAGE_DIR}/{page}/?post_type=wp-manga&m_orderby=trending{}",
+		"{}/{PAGE_DIR}/{page}/?post_type=wp-manga&m_orderby=latest{}",
+		get_base_url(),
 		filter_addition
 	))
 }

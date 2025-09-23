@@ -1,0 +1,34 @@
+[
+	{
+		"type": "group",
+		"title": "Домен сайта",
+		"items": [
+			{
+				"type": "text",
+				"key": "baseUrl",
+				"placeholder": "https://mangaonelove.website",
+				"default": "https://mangaonelove.website",
+				"autocorrectionType": 0,
+				"spellCheckingType": 0
+			}
+		]
+	},
+	{
+		"type": "group",
+		"title": "Прочее",
+		"items": [
+			{
+				"type": "switch",
+				"key": "showNsfw",
+				"title": "Показывать NSFW",
+				"default": false
+			},
+			{
+				"type": "switch",
+				"key": "showOnlyNsfw",
+				"title": "Только NSFW",
+				"default": false
+			}
+		]
+	}
+]
