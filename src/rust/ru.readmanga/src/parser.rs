@@ -1,5 +1,3 @@
-use core::iter::once;
-
 use aidoku::{
 	error::{AidokuError, AidokuErrorKind, Result},
 	helpers::{substring::Substring, uri::encode_uri},
@@ -10,7 +8,7 @@ use aidoku::{
 };
 
 extern crate alloc;
-use alloc::{boxed::Box, string::ToString};
+use alloc::string::ToString;
 
 use itertools::chain;
 
@@ -131,7 +129,7 @@ pub fn parse_manga(html: &WNode, id: String) -> Result<Manga> {
 	let picture_fororama_node = main_attributes_node.select("div.picture-fotorama").pop();
 	let cover = picture_fororama_node
 		.and_then(|pfn| {
-			let mut imgs = pfn.select("img");
+			let imgs = pfn.select("img");
 			imgs.into_iter().next()
 		})
 		.and_then(|img_node| {
@@ -421,13 +419,6 @@ pub fn get_page_list(html: &WNode) -> Result<Vec<Page>> {
 }
 
 pub fn get_filter_url(filters: &[Filter], sorting: &Sorting, page: i32) -> Result<String> {
-    fn get_handler(operation: &'static str) -> Box<dyn Fn(AidokuError) -> AidokuError> {
-        Box::new(move |err: AidokuError| {
-            println!("Error {:?} while {}", err.reason, operation);
-            err
-        })
-    }
-
     let mut params: Vec<String> = Vec::new();
 
     params.push(format!("offset={}", (page - 1) * SEARCH_OFFSET_STEP));
