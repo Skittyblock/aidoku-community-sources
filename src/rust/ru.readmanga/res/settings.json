@@ -1,0 +1,16 @@
+[
+	{
+		"type": "group",
+		"title": "Домен сайта",
+		"items": [
+			{
+				"type": "text",
+				"key": "baseUrl",
+				"placeholder": "https://3.readmanga.ru",
+				"default": "https://3.readmanga.ru",
+				"autocorrectionType": 0,
+				"spellCheckingType": 0
+			}
+		]
+	}
+]
