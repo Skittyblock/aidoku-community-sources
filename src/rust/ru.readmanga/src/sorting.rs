@@ -13,9 +13,9 @@ pub enum Sorting {
 impl Sorting {
 	pub fn from_listing(listing: &Listing) -> Self {
 		match listing.name.as_str() {
-			"Rating" => Self::Rating,
-			"Popular" => Self::Popular,
-			"Updated Recently" => Self::UpdatedRecently,
+			"Рейтинг" => Self::Rating,
+			"Популярное" => Self::Popular,
+			"Обновлено недавно" => Self::UpdatedRecently,
 			_ => Self::Rating,
 		}
 	}

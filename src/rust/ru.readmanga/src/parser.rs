@@ -1,5 +1,3 @@
-use core::iter::once;
-
 use aidoku::{
 	error::{AidokuError, AidokuErrorKind, Result},
 	helpers::{substring::Substring, uri::encode_uri},
@@ -10,7 +8,7 @@ use aidoku::{
 };
 
 extern crate alloc;
-use alloc::{boxed::Box, string::ToString};
+use alloc::string::ToString;
 
 use itertools::chain;
 
@@ -61,20 +59,26 @@ pub fn parse_search_results(html: &WNode) -> Result<Vec<Manga>> {
 
 			let url = helpers::get_manga_url(&id);
 
-			let categories = div_html_popover_holder_node
-				.select("span.badge-light")
-				.iter()
-				.map(WNode::text)
-				.collect();
+			let mut categories: Vec<String> = Vec::new();
+			categories.extend(div_tile_info_node.select("a.badge").iter().map(WNode::text));
+			categories.extend(
+				div_html_popover_holder_node
+					.select("span.elem_genre")
+					.iter()
+					.map(WNode::text),
+			);
+			categories.extend(
+				div_html_popover_holder_node
+					.select("span.elem_tag")
+					.iter()
+					.map(WNode::text),
+			);
 
-			// TODO: implement more correct status parsing
 			let status = {
-				if let [span_node] = &node.select("span.mangaTranslationCompleted")[..] {
-					if span_node.text() == "переведено" {
-						MangaStatus::Completed
-					} else {
-						MangaStatus::Unknown
-					}
+				let has_completed_badge = !node.select("span.mangaTranslationCompleted").is_empty()
+					|| !node.select("span.mangaCompleted").is_empty();
+				if has_completed_badge {
+					MangaStatus::Completed
 				} else if let [_] = &div_img_node.select("div.manga-updated")[..] {
 					MangaStatus::Ongoing
 				} else {
@@ -119,17 +123,31 @@ pub fn parse_manga(html: &WNode, id: String) -> Result<Manga> {
 
 	let picture_fororama_node = main_attributes_node.select("div.picture-fotorama").pop();
 	let cover = picture_fororama_node
-		.and_then(|pfn| pfn.select("img").pop())
-		.and_then(|img_node| img_node.attr("src"))
+		.and_then(|pfn| {
+			let imgs = pfn.select("img");
+			imgs.into_iter().next()
+		})
+		.and_then(|img_node| {
+			img_node
+				.attr("data-full")
+				.or_else(|| img_node.attr("data-thumb"))
+				.or_else(|| img_node.attr("src"))
+		})
+		.map(|url| {
+			if url.contains("://") {
+				url
+			} else {
+				format!("https:{url}")
+			}
+		})
 		.unwrap_or_default();
 
 	let names_node = main_node.select("h1.names").pop().ok_or(parsing_error)?;
 	let title = names_node
-		.select("span")
-		.into_iter()
-		.map(|name_node| name_node.text())
-		.intersperse(" | ".to_string())
-		.collect();
+		.select("span.name")
+		.pop()
+		.ok_or(parsing_error)?
+		.text();
 
 	let main_info_node = main_attributes_node
 		.select("div.subject-meta")
@@ -185,34 +203,55 @@ pub fn parse_manga(html: &WNode, id: String) -> Result<Manga> {
 		None => MangaViewer::default(),
 	};
 
-	let categories = chain!(
-		once(category_opt).flatten(),
-		extract_info_iter("genre", "element")
-	)
-	.collect();
+	let mut categories: Vec<String> = Vec::new();
+	if let Some(category) = category_opt {
+		categories.push(category);
+	}
+	// Genres
+	categories.extend(
+		main_info_node
+			.select("a.elem_genre")
+			.iter()
+			.map(WNode::text),
+	);
+	categories.extend(
+		main_info_node
+			.select("span.elem_genre")
+			.iter()
+			.map(WNode::text),
+	);
+	// Tags
+	categories.extend(main_info_node.select("a.elem_tag").iter().map(WNode::text));
+	categories.extend(
+		main_info_node
+			.select("span.elem_tag")
+			.iter()
+			.map(WNode::text),
+	);
 
-	let status_str_opt = main_info_node
-		.select("p")
-		.into_iter()
-		.filter(|pn| pn.attr("class").is_none())
-		.flat_map(|pn| pn.select("span"))
-		.find(|sn| {
-			if let Some(class_attr) = sn.attr("class") {
-				return class_attr
-					.split_whitespace()
-					.any(|cl| cl.starts_with("text-"));
-			}
-			false
-		})
-		.map(|status_node| status_node.text());
-	let status = match status_str_opt {
-		Some(status_str) => match status_str.to_lowercase().as_str() {
-			"переведено" => MangaStatus::Completed,
-			"продолжается" => MangaStatus::Ongoing,
-			"приостановлен" => MangaStatus::Hiatus,
-			_ => MangaStatus::Unknown,
-		},
-		None => MangaStatus::Unknown,
+	let badge_texts: Vec<String> = main_info_node
+		.select("p span.badge")
+		.iter()
+		.map(WNode::text)
+		.map(|s| s.to_lowercase())
+		.collect();
+	let status = if badge_texts.iter().any(|t| {
+		t.contains("выпуск завершён") || t.contains("завершён") || t.contains("переведено")
+	}) {
+		MangaStatus::Completed
+	} else if badge_texts
+		.iter()
+		.any(|t| t.contains("выпуск продолжается") || t.contains("переводится"))
+	{
+		MangaStatus::Ongoing
+	} else if badge_texts.iter().any(|t| {
+		t.contains("перевод приостановлен")
+			|| t.contains("выпуск остановлен")
+			|| t.contains("заморожен")
+	}) {
+		MangaStatus::Hiatus
+	} else {
+		MangaStatus::Unknown
 	};
 
 	Ok(Manga {
@@ -241,7 +280,6 @@ pub fn parse_chapters(html: &WNode, manga_id: &str) -> Result<Vec<Chapter>> {
 		.filter_map(|chapter_elem| {
 			let link_elem = chapter_elem.select("a.chapter-link").pop()?;
 
-			// this: `chapter_elem.select("td.d-none")` doesn't work here, I don't know why
 			let date_elems: Vec<_> = {
 				let chapter_repr = chapter_elem.to_str();
 
@@ -333,7 +371,6 @@ pub fn get_page_list(html: &WNode) -> Result<Vec<Page>> {
 
 	let urls: Vec<_> = chapters_list_str
 		.match_indices("['")
-		// extracting parts from ['https://t1.rmr.rocks/', '', "auto/68/88/46/0098.png_res.jpg", 959, 1400] into tuples
 		.zip(chapters_list_str.match_indices("\","))
 		.filter_map(|((l, _), (r, _))| {
 			use itertools::Itertools;
@@ -343,7 +380,6 @@ pub fn get_page_list(html: &WNode) -> Result<Vec<Page>> {
 				.map(ToString::to_string)
 				.collect_tuple()
 		})
-		// composing URL
 		.map(|(part0, part1, part2)| {
 			if part1.is_empty() && part2.starts_with("/static/") {
 				format!("{BASE_URL}{part2}")
@@ -353,7 +389,6 @@ pub fn get_page_list(html: &WNode) -> Result<Vec<Page>> {
 				format!("{part0}{part1}{part2}")
 			}
 		})
-		// fixing URL
 		.map(|url| {
 			if !url.contains("://") {
 				format!("https:{url}")
@@ -382,37 +417,48 @@ pub fn get_page_list(html: &WNode) -> Result<Vec<Page>> {
 }
 
 pub fn get_filter_url(filters: &[Filter], sorting: &Sorting, page: i32) -> Result<String> {
-	fn get_handler(operation: &'static str) -> Box<dyn Fn(AidokuError) -> AidokuError> {
-		Box::new(move |err: AidokuError| {
-			println!("Error {:?} while {}", err.reason, operation);
-			err
-		})
+	let mut params: Vec<String> = Vec::new();
+
+	params.push(format!("offset={}", (page - 1) * SEARCH_OFFSET_STEP));
+	params.push(format!("sortType={}", sorting));
+
+	for filter in filters {
+		match filter.kind {
+			FilterType::Title => {
+				if let Ok(title_ref) = filter.value.clone().as_string() {
+					params.push(format!("q={}", encode_uri(title_ref.read())));
+				}
+			}
+			FilterType::Genre => {
+				if let Ok(id_ref) = filter.object.get("id").as_string() {
+					let id = id_ref.read();
+					match filter.value.as_int().unwrap_or(-1) {
+						0 => params.push(format!("{}=out", id)), // excluded
+						1 => params.push(format!("{}=in", id)),  // included
+						_ => {}
+					}
+				}
+			}
+			FilterType::Check => {
+				if let Ok(id_ref) = filter.object.get("id").as_string() {
+					let id = id_ref.read();
+					// Any checked option => add `=in`
+					if filter.value.as_int().unwrap_or(0) != 0 {
+						params.push(format!("{}=in", id));
+					}
+				}
+			}
+			_ => {}
+		}
 	}
 
-	let filter_parts: Vec<_> = filters
-		.iter()
-		.filter_map(|filter| match filter.kind {
-			FilterType::Title => filter
-				.value
-				.clone()
-				.as_string()
-				.map_err(get_handler("casting to string"))
-				.ok()
-				.map(|title| format!("q={}", encode_uri(title.read()))),
-			_ => None,
-		})
-		.collect();
+	params.sort_by(|a, b| {
+		let a_is_q = a.starts_with("q=");
+		let b_is_q = b.starts_with("q=");
+		b_is_q.cmp(&a_is_q)
+	});
 
-	let offset = format!("offset={}", (page - 1) * SEARCH_OFFSET_STEP);
-	let sort = format!("sortType={}", sorting);
-
-	Ok(format!(
-		"{}{}",
-		BASE_SEARCH_URL,
-		chain!(once(offset), once(sort), filter_parts.into_iter())
-			.intersperse("&".to_string())
-			.collect::<String>()
-	))
+	Ok(format!("{}{}", BASE_SEARCH_URL, params.join("&")))
 }
 
 pub fn parse_incoming_url(url: &str) -> Result<DeepLink> {

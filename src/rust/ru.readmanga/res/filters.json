@@ -1,5 +1,122 @@
 [
 	{
 		"type": "title"
+	},
+	{
+		"type": "group",
+		"name": "Жанры",
+		"filters": [
+			{ "type": "genre", "name": "боевик", "id": "el_2155", "canExclude": true },
+			{ "type": "genre", "name": "боевые искусства", "id": "el_2143", "canExclude": true },
+			{ "type": "genre", "name": "гарем", "id": "el_2142", "canExclude": true },
+			{ "type": "genre", "name": "гендерная интрига", "id": "el_2156", "canExclude": true },
+			{ "type": "genre", "name": "детектив", "id": "el_2152", "canExclude": true },
+			{ "type": "genre", "name": "дзёсей", "id": "el_2158", "canExclude": true },
+			{ "type": "genre", "name": "драма", "id": "el_2118", "canExclude": true },
+			{ "type": "genre", "name": "история", "id": "el_2119", "canExclude": true },
+			{ "type": "genre", "name": "исэкай", "id": "el_9450", "canExclude": true },
+			{ "type": "genre", "name": "киберпанк", "id": "el_8032", "canExclude": true },
+			{ "type": "genre", "name": "кодомо", "id": "el_2137", "canExclude": true },
+			{ "type": "genre", "name": "комедия", "id": "el_2136", "canExclude": true },
+			{ "type": "genre", "name": "музыка", "id": "el_9514", "canExclude": true },
+			{ "type": "genre", "name": "научная фантастика", "id": "el_2133", "canExclude": true },
+			{ "type": "genre", "name": "пародия", "id": "el_9524", "canExclude": true },
+			{ "type": "genre", "name": "повседневность", "id": "el_2135", "canExclude": true },
+			{ "type": "genre", "name": "постапокалиптика", "id": "el_2151", "canExclude": true },
+			{ "type": "genre", "name": "приключения", "id": "el_2130", "canExclude": true },
+			{ "type": "genre", "name": "психология", "id": "el_2144", "canExclude": true },
+			{ "type": "genre", "name": "романтика", "id": "el_2121", "canExclude": true },
+			{ "type": "genre", "name": "сверхъестественное", "id": "el_2159", "canExclude": true },
+			{ "type": "genre", "name": "сёдзё", "id": "el_2122", "canExclude": true },
+			{ "type": "genre", "name": "сёнэн", "id": "el_2134", "canExclude": true },
+			{ "type": "genre", "name": "спорт", "id": "el_2129", "canExclude": true },
+			{ "type": "genre", "name": "сэйнэн", "id": "el_2138", "canExclude": true },
+			{ "type": "genre", "name": "трагедия", "id": "el_2153", "canExclude": true },
+			{ "type": "genre", "name": "триллер", "id": "el_2150", "canExclude": true },
+			{ "type": "genre", "name": "ужасы", "id": "el_2125", "canExclude": true },
+			{ "type": "genre", "name": "фэнтези", "id": "el_2131", "canExclude": true },
+			{ "type": "genre", "name": "школа", "id": "el_2127", "canExclude": true },
+			{ "type": "genre", "name": "этти", "id": "el_2149", "canExclude": true }
+		]
+	},
+	{
+		"type": "group",
+		"name": "Категории",
+		"filters": [
+			{ "type": "check", "name": "OEL-манга", "id": "el_9577" },
+			{ "type": "check", "name": "Арт", "id": "el_5685" },
+			{ "type": "check", "name": "Додзинси", "id": "el_2141" },
+			{ "type": "check", "name": "Ёнкома", "id": "el_2161" },
+			{ "type": "check", "name": "Комикс", "id": "el_3515" },
+			{ "type": "check", "name": "Манга", "id": "el_9451" },
+			{ "type": "check", "name": "Манхва", "id": "el_3001" },
+			{ "type": "check", "name": "Маньхуа", "id": "el_3002" }
+		]
+	},
+	{
+		"type": "group",
+		"name": "Возрастная рекомендация",
+		"filters": [
+			{ "type": "check", "name": "G", "id": "el_6180" },
+			{ "type": "check", "name": "PG", "id": "el_6179" },
+			{ "type": "check", "name": "PG-13", "id": "el_6181" },
+			{ "type": "check", "name": "R", "id": "el_9847" },
+			{ "type": "check", "name": "NC-17", "id": "el_9848" }
+		]
+	},
+	{
+		"type": "group",
+		"name": "Прочее",
+		"filters": [
+			{ "type": "check", "name": "В цвете", "id": "el_7290" },
+			{ "type": "check", "name": "Веб", "id": "el_2160" },
+			{ "type": "check", "name": "На экранах", "id": "el_9795" },
+			{ "type": "check", "name": "Сборник", "id": "el_2157" }
+		]
+	},
+	{
+		"type": "group",
+		"name": "Фильтры",
+		"filters": [
+			{ "type": "check", "name": "Высокий рейтинг", "id": "s_high_rate" },
+			{ "type": "check", "name": "Сингл", "id": "s_single" },
+			{ "type": "check", "name": "Для взрослых", "id": "s_mature" },
+			{ "type": "check", "name": "Переведено", "id": "s_translated" },
+			{ "type": "check", "name": "Заброшен перевод", "id": "s_abandoned_popular" },
+			{ "type": "check", "name": "Длинная", "id": "s_many_chapters" },
+			{ "type": "check", "name": "Ожидает загрузки", "id": "s_wait_upload" },
+			{ "type": "check", "name": "Белые жанры", "id": "s_not_pessimized" }
+		]
+	},
+	{
+		"type": "group",
+		"name": "Статус выхода",
+		"filters": [
+			{ "type": "check", "name": "Запланирован", "id": "prod_PLANNED" },
+			{ "type": "check", "name": "Продолжается", "id": "prod_PROGRESS" },
+			{ "type": "check", "name": "Приостановлен", "id": "prod_POSTPONED" },
+			{ "type": "check", "name": "Отменён", "id": "prod_CANCELED" },
+			{ "type": "check", "name": "Завершён", "id": "prod_FINISHED" },
+			{ "type": "check", "name": "Не окончен", "id": "prod_NON_FINISHED" }
+		]
+	},
+	{
+		"type": "group",
+		"name": "Статус перевода",
+		"filters": [
+			{ "type": "check", "name": "Отсутствует", "id": "trans_NONE" },
+			{ "type": "check", "name": "Начат", "id": "trans_STARTED" },
+			{ "type": "check", "name": "Продолжается", "id": "trans_PROGRESS" },
+			{ "type": "check", "name": "Приостановлен", "id": "trans_POSTPONED" },
+			{ "type": "check", "name": "Завершён", "id": "trans_FINISHED" },
+			{ "type": "check", "name": "Нет необходимости", "id": "trans_NO_NEED" }
+		]
+	},
+	{
+		"type": "sort",
+		"name": "Сортировка",
+		"canAscend": false,
+		"options": ["по популярности", "по алфавиту", "по году написания", "популярность сейчас", "по рейтингу", "новинки", "по дате обновления"],
+		"default": { "index": 0 }
 	}
 ]

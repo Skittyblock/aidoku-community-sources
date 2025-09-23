@@ -3,19 +3,19 @@
 		"id": "ru.readmanga",
 		"lang": "ru",
 		"name": "ReadManga",
-		"version": 3,
-		"url": "https://t.readmanga.io",
+		"version": 4,
+		"url": "https://readmanga.ru",
 		"nsfw": 1
 	},
 	"listings": [
 		{
-			"name": "Rating"
+			"name": "Рейтинг"
 		},
 		{
-			"name": "Popular"
+			"name": "Популярное"
 		},
 		{
-			"name": "Updated Recently"
+			"name": "Обновлено недавно"
 		}
 	]
 }
