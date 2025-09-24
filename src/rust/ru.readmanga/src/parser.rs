@@ -13,10 +13,7 @@ use alloc::string::ToString;
 use itertools::chain;
 
 use crate::{
-	constants::{BASE_SEARCH_URL, BASE_URL, SEARCH_OFFSET_STEP},
-	get_manga_details, helpers,
-	sorting::Sorting,
-	wrappers::WNode,
+	constants::SEARCH_OFFSET_STEP, get_manga_details, helpers, sorting::Sorting, wrappers::WNode,
 };
 
 pub fn parse_search_results(html: &WNode) -> Result<Vec<Manga>> {
@@ -382,7 +379,7 @@ pub fn get_page_list(html: &WNode) -> Result<Vec<Page>> {
 		})
 		.map(|(part0, part1, part2)| {
 			if part1.is_empty() && part2.starts_with("/static/") {
-				format!("{BASE_URL}{part2}")
+				format!("{}{}", helpers::get_base_url(), part2)
 			} else if part1.starts_with("/manga/") {
 				format!("{part0}{part2}")
 			} else {
@@ -458,7 +455,11 @@ pub fn get_filter_url(filters: &[Filter], sorting: &Sorting, page: i32) -> Resul
 		b_is_q.cmp(&a_is_q)
 	});
 
-	Ok(format!("{}{}", BASE_SEARCH_URL, params.join("&")))
+	Ok(format!(
+		"{}{}",
+		helpers::get_base_search_url(),
+		params.join("&")
+	))
 }
 
 pub fn parse_incoming_url(url: &str) -> Result<DeepLink> {

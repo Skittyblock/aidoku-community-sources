@@ -26,7 +26,7 @@ pub fn get_manga_list(filters: Vec<Filter>, page: i32) -> Result<MangaPageResult
 
 #[get_manga_listing]
 pub fn get_manga_listing(listing: Listing, _page: i32) -> Result<MangaPageResult> {
-	let html = wrappers::get_html(constants::BASE_URL)?;
+	let html = wrappers::get_html(&helpers::get_base_url())?;
 	let mangas = parser::parse_lising(&html, listing).ok_or(constants::PARSING_ERROR)?;
 	Ok(helpers::create_manga_page_result(mangas, Some(false)))
 }
