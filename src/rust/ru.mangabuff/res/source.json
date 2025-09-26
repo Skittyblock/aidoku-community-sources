@@ -1,0 +1,10 @@
+{
+	"info": {
+		"id": "ru.mangabuff",
+		"lang": "ru",
+		"name": "MangaBuff",
+		"version": 1,
+		"url": "https://mangabuff.ru",
+		"nsfw": 1
+	}
+}
