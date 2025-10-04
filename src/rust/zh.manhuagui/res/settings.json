@@ -1,0 +1,14 @@
+[
+	{
+		"type": "group",
+		"items": [
+			{
+				"type": "segment",
+				"key": "charset",
+				"title": "网站版本",
+				"values": ["简体", "繁体"],
+				"default": "简体"
+			}
+		]
+	}
+]
