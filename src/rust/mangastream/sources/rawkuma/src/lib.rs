@@ -8,7 +8,7 @@ use mangastream_template::template::MangaStreamSource;
 
 fn get_instance() -> MangaStreamSource {
 	MangaStreamSource {
-		base_url: String::from("https://rawkuma.com"),
+		base_url: String::from("https://old.rawkuma.net"),
 		protocol: true,
 		alt_pages: true,
 		..Default::default()

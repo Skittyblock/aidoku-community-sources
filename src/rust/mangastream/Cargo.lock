@@ -135,6 +135,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "ikiru"
+version = "0.1.0"
+dependencies = [
+ "aidoku",
+ "mangastream_template",
+]
+
+[[package]]
 name = "kanzenin"
 version = "0.1.0"
 dependencies = [
@@ -151,7 +159,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "komikindo"
+name = "komiksin"
 version = "0.1.0"
 dependencies = [
  "aidoku",
@@ -197,23 +205,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "mangatale"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "mangastream_template",
-]
-
-[[package]]
 name = "mangatx"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "mangastream_template",
-]
-
-[[package]]
-name = "mangkomik"
 version = "0.1.0"
 dependencies = [
  "aidoku",
@@ -462,14 +454,6 @@ name = "windows_x86_64_msvc"
 version = "0.52.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "589f6da84c646204747d1270a2a5661ea66ed1cced2631d546fdfb155959f9ec"
-
-[[package]]
-name = "yumekomik"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "mangastream_template",
-]
 
 [[package]]
 name = "zerocopy"
