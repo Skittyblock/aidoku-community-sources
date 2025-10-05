@@ -3,8 +3,12 @@
 		"id": "zh.manhuagui",
 		"lang": "zh",
 		"name": "ManHuaGui",
-		"version": 3,
+		"version": 4,
 		"url": "https://www.manhuagui.com",
+		"urls": [
+			"https://www.manhuagui.com",
+			"https://tw.manhuagui.com"
+		],
 		"nsfw": 1
 	}
 }

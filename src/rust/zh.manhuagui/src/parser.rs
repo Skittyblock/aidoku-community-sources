@@ -14,7 +14,25 @@ use aidoku::{
 };
 use alloc::{string::ToString, vec};
 
-const BASE_URL: &str = "https://www.manhuagui.com";
+fn extract_chapter_number(title: &str) -> Option<f32> {
+	let keywords = ["话", "話", "章", "回", "卷"];
+	for &kw in &keywords {
+		if let Some(pos) = title.rfind(kw) {
+			let before = &title[..pos];
+			let mut start = pos;
+			while start > 0 && (before.as_bytes()[start - 1].is_ascii_digit() || before.as_bytes()[start - 1] == b'.') {
+				start -= 1;
+			}
+			if start < pos {
+				let num_str = &before[start..];
+				if let Ok(num) = num_str.parse::<f32>() {
+					return Some(num);
+				}
+			}
+		}
+	}
+	None
+}
 
 const FILTER_REGION: [&str; 7] = [
 	"all", "japan", "hongkong", "other", "europe", "china", "korea",
@@ -90,7 +108,7 @@ pub fn parse_home_page(html: Node) -> Result<MangaPageResult> {
 			author: String::new(),
 			artist: String::new(),
 			description: String::new(),
-			url: format!("{}/comic/{}", BASE_URL, manga_id), //`${this.baseUrl}/comic/${mangaId}`;,
+			url: format!("{}/comic/{}", crate::get_base_url(), manga_id), //`${this.baseUrl}/comic/${mangaId}`;,
 			categories: vec![],
 			status: MangaStatus::Completed,
 			nsfw: MangaContentRating::Safe,
@@ -142,7 +160,7 @@ pub fn parse_search_page(html: Node) -> Result<MangaPageResult> {
 			author: String::new(),
 			artist: String::new(),
 			description: String::new(),
-			url: format!("{}/comic/{}", BASE_URL, manga_id), //`${this.baseUrl}/comic/${mangaId}`;,
+			url: format!("{}/comic/{}", crate::get_base_url(), manga_id), //`${this.baseUrl}/comic/${mangaId}`;,
 			categories: vec![],
 			status: MangaStatus::Completed,
 			nsfw: MangaContentRating::Safe,
@@ -179,7 +197,7 @@ pub fn parse_manga_details(html: Node, manga_id: String) -> Result<Manga> {
 	  .read();
 	let desc = html.select("#intro-cut").text().read();
 	let image = format!("https://cf.hamreus.com/cpic/b/{}.jpg", manga_id);
-	let url = format!("https://www.manhuagui.com/comic/{}/", manga_id);
+	let url = format!("{}/comic/{}/", crate::get_base_url(), manga_id);
 
 	let manga = Manga {
 		id: manga_id,
@@ -232,25 +250,16 @@ pub fn get_chapter_list(html: Node) -> Result<Vec<Chapter>> {
 
 				let url = elem.select("a").attr("href").read();
 				let id = url.clone().replace("/comic/", "").replace(".html", "");
-				let chapter_id = match id.split('/').last() {
+				let chapter_id = match id.split('/').next_back() {
 					Some(id) => String::from(id),
 					None => String::new(),
 				};
 				let title = elem.select("a").attr("title").read();
-				let chapter_or_volume = title
-					.clone()
-					.replace(['第', '话', '話', '回', '卷'], " ")
-					.parse::<f32>()
-					.unwrap_or(index);
-				let ch = if title.contains('卷') {
-					-1.0
+				let chapter_or_volume = extract_chapter_number(&title).unwrap_or(index);
+				let (ch, vo) = if title.trim().ends_with('卷') {
+					(-1.0, chapter_or_volume)
 				} else {
-					chapter_or_volume
-				};
-				let vo = if title.contains('卷') {
-					chapter_or_volume
-				} else {
-					-1.0
+					(chapter_or_volume, -1.0)
 				};
 
 				let chapter = Chapter {
@@ -277,7 +286,12 @@ pub fn get_chapter_list(html: Node) -> Result<Vec<Chapter>> {
 pub fn get_page_list(base_url: String) -> Result<Vec<Page>> {
 	let mut pages: Vec<Page> = Vec::new();
 
-	let html = Request::new(base_url.as_str(), HttpMethod::Get).html()?;
+	let request = Request::new(base_url.as_str(), HttpMethod::Get)
+		.header("Referer", crate::get_base_url())
+		.header("User-Agent", crate::USER_AGENT)
+		.header("Accept-Language", "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7")
+		.header("Cookie", "device_view=pc");
+	let html = request.html()?;
 
 	let decoder = Decoder::new(html.html().read());
 	let (path, pages_str) = decoder.decode();
@@ -301,7 +315,7 @@ pub fn get_page_list(base_url: String) -> Result<Vec<Page>> {
 pub fn get_filtered_url(filters: Vec<Filter>, page: i32, url: &mut String) {
 	let mut is_searching = false;
 	let mut search_string = String::new();
-	url.push_str(BASE_URL);
+	url.push_str(crate::get_base_url());
 
 	let mut region: &str = "all";
 	let mut genre: &str = "all";
