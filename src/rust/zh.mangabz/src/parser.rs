@@ -14,6 +14,26 @@ pub const USER_AGENT: &str = "Mozilla/5.0 (Macintosh; Intel Mac OS X 13_3_1) App
 const GENRE: [u8; 10] = [0, 31, 26, 1, 2, 25, 11, 17, 15, 34];
 const SORT: [u8; 2] = [10, 2];
 
+fn extract_chapter_number(title: &str) -> Option<f32> {
+	let keywords = ["话", "話", "章", "回", "卷"];
+	for &kw in &keywords {
+		if let Some(pos) = title.rfind(kw) {
+			let before = &title[..pos];
+			let mut start = pos;
+			while start > 0 && (before.as_bytes()[start - 1].is_ascii_digit() || before.as_bytes()[start - 1] == b'.') {
+				start -= 1;
+			}
+			if start < pos {
+				let num_str = &before[start..];
+				if let Ok(num) = num_str.parse::<f32>() {
+					return Some(num);
+				}
+			}
+		}
+	}
+	None
+}
+
 pub fn get_filtered_url(filters: Vec<Filter>, page: i32) -> String {
 	let mut is_searching = false;
 
@@ -159,18 +179,19 @@ pub fn get_manga_details(html: Node, id: String) -> Result<Manga> {
 
 pub fn get_chapter_list(html: Node) -> Result<Vec<Chapter>> {
 	let mut chapters: Vec<Chapter> = Vec::new();
+	let mut index = 1.0;
 
-	for (index, item) in html
-		.select("a.detail-list-form-item")
-		.array()
-		.rev()
-		.enumerate()
-	{
+	for item in html.select("a.detail-list-form-item").array().rev() {
 		let chapter_item = item.as_node()?;
 
 		let id = chapter_item.attr("href").read().replace(['/', 'm'], "");
 		let title = chapter_item.own_text().read();
-		let chapter = (index + 1) as f32;
+		let chapter_or_volume = extract_chapter_number(&title).unwrap_or(index);
+		let (ch, vo) = if title.trim().ends_with('卷') {
+			(-1.0, chapter_or_volume)
+		} else {
+			(chapter_or_volume, -1.0)
+		};
 		let url = format!("{}m{}/", BASE_URL, id);
 
 		chapters.insert(
@@ -178,12 +199,14 @@ pub fn get_chapter_list(html: Node) -> Result<Vec<Chapter>> {
 			Chapter {
 				id,
 				title,
-				chapter,
+				volume: vo,
+				chapter: ch,
 				url,
 				lang: String::from("zh"),
 				..Default::default()
 			},
 		);
+		index += 1.0;
 	}
 
 	Ok(chapters)
