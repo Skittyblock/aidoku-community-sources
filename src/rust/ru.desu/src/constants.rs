@@ -1,6 +1,6 @@
 use const_format::formatcp;
 
-pub const BASE_URL: &str = "https://desu.work";
+pub const BASE_URL: &str = "https://desu.city";
 pub const API_URL: &str = "manga/api";
 pub const BASE_API_URL: &str = formatcp!("{BASE_URL}/{API_URL}");
 pub const RATE_LIMIT: i32 = 3;
