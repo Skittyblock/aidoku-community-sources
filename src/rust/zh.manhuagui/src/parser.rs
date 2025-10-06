@@ -123,7 +123,8 @@ pub fn parse_home_page(html: Node) -> Result<MangaPageResult> {
 			Ok(node) => node,
 			Err(_) => continue,
 		};
-		if elem_node.text().read() == "尾页" {
+		let text = elem_node.text().read();
+		if text == "尾页" || text == "尾頁" {
 			has_next = true;
 			break;
 		}
@@ -175,7 +176,8 @@ pub fn parse_search_page(html: Node) -> Result<MangaPageResult> {
 			Ok(node) => node,
 			Err(_) => continue,
 		};
-		if page_node.text().read() == "尾页" {
+		let text = page_node.text().read();
+		if text == "尾页" || text == "尾頁" {
 			has_next = true;
 			break;
 		}
@@ -189,15 +191,36 @@ pub fn parse_search_page(html: Node) -> Result<MangaPageResult> {
 
 pub fn parse_manga_details(html: Node, manga_id: String) -> Result<Manga> {
 	let title = html.select(".book-title > h1").text().read();
-	let author = html
-      .select(
-        "body > div.w998.bc.cf > div.fl.w728 > div.book-cont.cf > div.book-detail.pr.fr > ul > li:nth-child(2) > span:nth-child(2) > a:nth-child(2)"
-      )
-      .text()
-	  .read();
+	let mut authors = Vec::new();
+	for author_link in html.select("ul.detail-list li:nth-child(2) span:nth-child(2) a").array() {
+		if let Ok(author_node) = author_link.as_node() {
+			let author_text = author_node.text().read();
+			if !author_text.is_empty() {
+				authors.push(author_text);
+			}
+		}
+	}
+	let author = authors.join(", ");
 	let desc = html.select("#intro-cut").text().read();
 	let image = format!("https://cf.hamreus.com/cpic/b/{}.jpg", manga_id);
 	let url = format!("{}/comic/{}/", crate::get_base_url(), manga_id);
+
+	let status_text = html.select("li.status").text().read();
+	let status = if status_text.contains("已完结") || status_text.contains("已完結") {
+		MangaStatus::Completed
+	} else {
+		MangaStatus::Ongoing
+	};
+
+	let mut categories = Vec::new();
+	for category in html.select("ul.detail-list li:nth-child(2) span:nth-child(1) a").array() {
+		if let Ok(cat_node) = category.as_node() {
+			let cat_text = cat_node.text().read();
+			if !cat_text.is_empty() {
+				categories.push(cat_text);
+			}
+		}
+	}
 
 	let manga = Manga {
 		id: manga_id,
@@ -207,8 +230,8 @@ pub fn parse_manga_details(html: Node, manga_id: String) -> Result<Manga> {
 		artist: author,
 		description: desc,
 		url,
-		categories: vec![],
-		status: MangaStatus::Ongoing,
+		categories,
+		status,
 		nsfw: MangaContentRating::Safe,
 		viewer: MangaViewer::Scroll,
 	};
@@ -230,10 +253,28 @@ pub fn get_chapter_list(html: Node) -> Result<Vec<Chapter>> {
 		div = Node::new_fragment(decompressed.as_bytes()).unwrap_or(div);
 	}
 
+	// Parse scanlators from h4 tags
+	let mut scanlators: Vec<String> = Vec::new();
+	for h4 in div.select("h4").array() {
+		if let Ok(h4_node) = h4.as_node() {
+			let scanlator = h4_node.select("span").text().read();
+			scanlators.push(scanlator);
+		}
+	}
+	scanlators.reverse(); // Reverse to match the .rev() order of chapter-list
+
+	let mut scanlator_index = 0;
+
 	for element in div.select(".chapter-list").array().rev() {
 		let chapt_list_div = match element.as_node() {
 			Ok(node) => node,
 			Err(_) => continue,
+		};
+
+		let scanlator = if scanlator_index < scanlators.len() {
+			scanlators[scanlator_index].clone()
+		} else {
+			String::new()
 		};
 
 		for ul_ref in chapt_list_div.select("ul").array() {
@@ -254,7 +295,7 @@ pub fn get_chapter_list(html: Node) -> Result<Vec<Chapter>> {
 					Some(id) => String::from(id),
 					None => String::new(),
 				};
-				let title = elem.select("a").attr("title").read();
+				let mut title = elem.select("a").attr("title").read();
 				let chapter_or_volume = extract_chapter_number(&title).unwrap_or(index);
 				let (ch, vo) = if title.trim().ends_with('卷') {
 					(-1.0, chapter_or_volume)
@@ -262,13 +303,19 @@ pub fn get_chapter_list(html: Node) -> Result<Vec<Chapter>> {
 					(chapter_or_volume, -1.0)
 				};
 
+				// Add page count if available
+				let page_text = elem.select("i").text().read();
+				if !page_text.is_empty() {
+					title = format!("{} ({})", title, page_text);
+				}
+
 				let chapter = Chapter {
 					id: chapter_id,
 					title,
 					volume: vo,
 					chapter: ch,
 					date_updated: -1.0,
-					scanlator: String::new(),
+					scanlator: scanlator.clone(),
 					url,
 					lang: String::from("zh"),
 				};
@@ -277,6 +324,7 @@ pub fn get_chapter_list(html: Node) -> Result<Vec<Chapter>> {
 				index += 1.0;
 			}
 		}
+		scanlator_index += 1;
 	}
 	chapters.reverse();
 
