@@ -1,0 +1,10 @@
+{
+	"info": {
+		"id": "en.mangapuma",
+		"lang": "en",
+		"name": "MangaPuma",
+		"version": 1,
+		"url": "https://mangapuma.com",
+		"nsfw": 2
+	}
+}
