@@ -185,14 +185,21 @@ pub fn get_chapter_list(html: Node) -> Result<Vec<Chapter>> {
 		let chapter_item = item.as_node()?;
 
 		let id = chapter_item.attr("href").read().replace(['/', 'm'], "");
-		let title = chapter_item.own_text().read();
+		let title = chapter_item.text().read();
+		let clean_title = title.split('（').next().unwrap_or(&title).trim();
 		let chapter_or_volume = extract_chapter_number(&title).unwrap_or(index);
-		let (ch, vo) = if title.trim().ends_with('卷') {
+		let (ch, vo) = if clean_title.ends_with('卷') {
 			(-1.0, chapter_or_volume)
 		} else {
 			(chapter_or_volume, -1.0)
 		};
 		let url = format!("{}m{}/", BASE_URL, id);
+
+		let scanlator = if vo > -1.0 {
+			"单行本".to_string()
+		} else {
+			"默认".to_string()
+		};
 
 		chapters.insert(
 			0,
@@ -203,6 +210,7 @@ pub fn get_chapter_list(html: Node) -> Result<Vec<Chapter>> {
 				chapter: ch,
 				url,
 				lang: String::from("zh"),
+				scanlator,
 				..Default::default()
 			},
 		);
