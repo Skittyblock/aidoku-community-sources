@@ -12,7 +12,7 @@ use madara_template::template;
 
 fn get_data() -> template::MadaraSiteData {
 	let data: template::MadaraSiteData = template::MadaraSiteData {
-		base_url: String::from("https://hentaicb.bar"),
+		base_url: String::from("https://2tencb.top"),
 		lang: String::from("vi"),
 		source_path: String::from("read"),
 		image_selector: String::from(".reading-content .doc-truyen > img"),
