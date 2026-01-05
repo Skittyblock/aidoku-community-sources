@@ -14,7 +14,7 @@ macro_rules! debug {
 		println!("ru.mangabuff:: {}:{}: {}", file!(), line!(), format!($($arg)*))
 	}};
 }
-pub(crate) use debug;
+// pub(crate) use debug;
 
 #[derive(Debug, Clone)]
 pub struct WNode {

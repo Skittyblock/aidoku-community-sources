@@ -6,7 +6,7 @@ macro_rules! debug {
 		println!("ru.readmanga:: {}:{}: {}", file!(), line!(), format!($($arg)*))
 	}};
 }
-pub(crate) use debug;
+// pub(crate) use debug;
 
 #[derive(Debug, Clone)]
 pub struct WNode {

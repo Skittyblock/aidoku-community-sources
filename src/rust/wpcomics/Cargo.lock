@@ -57,14 +57,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "97b3888a4aecf77e811145cadf6eef5901f4782c53886191b2f693f24761847c"
 
 [[package]]
-name = "nettruyen"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "wpcomics_template",
-]
-
-[[package]]
 name = "proc-macro2"
 version = "1.0.86"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -83,22 +75,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "readcomicsbook"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "wpcomics_template",
-]
-
-[[package]]
-name = "readcomicsfree"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "wpcomics_template",
-]
-
-[[package]]
 name = "syn"
 version = "1.0.109"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -107,14 +83,6 @@ dependencies = [
  "proc-macro2",
  "quote",
  "unicode-ident",
-]
-
-[[package]]
-name = "truyenqq"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "wpcomics_template",
 ]
 
 [[package]]

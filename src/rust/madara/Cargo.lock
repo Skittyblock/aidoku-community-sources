@@ -42,22 +42,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "astrascans"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "madara_template",
-]
-
-[[package]]
-name = "aurorascan"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "madara_template",
-]
-
-[[package]]
 name = "azoramanga"
 version = "0.1.0"
 dependencies = [
@@ -72,14 +56,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
 
 [[package]]
-name = "disasterscans"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "madara_template",
-]
-
-[[package]]
 name = "dlmalloc"
 version = "0.2.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -91,39 +67,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "fayscans"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "madara_template",
-]
-
-[[package]]
-name = "fecomic"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "madara_template",
-]
-
-[[package]]
 name = "firescans"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "madara_template",
-]
-
-[[package]]
-name = "firstkissmanga"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "madara_template",
-]
-
-[[package]]
-name = "flowermanga"
 version = "0.1.0"
 dependencies = [
  "aidoku",
@@ -163,14 +107,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "lermangas"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "madara_template",
-]
-
-[[package]]
 name = "lhtranslation"
 version = "0.1.0"
 dependencies = [
@@ -197,14 +133,6 @@ name = "madara_template"
 version = "0.1.0"
 dependencies = [
  "aidoku",
-]
-
-[[package]]
-name = "manganinja"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "madara_template",
 ]
 
 [[package]]
@@ -264,22 +192,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "nightcomic"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "madara_template",
-]
-
-[[package]]
-name = "novelmic"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "madara_template",
-]
-
-[[package]]
 name = "proc-macro2"
 version = "1.0.86"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -295,14 +207,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0fa76aaf39101c457836aec0ce2316dbdc3ab723cdda1c6bd4e6ad4208acaca7"
 dependencies = [
  "proc-macro2",
-]
-
-[[package]]
-name = "reaperscansfr"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "madara_template",
 ]
 
 [[package]]
@@ -322,14 +226,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "shinigami"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "madara_template",
-]
-
-[[package]]
 name = "syn"
 version = "1.0.109"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -338,14 +234,6 @@ dependencies = [
  "proc-macro2",
  "quote",
  "unicode-ident",
-]
-
-[[package]]
-name = "theblank"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "madara_template",
 ]
 
 [[package]]

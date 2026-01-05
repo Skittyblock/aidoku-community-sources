@@ -43,15 +43,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "animaregia"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "lazy_static",
- "mmrcms_template",
-]
-
-[[package]]
 name = "cfg-if"
 version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -69,39 +60,10 @@ dependencies = [
 ]
 
 [[package]]
-name = "fallenangels"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "lazy_static",
- "mmrcms_template",
-]
-
-[[package]]
-name = "gekkouhentai"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "itoa",
- "lazy_static",
- "mmrcms_template",
-]
-
-[[package]]
 name = "itoa"
 version = "1.0.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "49f1f14873335454500d59611f1cf4a4b0f786f9ac11f4312a78e4cf2566695b"
-
-[[package]]
-name = "komikid"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "itoa",
- "lazy_static",
- "mmrcms_template",
-]
 
 [[package]]
 name = "lazy_static"
@@ -113,57 +75,10 @@ dependencies = [
 ]
 
 [[package]]
-name = "lelscanvf"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "lazy_static",
- "mmrcms_template",
-]
-
-[[package]]
 name = "libc"
 version = "0.2.155"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "97b3888a4aecf77e811145cadf6eef5901f4782c53886191b2f693f24761847c"
-
-[[package]]
-name = "mangadoor"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "itoa",
- "lazy_static",
- "mmrcms_template",
-]
-
-[[package]]
-name = "mangaid"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "itoa",
- "lazy_static",
- "mmrcms_template",
-]
-
-[[package]]
-name = "mangazukiraws"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "lazy_static",
- "mmrcms_template",
-]
-
-[[package]]
-name = "manhwasmen"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "lazy_static",
- "mmrcms_template",
-]
 
 [[package]]
 name = "mmrcms_template"
@@ -178,16 +93,6 @@ name = "onma"
 version = "0.1.0"
 dependencies = [
  "aidoku",
- "lazy_static",
- "mmrcms_template",
-]
-
-[[package]]
-name = "phoenixscans"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "itoa",
  "lazy_static",
  "mmrcms_template",
 ]
