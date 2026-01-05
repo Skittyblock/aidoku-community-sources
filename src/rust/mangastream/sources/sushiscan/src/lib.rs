@@ -18,8 +18,9 @@ fn get_instance() -> MangaStreamSource {
 		manga_details_author: ".infotable tr:contains(Auteur) td:last-child",
 		manga_details_status: ".infotable tr:contains(Statut) td:last-child",
 		manga_details_type: ".infotable tr:contains(Type) td:last-child",
+		chapter_date_format: "d MMMM yyyy",
 		language: "fr",
-		locale: "fr-FR",
+		locale: "fr_FR",
 		..Default::default()
 	}
 }
@@ -101,7 +102,9 @@ fn get_page_list(_manga_id: String, id: String) -> Result<Vec<Page>> {
 
 #[modify_image_request]
 fn modify_image_request(request: Request) {
-	get_instance().modify_image_request(request)
+	request
+		.header("Referer", &format!("{BASE_URL}/catalogue"))
+		.header("User-Agent", USER_AGENT);
 }
 
 #[handle_url]
