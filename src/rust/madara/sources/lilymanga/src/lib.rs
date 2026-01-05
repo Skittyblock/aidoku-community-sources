@@ -9,7 +9,8 @@ use madara_template::template;
 fn get_data() -> template::MadaraSiteData {
 	let data: template::MadaraSiteData = template::MadaraSiteData {
 		base_url: String::from("https://lilymanga.net"),
-		source_path: String::from("ys"),
+		source_path: String::from("gl"),
+		date_format: "dd.MM.yyyy".into(),
 		viewer: |html, _| {
 			let temp = html
 				.select("div.post-content_item:contains(Type) div.summary-content")
