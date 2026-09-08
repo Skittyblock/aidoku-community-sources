@@ -17,7 +17,7 @@ dependencies = [
 [[package]]
 name = "aidoku"
 version = "0.2.0"
-source = "git+https://github.com/Aidoku/aidoku-rs#bae338b15a3840dc0428c7af64fe9fc92abfa2fb"
+source = "git+https://github.com/Aidoku/aidoku-rs/?branch=legacy#04baab2a0d97d5dd49e7169d062bc42ab49fda73"
 dependencies = [
  "aidoku_helpers",
  "aidoku_imports",
@@ -29,7 +29,7 @@ dependencies = [
 [[package]]
 name = "aidoku_helpers"
 version = "0.1.0"
-source = "git+https://github.com/Aidoku/aidoku-rs#bae338b15a3840dc0428c7af64fe9fc92abfa2fb"
+source = "git+https://github.com/Aidoku/aidoku-rs/?branch=legacy#04baab2a0d97d5dd49e7169d062bc42ab49fda73"
 dependencies = [
  "aidoku_imports",
 ]
@@ -37,17 +37,17 @@ dependencies = [
 [[package]]
 name = "aidoku_imports"
 version = "0.2.0"
-source = "git+https://github.com/Aidoku/aidoku-rs#bae338b15a3840dc0428c7af64fe9fc92abfa2fb"
+source = "git+https://github.com/Aidoku/aidoku-rs/?branch=legacy#04baab2a0d97d5dd49e7169d062bc42ab49fda73"
 
 [[package]]
 name = "aidoku_macros"
 version = "0.1.0"
-source = "git+https://github.com/Aidoku/aidoku-rs#bae338b15a3840dc0428c7af64fe9fc92abfa2fb"
+source = "git+https://github.com/Aidoku/aidoku-rs/?branch=legacy#04baab2a0d97d5dd49e7169d062bc42ab49fda73"
 
 [[package]]
 name = "aidoku_proc_macros"
 version = "0.2.0"
-source = "git+https://github.com/Aidoku/aidoku-rs#bae338b15a3840dc0428c7af64fe9fc92abfa2fb"
+source = "git+https://github.com/Aidoku/aidoku-rs/?branch=legacy#04baab2a0d97d5dd49e7169d062bc42ab49fda73"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -118,31 +118,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "mangasusu"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "mangastream_template",
-]
-
-[[package]]
 name = "mangatx"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "mangastream_template",
-]
-
-[[package]]
-name = "manhwalist"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "mangastream_template",
-]
-
-[[package]]
-name = "manhwax"
 version = "0.1.0"
 dependencies = [
  "aidoku",
@@ -182,14 +158,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "sushiscan"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "mangastream_template",
-]
-
-[[package]]
 name = "syn"
 version = "1.0.109"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -222,14 +190,6 @@ name = "version_check"
 version = "0.9.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0b928f33d975fc6ad9f86c8f283853ad26bdd5b10b7f1542aa2fa15e2289105a"
-
-[[package]]
-name = "walpurgiscan"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "mangastream_template",
-]
 
 [[package]]
 name = "windows-sys"

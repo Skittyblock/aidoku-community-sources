@@ -3,17 +3,9 @@
 version = 4
 
 [[package]]
-name = "aasq"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "madara_template",
-]
-
-[[package]]
 name = "aidoku"
 version = "0.2.0"
-source = "git+https://github.com/Aidoku/aidoku-rs/#bae338b15a3840dc0428c7af64fe9fc92abfa2fb"
+source = "git+https://github.com/Aidoku/aidoku-rs/?branch=legacy#04baab2a0d97d5dd49e7169d062bc42ab49fda73"
 dependencies = [
  "aidoku_imports",
  "aidoku_macros",
@@ -24,29 +16,21 @@ dependencies = [
 [[package]]
 name = "aidoku_imports"
 version = "0.2.0"
-source = "git+https://github.com/Aidoku/aidoku-rs/#bae338b15a3840dc0428c7af64fe9fc92abfa2fb"
+source = "git+https://github.com/Aidoku/aidoku-rs/?branch=legacy#04baab2a0d97d5dd49e7169d062bc42ab49fda73"
 
 [[package]]
 name = "aidoku_macros"
 version = "0.1.0"
-source = "git+https://github.com/Aidoku/aidoku-rs/#bae338b15a3840dc0428c7af64fe9fc92abfa2fb"
+source = "git+https://github.com/Aidoku/aidoku-rs/?branch=legacy#04baab2a0d97d5dd49e7169d062bc42ab49fda73"
 
 [[package]]
 name = "aidoku_proc_macros"
 version = "0.2.0"
-source = "git+https://github.com/Aidoku/aidoku-rs/#bae338b15a3840dc0428c7af64fe9fc92abfa2fb"
+source = "git+https://github.com/Aidoku/aidoku-rs/?branch=legacy#04baab2a0d97d5dd49e7169d062bc42ab49fda73"
 dependencies = [
  "proc-macro2",
  "quote",
  "syn",
-]
-
-[[package]]
-name = "azoramanga"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "madara_template",
 ]
 
 [[package]]
@@ -67,39 +51,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "firescans"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "madara_template",
-]
-
-[[package]]
 name = "galaxydegenscans"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "madara_template",
-]
-
-[[package]]
-name = "harimanga"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "madara_template",
-]
-
-[[package]]
-name = "hentaicb"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "madara_template",
-]
-
-[[package]]
-name = "hiperdex"
 version = "0.1.0"
 dependencies = [
  "aidoku",
@@ -121,14 +73,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "97b3888a4aecf77e811145cadf6eef5901f4782c53886191b2f693f24761847c"
 
 [[package]]
-name = "lilymanga"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "madara_template",
-]
-
-[[package]]
 name = "madara_template"
 version = "0.1.0"
 dependencies = [
@@ -137,46 +81,6 @@ dependencies = [
 
 [[package]]
 name = "mangaread"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "madara_template",
-]
-
-[[package]]
-name = "mangascantrad"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "madara_template",
-]
-
-[[package]]
-name = "mangasorigines"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "madara_template",
-]
-
-[[package]]
-name = "manhuafast"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "madara_template",
-]
-
-[[package]]
-name = "manhuaplus"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "madara_template",
-]
-
-[[package]]
-name = "manhuaus"
 version = "0.1.0"
 dependencies = [
  "aidoku",
@@ -210,22 +114,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "resetscans"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "madara_template",
-]
-
-[[package]]
-name = "setsuscans"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "madara_template",
-]
-
-[[package]]
 name = "syn"
 version = "1.0.109"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -249,14 +137,6 @@ name = "unicode-ident"
 version = "1.0.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3354b9ac3fae1ff6755cb6db53683adb661634f67557942dea4facebec0fee4b"
-
-[[package]]
-name = "webtoonxyz"
-version = "0.1.0"
-dependencies = [
- "aidoku",
- "madara_template",
-]
 
 [[package]]
 name = "windows-sys"

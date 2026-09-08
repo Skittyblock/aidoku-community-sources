@@ -4,6 +4,5 @@ version = "0.1.2"
 edition = "2021"
 publish = false
 
-[dependencies.aidoku]
-git = "https://github.com/Aidoku/aidoku-rs"
-features = ["helpers"]
+[dependencies]
+aidoku = { git = "https://github.com/Aidoku/aidoku-rs/", branch = "legacy", features = ["helpers"] }

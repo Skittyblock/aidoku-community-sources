@@ -1,5 +1,4 @@
 #![no_std]
-#![feature(pattern)]
 
 use aidoku::{
 	error::Result,
