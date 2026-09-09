@@ -9,6 +9,7 @@ crate-type = ["cdylib"]
 
 [dependencies.aidoku]
 git = "https://github.com/Aidoku/aidoku-rs"
+branch = "legacy"
 
 [dependencies.mangadventure_template]
 path = "../../template"

@@ -494,3 +494,10 @@ fn handle_notification(notification: String) {
 		_ => {}
 	}
 }
+
+#[modify_image_request]
+fn modify_image_request(request: Request) {
+	request
+		.header("User-Agent", "Aidoku")
+		.header("Referer", "https://mangadex.org/");
+}

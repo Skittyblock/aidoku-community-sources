@@ -7,5 +7,5 @@ edition = "2021"
 crate-type = ["cdylib"]
 
 [dependencies]
-aidoku = { git = "https://github.com/Aidoku/aidoku-rs" }
+aidoku = { git = "https://github.com/Aidoku/aidoku-rs/", branch = "legacy" }
 mangastream_template = { path = "../../template" }
