@@ -5,6 +5,7 @@ version = 4
 [[package]]
 name = "aidoku"
 version = "0.2.0"
+source = "git+https://github.com/Aidoku/aidoku-rs/?branch=legacy#04baab2a0d97d5dd49e7169d062bc42ab49fda73"
 dependencies = [
  "aidoku_helpers",
  "aidoku_imports",
@@ -16,6 +17,7 @@ dependencies = [
 [[package]]
 name = "aidoku_helpers"
 version = "0.1.0"
+source = "git+https://github.com/Aidoku/aidoku-rs/?branch=legacy#04baab2a0d97d5dd49e7169d062bc42ab49fda73"
 dependencies = [
  "aidoku_imports",
 ]
@@ -23,14 +25,17 @@ dependencies = [
 [[package]]
 name = "aidoku_imports"
 version = "0.2.0"
+source = "git+https://github.com/Aidoku/aidoku-rs/?branch=legacy#04baab2a0d97d5dd49e7169d062bc42ab49fda73"
 
 [[package]]
 name = "aidoku_macros"
 version = "0.1.0"
+source = "git+https://github.com/Aidoku/aidoku-rs/?branch=legacy#04baab2a0d97d5dd49e7169d062bc42ab49fda73"
 
 [[package]]
 name = "aidoku_proc_macros"
 version = "0.2.0"
+source = "git+https://github.com/Aidoku/aidoku-rs/?branch=legacy#04baab2a0d97d5dd49e7169d062bc42ab49fda73"
 dependencies = [
  "proc-macro2",
  "quote",

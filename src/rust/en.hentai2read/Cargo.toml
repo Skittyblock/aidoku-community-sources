@@ -16,4 +16,4 @@ strip = true
 lto = true
 
 [dependencies]
-aidoku = { path = "../../../aidoku-rs/crates/lib", features = ["helpers"] }
+aidoku = { git = "https://github.com/Aidoku/aidoku-rs/", branch = "legacy", features = ["helpers"] }
